@@ -1093,23 +1093,23 @@ class OnlinePaperSearchAgent:
                 try:
                     arxiv_papers = fut_arxiv.result(timeout=15)
                 except Exception as e:
-                    print(f"⚠️ [ArXiv Thread Note]: {e}")
+                    print(f"⚠️ [ArXiv Thread Note]: {e or type(e).__name__}")
 
             try:
                 openalex_papers = fut_openalex.result(timeout=15)
             except Exception as e:
-                print(f"⚠️ [OpenAlex Thread Note]: {e}")
+                print(f"⚠️ [OpenAlex Thread Note]: {e or type(e).__name__}")
 
             try:
                 crossref_papers = fut_crossref.result(timeout=15)
             except Exception as e:
-                print(f"⚠️ [CrossRef Thread Note]: {e}")
+                print(f"⚠️ [CrossRef Thread Note]: {e or type(e).__name__}")
 
             if fut_github:
                 try:
                     github_repos = fut_github.result(timeout=15)
                 except Exception as e:
-                    print(f"⚠️ [GitHub Thread Note]: {e}")
+                    print(f"⚠️ [GitHub Thread Note]: {e or type(e).__name__}")
 
         return {
             "arxiv_papers": [p.model_dump() for p in arxiv_papers],

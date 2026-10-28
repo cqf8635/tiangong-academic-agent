@@ -259,6 +259,39 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
     neg_kw = decision.negative_constraints or []
     active_doc = state.get("active_doc")
 
+    # 0. 若提问中明确指定了单篇 arXiv 论文标识 (如天工雷达定向研读《Title》(arXiv:xxxx.xxxxx))，优先锁定本地已入库全文或摘要
+    m_target_arxiv = re.search(r"《([^》]+)》\s*\(arXiv:([0-9]+\.[0-9]+(?:v\d+)?)", query)
+    if m_target_arxiv:
+        target_title = m_target_arxiv.group(1).strip()
+        target_pid = m_target_arxiv.group(2).strip()
+        clean_pid = re.sub(r"[^A-Za-z0-9._-]+", "_", target_pid).strip("._")
+        safe_title = re.sub(r"[^A-Za-z0-9._-]+", "_", target_title).strip("._")[:60]
+        possible_name = f"{clean_pid}_{safe_title}.pdf"
+        uploads_dir = BASE_DIR / "uploads"
+        if not (uploads_dir / possible_name).exists() and uploads_dir.exists():
+            matched_files = list(uploads_dir.glob(f"{clean_pid}_*.pdf"))
+            if matched_files:
+                possible_name = matched_files[0].name
+        if not rag_engine:
+            rag_engine = MasterEngineRegistry.get_rag_engine()
+        local_chunks = rag_engine.search(search_query or query, top_k=6, doc_filter=possible_name)
+        if not local_chunks:
+            local_chunks = rag_engine.search("", top_k=6, doc_filter=possible_name)
+        if local_chunks:
+            evidence_chunks = local_chunks
+            active_doc = possible_name
+            print(f"📄 [MasterRouter] 已直接锁定目标论文全文切片: {possible_name} ({len(evidence_chunks)} 处切片)，0 外部冗余检索！")
+        else:
+            evidence_chunks = [{
+                "doc_name": target_title,
+                "location_label": f"arXiv:{target_pid}",
+                "text": query,
+                "score": 0.98,
+                "url": f"https://arxiv.org/pdf/{target_pid}.pdf",
+                "doc_type": "arxiv",
+            }]
+            print(f"📋 [MasterRouter] 已直接锁定目标论文摘要元数据: 《{target_title}》 (arXiv:{target_pid})，0 外部冗余检索！")
+
     # 1. 依据具体研讨学术方向与前序就绪文献进行自然处理 (0 硬编码，0 意图枚举写死)
     candidates = state.get("recent_paper_candidates") or []
     matched_candidate = None
@@ -392,25 +425,28 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                 all_raw_chunks = []
                 main_en = (getattr(decision, "online_search_query", "") or "").strip()
                 # 收集所有探针任务 (主任务全局 + 各专精学科分支定向探针)
-                probe_tasks = [(search_query, 6, main_en, "主全局交叉检索")]
+                # 严格遵循核心瓶颈唯一在线探针准则：最多仅允许 1 路核心瓶颈探针执行外部在线检索，其余子探针仅检索本地知识库，彻底杜绝并发多路外部超时与限流
+                has_bottleneck = bottleneck_sq is not None
+                probe_tasks = [(search_query, 6, main_en, "主全局交叉检索", bool(need_online_search and not has_bottleneck))]
                 for sq in filtered_sub_qs:
                     sub_term = sq.get("query")
                     if not sub_term or sub_term == search_query:
                         continue
                     sub_en = (sq.get("english_query") or "").strip()
                     disc_name = sq.get("discipline") or "子学科"
-                    probe_tasks.append((sub_term, 4, sub_en, f"子学科[{disc_name}]定向探针"))
+                    sq_online = bool(need_online_search and (sq is bottleneck_sq))
+                    probe_tasks.append((sub_term, 4, sub_en, f"子学科[{disc_name}]定向探针", sq_online))
 
                 # 🚀 全域多探针并发检索 (彻底消除串行累加等待，耗时缩减 70%+)
                 print(f"⚡ [MasterRouter] 启动全域 {len(probe_tasks)} 路学术探针并发召回...")
                 def _execute_single_probe(task_info):
-                    q, k, en_q, label = task_info
+                    q, k, en_q, label, probe_online = task_info
                     return hybrid_retriever.hybrid_search_and_deduplicate(
                         query=q,
                         negative_keywords=neg_kw,
                         top_k=k,
                         include_local=need_local_search,
-                        include_online=need_online_search,
+                        include_online=probe_online,
                         time_constraint=time_constraint,
                         english_query=en_q or None,
                     )

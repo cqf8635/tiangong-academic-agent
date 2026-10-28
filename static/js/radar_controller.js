@@ -849,7 +849,7 @@ class TianGongRadarController {
     }
 
     // 2. 完全依据论文自身题名、摘要与核心要旨构造通用深度研读指令，不依赖任何学科词硬编码
-    let prompt = `羽若，请重点研读这篇刚刚在天工雷达发现的最新前沿论文：\n《${title}》(arXiv:${paper.paper_id}，所属学科：${primaryCat})`;
+    let prompt = `羽若，请重点研读这篇天工雷达学术论文：\n《${title}》(arXiv:${paper.paper_id}，所属学科：${primaryCat})`;
     if (zhTitle) {
       prompt += `\n【题名华译】：${zhTitle}`;
     }
