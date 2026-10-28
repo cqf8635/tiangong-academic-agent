@@ -1,0 +1,754 @@
+{
+  "query_expression": "cat:stat.ML",
+  "total_fetched": 25,
+  "total_results": 80899,
+  "papers": [
+    {
+      "paper_id": "2610.13916v1",
+      "title": "Markov Chain Convergence in Kernel-Induced Geometry",
+      "authors": [
+        "Oleksii Kachaiev",
+        "Luc Brogat-Motte",
+        "Silvia Villa",
+        "Lorenzo Rosasco"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T17:51:50Z",
+      "summary": "We study the convergence of Markov chains in the geometry induced by Hilbertian embeddings associated with positive definite kernels, also called Maximum Mean Discrepancy (MMD). Under a contraction assumption in the kernel-induced geometry, and a standard spectral gap assumption, we establish non-asymptotic, high-probability bounds for the convergence of the empirical occupation measure to the invariant measure. The obtained bounds separate the roles of the two conditions: the spectral gap determines the effective sample size in the leading term, while the kernel contraction enters only through a linear correction. As an application, we study one-step prediction of dynamical systems from a single trajectory, deriving fast learning rates for a nonlinear least-squares estimator. The rates highlight the interplay between mixing properties in the kernel-induced geometry and the classical source and capacity conditions used in the analysis of least-squares.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13916v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.PR",
+      "categories": [
+        "math.PR",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "math.PR (概率论与随机过程)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "50 pages, no figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13901v1",
+      "title": "Hitting-Time Bounds for Asynchronous Q-Learning",
+      "authors": [
+        "Yang Peng"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T17:44:10Z",
+      "summary": "We study the last iterate of standard asynchronous Q-learning from a single trajectory of a finite Markov decision process. The trajectory follows a fixed behavior policy whose state--action chain is irreducible and may be periodic. For discount factor $γ$, write $H=(1-γ)^{-1}$, and let $μ_{\\min}$ be the minimum stationary state--action probability and $\\mathfrak h_\\star$ the largest expected hitting time of the reverse state--action chain. We prove that zero-initialized Q-learning with a constant step size achieves sup-norm error at most $\\varepsilon$ with high probability using $\\widetilde{O}(H^4/(μ_{\\min}\\varepsilon^2)+\\mathfrak h_\\star)$ transitions, for $0<\\varepsilon\\le1$. The statistical term retains the quartic effective-horizon dependence of standard Q-learning, while initialization cost is additive in $\\mathfrak h_\\star$. For aperiodic behavior chains, a comparison with mixing time yields a transient term $\\widetilde{O}(t_{\\mathrm{mix}}/μ_{\\min})$. An empirical state--action count rule selects a constant step size for a subsequent training run and attains the same rate without prior knowledge of model parameters, target accuracy, or confidence level. The output is the last training iterate, with both stages included in the sample count. The proof uses two deterministic Bellman envelopes to separate statistical error from fixed-policy initialization error and adapts reverse-time hitting-cost compensation from TD learning to state--action propagation. An exploration lower bound holds for arbitrary predictable step sizes. Together with the existing statistical lower bound and its extension to pilot-selected constant steps, it yields matching mean-square rates up to logarithmic factors on the stated large-sample parameter classes.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13901v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13855v1",
+      "title": "SLICE: Sequential Likelihood-Free Inference via Conformal E-Values",
+      "authors": [
+        "Stefano Cortinovis",
+        "Laura Battaglia",
+        "François Caron"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T17:04:51Z",
+      "summary": "Many scientific models can be simulated but have intractable likelihoods, making frequentist uncertainty quantification difficult. We construct exact anytime-valid confidence sequences for the parameters of such models. At each observation, fresh simulations from each candidate null conformalize a positive predictable score into a conditional e-value; their product is a test martingale, which we invert over the parameter. Validity holds for any such score, whatever its accuracy. We show that the oracle likelihood-ratio score maximizes expected log growth, which motivates approximating it with an amortized neural ratio estimator. On synthetic benchmarks, an audit of model routing in an LLM API, and microlensing data, the resulting confidence sequences stay valid under continuous monitoring, where fixed-sample methods do not, and neural scores remain competitive with exact likelihood ratios and application-specific scores.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13855v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13851v1",
+      "title": "Finite-Sample Guarantees for Fully Discrete Conditional Diffusion Models",
+      "authors": [
+        "Qiuyun Zhu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T16:59:18Z",
+      "summary": "We establish finite-sample guarantees for conditional diffusion models learned from data and implemented with finitely many denoising steps. Our approach aligns the score-training objective with the sampling grid, allowing statistical estimation and numerical discretization errors to be analyzed together. Under a smooth conditional density model, we derive high-probability bounds on the generated distribution's error and quantify the required number of score evaluations. For every smoothness index $β>0$, a suitable grid yields averaged conditional Kullback--Leibler (KL) divergence $\\widetilde O_p(n^{-2β/(d_x+d_y+2β)})$ relative to the original target with or without early stopping. Both the full and early-stopped samplers attain average target total-variation (TV) error $\\widetilde O_p(n^{-β/(d_x+d_y+2β)})$. Here $n$ is the sample size, $d_x,d_y$ are the data and conditioning dimensions, and errors are averaged over the conditioning variable. The total-variation bound matches the rate established in existing conditional distribution-estimation theory, up to logarithmic factors.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13851v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "31 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13804v1",
+      "title": "Constrained Probabilistic Numerics: Gaussian Process Solvers for Linear PDEs under Linear Inequality Constraints",
+      "authors": [
+        "Boyuan Deng",
+        "Kshitiz Upadhyay",
+        "Michael Shields"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T16:18:11Z",
+      "summary": "Gaussian process solvers for linear partial differential equations (PDEs) return posteriors rather than point estimates, but they condition only on equality information: the PDE residual, boundary data, and measurements. Many solutions of interest also obey inequality constraints, including nonnegativity, monotonicity, and absence of arbitrage, which equality conditioning cannot enforce. We prove that conditioning a Gaussian process prior jointly on linear equality observations and a finite-dimensional inequality event is equivalent to conditioning sequentially in terms of Borel measures on the solution space. The physics-informed posterior is therefore a valid prior for the inequality update at virtual points. The combined law is non-Gaussian yet computable through truncated-Gaussian moments, and neither the PDE conditioning nor the inequality update requires modification. We evaluated the construction on a Poisson benchmark, option-price surfaces, and air-quality fields. Under incomplete boundary data, a monotonicity constraint lowered the error of a two-dimensional Poisson reconstruction by $63\\%$. On a real S&P 500 option chain thinned to $20$ retained quotes, no-arbitrage constraints reduced held-out extrapolation error by $22\\%$ and cut the calendar-arbitrage rate from $10\\%$ to $1\\%$. On four real air-quality snapshots, nonnegativity reduced a Gaussian moment-based sub-zero-tail proxy by $74\\%$ at the sparsest monitor count. Changes in mean accuracy and constraint diagnostics differed across data regimes. The probability of the noisy virtual constraint event under the equality posterior measures agreement with the specified bounds before the update. The construction turns admissibility from a post-processing step into conditioning information for probabilistic PDE solvers.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13804v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "math.NA"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "math.NA (数值分析与科学计算)"
+      ],
+      "comment": "9 figures, 3 tables. Code available at https://github.com/bydeng01/linpde-gp",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13768v1",
+      "title": "From Pixels to Privacy-Sensitive Features: An Information-Theoretic Framework for Reconstruction Bounds",
+      "authors": [
+        "Henry Bourne",
+        "Robert F. Allison"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T15:52:39Z",
+      "summary": "What can an adversary recover from a model trained with DP-SGD? Its $(\\varepsilon,δ)$ guarantee does not answer this question directly. We derive a distortion bound that can be computed before training and applies even to an adversary who observes the parameter trajectory during training, knows every other training record and the population distribution from which the training records are drawn. The analyst may choose the representation in which error is measured, allowing the bound to target the aspects of reconstruction that are privacy-sensitive in a given application. Our information-theoretic framework separates two contributions: the information about a record revealed by training, measured through conditional mutual information, and the uncertainty already present in the data distribution, measured through source entropy. Rate-distortion theory combines them into a lower bound on the expected error of every reconstruction attack. For DP-SGD, the leakage bound depends only on the sampling rates and noise multipliers, while the source entropy is lower-bounded from a sample with finite-sample confidence. An orthogonal block construction keeps the resulting bound informative for high-dimensional images. We instantiate the framework in pixel space and in LPIPS feature space, obtaining, to our knowledge, the first lower bound on reconstruction distortion measured directly by LPIPS. On a range of image datasets the bounds establish non-trivial unavoidable expected reconstruction error within heuristically recommended privacy-budget ranges and beyond. Experiments compare the bounds with strong reconstruction attacks and identify the principal sources of the remaining slack.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13768v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "40 pages, 9 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13764v1",
+      "title": "How Well Do Prior-Data Fitted Networks Amortize Bayesian Inference?",
+      "authors": [
+        "Manuel Hülskamp",
+        "Julius Kobialka",
+        "Emanuel Sommer",
+        "Thomas Nagler",
+        "David Rügamer"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T15:49:24Z",
+      "summary": "Prior-data fitted networks (PFNs) are trained to approximate the Bayesian posterior predictive distribution (PPD) of a synthetic prior, yet results about the approximation quality are surprisingly thin. Taking an empirical risk minimization perspective, we decompose the deployment error of PFNs into prior, context, and amortization error, and measure the latter against a reference PPD under a realistic prior. Results show that PFNs generally recover the targeted PPD very well. Nevertheless, we find that parts of the residual amortization error persist, especially in \\textit{rare} settings under the prior pretraining distribution, even when scaling the model size, which manifests in disagreement between independently pretrained PFNs and leaves uncertainty about the predictor at inference time. As a remedy, we study multiple types of Bayesian model averages and find that these can consistently reduce this uncertainty and improve predictions up to full-size TabICLv2 models.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13764v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13693v1",
+      "title": "Calibration in One Go: Jointly Learning Accurate and Calibrated Neural Networks",
+      "authors": [
+        "Nektarios Kalampalikis",
+        "Pablo M. Olmos",
+        "Isabel Valera"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T14:54:35Z",
+      "summary": "Neural networks (NNs), while highly flexible and versatile, are often poorly calibrated. Post-hoc calibration methods adjust the outputs of an already trained model using a separate calibration dataset and additional calibration parameters. This process adds overhead that requires separate optimization of the calibrator and subsequent model selection. In this paper, we show that standard (post-hoc) calibrators can be trained end-to-end with the backbone via a bilevel Stackelberg formulation. This formulation eliminates the need for a separate calibration set or a dedicated calibration loss by jointly optimizing accuracy and calibration using cross-entropy, introducing only one additional hyperparameter: the calibrator learning rate. Although our framework supports calibrators ranging from temperature and matrix scaling to NN layers, our results show that using the final classification layer itself as the calibrator yields accurate, well-calibrated models with no additional parameters. Our approach outperforms SOTA calibrators with minimal added complexity, while also avoiding the multiplicative overhead of separate calibration components in settings such as multi-task learning.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13693v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "27 pages, 7 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13674v1",
+      "title": "Not All Dimensions Are Equal: Outlier-Aware Attention Linearization with Grouped Quadratic Kernels",
+      "authors": [
+        "Weiqi Sun",
+        "Qianyue Wu",
+        "Wenjia Wang",
+        "Tianyang Hu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T14:40:19Z",
+      "summary": "Linearizing softmax attention offers a route to efficient Transformer inference, but preserving pretrained attention remains challenging. We identify an important source of approximation error overlooked by standard linearization methods: a small number of outlier dimensions contribute disproportionately to query-key dot products and account for a large fraction of the approximation error. Motivated by this heterogeneity, we propose Outlier-Aware Attention Linearization (OAL), a dimension-aware method for constructing quadratic attention approximations. Starting from a second-order Taylor approximation, we introduce a Hadamard-product formulation that makes individual query-key contributions explicit. This formulation relaxes globally shared coefficients to support dimension-specific linear terms and cross-dimensional quadratic interactions while preserving separable evaluation. To retain this flexibility with fewer parameters, OAL groups dimensions with similar contribution scales to share coefficients, while allowing distinct treatment of the few outliers. The resulting positive quadratic kernel is calibrated against pretrained attention outputs and admits linear-time evaluation with respect to sequence length for fixed head dimensions. On Qwen2.5-0.5B, OAL reduces frozen-attention output relative MSE by approximately 8.9% compared with DiJiang. Replacing middle-layer attention modules and jointly fine-tuning the kernel coefficients with LoRA further lowers WikiText-103 perplexity from 31.71 to 27.50 compared with a learned global quadratic, while improving accuracy on PIQA, HellaSwag, and ARC-E. These results demonstrate the value of outlier-aware dimension grouping for both attention approximation and pretrained-model conversion. The code is available at https://github.com/wuqianyue09/OAL",
+      "pdf_url": "https://arxiv.org/pdf/2610.13674v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13656v1",
+      "title": "Scalable Sparse Autoregressive Variational Inference for Non-Gaussian Spatial Fields",
+      "authors": [
+        "Paul F. V. Wiemann",
+        "Matthias Katzfuss"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T14:30:12Z",
+      "summary": "Latent field models are essential for spatial statistics, but the posterior distribution of the latent field, even with a Gaussian process (GP) prior, is analytically intractable whenever the likelihood is non-Gaussian. Existing approximations are either too slow or too restrictive for large non-Gaussian datasets. We present a scalable variational inference framework that mirrors the sparse nearest-neighbor autoregressive structure of the prior in the variational family, uses normalizing-flow conditionals for expressiveness, and amortizes all variational parameters via a single shared neural conditioner. Doubly stochastic optimization with reduced ancestor sets achieves polylogarithmic complexity per iteration.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13656v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "stat.CO",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "stat.CO (计算统计与马尔可夫链)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": "Short paper for the Joint Meeting SIS-FENStatS 2026, Rome, June 22-25, 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13653v1",
+      "title": "A Critical Look at Power Sampling when Test Time Sharpening LLMs",
+      "authors": [
+        "Abiel Malkani Talwar",
+        "Christopher Nemeth",
+        "Henry Moss"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T14:29:28Z",
+      "summary": "Reinforcement learning with verifiable rewards (RLVR) has substantially improved LLM reasoning, yet growing evidence suggests it mainly performs distribution sharpening: concentrating probability mass on reasoning paths the base model already produces. Recent work therefore seeks RLVR's gains without needing reward signals, by sampling from the power distribution $π_α\\propto π_{\\text{base}}^α$ via Markov chain Monte Carlo or sequential Monte Carlo. We show that these samplers fail to converge to $π_α$ under realistic compute budgets, and that their gains are largely recreated via simple Best-of-$N$ with appropriate grading . This suggests they succeed by selecting high-probability sequences, not by approximating $π_α$, raising a natural question: is the power distribution itself a worthwhile target? We test this hypothesis directly by fine-tuning the base model to match $π_α$, sidestepping sampler convergence issues entirely. Despite approximating the target far more faithfully than existing samplers, this strategy yields gains that are noisy and specific to certain models and sampling tasks. Together, our results suggest that the value of power sampling lies not in faithfully targeting $π_α$, but in the simpler goal of extracting sequences the base model already deems likely.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13653v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13625v1",
+      "title": "Kernel-based External Validity of Experimental Studies",
+      "authors": [
+        "Federico Matteucci",
+        "Gerhard Neumann"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T14:08:09Z",
+      "summary": "The external validity of a study is the extent to which its findings generalize to unseen experimental conditions, such as datasets. We formalize the results of a study together with its research question, and define external validity as the probability that two independent and same-sized replications of the study produce results whose maximum mean discrepancy (MMD) is below a given tolerance. This approach, centered on the choice of a space of results and of an appropriate reproducing kernel for the MMD, is flexible enough to be deployed on multiple different types of results and research questions. Additionally, we establish an asymptotic power-law relation between the size of a study and the quantiles of the MMD, which we use to estimate the desired size of an externally valid study from a small-scale preliminary study. We deploy our framework to rankings with ties and discuss kernels suited to different research questions. Experiments on existing case studies and on a simulated newly designed study illustrate the applicability of the framework. We release our code as part of the genexpy Python module.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13625v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13614v1",
+      "title": "Some remarks on the connection between generative diffusion and optimal transport",
+      "authors": [
+        "Giulio Biroli",
+        "Marc Mézard"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T13:58:26Z",
+      "summary": "We discuss three simple connections between generative diffusion and optimal transport. First, the joint law of the data and of their Ornstein-Uhlenbeck noising is, at every time, the solution of an entropic optimal-transport problem, at a temperature set by the noise level. Backward diffusion can consequently be read as an annealing which gradually decreases the entropic regularization. Second, we study the speciation transition--how the modes of the data distribution emerge during generation--and compare how it happens in diffusion and flow matching with respect to optimal transport. Using Gaussian mixtures as high-dimensional example, we show that the dynamical instability through which diffusion and flow matching separate the modes becomes, for optimal transport, an exponentially thin boundary layer at the beginning of generation, which is rounded by entropic regularization. Third, considering a generic forward dynamics with a general confining potential, we show that the backward process driven by the score also satisfies a drift-based variational principle whose minimal cost is the entropy difference between initial and final distributions.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13614v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cond-mat.dis-nn",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cond-mat.dis-nn (无序系统与神经网络)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13606v1",
+      "title": "CorrFlow: Exact and Permutation-Equivariant Flow Matching on the Correlation Elliptope",
+      "authors": [
+        "Gautier Marti"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T13:53:24Z",
+      "summary": "Correlation matrices combine nonlinear positive-definiteness constraints with a simultaneous row-column permutation symmetry. Their generation therefore involves two distinct problems. First, every output must remain on the correlation elliptope, irrespective of how its variables are ordered. Second, the generator must learn the domain-specific distribution occupied by empirical data inside that valid space. Existing financial image generators mix these problems: they learn ordered matrix entries and repair invalid draws afterward. We introduce CorrFlow, which separates them. A generalized Fisher transform maps full-rank correlation matrices bijectively to unconstrained coordinates, guaranteeing valid outputs without projection. A graph flow-matching network learns the empirical distribution in those coordinates and is permutation equivariant: reordering the variables only reorders the output. We compare a conditional CorrGAN reimplementation, image diffusion, and CorrFlow on $80\\times80$ Taiwan equity matrices using five seeds per neural method. CorrFlow produces 100% valid draws without repair and obtains feature sliced-Wasserstein distance $.712\\pm.141$, versus $4.339\\pm.252$ for CorrGAN and $4.610\\pm.191$ for image diffusion after their invalid outputs are projected back to the correlation space. It also improves this distance over historical lookup, while lookup retains higher local coverage. These results support the combined construction under the evaluated training budget; they do not establish superiority over fully tuned image models or isolate the contribution of each component.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13606v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "Accepted at NeurReps 2026, the NeurIPS workshop on Symmetry and Geometry in Neural Representations. Code: https://github.com/gautiermarti/CorrFlow",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13598v1",
+      "title": "Beyond Discrepancy: Oracle Drift in Nonstationary Weighted Risk Minimization",
+      "authors": [
+        "Tobias Brock",
+        "Thomas Nagler"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T13:48:29Z",
+      "summary": "We analyze distributional drift in nonstationary weighted risk minimization by decomposing the excess risk into estimation, drift, and approximation components. The drift error is commonly bounded through discrepancy-type quantities that control changes of the risk over classes of predictors. We instead relate the drift error directly to the movement of the best predictor within the model class and analyze its behavior in parametrized regression models. Our analysis shows that discrepancy-type quantities can be overly conservative: unlike our oracle drift, they may scale at a larger order than the resulting excess-risk contribution and can respond to changes in the risk surface that do not affect the optimal predictor. For linear regression, we characterize this gap sharply and combine the resulting drift bounds with estimation guarantees. We further extend the analysis to nonparametric regression.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13598v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.ST",
+      "categories": [
+        "math.ST",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "math.ST (数理统计理论)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13588v1",
+      "title": "Probabilistic Forecasting of Electric Vehicle Charging in a Time-varying Hierarchical Infrastructure",
+      "authors": [
+        "Guillaume Principato",
+        "Yvenn Amara-Ouali",
+        "Yannig Goude",
+        "Bachir Hamrouche",
+        "Jean-Michel Poggi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T13:39:08Z",
+      "summary": "Uncertainty quantification for electric vehicle (EV) charging demand is essential to turn the increasing pressure of EV adoption on power systems into a source of flexibility. We study a large-scale dataset of public charging stations in Scotland, where demand exhibits a hierarchical structure, organized across multiple aggregation levels, from individual charging points to regional and national scales. The charging infrastructure is continuously evolving, with new stations deployed and existing ones occasionally removed, which calls for forecasting and uncertainty quantification methods tailored to this evolving structure. To address these challenges, we combine hierarchical forecasting with recent advances in conformal prediction with missing data. The conformal procedures considered produce valid prediction intervals at every node of the hierarchy and the algorithm CP-MNR-Nested successfully accounts for the time-varying hierarchical structure of the data.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13588v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "stat.AP (应用统计学)",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "34 pages, 11 figures, 6 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13536v1",
+      "title": "Defence against the dark arts of distillation: Unsupervised discovery of subliminal learning",
+      "authors": [
+        "Joseph Egan",
+        "Ciarán M. Gilligan-Lee",
+        "Michael O'Riordan",
+        "Yuchen Zhu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T12:55:50Z",
+      "summary": "When a language model is distilled from a teacher that shares its base parameters, the student can inherit behavioural traits of the teacher---including misalignment---even from data that is semantically unrelated to the trait (Cloud et al., 2026). All existing defences require knowing the trait. We remove this requirement and prove that a subliminally transferred trait can be recovered from the parameter updates alone, without supervision, by exploiting a single asymmetry: the trait is expressed consistently across diverse datasets generated by the teacher, whereas task-specific and shared capabilities vary. The resulting estimator returns a weight-space direction that can be amplified to discover and interpret the trait or projected out to suppress it. Applied to the subliminal-learning benchmarks of (Cloud et al., 2026), our method recovers the transmitted animal-preference traits without any trait labels and suppresses their expression with almost no impact to task performance.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13536v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "9+12 pages, comments welcome",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13464v1",
+      "title": "Gaussian BROJA Partial Information Decomposition in Closed Form",
+      "authors": [
+        "Ohad Sheelo",
+        "Tal Golan",
+        "Ari Pakman"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T12:02:17Z",
+      "summary": "The BROJA partial information decomposition provides an operationally motivated way to separate the information that two sources carry about a target into unique, redundant, and synergistic components. For continuous and high-dimensional variables, however, computing the BROJA decomposition requires solving a difficult optimization problem. Previous work showed that, when each source-target pair is jointly Gaussian, the problem can be reduced to finite-dimensional numerical optimization. Here, we derive a closed-form solution to this optimization problem, enabling direct computation of the BROJA decomposition in the general multivariate Gaussian setting. The resulting closed-form expression enables speedups exceeding two orders of magnitude for high-dimensional Gaussian BROJA PID. Code is available at https://github.com/brainsandmachines/Eigen_PID.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13464v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.IT",
+      "categories": [
+        "cs.IT",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.IT (信息论)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "28 pages total, including 10 pages of main text, 2 main figures, 5 supplementary sections, and 5 supplementary figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13442v1",
+      "title": "Learning by Compression: Risk Estimates Attain the Law-of-Large-Numbers Rate",
+      "authors": [
+        "Simone Garatti",
+        "Marco C. Campi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T11:44:43Z",
+      "summary": "Compression schemes provide a general framework for deriving data-dependent risk bounds for learning algorithms. For learning rules based on preferent compression, existing results upper-bound the risk in terms of a sample-dependent complexity $\\boldsymbol{k}$, defined as the cardinality of the compression augmented by the training examples on which the reconstructed hypothesis is inappropriate. These results, however, yield a margin of order $O(\\sqrt{\\ln N/N})$ above $\\boldsymbol{k}/N$. In this paper, we establish that the logarithmic factor is not intrinsic. We prove that, for every fixed confidence level $1-δ$, the risk is bounded with probability at least $1-δ$ by $$ \\frac{\\boldsymbol{k}}{N} + O\\left(\\frac{1}{\\sqrt{N}}\\right), $$ uniformly over all possible values of $\\boldsymbol{k}$. Thus, risk estimates for learning algorithms based on preferent compression attain the same law-of-large-numbers rate as the empirical estimate of the probability of a fixed event. We also show that the leading term $\\boldsymbol{k}/N$ is necessary and investigate its relation to the empirical risk. In particular, we identify regimes in which the empirical risk retains the $O(1/\\sqrt{N})$ convergence rate, as well as regimes in which it converges more slowly or ceases to be consistent, while the complexity-based estimator preserves the $O(1/\\sqrt{N})$ rate.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13442v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "math.ST"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "math.ST (数理统计理论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13430v1",
+      "title": "One Thing Leads to Another: The Essentials of Time Series Causal Discovery",
+      "authors": [
+        "Kurt Butler",
+        "Damian Machlanski",
+        "Michael P. J. Camilleri",
+        "Zhihua Liu",
+        "Panagiotis Dimitrakopoulos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T11:33:39Z",
+      "summary": "Time series causal discovery --- the process of detecting causation between time series --- has its roots in signal processing research from over a half century ago. It has since received active and widespread interest, evolving into different forms across domains such as statistics, dynamical systems and machine learning. Entering this fragmented and constantly evolving research landscape can be daunting. This tutorial provides a unified overview of time series causal discovery across research communities. We introduce the key principles invoked by modern discovery methods, and we discuss their limitations and assumptions. We also discuss how discovery methods are evaluated, benchmarked and fine-tuned. We further discuss how causal discovery for time series is becoming crucial for downstream tasks in agriculture and Earth science, in healthcare, and in artificial intelligence systems. We believe that this tutorial will serve as a valuable resource in navigating the deluge of recent causality research, as well as an invitation to signal processing audiences to contribute to causal problems. To further help readers, we host a companion repository to link to useful code packages and resources at https://github.com/CHAI-UK/Awesome-Time-Series-Causal-Discovery.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13430v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "16 pages, 3 figures, accepted for publication in the IEEE Signal Processing Magazine",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13397v1",
+      "title": "Model-free Bayesian Clustering and Multimodal Posterior Summarisation",
+      "authors": [
+        "Qing Li",
+        "Sara Wade"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T11:10:25Z",
+      "summary": "We develop a model-free, noise-aware Bayesian clustering framework that constructs a martingale posterior over clusterings from a predictive Bayesian perspective. This avoids explicit likelihood-prior model specification, expensive MCMC sampling, and mode-seeking variational approximations, while accommodating irregular cluster shapes and enabling parallel generation of posterior draws. To interpret the posterior over high-dimensional, noise-aware clusterings, we introduce a Wasserstein-type summarization method. Using a novel noise-aware loss, this approach compresses the large collection of posterior draws into a small set of weighted representatives, capturing distinct cluster structures and noise assignments. Further, we marginalise the uncertainty in the density level, avoiding reliance on a specific choice. We establish theoretical properties of the proposed loss and guarantees for the level-marginal posterior approximation. Results demonstrate the framework's effectiveness in capturing clustering and noise uncertainty.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13397v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13382v1",
+      "title": "BLOKS: Scaling Kernel Solvers with Sketched Block Preconditioning",
+      "authors": [
+        "Giordano Vitale",
+        "Giacomo Meanti",
+        "Marco Rando",
+        "Blanca Ayuso de Dios",
+        "Lorenzo Rosasco"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T10:57:40Z",
+      "summary": "Kernel Ridge Regression (KRR) is a theoretically sound algorithm for nonparametric learning, which is also often used to investigate properties of deep learning. However, the exact KRR formulation incurs time and memory costs preventing applicability to large datasets, motivating the development of approximate solvers. These algorithms rely on (i) iterative methods, to avoid the computational burden of direct solutions; (ii) sketching or batching, to reduce the problem size; and (iii) preconditioning, to accelerate convergence. While crucial for fast convergence, preconditioning incurs memory costs that can be managed by lowering the number of free parameters of the model, potentially at the expense of expressivity and hence accuracy. To address this challenge, we propose BLOKS, a Conjugate Gradient-based solver for Nyström-sketched KRR built around a novel preconditioner that combines a block Jacobi approximation with sketching. The BLOKS preconditioner has memory cost independent of both the dataset size and the number of parameters, allowing scaling to large models. We provide a memory-efficient, GPU-accelerated implementation and show that BLOKS achieves excellent accuracy while retaining favorable time/memory complexity. Indeed, on standard large-scale datasets used to benchmark kernel solvers, BLOKS achieves comparable or better performances than state-of-the-art methods.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13382v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "29 pages, 7 figures, 9 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13129v1",
+      "title": "Fast Gradient-Based Approximation of Continuous Dynamic Time Warping",
+      "authors": [
+        "Pierre Houedry",
+        "Romain Tavenard",
+        "Nicolas Courty",
+        "Romaric Gaudel"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T07:22:20Z",
+      "summary": "Dynamic Time Warping (DTW) is a common choice for measuring the discrepancy between time series. It proceeds by finding an optimal warping between timestamps through dynamic programming, which can be slow and is not differentiable. Consequently, several variants have been proposed. Among them, Soft-DTW proposes a smooth formulation of DTW, amenable to gradient computation, while Continuous-DTW (CDTW) introduces a continuous formulation through parametrizable warping functions. Yet, computational costs remain high for both methods and impractical for large datasets in modern machine learning pipelines. This paper revisits CDTW in several ways. After establishing its differentiability under mild conditions, we introduce FastCDTW, which is an efficient approximate solver with two different computational strategies: an exact closed-form scheme for piecewise-linear warping functions, and an unbiased Monte Carlo estimator for smooth ones, such as implicit neural networks. Both strategies provide gradients with respect to the warping function and the input time series, and the resulting algorithm is GPU-friendly. We demonstrate its benefits through its integration into more complex learning problems, including time series averaging, classification and deep domain adaptation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13129v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13123v1",
+      "title": "Why Heavy-Tailed Weight Spectra Predict Model Quality",
+      "authors": [
+        "Joseph Wilson",
+        "Chris van der Heide",
+        "Liam Hodgkinson",
+        "Zhichao Wang",
+        "Fred Roosta"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T07:18:32Z",
+      "summary": "A solid understanding of the predictive success of deep neural networks (DNNs) remains elusive. For example, while many data-dependent metrics exist that seek to predict model quality of DNNs, these metrics may be expensive to compute for large datasets and/or may be impossible to compute when training datasets are not released. A practical and effective predictor of model quality involves analyzing DNN weight matrices, as prior work has established that heavy-tailed spectral distributions in trained weight matrices can be strongly predictive of model quality. However, such metrics lack a rigorous statistical justification. In this work, we aim to understand why these metrics perform well, from a statistical perspective. To do so, we employ a probabilistic framework to derive the marginal likelihood for a DNN, evaluated using only the final layer weights. Across large-scale convolutional DNNs and LLMs, we find that this marginal likelihood predicts model quality. To understand the role heavy-tailed spectra play in predictive performance, we derive the limiting log-marginal likelihood for spectra that follow the (heavy-tailed) High-Temperature Marchenko-Pastur (HTMP) distribution. We show that this limiting quantity is convex in a heaviness parameter, and we derive an optimal heaviness that empirically predicts over-fitting for large-scale DNNs.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13123v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "Accepted at NeurIPS 2026. 34 pages, 11 figures, 4 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.12987v1",
+      "title": "Forecasting Corpus-Sampling Disagreement in Masked Text Reconstruction",
+      "authors": [
+        "Hare Krishna"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T04:40:47Z",
+      "summary": "If a second text corpus were collected from the same population, how much would a predictor's outputs change? We study this question for masked-text reconstruction using a smoothed predictor built from nearby token-pair counts and evaluated over the full 50,257-token GPT-2 vocabulary. Treating each source document as one observation, we derive a first-order formula for the expected disagreement between predictors fitted to two independent corpora. The formula accounts for variable document length, random context counts, and correlations across token offsets, and it can be evaluated from a separate reference corpus without access to either target corpus. On TinyStories, WikiText-103, and CNN/DailyMail, growing each corpus from 512 to 2,048 chunks of 64 tokens lowers disagreement by only 5--40\\%, far short of the 75\\% implied by $1/n$ scaling. The forecast tracks this slow decline, which we trace to smoothing of rarely seen contexts. Forecast accuracy depends less on how these correlations are modeled than on the size of the reference corpus: small references systematically underpredict disagreement. A source-split jackknife that uses only reference data reduces this calibration error by 57--59\\%. After this correction, a simpler smoothed-multinomial approximation is most accurate when the reference corpus is smaller than the target corpus, and a nonlinear source bootstrap is most accurate when it is larger. Finally, small masked diffusion language models trained on the same corpora show that the count-based forecasts partly identify which inputs are most sensitive to the corpus, but miss the neural models' much faster decline in disagreement.",
+      "pdf_url": "https://arxiv.org/pdf/2610.12987v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "12 pages + Appendices",
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 25
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 21
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 3
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 3
+    },
+    {
+      "code": "math.ST",
+      "name_zh": "数理统计理论",
+      "count": 2
+    },
+    {
+      "code": "math.PR",
+      "name_zh": "概率论与随机过程",
+      "count": 1
+    },
+    {
+      "code": "math.NA",
+      "name_zh": "数值分析与科学计算",
+      "count": 1
+    },
+    {
+      "code": "stat.CO",
+      "name_zh": "计算统计与马尔可夫链",
+      "count": 1
+    },
+    {
+      "code": "cond-mat.dis-nn",
+      "name_zh": "无序系统与神经网络",
+      "count": 1
+    },
+    {
+      "code": "q-fin.RM",
+      "name_zh": "风险管理与控制",
+      "count": 1
+    },
+    {
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
+      "count": 1
+    },
+    {
+      "code": "cs.IT",
+      "name_zh": "信息论",
+      "count": 1
+    },
+    {
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 1
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 1
+    }
+  ]
+}

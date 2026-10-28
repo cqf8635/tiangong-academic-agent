@@ -1,0 +1,1032 @@
+{
+  "query_expression": "cat:eess*",
+  "total_fetched": 35,
+  "total_results": 141827,
+  "papers": [
+    {
+      "paper_id": "2610.28619v1",
+      "title": "Adaptive Multi-Token Prediction: How far should we go?",
+      "authors": [
+        "Emile Anand",
+        "Mohammed Rehan Parwani",
+        "Xinyuan Cao"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T17:56:32Z",
+      "summary": "Multi-token prediction (MTP) can accelerate language-model decoding by drafting several tokens and verifying them in a single target-model pass. However, the best speculation horizon changes with context: longer drafts offer greater amortization when reliable, but can waste compute on suffixes discarded after a rejection. Unlike autoregressive drafting, where a stopping rule can decide token by token, MTP must fix the horizon before drafting, as all heads fire in the same forward pass. We therefore formulate horizon selection as an online control problem, using verification feedback to learn how far the draft can be trusted in each context, and introduce Adaptive Multi-Token Prediction (AMTP): a lightweight controller that requires no retraining and leaves the exact verifier unchanged. To guide horizon selection, we characterize the expected number of tokens committed at each horizon via acceptance survival, the probability that a draft prefix is fully accepted. Before each round, AMTP predicts how far the draft is likely to survive and picks the horizon with the highest expected tokens per second, learning freely from every verification pass. Theoretically, we show that any online learner's prediction error translates into throughput regret against the best horizon for each context, and in turn into a bound on wall-clock completion time. With online gradient descent, this regret is sublinear. Across five draft-target pairings built on Llama-3.1-8B-Instruct with Medusa heads, Meta's MTP models, and Qwen3-4B-Inst-2507-MTP, evaluated on AIME 2025 and GSM8K, AMTP decodes up to 4.1x faster than standard decoding and matches or outperforms the fixed window in 8 of 10 settings, with throughput gains of up to 10%.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28619v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "25 pages, 5 figures, 9 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28570v1",
+      "title": "A Comparative Study of LED Lighting Control Strategies for Energy-Efficient Greenhouse Operations",
+      "authors": [
+        "Sajad Ahmadi",
+        "Eric J. Stallknecht",
+        "Javad Mohammadpour Velni"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T17:28:44Z",
+      "summary": "Greenhouse supplemental lighting is essential for meeting crop Daily Light Integral (DLI) requirement. However, conventional always-on and rule-based strategies are inherently energy-inefficient since they ignore future sunlight availability. This paper reports the results of deploying various supplemental lighting control strategies, namely, always-on, always-off, heuristic, optimal prediction-based, and two peak-shift variants, simultaneously in a single greenhouse at the Hampton Roads AREC of Virginia Tech, to ensure that every treatment experiences identical conditions. %The shared infrastructure is built on an MQTT-based IoT platform with Photosynthetic Photon Flux Density (PPFD) sensing and PWM-driven LED control; The prediction-based and peak-shift strategies optimize LED schedules using a Markov chain-based solar forecast. Experimental results over two replicates %(20~February--15~April~2026, 72~plants per treatment) show that the prediction-based strategy meets the desired DLI target at 65\\% cost reduction relative to the always-on baseline while achieving the highest dry-mass yield among the proposed adaptive strategies. The heuristic strategy incurs only a 6\\% cost premium over prediction-based control, offering a competitive forecast-free alternative. The peak-shift variants achieve the lowest active-strategy costs by shifting LED demand into off-peak tariff windows. A yield-per-dollar efficiency metric is finally introduced to jointly capture energy cost and crop output showing that the prediction-based strategy ranks highest at 18.976~g/\\$, more than double the always-on value of 9.391~g/\\$. These findings can provide greenhouse operators with an evidence-based framework for selecting a lighting control approach that balances energy cost, crop quality, and system complexity.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28570v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Accepted at Modeling, Estimation and Control Conference (MECC 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28557v1",
+      "title": "Beamfocusing Versus Airy Beams: Does Antenna Blockage Require Beam Bending?",
+      "authors": [
+        "Emil Björnson",
+        "Vitaly Petrov",
+        "Erik G. Larsson"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T17:19:00Z",
+      "summary": "Airy beams are often proposed in array beamforming to bend beams around obstacles. We prove that, for a single-antenna receiver, conventional beamfocusing maximizes the received power regardless of how many antennas are blocked and, in expectation, even with phase errors in the channel state information. This also holds for multi-antenna receivers under a phase-separability condition that is satisfied in rank-one channels. Numerical results confirm that unmodified beamfocusing is optimal for physically small receivers (i.e., those that fit within the beamwidth) when an obstacle is present. For physically larger receivers, the optimal precoding deviates from beamfocusing to better illuminate the receiver's unobstructed parts, but will not become Airy beams. While Airy beams can be configured to perform well, their ability to follow a bent trajectory in front of an obstacle does not maximize the received power behind it.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28557v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.IT"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.IT (信息论)"
+      ],
+      "comment": "5 pages, 2 figures, submitted for review",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28496v1",
+      "title": "Delayed Convergence of S-Parameter Sensitivities to Design Parameters in FDTD Simulations",
+      "authors": [
+        "Byungkwan Kim"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T16:40:45Z",
+      "summary": "In the finite-difference time-domain (FDTD) method, the sensitivities of S-parameters to design parameters come from discrete Fourier transforms of responses ending at a simulation time T. We show that, when a design parameter moves a resonance, the sensitivity converges later than the S-parameter. For a single mode with field decay time $τ$, the truncation error of the sensitivity is $(1+T/τ)e^{-T/τ}$, against $e^{-T/τ}$ for the resonant part of the S-parameter, so a 1% sensitivity error needs $T \\geq 6.6τ$ instead of $4.6τ$. Automatic differentiation, the discrete adjoint and finite differences on the same run carry this error, so their agreement cannot reveal it. In three solvers, with no fitted parameter, the estimate predicts the simulated error within 4% at cavity resonances with $Q$ of 1000-7000; at lower $Q$ the error is larger. On a cavity whose slowest mode is weakly coupled, common end criteria leave $|S_{11}|$ within 0.5 dB of a 1.3 dB dip but its sensitivity 10-72% in error. A matrix-pencil extrapolation inside the differentiable computation recovers the sensitivity on a cavity with field probes from a run 66 times shorter. In a single-pole filter loop with a symmetric objective, truncation leaves the maximum of the objective in place, and the optimizer reaches the resonance of a full run despite the wrong gradient. With two coupled poles, the truncated objective moves the optimum: on runs of $1τ$ it over-couples by $Δk \\approx 1.24/Q$, and an equal-ripple objective still shifts it by about $0.2\\barα$ at $3τ$, but not at $4.6τ$.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28496v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "physics.comp-ph"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "physics.comp-ph (计算物理学)"
+      ],
+      "comment": "10 pages, 7 figures. Submitted to IEEE Transactions on Microwave Theory and Techniques",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28484v1",
+      "title": "Proof-Carrying Contracts: Commitments AI Agents Cannot Break",
+      "authors": [
+        "Carlo Ciliberto",
+        "Alessandro Rudi",
+        "Enrico Tassi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T16:30:34Z",
+      "summary": "AI agents increasingly act on behalf of people or other agents, purchasing services, exchanging information and delegating work. What an agent must respect is written in instructions, policies or agreements, but text alone cannot make it comply. It may make mistakes, be redirected by what it reads, or pursue different interests. For an economy of such agents to function, parties need agreements they can rely on without inspecting or trusting one another's agents. We introduce Proof-Carrying Contracts (PC2), a framework for making agreed constraints enforceable throughout an agent's interactions with a system. Before a requested operation can run, the agent must supply a machine-checkable proof that it preserves the agreed constraints in every case allowed by its model. An execution system called the Airlock checks the proof and controls access to the operation. The parties specify the conditions to preserve, while the agent supplies the reasoning needed to justify its decisions and remains free to adapt its strategy. This avoids having to design a separate permission policy and prove that every decision it permits is safe. We prove that the constraints hold at every instant during execution, even for an adversarial agent, and identify when this implies safety in the world. Reusable capability modules provide tools and guarantees from which contracts can be constructed. PC2 provides a foundation for an agent economy whose agreements protect both those delegating work and those carrying it out.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28484v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CR",
+        "cs.LO",
+        "cs.MA",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CR (密码学与网络安全)",
+        "cs.LO (计算机科学逻辑)",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "70 pages, 8 Figures,",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28459v1",
+      "title": "A Hierarchical Space-Ground Collaborative Network: Architecture Design and Deployment",
+      "authors": [
+        "Yunxin Geng",
+        "Shaopeng Feng",
+        "Zijian Guo",
+        "Shengfeng Wang",
+        "Rui Ding"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T16:15:07Z",
+      "summary": "The sixth-generation (6G) landscape demands a profound architectural evolution toward a unified, collaborative ecosystem that integrates satellite and terrestrial segments to provide ubiquitous global connectivity. Nevertheless, conventional independent management paradigms are increasingly challenged by the profound spatiotemporal nonstationarity of low-Earth orbit (LEO) channels and the volatile demands of massive heterogeneous services. To address these challenges, this study focuses on the architectural design of space-ground integrated networks (SGINs) and investigates elastic deployment strategies tailored to heterogeneous 6G service requirements. We first review the development trends in SGIN and then summarize typical application scenarios into two categories, along with their associated challenges and constraints. After that, a hierarchical space-ground collaborative network (SGCN) architecture is proposed to support achieving larger network capability, extensive continuous coverage, and enhanced spectral efficiency, which is evaluated through three representative scenarios with progressive baselines. Subsequently, a service-aware deployment strategy is introduced to further establish the engineering feasibility of the proposed architecture.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28459v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "10 pages, 4 figures, 1 table, IEEE Network",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28422v1",
+      "title": "How Much of Cross-Subject EEG Emotion Recognition Is Stimulus Memorization?",
+      "authors": [
+        "Haiyan Xu",
+        "Konstantinos N. Plataniotis"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T15:54:18Z",
+      "summary": "Cross-subject EEG emotion recognition now reports accuracies above 90% on stimulus-defined benchmarks such as SEED, and the field has examined several ways in which such numbers can be inflated, attributing inflation to subject identity, to data partitioning, and to repeated stimulus presentation. We observe that one variable has been left out. On these datasets the emotion label is assigned to the video at design time, so any encoder that recovers which video was shown obtains the label for free. We adapt three representation-level shortcut diagnostics to a cohort of published contrastive cross-subject encoders, and find that stimulus identity is linearly recoverable at six to fifteen times chance. We then measure its impact on the reported accuracy by holding out subjects and stimuli jointly, and find that each released classifier loses two to forty-four points once the test videos are unseen, so a headline obtained under subject hold-out alone is not a measure of cross-subject emotion decoding.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28422v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "5 pages, 1 figure, 2 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28404v1",
+      "title": "ORCA: Onboard Reflective Collaborative Agents for Reliable Task Offloading in LEO Satellite Networks",
+      "authors": [
+        "Yunxin Geng",
+        "Shengxiang Hao",
+        "Yichen Wu",
+        "Haotian Liu",
+        "Weiwei Jiang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T15:48:06Z",
+      "summary": "Low Earth orbit (LEO) satellites increasingly perform time-critical onboard processing, yet heterogeneous computing capabilities, rapidly changing inter-satellite links (ISLs) and uncertain neighbor behavior make decentralized task offloading difficult under partial observations. This paper presents ORCA, an architecture of Onboard Reflective Collaborative Agents for autonomous onboard task offloading. ORCA organizes offloading decisions into a four-Agent \\emph{Perceive}$\\rightarrow$\\emph{Reason}$\\rightarrow$ \\emph{Act}$\\rightarrow$\\emph{Learn} loop. It aims to improve efficiency and reliability in dynamic, heterogeneous, and unreliable LEO satellite networks. The simulation results of a heterogeneous 60-satellite Walker-delta constellation demonstrates that ORCA delivers competitive system efficiency in cooperative settings while achieving superior task-success robustness and offloading reliability under previously unseen malicious node behavior, indicating that outcome-grounded reflection can improve the reliability of decentralized onboard offloading without centralized runtime coordination.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28404v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.NI"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.NI (计算机网络与互联网通信)"
+      ],
+      "comment": "6 pages, 4 figures, IEEE Global Communications Conference (GLOBECOM) 2026 Workshop",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28378v1",
+      "title": "Topology-Adaptive Seismic Response Prediction of Interconnected Structural Systems Using Reduced Order Model Embedded Graph Neural Network",
+      "authors": [
+        "Huangbin Liang",
+        "Beatriz Moya",
+        "Francisco Chinesta",
+        "Eleni Chatzi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T15:32:14Z",
+      "summary": "Electrical substation equipment is commonly interconnected by busbars and flexible conductors. Such interconnected infrastructures exhibit complex dynamic interactions, where the response of each component is influenced by local structural properties, mechanical coupling, system topology, and transient excitation. High-fidelity FE models can capture some of these effects, but their computational cost limits their use for real-time prediction. Purely data-driven models offer faster inference, yet they struggle to generalize, requiring additional simulations and retraining for each new configuration. This work presents a ROM embedded Graph Neural Network (ROMeGNN) for topology-aware seismic digital twins of interconnected structural systems. The system is represented as a graph, where structural components are treated as nodes and mechanical interconnections as edges. Each high-fidelity component model is first reduced to a reduced-order modal representation, which forms a differentiable dynamics operator within the GNN. Rather than learning the full response directly, the GNN estimates topology-dependent interaction forces that enter the differentiable ROM solver as coupling inputs for modal state advancement. This hybrid formulation preserves the known component-level physics and uses data-driven message passing to learn complex inter-component forces across varying system layouts. The framework is demonstrated on interconnected electrical substation equipment subjected to randomized seismic inputs. It delivers rapid predictions of response quantities relevant to seismic damage assessment while remaining applicable across varying layouts, component combinations, and excitation scenarios. These results highlight the potential of embedding physics within graph learning architectures for real-time, interpretable, topology-adaptive seismic digital twins of interconnected engineering systems.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28378v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28353v1",
+      "title": "Finite-Size CV-QKD for Satellite Quantum Communication under a Hybrid Noise Model",
+      "authors": [
+        "Mouli Chakraborty",
+        "Avishek Nag",
+        "Subhash Chandra",
+        "Anshu Mukherjee",
+        "Konstantinos Koufos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T15:18:40Z",
+      "summary": "Satellite-based continuous-variable quantum key distribution (CV-QKD) is fundamentally constrained by finite communication windows, channel attenuation, and statistical fluctuations arising from a limited number of exchanged quantum states. This work develops a finite-size CV-QKD framework for satellite quantum communication under a hybrid noise model that jointly incorporates satellite geometry, atmospheric and propagation losses, quantum Poissonian noise coexisting with classical additive white Gaussian noise, detector imperfections, and composable finite-key security under collective attacks. A single canonical finite-size secret key rate (SKR) expression is derived in which the finite-size correction is stated in a strictly decreasing form in the block size, removing the ambiguity between the segmented and the block-level formulations used in earlier treatments. The finite-size accounting is further extended to the quantum bit error ratio (QBER) through an explicit parameter estimation penalty, so that the feasibility constraint inherits the same block-size dependence as the key rate. The framework quantifies the influence of reconciliation efficiency, transmission efficiency, detection efficiency, receiver aperture, beam waist, zenith angle, wavelength, and effective communication time. Numerical results reveal a significant performance gap between finite-size and asymptotic operation, indicating that asymptotic analysis can overestimate the feasible satellite altitude by a factor of several, and that the achievable range is governed by the number of signals actually exchanged rather than by any single physical channel parameter. These results establish block size as a first-class design variable for satellite CV-QKD mission dimensioning.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28353v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28341v1",
+      "title": "Attracting Rotations Obstruct Almost-Global Consensus on Spheres over Strongly Connected Graphs",
+      "authors": [
+        "Galina Sidorenko",
+        "Johan Thunberg"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T15:07:28Z",
+      "summary": "We study discrete-time consensus on the Euclidean unit sphere, where weighted combinations of neighboring states are normalized to unit length. For symmetric weights on connected undirected graphs and ambient dimension $d\\ge3$, earlier results establish instability of non-consensus fixed points under suitable weight conditions. For directed graphs on the unit circle, earlier results show that fixed points other than consensus and antipodal configurations occur only for a measure-zero set of weights. We show that these conclusions do not extend directly to general strongly connected directed graphs in higher dimensions. First, we construct full-rank non-consensus fixed points whose tangent eigenvalues all equal one, showing that strict linear instability need not hold. In a separate construction, for every $d\\ge3$, we present a sparse strongly connected graph admitting full-rank fixed points on an open set of its permitted weights. Our main result establishes robust counterexamples to almost-global consensus: attracting rotating motions exist for $d=2$ with every $n\\ge3$ and for $d=3$ with every $n\\ge6$. These motions are locally asymptotically stable modulo common rotations and have asymptotic phase. They persist on open sets of strictly positive weight matrices. For each such matrix, an open set of initial configurations approaches neither consensus nor any fixed configuration. Thus the absence of full-rank non-consensus fixed points does not ensure almost-global convergence to consensus.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28341v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "21 pages including appendices, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28324v1",
+      "title": "Latency-Neutral Passive Cyber Monitoring for Grid-Edge Operational Technology Networks",
+      "authors": [
+        "Damian Byrne",
+        "Emad Abukhousa",
+        "Jason Reed",
+        "Saman Zonouz"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:59:10Z",
+      "summary": "Deterministic industrial networks often present an operational trade-off between maintaining microsecond timing of primary control loops and capturing security telemetry. This work investigates the engineering feasibility of the Operational Technology Supervisor (OTSV), a three-tier passive monitoring framework designed to resolve this visibility challenge within timing-sensitive grid-edge infrastructure. By utilizing a Layer-3-unconfigured passive ingestion mode on bare-metal hardware via a physical switched port analyzer (SPAN) loop, the deep packet inspection engine is isolated from the production network, implementing a software-enforced unidirectional export policy. Performance validation conducted over a continuous audit comprising 32,927 active-monitoring round-trip time (RTT) samples yielded stable latency distributions across a laboratory power-monitoring loop running Modbus TCP and IEC 61850 MMS protocols. The measured latency delta between the unmonitored baseline and the active monitoring state was less than 0.12 milliseconds, supporting the feasibility of continuous high-fidelity security observation alongside stringent grid-edge metering timing bounds without measurably degrading the monitored reporting path.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28324v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": "5 pages, 4 figures, 2 tables. Accepted for presentation at the IEEE PES Grid Edge Technologies Conference and Exposition 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28318v1",
+      "title": "Stabilizing Filters for Graph Signal Generation",
+      "authors": [
+        "Martin Schmidt",
+        "Gonzalo Mateos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:54:30Z",
+      "summary": "Generating graph signals is an important task in machine learning, and incorporating the underlying graph into a generative model enables structurally-informed distribution modeling. However, said graph is often noisy or imperfectly estimated, and structural errors can affect the generative process and the resulting signal distribution. While recent work has established stability guarantees for graph neural ordinary differential equations, the robustness of graph-aware reference dynamics, as used in topological Schrödinger bridge models, remains largely unexplored. Here, we investigate the structural stability of continuous-time generative models whose dynamics combine a graph filter with a learned graph neural network. We first derive a Wasserstein stability bound that quantifies the effect of graph perturbations on the generated signal distributions. Informed by this analysis, we then propose a principled framework for designing graph filters that balance structural stability with induced signal smoothing. We characterize the optimal filter design and provide an explicit family of polynomial filters with provable stability guarantees. Experiments on synthetic graphs and real-world fMRI signals support our theoretical findings, illustrating the enhanced structural stability of the proposed filters while preserving generative performance.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28318v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "Submitted to the IEEE Transactions on Signal Processing",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28293v1",
+      "title": "Uncertainty-Aware Distributed Radio Map Estimation in Decentralized Wireless Networks",
+      "authors": [
+        "Dong Yang",
+        "Zhuoyu Yao",
+        "Yue Wang",
+        "Songyang Zhang",
+        "Yingshu Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:40:50Z",
+      "summary": "Federated learning based radio map estimation (RME) approaches rely on frequent exchange of high-dimensional model updates and often require a central server for collaboration coordination and update aggregation. This incurs prohibitively high communication overhead, rendering them impractical for bandwidth-constrained mobile and wireless edge networks. Moreover, in practical mobile sensing scenarios, sparse and unevenly collected measurements lead to estimation uncertainty, which is critical for guiding RME and collaboration among distributed nodes. To address these challenges, this paper proposes an uncertainty-aware distributed radio map estimation (UA-D-RME) framework for decentralized networks. In UA-D-RME, each node locally infers a probabilistic model from its sparse measurements to estimate both its local radio map and the associated estimation uncertainty. Instead of exchanging raw data or model updates, neighboring nodes communicate only low-dimensional statistical information, including radio map and uncertainty measures over their overlapping monitoring areas. An uncertainty-aware statistical consensus mechanism is then developed to iteratively align probabilistic models in neighborhood by ensuring consistency on estimation confidence. Theoretical analysis establishes the convergence of the proposed consensus mechanism and characterizes the distributed generalization performance of the proposed UA-D-RME method. Experiments on urban radio map datasets verify that UA-D-RME achieves desired reconstruction accuracy comparable to the centralized RME benchmark while reducing communication costs and without exchanging raw measurements.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28293v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 4 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28290v1",
+      "title": "Distributed Platoon Control for Safe and Smooth Crossing at an Unsignalized Intersection-Part I: Stability Analysis",
+      "authors": [
+        "Bin-Bin Hu",
+        "Shuwei Pei",
+        "Saeed Ahmed",
+        "Bayu Jayawardhana"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:38:43Z",
+      "summary": "We propose a distributed platoon controller that guarantees safe and smooth crossing of multi-vehicle systems at an unsignalized intersection. To support the stability analysis, we consider a multi-vehicle platoon maneuvering along a closed path with a single unsignalized intersection. Unlike traditional bi-level decoupled designs on open paths, which primarily focus on intersection control while neglecting its coupling with platoon convergence, and thus hindering rigorous convergence analysis, the closed-path setting allows us to analyze the asymptotic behavior of the platoon. The local exponential convergence analysis of the switched closed-loop system, induced by repeated vehicle switching at the intersection, is presented. Under some mild conditions on the controller gains, we show that safe intersection crossing is ensured during the transient phase and smooth crossing is achieved in steady state, where all vehicles travel at a common constant speed while avoiding collisions at the intersection. Finally, the effectiveness of the proposed distributed controller is demonstrated in a high-fidelity CARLA simulator using multiple commercial vehicle models.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28290v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.RO"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "cs.RO (机器人学与具身智能)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28285v1",
+      "title": "Conformal Koopman Certificates for Nonlinear Multi-Agent Consensus on Time-Evolving Graphs",
+      "authors": [
+        "Indrakshi Dey",
+        "Nicola Marchetti"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:36:55Z",
+      "summary": "Robot fleets must often agree on a shared value before they act, over wireless networks that change as the robots move. Their supervisor needs a deadline: the number of communication rounds after which the fleet has agreed with a stated probability. Today it comes from simulation plus a safety margin, with an open probability of being met. We certify it. Our method, conformal Koopman certification, rests on one observation: averaged over the random network changes, the expected behaviour of the fleet evolves linearly, for any nonlinearity of the agents. The decay rate of this linear evolution gives the shape of the deadline. One remaining constant is calibrated from 200 short test runs by conformal prediction, a statistical method that turns any predictor into a guarantee that holds with a user-chosen probability. The certified deadline holds for every agreement tolerance at once and for any error in the estimated rate. The same linear model predicts the value the fleet will agree on and certifies how much corruption of the exchanged messages the collective decision absorbs. For 60 simulated robots the certified deadline was met in all 500 test runs against a 90\\% target and exceeded the slowest run by 16\\%. The classical worst-case bound exceeds that run by more than 160 orders of magnitude, a linearised deadline is missed in up to 26\\% of runs, and direct conformal calibration costs 80 times more simulation per tolerance.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28285v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28263v1",
+      "title": "Active Noise Control for Augmented Reality Glasses using Virtual Sensing with Directional Robustness",
+      "authors": [
+        "Nitay Peled",
+        "Boaz Rafaely"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:18:58Z",
+      "summary": "Active noise control (ANC) is an established technique for mitigating acoustic noise, successfully implemented in various commercial applications. However, the application of ANC to augmented reality (AR) glasses remains an emerging area, where a key challenge is the lack of a microphone at the user's ear. This paper first validates the necessity of virtual sensing techniques for this specific geometry and investigates the Auxiliary Filter (AF) method as a potential solution. We present a theoretical analysis of the method's directional sensitivity, enabling the prediction of the system's robustness when the noise direction deviates from the calibration angle. Simulation results confirm that while a fixed AF is effective under matched conditions, it suffers significant degradation under mismatch, consistent with the theoretical predictions. To address this limitation, we propose and evaluate a solution using a finite bank of auxiliary filters that are selected based on the noise source direction of arrival. The results demonstrate that this filter bank approach significantly recovers performance compared to a fixed filter, offering a practical alternative to continuous recalibration in dynamic acoustic environments.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28263v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "5 pages, 6 figures, 1 table. Presented at the 34th European Signal Processing Conference (EUSIPCO 2026)",
+      "journal_ref": "Proc. 34th European Signal Processing Conference (EUSIPCO 2026), Bruges, Belgium, pp. 966-970, 2026",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28248v1",
+      "title": "Interference-Graph-Aided Multi-Agent Reinforcement Learning for Beam Hopping LEO Satellite Networks",
+      "authors": [
+        "Hao Yuan",
+        "Ziyi Yang",
+        "Xing Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:07:32Z",
+      "summary": "Beam hopping technology enables LEO satellites to dynamically switch beam coverage positions, providing flexible resource allocation for non-uniformly distributed traffic demands. However, the severe spatial interference coupling among beams makes coordinated scheduling challenging. To address this problem, in this letter, we propose an interference-graph-aided multi-agent reinforcement learning approach that constructs an interference graph to capture beam coupling relationships and injects this structural prior into agent-side representation learning. Each beam agent aggregates information from interference neighbors via graph convolution before estimating local Q-values, which are then decomposed by the standard mixing network. Simulation results demonstrate that the proposed method achieves 34.4\\% higher throughput than QMIX with more stable interference management, under non-uniform traffic and co-channel interference settings.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28248v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28245v1",
+      "title": "Timing and Reliability Limits of Position-Assisted UWB Multicast Audio",
+      "authors": [
+        "Fengyun Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T14:07:16Z",
+      "summary": "One-to-many ultra-wideband (UWB) transport can disseminate shared audio blocks without replicating a downlink stream for every receiver. Yet common reception does not ensure aligned electrical playback, coincident acoustic arrival, or delivery to an entire receiver group. This paper develops a unified feasibility analysis of position-assisted UWB multicast audio that separates clock and actuation error, age-dependent acoustic propagation compensation, correlated block erasures, and reserved communication resources. We derive a conditional bound on one-listener arrival spread, a stationary expression for all-receiver block delivery under common and receiver-local losses, and complementary bounds for reliability-constrained admission. Reproducible Monte Carlo experiments examine 4,590 policy--run records across clock, localization, channel, and slot configurations. For eight receivers, affine clock correction produces a mean run-level 95th-percentile electronic span of $21.19\\us$, while position assistance reduces the corresponding one-listener acoustic arrival span from $21.95\\ms$ to $419.43\\us$. Under the stated $30\\us$ timing criterion, 98.86\\% of compensated events still exceed the threshold. For 64 receivers, three block copies attain an all-receiver delivery probability of approximately 0.97478 under the modeled correlated channel. The analysis exposes the distinct failure mechanisms of position age, shared fades, retransmission limits, and schedule saturation, and establishes joint criteria for interpreting synchronous multicast audio performance.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28245v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS",
+        "cs.IT",
+        "cs.MM"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)",
+        "cs.IT (信息论)",
+        "cs.MM (多媒体系统与编解码)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28224v1",
+      "title": "Norm-optimal model order reduction in reproducing kernel Hilbert spaces",
+      "authors": [
+        "Tamás Dózsa",
+        "Andrea Angino",
+        "Rolf Krause",
+        "Matthias Voigt"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:56:26Z",
+      "summary": "We consider the problem of model order reduction (MOR) in reproducing kernel Hilbert spaces (RKHSs). We prove generalizations of well-known necessary interpolatory conditions for norm-optimal reduced-order models, originally stated for rational functions in $H_2$ Hardy-Hilbert spaces. We construct an alternative to the iterative rational Krylov (IRKA) algorithm for RKHSs with differentiable kernels to obtain norm-optimal reduced-order models. Then, we introduce generalized Malmquist-Takenaka (GMT) functions that can be used to define orthonormal bases in an arbitrary RKHS. Using GMT functions, we propose unitary transformations between separable RKHSs. This allows us to extend our optimality conditions and subsequent algorithms to MOR problems posed in RKHSs with non-differentiable kernels. The potential and versatility of the proposed MOR framework is demonstrated in several numerical experiments. We perform norm-optimal MOR on various machine learning models such as support vector machines and deep ReLU networks. In addition, we show how the proposed MOR framework can be used to solve seemingly unrelated problems. In particular, we provide an example for fitting high degree polynomials to data and also obtain a FEM-like method for solving partial differential equations (PDEs) with an optimal kernel basis.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28224v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.NA",
+      "categories": [
+        "math.NA",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "math.NA (数值分析与科学计算)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "92 pages, 7 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28205v1",
+      "title": "Controllability Allocation Scores for Linear Infinite-Dimensional Systems",
+      "authors": [
+        "Daisuke Inoue",
+        "Kazuhiro Sato"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:45:35Z",
+      "summary": "We define finite-time controllability allocation scores (CASs) as optimal solutions to two convex optimization problems that allocate a fixed actuation budget among prescribed input functions of linear infinite-dimensional continuum systems with selected target outputs. The objectives are expressed using controllability Gramians for the selected outputs and correspond to maximizing the volume of output changes reachable with unit control energy or minimizing the mean energy required for unit output changes. To compute these CASs, we discretize the system in space, construct the resulting Gramians, and solve the resulting allocation problems by a domain-aware projected gradient descent method. We study the behavior of CASs when the actuator-to-target responses of the spatially discretized systems converge to those of the continuum system as the mesh is refined. If the continuum system is target controllable, we show that the spatially discretized systems are also target controllable on sufficiently fine meshes and that the optimal values of the approximate problems converge to the optimal value for the continuum system. If the allocation problem for the continuum system has a unique CAS, we show that the CASs obtained from the spatially discretized problems converge to it. We also derive quantitative bounds on the errors between these CASs when the Gramian map for the continuum system distinguishes allocations. A two-dimensional advection-diffusion example illustrates how transport dynamics affect target controllability and CASs. Spatial refinement reveals apparent controllability caused by numerical diffusion and supports the theoretical convergence results.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28205v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "16 pages, 4 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28189v1",
+      "title": "Uncovering Audio-Text Alignment in Large Audio-Language Models through Cross-Modal Concept Neurons",
+      "authors": [
+        "Tzu-Quan Lin",
+        "Chih-Kai Yang",
+        "Yi-Cheng Lin",
+        "Hao Tang",
+        "Hung-yi Lee"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:27:40Z",
+      "summary": "While the language model backbone is pretrained on text alone, large audio-language models (LALMs) can, to a great extent, recognize acoustic attributes, such as emotion, speaker gender, and spoken language. However, it is unclear how the audio representation is integrated, if at all, with the other text representation before the model produces text. We hypothesize that there is a shared subspace where the audio and text representations are aligned. To test this hypothesis, we identify cross-modal neurons that are responsible for representing both audio and text. We find alignment between audio and text neurons to various degrees across three LALMs and four acoustic attribute types. Causal interventions, steering and deactivating the neurons, confirm that the cross-modal neurons are not just necessary for prediction but can also be manipulated.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28189v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "cs.CL",
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "cs.SD (声音与音频处理)",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28179v1",
+      "title": "CAPS: Clinically-Verifiable Anatomy-Prioritized Synthesis for Missing MRI Imputation in Brain Tumor Segmentation",
+      "authors": [
+        "Cecilia Diana-Albelda",
+        "Arthur Longuefosse",
+        "Mario Rubén Paz Campos",
+        "Álvaro García-Martín",
+        "Jesus Bescos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:17:35Z",
+      "summary": "Multi-parametric MRI is the gold standard for neuro-oncology, yet acquiring complete 4-modality protocols may be unfeasible in real-world clinical practice. When handling missing modalities, existing automated systems force a critical compromise: robust segmenters operate as uninterpretable \"black boxes\" that bypass image generation, while standard synthesis models often produce blurry reconstructions lacking diagnostic reliability. To address this issue, we propose CAPS, a Clinically-Verifiable Anatomy-Prioritized Synthesis framework that reconciles computational precision with clinical transparency. Our multi-modal generative architecture is driven by a hybrid objective function (L_1 + L_AFP + L_DualDice) that explicitly enforces the preservation of deep anatomical features and strict topological boundaries, rather than relying solely on pixel-wise optimization. Evaluated comprehensively on the BraTS Adult Glioma dataset, the framework achieves superior synthesis fidelity across intensity-based metrics, and demonstrates robust downstream segmentation performance (82.38% mean Dice), successfully restoring verifiable visual context. Furthermore, the framework exhibits exceptional zero-shot cross-domain generalization, maintaining high structural fidelity across completely unseen Meningioma, Pediatric, and Sub-Saharan African cohorts without domain-specific adaptation. Finally, a blinded radiological assessment confirms that our anatomy-aware approach significantly enhances both perceived image quality and clinical utility, providing clinicians with the reliable visual evidence required to trust downstream automated workflows.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28179v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "20 pages, 6 figures, 8 tables. Cecilia Diana-Albelda and Arthur Longuefosse contributed equally",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28167v1",
+      "title": "From Market Signals to Maintenance Decisions: Grid-Informed Maintenance Optimization in Offshore Wind Farms",
+      "authors": [
+        "Keyi Wang",
+        "Robert Mieth",
+        "Ahmed Aziz Ezzat"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:09:32Z",
+      "summary": "The reliable and cost-effective integration of large-scale offshore wind farms into power systems is largely influenced by maintenance operations. To date, power producers primarily rely on farm-level information (e.g., health signals, power generation, weather conditions) for maintenance planning of wind turbine fleets. We propose to consider additional grid-level information in maintenance operations, such as generation curtailment and market pricing. Periods of high generation curtailment or negative electricity pricing can be viewed as opportunities for preventive maintenance, since assets are fully or partially shut down due to grid-imposed constraints. We first analytically establish that access to market information has non-negative economic value for maintenance scheduling under a stylized setting, providing a theoretical foundation for treating market and grid information as a maintenance opportunity. We then formulate a grid-informed opportunistic maintenance scheduling model as a receding-horizon mixed integer linear program that jointly leverages both farm- and grid-level signals under realistic conditions to determine a maintenance plan for offshore wind turbines. Considering a 600-MW offshore wind farm in the United States, our proposed method reduces annual maintenance costs by up to 10%, while enhancing asset availability and resource utilization, relative to advanced maintenance models that solely rely on farm-level information.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28167v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28146v1",
+      "title": "SKAD: Sketch-Guided Audio-Contrastive Decoding for Reasoning in Large Audio-Language Models",
+      "authors": [
+        "Junyu Wang",
+        "Peiyuan Jiang",
+        "Siyuan Zhang",
+        "Jian Zong",
+        "Tianrui Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:51:48Z",
+      "summary": "Large Audio-Language Models (LALMs) have shown increasing potential in audio understanding and reasoning by generating intermediate reasoning steps before answering. However, directly eliciting long-form reasoning from audio does not always lead to more reliable predictions. Even reasoning-oriented LALMs may gradually shift from acoustic evidence to language-continuation patterns during generation. A natural solution is to use contrastive decoding with an audio-masked branch, but directly applying this strategy to plain chain-of-thought reasoning is often ineffective, since the masked branch lacks sufficient audio-related context and provides an unstable reference. To address this issue, we propose \\textbf{SKAD} (\\textbf{Sk}etch-Guided \\textbf{A}udio-Contrastive \\textbf{D}ecoding), a training-free inference-time method for audio reasoning. SKAD first constructs an acoustic evidence sketch that summarizes question-relevant auditory information. It then performs contrastive decoding between an audio-conditioned reasoning branch and a sketch-only branch. By using the sketch as a shared semantic scaffold, SKAD makes the masked branch more informative and encourages decoding decisions that are more dependent on the original audio. We evaluate SKAD on Qwen2.5-Omni-7B and Step-Audio-R1 across three audio understanding and reasoning benchmarks: MMAR, MMAU, and MMSU. Experimental results show that SKAD consistently improves the average accuracy of both models across all benchmarks. Further ablations show that direct contrastive decoding without the acoustic evidence sketch provides limited or negative gains, confirming the importance of constructing a reliable contrastive reference before audio-contrastive decoding.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28146v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28108v1",
+      "title": "Control of Isolated Four-Quadrant Single-Stage Three-/Single-Phase X-Rectifier for EV On-Board Chargers",
+      "authors": [
+        "Sven Weihe",
+        "Jonas Huber"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:19:07Z",
+      "summary": "The single-stage isolated eXtended-functionality rectifier (X-Rectifier) electric vehicle (EV) on-board charger (OBC) employs 650V GaN monolithic bidirectional power transistors (M-BDS) in the input stage, provides sinusoidal input currents and four-quadrant operation in three-phase and split/single phase grids without power derating, operates from asymmetrical three-phase mains, provides reactive power if needed, and supports extremely asymmetric phase loading in standalone vehicle-to-load (V2L) mode. This paper presents a new improved phase-modular control method for the X-Rectifier that enables tracking of arbitrary and independent phase current references regardless of the instantaneous grid voltage (i.e., enables four-quadrant operation). The method supports grid-tied (i.e., grid-to-vehicle, G2V, or vehicle-to grid, V2G) and grid-forming (i.e., V2L) operation. Further, aiming towards a practical realization of the X-Rectifier, the paper addresses implementation aspects of the M-BDS half-bridges, like commutation logic around the grid-voltage zero crossing, fault handling, and soft-switching behaviour. Finally, a realized 5.5 kVA hardware demonstrator of the X-Rectifier is used to validate the proposed control method experimentally for all operating modes, including grid-tied three- and single-phase four-quadrant operation (G2V, V2G, and full reactive power modes). Further, robust V2L operation is verified with real-world loads, i.e., in three-phase mode with asymmetrical loading of the phases including a woodworking power tool, and in single-phase mode with a high-power vacuum cleaner with high inrush current and hence momentary overload of the X-Rectifier demonstrator.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28108v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Submitted to an IEEE journal",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28106v1",
+      "title": "Temporal Difference Learning of Probabilistic Reach-Avoid Value Functions",
+      "authors": [
+        "Elias Fontanari",
+        "Pietro Noah Crestaz",
+        "Matteo Saveriano",
+        "Andrea Del Prete"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:18:33Z",
+      "summary": "Reach-avoid sets, defining the states from which a task can be completed while avoiding unsafe regions, are fundamental tools for deploying robots in environments subject to disturbances and uncertainty, as well as for runtime task-feasibility monitoring, allowing prediction of whether a state is safe and will lead to successful task completion. Classical Hamilton-Jacobi Reachability (HJR) and its recent neural extensions (e.g., Lipschitz Continuous Reachability Learning, DeepReach) treat disturbances adversarially, computing the reach-avoid set under worst-case disturbances from a bounded set. This guarantees safety but can yield overly conservative sets when disturbances are stochastic rather than adversarial, and additionally requires the disturbance set to be known or specified in advance. We propose Probabilistic reach-avoid Value Function (PVF), a self-supervised method, applicable to black-box systems, for computing reach-avoid sets as the states with a certain reach-avoid probability under stochastic, potentially unbounded disturbances. We evaluate our approach against HJR-based baselines on systems of increasing complexity, up to a Hopper locomotion task, and show that our probabilistic sets are less conservative and more accurate than adversarial HJR sets when disturbances are non-adversarial.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28106v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.RO (机器人学与具身智能)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Submitted to ICRA 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28101v1",
+      "title": "Negative Log-Shifted Gamma: A Generalized Pointing Error Model for Directional Wideband Systems",
+      "authors": [
+        "Evla S. Ahrazoglu",
+        "Ahmet C. Gul",
+        "Mehmet N. Akinci",
+        "Ibrahim Altunbas",
+        "Eylem Erdogan"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:15:29Z",
+      "summary": "Pointing error is critical in highly directional communication systems, where even slight misalignment leads to severe received power reduction. Existing pointing error models fail to cover diverse practical scenarios due to restrictive distributional and design limitations. This paper proposes a novel pointing error model incorporating jitters, AoD/AoA estimation errors, and comprehensive design impacts, including phase shifter quantization, antenna patterns, array design, beamforming architectures, steering capabilities, and bandwidth. To accomplish this, antenna patterns are modeled for both high- and low-gain configurations. Then, the array factor's main lobe is approximated as a Gaussian beam for subarrays and superarrays, accommodating analog and digital beamforming stages in wideband systems under beam squint presence or compensation. Jitters and estimation errors are incorporated via 3D rotations, while phase shift quantization is captured through the phase excitations of the arrays. It is shown that the resulting pointing error follows a novel distribution: the negative log-shifted Gamma (NLSG). Fully characterized by only shape, scale, and location parameters, the NLSG features closed-form statistical expressions. This formulation ensures tractable mathematical manipulation, making it a practical, scalable tool for system design and analysis. Validation via normalized moment error, Jensen-Shannon divergence, and Kolmogorov-Smirnov statistics confirms exceptional accuracy, yielding values primarily below 1%, 0.02, and 0.05, respectively. Furthermore, capacity analysis has demonstrated that specific design choices are paramount for achieving optimal capacity. Finally, important guidelines for designing highly directional wideband communication systems are provided to mitigate the detrimental effects of pointing errors, thereby paving the way for robust next-generation networks.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28101v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28100v1",
+      "title": "Transformer-Based Plate Parameter Estimation with Differentiable and Particle-Swarm Refinement",
+      "authors": [
+        "David Marttila",
+        "Rodrigo Diaz",
+        "Pablo Tablas De Paula",
+        "Ilias Ibnyahya",
+        "Chin-Yun Yu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:13:54Z",
+      "summary": "We present two Transformer-based methods for Task A of the 1st DAFx Parameter Estimation Challenge, which requires estimating six effective physical parameters of a synthetic plate-reverb model from its impulse response (IR). Method A1 combines an Audio Spectrogram Transformer encoder and Transformer regressor with differentiable IR refinement. Method A2 uses the same encoder to condition a continuous normalizing flow and refines sampled candidates using particle swarm optimisation (PSO) and gradient polishing. Both methods preserve the absolute IR scale to recover surface density. On a synthetic holdout set of 100 IRs, both refinement procedures reduce waveform and parameter errors by more than three orders of magnitude relative to the unrefined neural outputs. The PSO-based pipeline achieves the lowest errors, indicating near-perfect recovery in this matched synthetic setting.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28100v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "3 pages, 1 figure, 2 tables. DAFx26 Parameter Estimation Challenge, Task A. Code: https://github.com/davidmarttila/dafx_challenge",
+      "journal_ref": "Proceedings of the 29th International Conference on Digital Audio Effects (DAFx26), Cambridge, MA, USA, pp. 566-568, 2026",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28099v1",
+      "title": "Diffusion MRI protocol design for reliable parameter recovery: a unified framework across biophysical models",
+      "authors": [
+        "Ekin Taskin",
+        "Jonathan Rafael-Patiño",
+        "Erick Jorge Canales-Rodríguez",
+        "Jean-Philippe Thiran"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:13:19Z",
+      "summary": "Reliable microstructural parameter estimation in diffusion MRI (dMRI) critically depends on the acquisition protocol. Yet, common protocol design criteria may not fully reflect estimator bias, parameter constraints, and nonlinear fitting behavior in complex inverse problems. Here, we introduce Protocol Optimization via Loss Assessing Parameter Recovery (POLAR), an end-to-end framework that searches the continuous acquisition space and directly minimizes multiparameter recovery error through noisy signal simulation and the chosen model fitting. We demonstrate POLAR spanning distinct microstructural environments: the Cylinder-Zeppelin model for white matter, Neurite Exchange Imaging (NEXI) for gray matter, and Cellular Exchange Imaging (CEXI) for permeable cells. Across independent held-out parameter sets, POLAR consistently outperformed model-specific reference designs, reducing RMSE by up to $50\\%$ for Cylinder-Zeppelin and $74\\%$ for CEXI, while reducing NEXI exchange time bias by $70\\%$. These gains across distinct biophysical models, acquisition settings, and reference design strategies demonstrate the benefit of optimizing acquisition protocols through the downstream parameter-estimation problem. POLAR provides a flexible, model-specific and estimator-aware framework for designing dMRI protocols tailored to the microstructural parameters and experimental conditions of interest.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28099v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "physics.med-ph"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "physics.med-ph (医学物理学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28094v1",
+      "title": "Observer-Based Control for Multi-Agent Systems under Communication-Task Graph Mismatch and Directed Switching Topologies",
+      "authors": [
+        "Tommaso Zaccherini",
+        "Siyuan Liu",
+        "Dimos V. Dimarogonas"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T12:10:02Z",
+      "summary": "This paper addresses decentralized estimation and control of heterogeneous multi-agent systems communicating over directed switching topologies. The objective is to satisfy cooperative tasks that require coordination among agents according to a time-invariant task graph. To address the potential mismatch between the communication and task graphs, each agent is equipped with a k-hop Prescribed Performance State Observer (k-hop PPSO) to estimate the states of agents up to k communication hops away using only information exchanged with its 1-hop neighbors. A novel prescribed performance funnel construction is developed to account for the switching communication topology, and a sufficient lower bound on the dwell-time is derived to guarantee the prescribed performance specifications under topology variations. Further analysis shows that, if the desired control objective is achieved with exact knowledge of the required nonlocal states and the resulting closed-loop system is uniformly set-ISS with respect to the state estimation error, then replacing these states with their estimates guarantees convergence to a neighborhood of the desired set. The size of this neighborhood can be made arbitrarily small by appropriately selecting the observer performance bounds. A simulation study demonstrates task satisfaction under directed switching topologies.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28094v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28075v1",
+      "title": "Speculative Imbalance Positions by Non-Physical Traders: Impacts on Electricity System Balancing in Great Britain",
+      "authors": [
+        "Joseph Cary",
+        "Thomas Morstyn"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T11:54:36Z",
+      "summary": "The electricity system in Great Britain (GB) allows participants to deliberately produce or consume a different volume to their traded position and has incentivised this practice with a single imbalance price since 2015. In particular, non-physical traders (NPTs) often take an open position to imbalance without any intention to produce or consume power. However, new government proposals could restrict this practice due to concerns over supply-demand balancing feasibility and costs. This article presents the first empirical analysis of speculative imbalance positioning (SIP) by NPTs in the GB electricity system through its effects on imbalance volumes, balancing costs, the imbalance price, and associated settlement costs over the period 2021-2024. Our research uses party-level imbalance data in each settlement period to run counterfactual simulations of the electricity balancing mechanism without the aggregate NPT imbalance. Our results indicate that SIP by NPTs reduced the total net balancing volume required by 3.1-3.9 TWh (16-20%), reduced system imbalance standard deviation by 48-65 MWh (13-17%), reduced balancing costs by £347-396m (5.9-6.7%), and reduced supplier imbalance costs by £193-325m (65-75%) over the analysis period. These results suggest that consumer bills would have been higher without SIP by NPTs, since the extra costs would likely have been passed on to consumers through levies, although the potential for effects in the wholesale (primarily late-stage intraday) markets complicates this picture.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28075v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "econ.GN",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "econ.GN (宏观与综合经济学)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28043v1",
+      "title": "Sound Matching with a Differentiable Karplus-Strong Algorithm",
+      "authors": [
+        "Pablo Tablas de Paula",
+        "David Marttila",
+        "Rodrigo Díaz",
+        "Irán Román",
+        "Emmanouil Benetos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T11:26:28Z",
+      "summary": "We present a self-supervised, event-based sound matching model using a differentiable extended Karplus-Strong algorithm. To avoid relying on external onset and fundamental frequency detectors, we explore training methodologies combining parameter losses on synthetic data with audio losses. We demonstrate that time-domain fractional delay interpolation provides gradient accuracy comparable to frequency-sampling while avoiding time-aliasing in highly resonant time-varying scenarios. Through systematic gradient analysis, we reveal that standard spectral losses provide no meaningful directional gradients for onset times, heavily degrading joint training. Training exclusively with parameter losses on synthetic data effectively learns fundamental frequency, timbral parameters, and onset times, but struggles to generalise to monophonic studio recordings of plucked guitar. External detectors combined with audio losses generalise best, isolating the model to timbre optimisation. While our Karplus-Strong decoder recovers interpretable parameters and naturally captures the transient characteristics of plucked guitar, Harmonics plus Noise baselines yield higher reconstruction fidelity by most metrics.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28043v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "8 pages, 4 figures. Audio examples and code: https://ptablasdpaula.github.io/DAFx26-Karplus/",
+      "journal_ref": "Proceedings of the 29th International Conference on Digital Audio Effects (DAFx26), Cambridge, MA, USA, pp. 306-313, 2026",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.28042v1",
+      "title": "Hierarchical Bayesian modeling of agrivoltaic dairy-calves under missing information",
+      "authors": [
+        "Fabiana A Demeu",
+        "Abdias A Oliveira",
+        "Uziel Bemvindo",
+        "Ana K Salman",
+        "Jomel F Santos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T11:26:24Z",
+      "summary": "Livestock 5.0 provides a framework to optimize animal welfare and productivity amidst escalating climate change and current pressures to sustainably increase production through limited expansion of agricultural lands, while equilibrating the food-water-energy nexus. Directly tackling the food-water-energy nexus, agrivoltaics emerges as a promising solution for dual-land use for food and renewable energy production. In this paper, we evaluated the effectiveness of agrivoltaics for dairy-calves in a commercial farm through a joint hierarchical Bayesian model, developed to account for non-linear and time-varying relationships, pedigree structure, and missing information. Uncertainty from missing information was propagated to the posterior estimates. While weight at birth and calf sex were not associated with serum Brix, we found that serum Brix was positively associated with colostrum Brix, which allowed to estimate the probabilities of the serum Brix quality (poor, fair, good, or excellent) given colostrum Brix. Poor serum Brix quality was positively associated with disease event rate, with similar rates for the other quality classes. Serum Brix quality was not associated with calf weight, indicating that farm management overcame the negative effects of low serum Brix quality. Previous number of diseases was positively associated with disease event rate, while weight at birth was negatively associated with disease event rate. Agrivoltaics were not associated with disease event rate, indicating that agrivoltaics can be implemented as a safe, dual-use system for increased calf comfort an welfare.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28042v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.27972v1",
+      "title": "RIS Configuration with Low-Overhead Measurements via Physics-Guided Neural Networks",
+      "authors": [
+        "Son Dinh-Van",
+        "Matthew D. Higgins"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T10:16:25Z",
+      "summary": "This paper studies reconfigurable intelligent surface (RIS) configuration for a single-input single-output (SISO) communication link using a two-stage estimate-then-optimize procedure. Within this framework, two common approaches to the estimation stage are pilot-based channel estimation and received signal strength (RSS)-based channel estimation. Our hardware experiments reveal substantial inter-block phase evolution consistent with residual CFO, while simulations show that such phase rotations can severely degrade pilot-based channel estimation when left uncompensated. In contrast, RSS-based approaches are less affected by these phase rotations, although they often require a large number of measurements to achieve a near-optimal received signal-to-noise ratio (SNR). To address this measurement requirement, we propose parametric physics-guided neural blind beamforming (\\textsc{P-PGNBB}) for RSS-based channel estimation. Simulations and hardware experiments confirm that the proposed method achieves a received SNR close to that obtained with perfect channel state information (CSI) and comparable to existing methods, while requiring substantially fewer RSS measurements.",
+      "pdf_url": "https://arxiv.org/pdf/2610.27972v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 15
+    },
+    {
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 13
+    },
+    {
+      "code": "eess.AS",
+      "name_zh": "音频与语音信号处理",
+      "count": 6
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 3
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 2
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 2
+    },
+    {
+      "code": "cs.IT",
+      "name_zh": "信息论",
+      "count": 2
+    },
+    {
+      "code": "cs.CR",
+      "name_zh": "密码学与网络安全",
+      "count": 2
+    },
+    {
+      "code": "cs.RO",
+      "name_zh": "机器人学与具身智能",
+      "count": 2
+    },
+    {
+      "code": "physics.comp-ph",
+      "name_zh": "计算物理学",
+      "count": 1
+    },
+    {
+      "code": "cs.LO",
+      "name_zh": "计算机科学逻辑",
+      "count": 1
+    },
+    {
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 1
+    },
+    {
+      "code": "cs.NI",
+      "name_zh": "计算机网络与互联网通信",
+      "count": 1
+    },
+    {
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 1
+    },
+    {
+      "code": "cs.MM",
+      "name_zh": "多媒体系统与编解码",
+      "count": 1
+    },
+    {
+      "code": "math.NA",
+      "name_zh": "数值分析与科学计算",
+      "count": 1
+    },
+    {
+      "code": "cs.SD",
+      "name_zh": "声音与音频处理",
+      "count": 1
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 1
+    },
+    {
+      "code": "eess.IV",
+      "name_zh": "图像与视频处理",
+      "count": 1
+    },
+    {
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 1
+    },
+    {
+      "code": "physics.med-ph",
+      "name_zh": "医学物理学",
+      "count": 1
+    },
+    {
+      "code": "econ.GN",
+      "name_zh": "宏观与综合经济学",
+      "count": 1
+    },
+    {
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
+      "count": 1
+    }
+  ],
+  "snapshot_synced_at": "2026-10-21T14:36:30.652762"
+}

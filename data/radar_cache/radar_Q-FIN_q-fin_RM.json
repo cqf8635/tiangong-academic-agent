@@ -1,0 +1,784 @@
+{
+  "query_expression": "cat:q-fin.RM",
+  "total_fetched": 25,
+  "total_results": 3125,
+  "papers": [
+    {
+      "paper_id": "2610.27214v1",
+      "title": "Deep catastrophic-risk-aware reinforcement learning",
+      "authors": [
+        "Carlos Pérez Octavio Mendoza",
+        "Frédéric Godin"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T19:44:22Z",
+      "summary": "Estimating extreme risk in reinforcement learning becomes increasingly difficult as the confidence level increases, since only a small number of observations contribute to empirical estimates of Conditional Value-at-Risk (CVaR). In this paper, we extend an Extreme Value Theory (EVT) approach for CVaR optimization to high-dimensional neural-network policies. Using a peaks-over-threshold representation and method-of-moments estimation, we obtain a differentiable tail-risk objective and show that, conditional on the selected threshold, its finite-sample gradient can be computed directly through automatic differentiation. We first validate the approach in a controlled experiment with a known optimal solution and then investigate its performance in a deep-hedging problem with rare extreme market movements. Our results show similar hedging behavior for EVT- and empirical-CVaR-trained policies under normal conditions, while EVT-trained policies exhibit lower hedging losses under the extreme-scenario evaluation across the training sample sizes considered. These results suggest that EVT can provide a practical alternative for training neural policies when the observations relevant to extreme risk are scarce.",
+      "pdf_url": "https://arxiv.org/pdf/2610.27214v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26797v1",
+      "title": "Teacher Supervision, Fixed Representations and Calibration: Exact Risk Calculations for Candidate-Scoring Decision Models",
+      "authors": [
+        "Agus Sudjianto",
+        "Denis Burakov"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T17:42:24Z",
+      "summary": "Candidate-scoring decision models return a probability distribution over a presented set of answers. Public documentation of one such system, Jev, and of an open counterpart, JevAny, describes three training ingredients that determine what these probabilities estimate: soft targets from larger models, a frozen pretrained backbone and temperature calibration. We analyze each ingredient in Gaussian surrogates where the finite-sample risk can be computed exactly. A student trained on teacher targets inherits the teacher's bias, which more student data does not remove and agreement with the teacher does not reveal. A fixed representation lowers the risk only below an explicit sample-size threshold. In a probit model the exact recalibration map is a temperature scaling, which removes all excess risk only when the teacher's coefficient has the correct direction and otherwise leaves a residual that calibration diagnostics do not detect. Under Luce's choice axiom, candidate scores are coherent across refinements of an event if and only if they aggregate by log-sum-exp. On 231,521 credit card complaints from the Consumer Financial Protection Bureau, where the decision is whether a complaint ends in monetary relief, a student trained on a logistic teacher's probabilities ends at the teacher's decision cost while a student trained on outcomes goes 8% below it, a 30B model read zero-shot remains worse than the teacher after recalibration, and that model departs from the coherence condition by 17.5 decibans. Pretrained representations reduce the labeled data required and calibration corrects the scale of the probabilities, but neither corrects a biased teacher, so the probabilities have to be checked against realized outcomes.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26797v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.CL",
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "18 pages, 3 figures, 4 tables. Code in ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26746v1",
+      "title": "Probability-Weighting Functions for Normal Tempered-Stable Laws: Orthogonal Channels and Information-Theoretic Indices",
+      "authors": [
+        "Akash Deep",
+        "Bhathiya Divelgama",
+        "A. Alexandre Trindade",
+        "W. Brent Lindquist",
+        "Svetlozar T. Rachev"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T17:10:20Z",
+      "summary": "A probability-weighting function (PWF) maps objective probabilities into decision weights. We construct PWFs from changes in the distribution of returns rather than from a parametric family: with prior and posterior return distributions $F_{prior}$ and $F_{post}$, the PWF is $w(p) = F_{post}(F_{prior}^{-1}(p))$. Both distributions are normal tempered-stable (NTS), and the posterior differs from the prior along one of three channels, each isolated with the variance held fixed: scale, skewness and tail thickness. Around a symmetric benchmark with excess kurtosis 3, a 40% change in scale moves cumulative probabilities by up to 7 to 8 percentage points, a skewness of $\\pm 0.5$ by 2 percentage points, and a change of $\\pm 0.3$ in the tail index by about 2 percentage points. The three channels leave distinct signatures: the deviation $w(p) - p$ changes sign once, twice and three times, respectively. Three information-theoretic indices (a Fisher-normalized logit shift, a signed Jensen-Shannon divergence and a log-odds elasticity) summarize the distortions and avoid the endpoint singularity of the classical ratio $(w(p)-p)/[p(1-p)]$. Applied to NTS parameters calibrated to S&P 500 ETF daily returns over 2015-2025, the same channels produce distortions of 2 to 7 percentage points. Code that reproduces every figure and number in the paper is provided.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26746v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.MF",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "q-fin.MF (数理金融学)",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "25 pages, 14 figures. Code reproducing every figure and number: https://github.com/akashdeepo/NTS_PWF",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26324v1",
+      "title": "The Control Layer Behind Rule-Following Agents Trading Across Market Conditions",
+      "authors": [
+        "Saad Naja",
+        "Nasser Odtallah",
+        "Jake Van-Praag",
+        "Sarah May"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T13:01:10Z",
+      "summary": "Trading discipline often fails people. Our study tested whether four AI trading agents followed their strategies and risk rules. Offering traders the evidence and an agent evaluation toolkit to separate luck from following the rules, before giving agents meaningful autonomy or capital. Our study analysed 2,627 closed positions from 12 February to 27 August 2026 across the same asset universe and execution conditions. Most positions were simulated against live prices with a 0.09% round-trip fee; 18% involved real Hyperliquid orders. Each position declared a strategy, stop and target, with a limit of five open positions per agent. The fleet finished net positive after fees. Rule adherence was high across all four agents, including the unprofitable one. Profitability tracked how often agents won relative to their break-even win rates. Institutional-style controls ran by default and contained losses through a 29% market drawdown and recovery, with documented exceptions. The discipline held for all four agents. Agents kept 97.5% of gross loss within declared stops, and typical losses closed at declared levels. Declared risk remained stable after losses and broadly stable across calm and volatile months. Twenty-three of 24 runs respected the position limit; logs identify the exception's size and duration. The same live data produced different results across assigned strategies. The trade-log tests can be rerun from the published trade snapshot; regime tests also require the published Bitcoin prices and regime labels. Section 3.5 specifies the stop-breach tolerance. These trade-level results are not account-level returns or proof of a lasting edge. Our study provides an evaluation toolkit to help traders distinguish rule-following from luck before committing capital. For anyone considering allocating capital to agents to trade, discipline should be the entry test, not the only test.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26324v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.MA",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "47 pages, 0 figures, 16 numbered tables. Includes a trading-agent evaluation toolkit and checklist",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25802v2",
+      "title": "Amortized Neural Filtering for Calibrated Posteriors in Statistical Arbitrage",
+      "authors": [
+        "Minkey Chang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T05:15:23Z",
+      "summary": "Statistical arbitrage trades on an estimate of the state of a residual spread, and conventional practice discards the uncertainty of that estimate. We keep the uncertainty and use it in the trading decision. A Neural Filter Estimator (NFE) is trained on simulated paths of a mean-reverting process whose innovation law is selected by testing candidates against real residuals; once trained, it returns the posterior over the latent state of every spread in a cross-section in one forward pass. Three results follow. On simulated paths with known truth, every practical estimator, ours included, falls in one narrow band of accuracy well below an estimator given full information, so the posterior gains no accuracy over a point estimate; its contribution is a correct account of its own uncertainty. On Korean equities, net of costs, the conventional point estimate forecasts about a thousand basis points per holding period more than it realizes, and the amortized methods cut that gap by a factor of roughly two to eight. Sizing positions from the posterior on the same learned factors as the end-to-end Attention Factor Model matches the Sharpe ratio of those factors under the base rule within the period's noise, at no more risk.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25802v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.GN",
+      "categories": [
+        "q-fin.GN",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "q-fin.GN (普通宏观金融与经济)",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "Accepted at the 7th ACM International Conference on AI in Finance (ICAIF '26), oral presentation. 9 pages, 3 figures, 5 tables. Code: https://github.com/minkeymouse/nfe , v2: fixes Figure 1 in the HTML version",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24586v1",
+      "title": "Conditional Weight of Evidence for Gradient-Boosted Credit Models: Estimation, Additivity and Its Relation to Adverse Action Reasons",
+      "authors": [
+        "Agus Sudjianto",
+        "Denis Burakov"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T09:47:28Z",
+      "summary": "Traditional weight of evidence assigns a credit characteristic a value based on its association with default across a population. Credit analysis also requires an assessment of that characteristic in the context of an individual applicant's record. We study conditional weight of evidence for this purpose. It measures the change in default log odds from observing a characteristic after the remaining credit information is known. Its sign identifies whether the characteristic adds adverse or favorable information for that applicant, and its magnitude measures the strength of that information. The same characteristic value can therefore receive different assessments for applicants with different payment histories or other credit attributes. We develop estimators using gradient-boosted trees and evaluate their accuracy in a bureau-style simulation. Regressions of the full model's predicted probabilities recover conditional evidence more accurately than separate models fitted to default outcomes, provided the full model is accurate. They also recover a deliberately constructed file-age effect whose direction varies with utilization and is often missed by marginal weight of evidence. Local class-frequency estimates improve on marginal weight of evidence but remain inaccurate for some weak effects. An application to FICO HELOC data illustrates estimation when the population evidence is unknown. Conditional weight of evidence provides an applicant-specific interpretation of the information in a credit characteristic; its population summary, a conditional information value, splits the joint information in the record across blocks when averaged over orderings. Neither is an adverse action reason, which explains the fitted score difference between the applicant and chosen passing records.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24586v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "q-fin.RM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": "41 pages, 3 figures, 12 tables. Code: https://github.com/asudjianto-xml/GBDT-WoE",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26919v1",
+      "title": "Dynamic portfolio selection under range value-at-risk with logarithmic returns",
+      "authors": [
+        "Hui Mi",
+        "Yuzhe Pan",
+        "Zuo Quan Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T08:01:47Z",
+      "summary": "This paper studies continuous-time portfolio selection under Range Value-at-Risk (RVaR), with both portfolio performance and risk evaluated in terms of logarithmic returns. We formulate a mean--RVaR problem in a continuous-time financial market and reduce the dynamic optimization to a static quantile problem. Using quantile representation, Lagrangian optimization, and convexification, we characterize the optimal terminal wealth through the convex envelope of an RVaR-specific transformed weighting function. The RVaR-specific convex envelope exhibits two distinct geometric configurations. Under Scenario~1, the terminal wealth has a VaR-type structure: the minimum-RVaR payoff is digital-option-like, whereas for $0<λ<1$ it consists of two growth-optimal regions separated by a constant-payoff region. Under Scenario~2, the convex envelope is determined either by a supporting line connecting an interior contact point to the endpoint or by a common supporting line with two interior contact points, leading to a richer multi-region payoff structure. We further show that the RVaR solutions reduce to their VaR and Expected Shortfall (ES) counterparts as $β\\downarrowα$ and $α=0$, respectively. Under constant investment opportunities, we also derive closed-form wealth processes and replicating portfolio strategies. Numerical results show that the effects of $(α,β,λ)$ on risky-asset exposure are nonlinear and generally non-monotone. In particular, when $α>0$, pure minimum-RVaR optimization may assign zero terminal wealth in sufficiently bad states because the extreme quantile region $[0,α)$ is excluded from the RVaR criterion. These results clarify how interval-based quantile risk control shapes state-dependent portfolio payoffs and connects RVaR with its VaR and ES limiting cases.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26919v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.MF (数理金融学)",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24439v1",
+      "title": "Dynamic Programming for Value-at-risk Markov Decision Processes in Continuous Spaces",
+      "authors": [
+        "Xian Chen",
+        "Erick Delage",
+        "Weikai Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T04:01:35Z",
+      "summary": "Value-at-Risk (VaR) is a widely adopted quantile-based risk measure in practice, yet incorporating VaR objectives into Markov decision processes (VaR MDPs) remains a longstanding challenge. Recent work has derived dynamic programming equations for VaR MDPs in finite state and action spaces but left the case of more general spaces unresolved. This paper establishes, for the first time, the validity of these equations in continuous spaces, for both finite- and infinite-horizon settings. Such cases naturally arise in many real-world dynamic decision-making problems. As an application, we study an optimal execution problem with a VaR objective and demonstrate that our framework enables the characterization of optimal dynamic strategies, resolving an open question in the field.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24439v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.22522v1",
+      "title": "Agentic AI in Automated Markets",
+      "authors": [
+        "Irene Aldridge",
+        "Lourenco Belleau-Bhowmik",
+        "James Chan",
+        "Josh Chang",
+        "Kelly Deng"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T18:15:59Z",
+      "summary": "Automated markets increasingly host autonomous, learning trading agents and are powered by formulaic automated market makers (AMMs). We study how heterogeneous agent behavior shapes stress, risk-adjusted performance, liquidity, and volatility in these types of markets. Three behavioral archetypes are modeled as agentic reinforcement learning (RL) systems: a rational arbitrageur, a manipulator, and a retail herd-follower. Each archetype is defined by its reward function within a common, asset-agnostic exposure-control environment, and each is trained with a value-based Deep Q-Network (DQN) and with REINFORCE using a learned baseline. A pilot on hourly cryptocurrency data (AAVE, ETC, SUI) motivates the hypotheses. Herd-followers produce the most frequent but shortest stress episodes, manipulators the fewest but most persistent, and rational agents the most stable rolling Sharpe ratios despite higher return volatility. SHAP attributions tie these patterns to drawdown and cross-asset signals, short-term volatility and position state, and momentum, respectively. The results motivate behavior-specific regulation rather than uniform limits on volatility or turnover.",
+      "pdf_url": "https://arxiv.org/pdf/2610.22522v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "cs.ET",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "cs.ET (新兴计算技术与量子体系)",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "10 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21540v1",
+      "title": "Pricing the Unprovable: Ambiguity, Turnstile Runs, and the Verifiability Discount in Crypto Protocols",
+      "authors": [
+        "Doohwi Cha",
+        "Hanhee Kim",
+        "Hyeonjun Yeo",
+        "Minsuk Sung",
+        "Minjae Lee"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T09:06:12Z",
+      "summary": "Privacy-preserving protocols can repair a vulnerability without establishing whether it was exploited beforehand, even when no theft is reported and aggregate supply is protected. We call the potential value reduction from this gap the verifiability discount. A turnstile model shows how early withdrawal can shift a possible shortfall to remaining holders and why credible evidence can become more valuable as exposure grows. We introduce VDISC, a reproducible framework that records reported loss, exposed value, public evidence, returns, and pool flows separately. It combines Orchard's staged disclosures with reconstructed on-chain flows, earlier Zcash cases, and a 40-event security panel. Orchard follows the predicted direction: market responses were muted after repair and supply assurance, while the largest negative return and aggregate shielded-pool net outflow aligned with the acknowledgment that past abuse could not be ruled out. These patterns are directional, not causal. Across events, market-cap-normalized reported loss and unresolved exposure overlap among the 38 events with a public loss figure (Pearson 0.86, Spearman 0.56), partly because exposure is often coded from the loss itself, so returns alone cannot distinguish reported loss from unresolved history. The findings motivate three candidate design priorities: produce privacy-compatible evidence about past states, limit the state exposed by a single flaw, and disclose residual uncertainty explicitly.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21540v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "cs.CR",
+        "q-fin.GN",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "cs.CR (密码学与网络安全)",
+        "q-fin.GN (普通宏观金融与经济)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "17 pages, 3 figures, 4 tables. Accepted at MARBLE 2026 (Mathematical Research for Blockchain Economy); to appear in Lecture Notes in Operations Research (Springer). Author version with post-submission corrections; not the Version of Record",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.18795v1",
+      "title": "Discrete-Time Survival Modelling with Dynamic Industrial Graphs for Mortgage Credit Risk",
+      "authors": [
+        "Shiqi Fang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-13T17:40:40Z",
+      "summary": "Mortgage credit risk may exhibit dependence across economically connected areas, even when they are geographically distant. However, current models typically represent cross-area dependence through fixed geographical neighbourhoods, potentially overlooking economic connections that extend beyond physical proximity and evolve over time. These models may fail to capture shared risks among geographically distant but economically similar areas, and cannot describe a changing dependence of risk; it therefore risks retaining economically obsolete connections while omitting newly emerging ones. This paper uses similarities of industrial composition as a measure of economic proximity and develops a discrete-time survival model with dynamic industrial graphs to capture evolving cross-area dependence in mortgage default risk. The resulting graphs are reconstructed annually, allowing both their topology and edge weights to change as regional industrial compositions evolve. Jointly combining a proper conditional autoregressive process with a first-order autoregressive process governs the temporal cross-area dependence and the temporal persistence in latent risk simultaneously. The model is estimated using Integrated Nested Laplace Approximation and evaluated on U.S. mortgage loan-level data against the static industrial graph specifications. The results show that the proposed dynamic model achieves better in-sample fit and out-of-sample discrimination, while its estimated parameters indicate substantial graph-induced cross-area dependence and temporal persistence. These findings demonstrate the value of allowing economically defined neighbourhoods to evolve when modelling mortgage default risk.",
+      "pdf_url": "https://arxiv.org/pdf/2610.18795v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "stat.AP (应用统计学)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.18387v1",
+      "title": "Risk Measures for the Climate Transition Age: Why Symmetric Risk Budgets are unlikely to mitigate two-dimensionally asymmetric Climate Change risks",
+      "authors": [
+        "Lars Dijkstra",
+        "Andreas G. F. Hoepner",
+        "Fabiola I. Schneider",
+        "Agnieszka Słomka-Gołębiowska"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-13T13:36:55Z",
+      "summary": "The most widely used investment risk measures - variance, standard deviation, and tracking error - treat upside deviations as equally undesirable as downside losses. In stable markets with assumed symmetric return distributions, this simplification is potentially harmless. In the climate transition age, it is not. Climate risk is two-dimensionally asymmetric, across assets and over time. Both dimensions are negatively skewed against investors. Hence, climate transition investment strategies deliberately deviate from benchmarks that reflect an insufficiently decarbonising global economy. When fiduciaries enforce tracking error budgets that penalise outperformance just as heavily as underperformance, they inadvertently constrain exactly the portfolio return opportunities that climate-aware investing seeks. We argue that replacing symmetric deviation-based risk measures with their downside-only counterparts - semi-variance, standard risk and trailing error - resolves this conflict without sacrificing any fiduciary discipline. The distinction is not merely semantic: as the gap between climate transition trajectories and market benchmarks widens over the coming decades, symmetric risk budgets will become binding constraints on transition strategies well before actual investment risk warrants it. We propose specific changes to mandate design that would allow institutional investors to pursue climate transition opportunities within genuinely risk-aware (rather than deviation-averse) frameworks.",
+      "pdf_url": "https://arxiv.org/pdf/2610.18387v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "econ.EM",
+        "q-fin.PM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "econ.EM (计量经济学)",
+        "q-fin.PM (资产组合管理)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": "13 pages, 1 figure, 9 equations| Keywords: climate change mitigation, Climate Transition Benchmarks, deviation, fiduciary duty, Paris-Aligned Benchmarks, risk, standard risk,",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.17681v1",
+      "title": "E-Backtesting Expected Shortfall without Value-at-Risk Forecasts under Time-series Models",
+      "authors": [
+        "Ruodu Wang",
+        "Jingcheng Yu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-13T04:06:36Z",
+      "summary": "Expected Shortfall (ES) measures the average size of tail losses. Its sequential backtests typically also require a Value-at-Risk (VaR) forecast. We develop two e-backtesting methods using only observed losses and ES forecasts: one for iid losses only and the other for time series under an AR-GARCH conditional VaR structure. Under the stated assumptions, both control false rejections at any stopping time. For the time-series method, validity requires a fixed parameter--quantile pair representing the conditional VaR path and a positive report margin. The time-series statistic takes an infimum over possible parameter and VaR values. We choose the betting process $(λ_t)$ by maximizing an empirical growth rate averaged across candidate parameters. We compute the statistic by continuous VaR profiling on a dense parameter grid. For grid approximations, we prove convergence to the continuous infimum, together with convergence of the probability of false rejection, as the grid is refined over a fixed monitoring period. Lower and upper bounds for the VaR infimum on the parameter grid control the accuracy of the numerical profiling. Simulations, including ES reports that change from over-reporting to under-reporting, and an application to daily NASDAQ losses provide numerical comparisons with VaR--ES e-processes and fixed-sample ES backtests, assessing detection frequencies and the timing of rejections.",
+      "pdf_url": "https://arxiv.org/pdf/2610.17681v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "40 pages, 2 figures, 7 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.17481v1",
+      "title": "Designing Independent Variation: A Guided Iteration Methodology for Price Experiments in Short, Correlated Panels",
+      "authors": [
+        "Pedro Cadahia"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-12T22:53:13Z",
+      "summary": "Estimation error in short, correlated pricing panels is dominated by trajectory dispersion rather than sampling noise, creating an identification shortfall that only independently assigned variation can resolve. We propose a guided iteration methodology to decide how much variation to generate, where, and for how long: a cyclic price-perturbation scheme under a revenue-at-risk budget, framed as variance minimization over design-specific error covariances, analogous to portfolio selection. We establish four key results: (1) a closed-form minimum-variance combination rule; (2) proof that a convex cost of intensity yields an interior, spread-out allocation, whereas under a concave tolerable-volume-loss cost, concentrating intensity into fewer perturbations pays off only with heterogeneous candidates, priced-in fixed costs, or perturbations beyond the cost curve's inflection point; (3) a discounted recursion yielding a data-dependent exit timeline from the experimentation zone; and (4) an application to Dominick's retail data, in which about five designed independent units match the precision of approximately 700 passive equivalents in the anchor category, while a fast proxy across ten categories achieves a median 97% variance reduction relative to passive panels. Sixteen comparisons (eleven pre-specified) support the theory: greedy selection achieves 90-93% of the global optimum across more than fifty exhaustively verifiable instances, and the recursion reaches its predicted 90%-of-steady-state benchmark two cycles early, though a parametric bootstrap indicates that its delta-method interval understates the right-tail risk. Boundary conditions show that regularized covariance estimators extend plug-in noise tolerance from 29% to beyond 50%, submodularity holds up to a clear curvature threshold, and a shared shock imposes a fundamental precision floor.",
+      "pdf_url": "https://arxiv.org/pdf/2610.17481v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.17304v1",
+      "title": "Dirichlet sub-mixtures: A new reading of multiplicative background risk models with Pareto margins",
+      "authors": [
+        "Nawaf Mohammed",
+        "Edward Furman"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-12T18:56:49Z",
+      "summary": "Multiplicative background risk models (MBRMs) provide a tractable framework for describing dependent risks. We construct a class of MBRMs with Pareto margins by combining Marshall--Olkin exponential and additive gamma risk factor structures, each allowed to incorporate idiosyncratic and systemic background risk factors. Our main result establishes, under an admissibility condition on the risk factor systems, a finite sub-mixture representation of the joint survival function in terms of Pareto survival functions, whose weights are Dirichlet probabilities of orderings induced by the background risk factors and sum to at most one. This yields a new interpretation of such MBRMs, in which dependence is expressed through Pareto survival functions and their Dirichlet weights. The resulting family encompasses many known multivariate Pareto constructions, is closed under marginalization, and admits characterizations of independence and, under a non-degeneracy condition, of its singular and absolutely continuous parts. It is associated, its covariance decomposition separates the contributions of the two risk factor structures and their interaction, and its joint tails are regularly varying along rays. The presence of asymptotic tail dependence and the decay rates of joint exceedance probabilities are governed by the gamma risk factors alone; the exponential risk factors affect only the tail constants.",
+      "pdf_url": "https://arxiv.org/pdf/2610.17304v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.15973v2",
+      "title": "Requested, Executed and Recoverable Credit: Shared Action Ordering among LLM Borrowers in a Simulated Lending Market",
+      "authors": [
+        "Victoria Ruojie Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-11T23:07:25Z",
+      "summary": "We test whether shared action ordering changes executed credit in a simulated collateralized lending market. Three small open-weight language models face a borrowing cap that values collateral at the pool price; only two of the three model families traded. A validation campaign, hash-locked locally before its first model call, pairs 12 common-order markets with 12 balanced-order markets under a revised interface. An exact randomization test rejects the sharp null that common-market net debt is invariant to complete-order assignment (two-sided p = 2/8,100). The pre-specified estimate of the lever-up-first versus delever-first common-market contrast is 1.12 units of initial unused reference borrowing capacity, combining a 0.828 gap between the two groups of common markets with a 0.293 balanced-baseline component. All 24 markets increased debt. An exploratory accounting split shows that lever-up-first common markets borrowed more and repaid less. With requests held fixed, reference-priced collateral narrows the observed common-market order gap from 0.828 to 0.688 capacity units. No market experienced liquidation or realized bad debt. Under the pre-specified fixed-price 30 percent shock benchmark, individual high-LTV loans generate scenario write-offs even though aggregate LTVs remain below the write-off threshold. Most benchmark write-off arises from collateral consumed by the liquidation bonus. The experiment establishes an effect of action order on executed credit; accounting identities and deterministic counterfactuals explain how collateral constraints and borrower-level debt allocation shape conditional creditor recovery.",
+      "pdf_url": "https://arxiv.org/pdf/2610.15973v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "35 pages, 6 figures, 10 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13606v1",
+      "title": "CorrFlow: Exact and Permutation-Equivariant Flow Matching on the Correlation Elliptope",
+      "authors": [
+        "Gautier Marti"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T13:53:24Z",
+      "summary": "Correlation matrices combine nonlinear positive-definiteness constraints with a simultaneous row-column permutation symmetry. Their generation therefore involves two distinct problems. First, every output must remain on the correlation elliptope, irrespective of how its variables are ordered. Second, the generator must learn the domain-specific distribution occupied by empirical data inside that valid space. Existing financial image generators mix these problems: they learn ordered matrix entries and repair invalid draws afterward. We introduce CorrFlow, which separates them. A generalized Fisher transform maps full-rank correlation matrices bijectively to unconstrained coordinates, guaranteeing valid outputs without projection. A graph flow-matching network learns the empirical distribution in those coordinates and is permutation equivariant: reordering the variables only reorders the output. We compare a conditional CorrGAN reimplementation, image diffusion, and CorrFlow on $80\\times80$ Taiwan equity matrices using five seeds per neural method. CorrFlow produces 100% valid draws without repair and obtains feature sliced-Wasserstein distance $.712\\pm.141$, versus $4.339\\pm.252$ for CorrGAN and $4.610\\pm.191$ for image diffusion after their invalid outputs are projected back to the correlation space. It also improves this distance over historical lookup, while lookup retains higher local coverage. These results support the combined construction under the evaluated training budget; they do not establish superiority over fully tuned image models or isolate the contribution of each component.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13606v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "Accepted at NeurReps 2026, the NeurIPS workshop on Symmetry and Geometry in Neural Representations. Code: https://github.com/gautiermarti/CorrFlow",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13446v1",
+      "title": "Realized Tail-Risk Conditional Autoregressive Expectile Models: Accurate and Stable Forecasting Performance",
+      "authors": [
+        "Keisuke Sasaki",
+        "Yasuhiro Omori"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T11:45:37Z",
+      "summary": "A realized tail-risk conditional autoregressive expectile (RTCARE) model is proposed for joint forecasting of value-at-risk (VaR) and expected shortfall (ES). Realized tail measures such as the realized quantile and the realized ES, constructed from intraday high-frequency returns, are incorporated into the dynamics and measurement equations of the conditional expectile, allowing information about lower-tail risk to enter the forecasts. The parameters are estimated by Markov chain Monte Carlo, and we evaluate the resulting VaR-ES forecasts in numerical examples and in an empirical application using U.S. stock-return data. Across the considered tail levels, the RTCARE models deliver competitive and often superior forecasting performance relative to existing alternatives, with stable results across Monte Carlo replications and rolling forecast evaluations.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13446v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "q-fin.RM",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "q-fin.RM (风险管理与控制)",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.14120v1",
+      "title": "Early Detection of Pension-Sponsor Distress from Public Filings: A Sponsor Vulnerability Index, Stress-Augmented VaR, and Dynamic Self-Investment Caps",
+      "authors": [
+        "Ravil Akhtyamov"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T09:17:31Z",
+      "summary": "A defined-benefit pension is only as safe as its sponsor, yet sponsor distress is under-instrumented relative to plan-side modelling. We present a transparent, reproducible early-warning pipeline built entirely on public data. A Sponsor Vulnerability Index (SVI), a gradient-boosted classifier over point-in-time SEC EDGAR balance-sheet fundamentals and two macro series, predicts a filings-based distress state one to two quarters ahead. On 36 U.S. sponsors in five sector groups (1,418 firm-quarters, 2015Q1-2025Q3) it reaches an out-of-fold AUC-ROC of 0.887 and PR-AUC of 0.711 (base rate 11.9%) under leave-one-firm-out cross-validation. A Monte Carlo VaR with a stylized transition-stress overlay shows that climate-type stress is negligible for a diversified plan but adds 20-43% to one-year 95% VaR when 22.5% of assets are held in sponsor securities. A dynamic self-investment cap maps the SVI to a limit that falls from 8% to below 1% in acute distress and recovers with the sponsor, which we illustrate on PG&E's 2019 bankruptcy and Boeing's persistent fragility. We report the method's failure modes alongside its results (book-equity labels that also fire on non-credit events such as spin-offs, positives concentrated in one firm, and stylized stress parameters) and release code, data and results under a concept DOI.",
+      "pdf_url": "https://arxiv.org/pdf/2610.14120v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "9 pages, 4 figures, 4 tables. Code and data: https://doi.org/10.5281/zenodo.21394088",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13199v1",
+      "title": "Enhancing credit risk scorecards with transactional-based behavioural features",
+      "authors": [
+        "Dian Prinsloo",
+        "Tanja Verster",
+        "Neill Smit"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T08:19:11Z",
+      "summary": "Background: Credit risk modelling is fundamental in financial institutions, typically using credit history, repayment behaviour, income, and outstanding debt to estimate a borrower's probability of default. Although transactional data are sometimes incorporated through aggregated measures such as recency, frequency, and monetary indicators, behavioural information embedded in raw transaction narratives remains largely unexplored due to its unstructured nature. This limits opportunities to extract richer behavioural insights. Aim: This research investigates payment narratives from transactional data as an alternative data source for credit risk modelling. Setting: The study uses transactional data from a large South African financial institution focused on small and medium enterprises. Method: Techniques such as natural language processing and regular expressions are used to transform unstructured transaction descriptions into meaningful, explainable behavioural features by categorising transactions into interpretable spending categories. A novel categorisation algorithm was developed and evaluated for classification accuracy. The extracted features are incorporated into a credit risk scorecard to assess their predictive value. Results: The categorisation algorithm demonstrates high classification accuracy. Using these features in the scorecard resulted in a significant increase in Gini compared to a scorecard without them. Conclusion: Text-based transactional information can be systematically extracted, categorised, and operationalised to enhance credit risk model performance. Contribution: The study develops a novel, integrated, explainable methodology for transforming transactional text into behavioural features, introduces a structured RegEx-based categorisation approach, and demonstrates their predictive value within traditional scorecard frameworks.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13199v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "stat.CO"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "stat.CO (计算统计与马尔可夫链)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.12875v1",
+      "title": "The Financing of Debt Relief: Intermediary Liquidity and the Value of Borrower Information",
+      "authors": [
+        "Arka P. Bandyopadhyay"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T02:06:33Z",
+      "summary": "I study how intermediary liquidity affects mortgage resolution using 1.9 million Ginnie Mae buyout options from 2019 to 2022. When funding markets froze in 2020, nonbank issuers repurchased far fewer delinquent loans than depositories servicing loans in the same pools and, within the same issuer and month, shifted repurchases away from large balances, the loans that require the most cash. About $19 billion of repurchases were delayed, and most were completed later. A model of rationing by value per dollar of cash explains this pattern and shows that borrower information is most valuable when funding is intermediate.",
+      "pdf_url": "https://arxiv.org/pdf/2610.12875v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.CP",
+      "categories": [
+        "q-fin.CP",
+        "econ.GN",
+        "q-fin.GN",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.CP (计算金融与量化模拟)",
+        "econ.GN (宏观与综合经济学)",
+        "q-fin.GN (普通宏观金融与经济)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.12718v1",
+      "title": "A Distributional Framework for Behavioral Characterization and Risk Management of Large Language Models",
+      "authors": [
+        "David García-Lorite",
+        "Raul Merino"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-08T20:57:59Z",
+      "summary": "Large language models are stochastic by nature. Repeated executions under the same experimental conditions may produce different responses. We propose a framework that can be applied across the model lifecycle, from task design to residual behavior and continuous monitoring. The method consists of building an empirical response distribution estimated through Monte Carlo simulation. Semantic interventions are introduced to study how these distributions change. We illustrate the framework with two different tasks, borrower classification and music album recommendation, and quantify the resulting distributional changes. The framework is linked to model risk management and governance by measuring robustness and control effectiveness, and characterizing residual behavior. Since it relies only on observed responses, it can also be applied to black-box models accessed through commercial APIs.",
+      "pdf_url": "https://arxiv.org/pdf/2610.12718v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.09246v1",
+      "title": "Conditional value-at-risk under reward-penalty mechanism with applications to robust portfolio management",
+      "authors": [
+        "Jun Cai",
+        "Tiantian Mao",
+        "Zhiqiao Song"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-07T00:18:21Z",
+      "summary": "In this paper, we present robust portfolio selection models by incorporating a reward and penalty mechanism into portfolio management. We assume that the joint distribution of the losses of the underlying risky assets in a portfolio is uncertain but lies within a multivariate distribution set. Our goal is to identify optimal portfolio allocations by minimizing the worst-case conditional value-at-risk (CVaR) of portfolio loss under the reward and penalty mechanism and distribution uncertainty. Our models can also be used to investigate the problem of how to balance portfolio losses with their associated downside risk in portfolio management. We first derive an explicit closed-form expression for the worst-case CVaR under the reward-penalty mechanism, which generalizes several existing models and results regarding the worst-case CVaR, such as those studied in Jagannathan (1977), Chen et al. (2011), and Cai et al. (2024). We then apply this expression to obtain optimal portfolio allocations that minimize the worst-case CVaR under both a classical mean-covariance-based multivariate distribution set and a generalized mean-covariance-based multivariate distribution set introduced in Kang et al. (2019). Additionally, we utilize real market data to illustrate the application of the proposed models and the corresponding optimal portfolio allocations in portfolio management. Our empirical experiments show that portfolios based on the proposed models have the potential to outperform those based on several existing related models. Furthermore, the results demonstrate that incorporating downside risk into portfolio loss helps better manage risk and can achieve higher investment returns than considering either downside risk or portfolio loss alone. Moreover, our experiments reveal the trade-off between improving expected portfolio return and controlling the worst-case portfolio CVaR.",
+      "pdf_url": "https://arxiv.org/pdf/2610.09246v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.07888v2",
+      "title": "A Functional Representation of Credit Behavior for Probability of Default Modeling",
+      "authors": [
+        "Jonas Brunholm",
+        "Bjarne Højgaard",
+        "Thomas D. Nielsen",
+        "Orimar Sauri"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-06T07:36:36Z",
+      "summary": "This paper proposes a framework for modeling probability of default via functional data analysis. By representing a series of credit variables as functions, we investigate whether intra-monthly information improves default predictability in linear models. We further show how a range of widely used variables, among them available funds, utilization rate, and overdraft, can all be derived from three quantities observed over time. Namely, 1) the type of each account, 2) the balance of the account, and 3) the size of the credit limit on the account. Retaining these quantities as continuous-time processes, rather than reducing them to monthly aggregated values, yields a continuous faithful representation of the borrower. When analyzing these three processes, we discovered that recurring events associated with the ordinal position among banking days created strong cyclical patterns. We therefore develop a relative time framework that aligns the recurring events across borrowers, ensuring that borrowers possess the same cyclical pattern, regardless of real time. We assess the framework using functional logistic regression. This approach accommodates the continuous representation while remaining closely related to a logistic regression model commonly used in credit risk practice, due to strict regulatory constraints. We show that, when equipped with an effective functional representation of transactional trajectories, the proposed model attains predictive performance on par with XGBoost while consistently outperforming logistic regression. Importantly, the model balances predictive performance of a machine learning model with the interpretability of linear default models, potentially enabling financial institutions to use the model, even under strict regulation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.07888v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.08869v1",
+      "title": "Learned Monotone Recurrent Features in Governed Credit Scoring: The Price of the Frame and the Necessity of Macro Conditioning",
+      "authors": [
+        "Yew Lee Tan"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-06T02:41:33Z",
+      "summary": "Regulated credit scoring requires scores monotone non-decreasing in every exposure input. Deployed pipelines -- hand-crafted monotone aggregates feeding sign-constrained gradient boosting -- already meet this by composition; the open question is what learned temporal aggregation is worth inside one. We answer on five production-scale credit datasets at matched admissibility (one priced baseline convention excepted), with a monotone recurrent architecture whose per-input guarantee we extend, with proofs, to vector-valued inputs and to exogenously macro-conditioned decay gates, severities, thresholds, and peak memory. Two findings result. First, a strictness ladder: the value of learned monotone features rises with governance-frame strictness -- zero on unconstrained engineered panels, maximal in summaries-only frames -- replicated across two datasets and an official temporal-stability metric, though unconditioned features degrade on externally adjudicated later weeks. Second, a conditioning-delivery asymmetry under regime shift. On a train-on-boom, test-on-crisis mortgage design, two public macroeconomic series hurt as input columns, yet conditioning the recurrence on them delivers the paper's only learned-block crisis-cohort uplifts. The confirmed effect: +0.006 to +0.013 AUC on an internally pre-registered Freddie Mac replication, at all five held-out seeds. The discovery estimate: +0.015 to +0.021 on Fannie Mae (three of five seeds post hoc), worth 10-27 basis points of defaulted balance at an 80% approval cutoff, and grows with early-prepaid loans excluded. A state-level test identifies the mechanism: between-cohort calibration transfer. A pandemic-band episode bounds scope: under forbearance-distorted labels the gain generalizes at a quarter to a third of crisis size on Fannie Mae, on Freddie Mac only against the capacity control.",
+      "pdf_url": "https://arxiv.org/pdf/2610.08869v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": "59 pages + 6-page online supplement (ancillary files). Companion to arXiv:2610.05196",
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "q-fin.RM",
+      "name_zh": "风险管理与控制",
+      "count": 25
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 8
+    },
+    {
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 4
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 4
+    },
+    {
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
+      "count": 3
+    },
+    {
+      "code": "q-fin.GN",
+      "name_zh": "普通宏观金融与经济",
+      "count": 3
+    },
+    {
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
+      "count": 3
+    },
+    {
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
+      "count": 3
+    },
+    {
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
+      "count": 3
+    },
+    {
+      "code": "q-fin.MF",
+      "name_zh": "数理金融学",
+      "count": 2
+    },
+    {
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
+      "count": 2
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 1
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 1
+    },
+    {
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 1
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 1
+    },
+    {
+      "code": "cs.ET",
+      "name_zh": "新兴计算技术与量子体系",
+      "count": 1
+    },
+    {
+      "code": "cs.CR",
+      "name_zh": "密码学与网络安全",
+      "count": 1
+    },
+    {
+      "code": "stat.CO",
+      "name_zh": "计算统计与马尔可夫链",
+      "count": 1
+    },
+    {
+      "code": "q-fin.CP",
+      "name_zh": "计算金融与量化模拟",
+      "count": 1
+    },
+    {
+      "code": "econ.GN",
+      "name_zh": "宏观与综合经济学",
+      "count": 1
+    }
+  ],
+  "snapshot_synced_at": "2026-10-21T14:35:56.269740"
+}

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>云山问学 · 多智能体科研研讨空间</title>
+  <link rel="stylesheet" href="css/style.css?v=20261014_v2">
+  <link rel="stylesheet" href="css/radar_yunshan.css?v=20261014_v2">
+  <!-- KaTeX for Beautiful LaTeX Math Equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <!-- Marked.js for Standard Markdown Rendering -->
+  <script defer src="https://cdn.jsdelivr.net/npm/marked@13.0.3/marked.min.js"></script>
+  <!-- Explicit Mermaid blocks may render as flowcharts; other code blocks remain unchanged. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <!-- D3.js and Markmap for Dynamic Hierarchical Mind Maps -->
+  <script defer src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-lib"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-view"></script>
+  <!-- Chart.js for Academic Statistical and Quantitative Data Visualizations -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body class="mist-mountain-theme">
+  <div class="app-container">
+    <!-- 顶部诗意导航栏 -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="seal-mark" title="云山问学">
+          <span>学</span>
+        </div>
+        <div class="header-title">
+          <div class="title-row">
+            <h1 class="brand-title">云山问学</h1>
+            <span class="brand-badge">科研研讨空间</span>
+            <span class="poetic-verse">「行到水穷处 · 坐看云起时」</span>
+          </div>
+          <div class="cluster-status-pills">
+            <span class="status-pill model-pill" id="pill-model-name"><span class="dot gold"></span> 大模型驱动</span>
+            <span class="status-pill" title="BGE-M3 向量嵌入引擎 (CUDA FP16)"><span class="dot jade"></span> BGE-M3</span>
+            <span class="status-pill" title="BGE-Reranker 神经重排器"><span class="dot jade"></span> Reranker</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 顶层主工作区视图切换 (兰台问学 vs 云海星津) 居中自然陈列，杜绝拥挤溢出 -->
+      <nav class="header-center-nav">
+        <div class="workspace-nav-tabs">
+          <button class="nav-tab-btn active" id="tab-nav-dialogue" title="多智能体研讨、文献切块深潜与公式推导">
+            <span class="tab-icon">🎋</span> 兰台问学 · 研讨画卷
+          </button>
+          <button class="nav-tab-btn" id="tab-nav-radar" title="多学科前沿速递、子学科水墨分布与高级检索">
+            <span class="tab-icon">🔭</span> 云海星津 · 天工雷达
+            <span class="radar-live-badge">SOTA 万象</span>
+          </button>
+        </div>
+      </nav>
+
+      <div class="header-actions">
+        <!-- 语音音色选择器 -->
+        <div class="voice-picker-box" title="选择学术朗读语音音色">
+          <span class="voice-picker-label">🎙️</span>
+          <select id="select-tts-voice" class="voice-select-dropdown">
+            <option value="zh-CN-XiaoyiNeural" selected>🌸 晓伊 · 生动灵动 (推荐)</option>
+            <option value="zh-TW-HsiaoChenNeural">🍃 晓臻 · 亲切温润</option>
+            <option value="zh-CN-XiaoxiaoNeural">🌿 晓晓 · 沉静清雅</option>
+            <option value="zh-CN-YunjianNeural">📜 云健 · 儒雅深沉</option>
+            <option value="zh-CN-YunyangNeural">🎓 云扬 · 沉稳专业</option>
+          </select>
+        </div>
+        <button id="btn-toggle-avatar" class="btn btn-ethereal" title="展开/收起科研搭档座席">
+          <span class="icon">🤝</span> 搭档座席
+        </button>
+        <button id="btn-toggle-left" class="btn btn-ethereal" title="展开/收起左侧经卷与会话书阁">
+          <span class="icon">🎋</span> 兰台书阁
+        </button>
+        <button id="btn-toggle-graph" class="btn btn-ethereal" title="展开/收起多智能体流转网络">
+          <span class="icon">🕸️</span> 云水流径
+        </button>
+        <button id="btn-toggle-right" class="btn btn-ethereal" title="展开/收起右侧考据与待办案头">
+          <span class="icon">📑</span> 案头考据
+        </button>
+        <button id="btn-header-record" class="btn btn-ethereal" title="开启/停止全自动会议录音与转写">
+          <span class="icon" id="header-record-icon">🎙️</span> <span id="header-record-text">开启会议录制</span>
+        </button>
+        <button id="btn-quick-summary" class="btn btn-ethereal" title="提炼当前会议与讲座纪要">
+          <span class="icon">📜</span> 录流水为纪要
+        </button>
+        <button id="btn-export-obsidian" class="btn btn-ethereal" title="将当前学术研讨与思维导图一键导出至本地 Obsidian 知识库 (生成双链 Markdown 与 Canvas 白板)">
+          <span class="icon">💎</span> 导出至 Obsidian
+        </button>
+      </div>
+    </header>
+
+    <!-- 主工作区 -->
+    <main class="main-layout" id="main-layout">
+      <!-- 左侧面板：兰台会话、经卷书阁与录音流水 -->
+      <aside class="sidebar-left" id="sidebar-left">
+        <!-- 兰台会话与研讨历史 -->
+        <div class="sidebar-section session-section">
+          <div class="section-header">
+            <h3><span class="section-icon">🎋</span> 兰台问学 · 会话画卷</h3>
+          </div>
+          <button id="btn-new-chat" class="btn-new-chat">
+            <span class="icon">+</span> 辟新径 · 新建学术会话
+          </button>
+          <div class="session-channel-list" id="session-channel-list">
+            <!-- 动态渲染会话列表 -->
+          </div>
+          <div class="session-footer-actions">
+            <button id="btn-clear-all-sessions" class="btn-text-muted" title="清空全部历史会话">
+              🧹 抹去前尘 · 清空所有历史
+            </button>
+          </div>
+        </div>
+
+        <!-- 经卷典藏知识库 -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <h3><span class="section-icon">📚</span> 琅嬛福地 · 经卷典藏</h3>
+            <span class="badge-count" id="doc-count">0 卷</span>
+          </div>
+
+          <!-- 上传拖拽区 (仿宣纸素雅托盘) -->
+          <div class="upload-dropzone" id="dropzone">
+            <input type="file" id="file-input" accept=".pdf,.docx,.doc,.pptx,.ppt,.epub,.tex,.latex,.rst,.html,.htm,.md,.markdown,.txt,.json,.jsonl,.csv,*/*" style="display:none;">
+            <div class="dropzone-content" id="dropzone-trigger">
+              <span class="upload-icon">📜</span>
+              <p class="upload-text">投递专著书籍、论文或文档资料</p>
+              <span class="upload-hint">支持 PDF / EPUB / LaTeX / Word / PPT / 全格式</span>
+            </div>
+            <div class="upload-progress" id="upload-progress" style="display:none;">
+              <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+              <span class="progress-text" id="progress-text">正在研读切片与向量构建...</span>
+            </div>
+          </div>
+
+          <!-- 文档列表 -->
+          <div class="document-list" id="document-list">
+            <div class="empty-hint">书案尚虚，敬待学者投递专著、论文或全格式资料</div>
+          </div>
+        </div>
+
+        <!-- 临流听琴 · 录音流水 -->
+        <div class="sidebar-section meeting-stream-section">
+          <div class="section-header">
+            <h3><span class="section-icon">🎙️</span> 临流听琴 · 讲堂时间轴</h3>
+            <button id="btn-toggle-meeting-record" class="btn-stream-record" title="点击开启/停止自动会议录音与实时转写">
+              <span class="record-dot"></span> <span class="record-text">开启会议录音</span>
+            </button>
+          </div>
+          <div class="stream-log-container" id="stream-logs">
+            <div class="stream-item">
+              <span class="stream-time">00:00:00</span>
+              <span class="stream-speaker">[山林初醒]</span>
+              <p class="stream-content">实时语音感知与学术时间轴已就绪，静待发声...</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 中间核心区：主研讨殿堂 -->
+      <section class="center-stage">
+
+        <!-- 学术研讨会话抬头 (Unified Academic Session Bar) -->
+        <div class="scholar-hero-bar scholar-session-header" id="session-header-container">
+          <div class="session-header-left">
+            <div class="session-brand-seal">
+              <img src="img/agent_avatar.jpg?v=2026" alt="科研搭档 羽若" class="session-brand-img">
+            </div>
+            <div class="session-title-group">
+              <h2 class="active-session-title" id="active-session-title">💬 兰台问学 · 学术研讨会话</h2>
+              <span class="agent-state-pill" id="agent-state-pill">
+                <span class="state-dot idle"></span> 研讨就绪 (Ready)
+              </span>
+            </div>
+          </div>
+
+          <div class="chat-header-actions">
+            <button id="btn-clear-current-chat" class="btn-action-sm" title="清空当前会话的消息记录">
+              🧹 拂拭卷面
+            </button>
+            <button id="btn-delete-current-chat" class="btn-action-sm danger" title="彻底删除当前会话">
+              🗑️ 焚香辞卷
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-feed" id="chat-feed">
+          <!-- 动态渲染当前会话的诗意消息气泡 -->
+        </div>
+
+        <!-- 快捷问答灵感词条 (诗意竹简) -->
+        <div class="prompt-chips">
+          <button class="chip" data-query="请详细概述论文中提出的核心方法、主要贡献以及它试图解决的痛点是什么？">📑 详析论文背景、核心痛点与贡献</button>
+          <button class="chip" data-query="论文中核心公式的数学推导过程是怎样的？请详细列出每一步变量含义。">📐 详细推演论文核心数学公式</button>
+          <button class="chip" data-query="总结刚刚会议讨论中的所有决议与待办事项。">📋 提炼会议决议与待办清单</button>
+          <button class="chip" data-query="请用通俗易懂的语言解释 LangGraph 状态图与多智能体协作机制。">💡 通俗浅释 LangGraph 协同机制</button>
+        </div>
+
+        <!-- 输入控制台 -->
+        <div class="chat-input-container">
+          <!-- 待发送图片预览卡片 -->
+          <div id="chat-image-preview-container" class="chat-image-preview-container" style="display: none;">
+            <div class="preview-img-wrapper">
+              <img id="chat-image-preview" src="" alt="待发送图片" />
+              <button type="button" id="btn-remove-preview-img" class="btn-remove-preview-img" title="移除此图片">✕</button>
+            </div>
+            <span class="preview-img-hint">已附带截图 (可直接配合文字提问)</span>
+          </div>
+
+          <form class="chat-input-form" id="chat-form">
+            <!-- 附件图片按钮 -->
+            <button type="button" id="btn-attach-img" class="btn-attach-img" title="上传或粘贴图片/公式截图 (支持 Ctrl+V 直接粘贴)">
+              <span class="attach-icon">📷</span>
+            </button>
+            <input type="file" id="chat-image-input" accept="image/*" style="display: none;" />
+
+            <!-- 语音录制麦克风按钮 -->
+            <button type="button" id="btn-mic" class="btn-mic" title="长按或点击开启语音输入">
+              <span class="mic-icon">🎙️</span>
+              <div class="mic-wave-ring"></div>
+            </button>
+
+            <!-- 文本输入框 -->
+            <div class="input-wrapper">
+              <textarea 
+                id="query-input" 
+                class="query-input" 
+                rows="1" 
+                placeholder="输入学术问题、数学公式推导、或直接粘贴截图 (Ctrl+V)... (Enter 发送)"
+              ></textarea>
+            </div>
+
+            <!-- 发送按钮 -->
+            <button type="submit" id="btn-send" class="btn-send" title="发送探讨">
+              <span>研讨</span>
+              <span class="send-icon">➤</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- 案头可拖拽调节手柄 -->
+      <div class="sidebar-resizer" id="sidebar-resizer" title="按住左右拖拽调节右侧案头宽度"></div>
+
+      <!-- 右侧抽屉：待办清单 Kanban、证据溯源面板与经卷脉络思维导图 -->
+      <aside class="sidebar-right" id="sidebar-right">
+        <div class="right-tabs">
+          <button class="tab-btn active" data-tab="tab-mindmap">🧠 经卷脉络</button>
+          <button class="tab-btn" data-tab="tab-evidence">📑 证据与页码</button>
+          <button class="tab-btn" data-tab="tab-actions">📋 决议与待办</button>
+          <button class="tab-btn" data-tab="tab-avatar">🤝 伙伴座席</button>
+        </div>
+
+        <!-- Tab 1: 经卷脉络思维导图 (Interactive Markmap D3) -->
+        <div class="tab-content active" id="tab-mindmap">
+          <div class="kanban-header mindmap-header-bar">
+            <div class="mindmap-info-box">
+              <span class="mindmap-badge" id="mindmap-type-badge">🌱 静待研讨</span>
+              <h4 id="mindmap-current-title" class="mindmap-title-text">经卷知识脉络</h4>
+            </div>
+            <div class="mindmap-actions">
+              <button id="btn-mindmap-fit" class="action-btn-mini" title="居中并自适应视图">🎯 居中</button>
+              <button id="btn-mindmap-fullscreen" class="action-btn-mini" title="展开全屏大画卷查看">⛶ 展开大图</button>
+              <button id="btn-mindmap-expand-panel" class="action-btn-mini" title="一键伸缩案头宽度">📐 展宽案头</button>
+              <button id="btn-mindmap-export-png" class="action-btn-mini" title="导出为高清图片 (PNG/SVG)">📥 导出图</button>
+              <button id="btn-mindmap-copy-md" class="action-btn-mini" title="复制/导出 Markdown 大纲">📋 复制大纲</button>
+            </div>
+          </div>
+          <!-- 多层次多轮脉络导航器 (全书宏观 / 本轮精析 / 历史轮次 / 综合聚合) -->
+          <div class="mindmap-scope-bar" id="mindmap-scope-bar">
+            <div class="scope-tabs">
+              <button class="scope-tab-btn active" id="btn-scope-current" data-scope="current" title="查看当前提问或选定章节的微观精析导图">🧠 本轮精析</button>
+              <button class="scope-tab-btn" id="btn-scope-book" data-scope="book" title="查看整本书籍的宏观篇章架构全景">📚 全书宏观</button>
+              <button class="scope-tab-btn" id="btn-scope-session" data-scope="session" title="将多轮问答的所有知识分支聚合为完整全景图">🌐 对话全景聚合</button>
+            </div>
+            <div class="mindmap-turn-select-wrap" id="mindmap-turn-select-wrap" style="display: none;">
+              <span class="turn-label">📍 研讨轮次:</span>
+              <select id="mindmap-turn-select" class="mindmap-turn-select" title="快速切换本会话历史各轮问答导图"></select>
+            </div>
+          </div>
+          <div class="mindmap-container" id="mindmap-container">
+            <div class="mindmap-empty-placeholder" id="mindmap-empty-placeholder">
+              <span class="empty-icon">🌱</span>
+              <h5>案头虚席 · 待发研讨先声</h5>
+              <p>在左侧「经卷典藏」点击任意文献的 <strong>🗺️ 脉络</strong>，或在下方提问，系统将为您即时绘制深层知识脉络导图。</p>
+            </div>
+            <svg id="markmap-svg" class="markmap-svg" style="display: none;"></svg>
+          </div>
+        </div>
+
+        <!-- Tab 2: 证据与页码溯源详情 -->
+        <div class="tab-content" id="tab-evidence">
+          <div class="kanban-header">
+            <h4>最新检索证据切片 (Grounding)</h4>
+            <span class="sub-label">BGE-M3 + BGE-Reranker 重排定位</span>
+          </div>
+          <div class="evidence-list" id="evidence-panel-list">
+            <div class="empty-hint">暂无检索证据。提问时系统将自动在此展示命中切片与精确页码。</div>
+          </div>
+        </div>
+
+        <!-- Tab 3: 待办清单看板 -->
+        <div class="tab-content" id="tab-actions">
+          <div class="kanban-header">
+            <h4>待办事项清单 (Action Items)</h4>
+            <span class="sub-label">来自会议与课堂流水的自动抽取</span>
+          </div>
+          <div class="action-items-list" id="action-items-list">
+            <div class="empty-hint">点击顶部“生成会议纪要”或开会讨论后自动在此提炼。</div>
+          </div>
+        </div>
+
+        <!-- Tab 4: 科研搭档研讨座席 (Research Partner Sanctuary) -->
+        <div class="tab-content" id="tab-avatar">
+          <div class="avatar-stage-container">
+            <!-- 搭档研讨台 -->
+            <div class="stage-figure-box" id="stage-figure-box">
+              <div class="stage-aura-ring" id="stage-aura-ring"></div>
+              <img src="img/professor_lin.jpg?v=2026_scholarly" alt="科研搭档 羽若" class="stage-figure-img" id="stage-figure-img">
+              <video id="stage-avatar-video" class="stage-avatar-video" src="video/yuruo_speaking.mp4" loop muted playsinline style="display: none;"></video>
+              <div class="stage-live-badge"><span class="live-pulse-dot"></span> LIVE 羽若在席</div>
+            </div>
+
+            <!-- 搭档身份与状态 -->
+            <div class="stage-info-bar">
+              <div class="stage-mentor-identity">
+                <h3 class="stage-mentor-title">云山科研搭档 · 羽若</h3>
+                <span class="stage-badge-status" id="stage-badge-status"><span class="state-dot idle"></span> 🌿 研讨就绪 (Ready)</span>
+              </div>
+              <p class="stage-motto">「轻灵如羽，从容若水。博学笃志，并肩推演前沿数理与经卷脉络。」</p>
+            </div>
+
+            <!-- 研讨互动控制台 -->
+            <div class="stage-actions-bar">
+              <button id="btn-stage-speak-sample" class="action-btn-mini stage-action-btn primary" title="搭档领读当前研讨的核心要点">
+                🎙️ 领读当前研讨要点
+              </button>
+              <button id="btn-stage-greet" class="action-btn-mini stage-action-btn" title="向搭档发起研讨问候或灵感切磋">
+                ✋ 研讨切磋 / 灵感碰撞
+              </button>
+            </div>
+
+            <!-- 研讨同步电子板书 (Synchronized Collaborative Blackboard) -->
+            <div class="stage-blackboard-card" id="stage-blackboard-card">
+              <div class="blackboard-header">
+                <span class="blackboard-title">📋 研讨同步板书 (Synchronized Blackboard)</span>
+                <span class="blackboard-badge" id="blackboard-status-badge">🌱 静待研讨</span>
+              </div>
+              <div class="blackboard-content" id="blackboard-content">
+                <div class="empty-hint" style="padding: 14px 8px; text-align: center; color: #94a3b8; font-size: 0.76rem; line-height: 1.6;">
+                  🎋 提出学术问题或点击上方「领读当前研讨要点」后，核心论点、推导公式与经卷要旨将在此处实时同步板书呈现。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </main>
+
+    <!-- 云海星津 · 天工雷达全学科工作台视图 (TianGong Radar Workbench View) -->
+    <main class="radar-layout" id="radar-layout" style="display: none;">
+      <!-- 左侧：多学科高级考据与经纬分类抽屉 (仿素雅宣纸案头折页) -->
+      <aside class="radar-sidebar">
+        <!-- 考据检索台 -->
+        <div class="radar-card radar-search-box">
+          <div class="radar-card-title">
+            <span class="card-icon">🎋</span>
+            <span>星津考据 · 全学科高级检索</span>
+          </div>
+          <div class="radar-input-group">
+            <input type="text" id="radar-input-query" placeholder="叩问学术论题 (如: pulsar / control theory)..." />
+            <button id="btn-radar-search" class="btn-radar-primary">
+              <span class="icon">🔍</span> 考据
+            </button>
+          </div>
+          <div class="radar-form-row">
+            <label class="radar-label">经纬范围：</label>
+            <select id="radar-search-in" class="radar-select">
+              <option value="all" selected>全卷经义 (All Fields)</option>
+              <option value="title">篇卷题名 (Title)</option>
+              <option value="authors">撰述名家 (Authors)</option>
+              <option value="abstract">提要要旨 (Abstract)</option>
+            </select>
+          </div>
+          <div class="radar-form-row">
+            <label class="radar-label">典籍编次：</label>
+            <div class="radar-radio-group">
+              <label class="radio-label"><input type="radio" name="radar-sort" value="submittedDate" checked> 最新录入 (Time)</label>
+              <label class="radio-label"><input type="radio" name="radar-sort" value="relevance"> 契合度 (Relevance)</label>
+            </div>
+          </div>
+          <div class="radar-form-row">
+            <label class="radar-label">每卷容量：</label>
+            <select id="radar-page-size" class="radar-select">
+              <option value="15">15 篇 / 卷</option>
+              <option value="25" selected>25 篇 / 卷 (标准)</option>
+              <option value="50">50 篇 / 卷 (详览)</option>
+            </select>
+          </div>
+          <div class="radar-form-row" style="margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--color-silk-border, #dae8e4);">
+            <label class="radar-label" title="开启后，在雷达中点击【召羽若研讨】时，后台自动异步下载PDF并切片向量化纳进本地书阁知识库，无缝打通全篇宏观导图与原文考据">研讨联动：</label>
+            <label class="radar-checkbox-label" style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; color:var(--color-ink-charcoal, #253935);">
+              <input type="checkbox" id="radar-auto-ingest" checked>
+              <span>研讨时自动纳卷入阁 (深研)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 经脉细缕 · 细分子学科分类树 (严格隔离防混淆) -->
+        <div class="radar-card radar-tree-card">
+          <div class="radar-card-title between">
+            <div>
+              <span class="card-icon">🍃</span>
+              <span>经脉细缕 · 细分子学科</span>
+            </div>
+            <button id="btn-radar-clear-sub" class="btn-text-action" title="清空全部细选">还原全览</button>
+          </div>
+          <div class="radar-sub-tree" id="radar-sub-tree">
+            <!-- 动态渲染当前大类下的二级/三级学科 -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- 右侧：万象星图子学科分布 + 经卷案头文献流 -->
+      <section class="radar-content-stage">
+        <!-- 九畴大典 · 八维学科顶级直选导航带 -->
+        <div class="radar-discipline-shelf">
+          <div class="shelf-label">
+            <span class="shelf-icon">📜</span>
+            <span>九畴学科导航：</span>
+          </div>
+          <div class="radar-major-nav-bar" id="radar-major-nav-bar">
+            <!-- 动态生成全量学科选项 (全部前沿 / 计算机科学 / 物理学 / 数学 / 定量生物等) -->
+          </div>
+        </div>
+
+        <!-- 顶部：检索意境状态与水墨分布画卷条 -->
+        <div class="radar-header-bar">
+          <div class="radar-query-badge-row">
+            <div class="radar-title-seal">
+              <span class="radar-active-major" id="radar-active-major-label">💻 计算机科学 · CS</span>
+            </div>
+            <span class="radar-status-text" id="radar-status-text">「星津澄澈 · 经卷已列」</span>
+            <span class="radar-expr-pill" id="radar-expr-pill" title="底层 arXiv API 原生严格布尔表达式">cat:cs*</span>
+          </div>
+          
+          <!-- 万象星图：子学科水墨分布直方图展示区 -->
+          <div class="radar-distribution-container" id="radar-distribution-container">
+            <div class="dist-header">
+              <div class="dist-header-left">
+                <span class="dist-title">🌊 万象星图 · 子学科分布与单选过滤 (Sub-category Distribution):</span>
+                <button type="button" id="btn-dist-all" class="btn-dist-all" title="查看当前主学科下全部子学科文献">🎋 全部子学科 (全览)</button>
+              </div>
+            </div>
+            <div class="dist-bars-scroll" id="dist-bars-container">
+              <!-- 动态呈现水墨/描金胶囊分布比例 (如 cs.AI, cs.LG, cs.CL 等) -->
+              <span class="dist-loading-text">正在勾勒学科水墨星图...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 经卷案头文献列表容器 -->
+        <div class="radar-paper-list" id="radar-paper-list">
+          <!-- 动态论文卡片 -->
+        </div>
+
+        <!-- 案头分页翻卷控制 -->
+        <div class="radar-pagination-bar">
+          <button id="btn-radar-prev" class="btn-page" disabled>溯流而上 · 前页</button>
+          <span class="page-indicator" id="radar-page-indicator">第 1 卷</span>
+          <button id="btn-radar-next" class="btn-page">顺流而下 · 后页</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 隐藏的全局音频播放器 -->
+    <audio id="global-tts-audio" style="display:none;"></audio>
+  </div>
+
+  <!-- 宏观多智能体编排工作流大画卷 (Live Orchestration Modal - 7大智能体星系拓扑) -->
+  <div class="orchestration-modal-backdrop" id="orchestration-modal">
+    <div class="orchestration-modal-card">
+      <div class="orchestration-header">
+        <div class="orch-meta">
+          <span class="orch-tag">LANGGRAPH MULTI-AGENT COLLABORATION PIPELINE</span>
+          <h2 class="orch-title">科研研讨全链路 · 感知输入 → 意图决策 → 多源文献发现 → 证据清洗归纳 → 严密推导与博弈质询 → 反思重构 → 音画协同</h2>
+        </div>
+        <button class="btn-close-orch" id="btn-close-orch" title="关闭编排工作流">×</button>
+      </div>
+
+      <div class="orchestration-stage">
+        <!-- SVG 轨道连线与运行粒子层 -->
+        <svg class="orbit-svg" viewBox="0 0 1020 520">
+          <defs>
+            <path id="orbit-motion-path" d="M 510 65 A 400 190 0 1 1 509.9 65 Z" fill="none" />
+            <linearGradient id="orbit-glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#b37830" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#184c43" stop-opacity="0.8"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 椭圆轨道虚线 -->
+          <ellipse cx="510" cy="260" rx="400" ry="190" class="orbit-ellipse" />
+
+          <!-- 中心到各节点的动态虚线连线 (在 active 时点亮) -->
+          <line x1="510" y1="260" x2="270" y2="100" class="radial-line" id="line-orbit-1" />
+          <line x1="510" y1="260" x2="750" y2="100" class="radial-line" id="line-orbit-2" />
+          <line x1="510" y1="260" x2="860" y2="260" class="radial-line" id="line-orbit-3" />
+          <line x1="510" y1="260" x2="750" y2="420" class="radial-line" id="line-orbit-4" />
+          <line x1="510" y1="260" x2="510" y2="460" class="radial-line" id="line-orbit-5" />
+          <line x1="510" y1="260" x2="270" y2="420" class="radial-line" id="line-orbit-6" />
+          <line x1="510" y1="260" x2="150" y2="260" class="radial-line" id="line-orbit-7" />
+
+          <!-- 轨道流光粒子动画 (双粒子环形巡航) -->
+          <circle r="5" fill="#b37830" class="orbit-particle">
+            <animateMotion dur="14s" repeatCount="indefinite">
+              <mpath href="#orbit-motion-path" />
+            </animateMotion>
+          </circle>
+          <circle r="4" fill="#184c43" class="orbit-particle">
+            <animateMotion dur="14s" begin="-7s" repeatCount="indefinite">
+              <mpath href="#orbit-motion-path" />
+            </animateMotion>
+          </circle>
+        </svg>
+
+        <!-- 中心协调中枢节点 (Hub Node) -->
+        <div class="hub-center-node" id="hub-coordinator">
+          <div class="hub-icon-circle">协</div>
+          <span class="hub-title">协调中枢</span>
+          <span class="hub-status-tag" id="hub-status-text">可调度</span>
+        </div>
+
+        <!-- 环形轨道 7 大专职智能体卡片 -->
+        <!-- 01 任务拆解与意图路由 -->
+        <div class="orbit-card pos-top-left" id="orbit-node-1">
+          <div class="orbit-card-header">
+            <span class="orbit-num">01</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">任务拆解</h4>
+              <span class="orbit-role">意图路由 (IntentRouter)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-1">等待任务</span>
+          </div>
+          <p class="orbit-desc">识别学科领域与实体，动态规划执行管线</p>
+        </div>
+
+        <!-- 02 在线文献检索 -->
+        <div class="orbit-card pos-top-right" id="orbit-node-2">
+          <div class="orbit-card-header">
+            <span class="orbit-num">02</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">文献发现</h4>
+              <span class="orbit-role">在线检索 (ArxivSearch)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-2">等待任务</span>
+          </div>
+          <p class="orbit-desc">arXiv 在线文献检索、综述生成与一键下载</p>
+        </div>
+
+        <!-- 03 本地经卷深潜检索 -->
+        <div class="orbit-card pos-mid-right" id="orbit-node-3">
+          <div class="orbit-card-header">
+            <span class="orbit-num">03</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">经卷深潜</h4>
+              <span class="orbit-role">知识库检索 (DocumentRAG)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-3">等待任务</span>
+          </div>
+          <p class="orbit-desc">BGE-M3 + Reranker 检索并精排精确页码证据</p>
+        </div>
+
+        <!-- 04 数理公式严密推演 -->
+        <div class="orbit-card pos-bot-right" id="orbit-node-4">
+          <div class="orbit-card-header">
+            <span class="orbit-num">04</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">数理推演</h4>
+              <span class="orbit-role">学术导师 (TutorDerivation)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-4">等待任务</span>
+          </div>
+          <p class="orbit-desc">LaTeX 公式分步严格推演与概念深潜答疑</p>
+        </div>
+
+        <!-- 05 声画课件跨模态对齐 -->
+        <div class="orbit-card pos-bot-mid" id="orbit-node-5">
+          <div class="orbit-card-header">
+            <span class="orbit-num">05</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">声画对齐</h4>
+              <span class="orbit-role">跨模态 (CrossModal)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-5">等待任务</span>
+          </div>
+          <p class="orbit-desc">定位 PPT 幻灯片、图表插图与语音时间戳</p>
+        </div>
+
+        <!-- 06 课堂流水与纪要提炼 -->
+        <div class="orbit-card pos-bot-left" id="orbit-node-6">
+          <div class="orbit-card-header">
+            <span class="orbit-num">06</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">流水纪要</h4>
+              <span class="orbit-role">讲堂提炼 (MeetingSummarizer)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-6">等待任务</span>
+          </div>
+          <p class="orbit-desc">实时语音时间轴记录、要旨归纳与待办清单</p>
+        </div>
+
+        <!-- 07 语音合成与音画协同 -->
+        <div class="orbit-card pos-mid-left" id="orbit-node-7">
+          <div class="orbit-card-header">
+            <span class="orbit-num">07</span>
+            <div class="orbit-title-group">
+              <h4 class="orbit-name">音画呈现</h4>
+              <span class="orbit-role">语音播报 (SpeechOutput)</span>
+            </div>
+            <span class="orbit-status-pill" id="status-orbit-7">等待任务</span>
+          </div>
+          <p class="orbit-desc">自然口语学术导读合成与羽若协同呈现</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 思维导图全屏大画卷弹窗 (Fullscreen Mindmap Modal) -->
+  <div class="mindmap-fullscreen-modal" id="mindmap-fullscreen-modal">
+    <div class="mindmap-modal-card">
+      <div class="mindmap-modal-header">
+        <div class="mindmap-modal-title-group">
+          <span class="mindmap-badge" id="modal-mindmap-badge">📚 全书宏观脉络</span>
+          <h3 id="modal-mindmap-title">经卷知识大画卷</h3>
+        </div>
+        <div class="mindmap-modal-actions">
+          <button id="btn-modal-mindmap-fit" class="action-btn-mini">🎯 居中自适应</button>
+          <button id="btn-modal-export-png" class="action-btn-mini">📥 导出高清PNG</button>
+          <button id="btn-modal-export-svg" class="action-btn-mini">🖼️ 导出矢量SVG</button>
+          <button class="btn-close-orch" id="btn-close-mindmap-modal" title="关闭全屏">×</button>
+        </div>
+      </div>
+      <div class="mindmap-modal-body">
+        <svg id="modal-markmap-svg" class="markmap-svg modal-svg"></svg>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/digital_avatar_engine.js?v=20260907_v2"></script>
+  <script src="js/app.js?v=20261012_v4"></script>
+  <script src="js/radar_controller.js?v=20261017_dynamic_prompt"></script>
+</body>
+</html>

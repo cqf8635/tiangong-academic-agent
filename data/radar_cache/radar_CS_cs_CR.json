@@ -1,0 +1,759 @@
+{
+  "query_expression": "cat:cs.CR",
+  "total_fetched": 25,
+  "total_results": 53727,
+  "papers": [
+    {
+      "paper_id": "2610.31616v1",
+      "title": "OP-Print: Tracing Membership Imprints in On-Policy Self-Distillation",
+      "authors": [
+        "Qi Li",
+        "Xinchao Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T17:41:04Z",
+      "summary": "On-policy distillation has been widely adopted for alleviating the distribution mismatch of off-policy distillation. Self-distillation further removes the need for an external teacher by using the student's own outputs, enhanced with extra context or demonstrations, as supervision. This teacher-free design makes on-policy self-distillation practical, yet its privacy risks remain largely unexplored. In particular, using two coupled views of the same training example may strengthen its memorization. Motivated by this, we present the first study of membership inference attacks against on-policy self-distillation. We investigate both gray-box and black-box threat models and propose a unified attack framework, named OP-Print. OP-Print builds on our finding that the supervision imprint in on-policy self-distillation is sparse and structured, concentrating on uncertainty-sensitive correction sites rather than across the entire rollout. Exploiting this property, we construct attack signals tailored to the two access levels: in the gray-box setting, OP-Print directly aggregates the privileged teacher-student residual correction along the same rollout; in the black-box setting, it measures restart-based output-basin stability as an observable surrogate for the hidden correction process. Across diverse models and distillation schemes, all baseline attacks remain essentially at random guessing even under gray-box access, whereas OP-Print is broadly validated to be effective in both gray-box and black-box settings.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31616v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31612v1",
+      "title": "Efficient and Optimal Learning of Discrete Distributions with Person-Level Privacy",
+      "authors": [
+        "Gautam Kamath",
+        "Mahbod Majid",
+        "Ankur Moitra",
+        "Argyris Mouzakis",
+        "Jonathan Ullman"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T17:40:13Z",
+      "summary": "We study learning a discrete distribution under person-level differential privacy in the batched setting. Given $n$ users, each contributing $m$ i.i.d. samples from an unknown distribution $μ$ over $[k]$, we seek an estimate of $μ$ with total-variation error $α$. We give polynomial-time algorithms under both pure and approximate differential privacy. Under pure $(\\varepsilon,0)$-DP, we achieve $n = \\widetilde O(k/(α^2 m)+k/(α\\sqrt{m}\\varepsilon)+k/\\varepsilon)$, the first polynomial-time pure-DP guarantee matching the information-theoretic optimum up to logarithmic factors. Under approximate $(\\varepsilon,δ)$-DP, we achieve $n = \\widetilde O(k/(α^2 m)+k/(α\\sqrt{m}\\varepsilon)+k+\\log(1/δ)/\\varepsilon)$. At $δ=2^{-Θ(k)}$, this is $\\widetilde O(k)$ for fixed $α,\\varepsilon,m$ and failure probability. Our algorithms use a new degree-6 sum-of-squares estimator for learning from untrusted batches. Its key ingredient is a trace-bounded diagonal majorizer for the difference between the empirical covariance of the repaired batch averages and the multinomial covariance predicted by their mean. We prove that clean data admit this certificate through semidefinite-programming duality and a new application of the stronger symmetric form of Grothendieck's inequality due to Friedland and Lim. The certificate preserves the mean-dependent variance of multinomial batch averages, yielding the near-optimal robust rate $O(η\\sqrt{\\log(1/η)/m})$ and providing the score required by the privacy reduction. We also prove a statistical query lower bound ruling out a uniformly smaller order of error under fixed polynomial SQ resource bounds.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31612v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CR",
+        "cs.DS"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.CR (密码学与网络安全)",
+        "cs.DS (数据结构与算法)"
+      ],
+      "comment": "Full version of the SODA 2027 paper",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31573v1",
+      "title": "Social-HUMINT: An LLM-Augmented Unified Framework for Measuring Social Media Exposure",
+      "authors": [
+        "Pellegrino Casoria",
+        "Simon Pietro Romano"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T17:13:46Z",
+      "summary": "In the post-API landscape, social-media profiling has become inexpensive and automated: Large Language Models (LLMs) can extract structured information from unstructured content and deduce attributes users never disclosed. A person's true exposure is not what they post but what can be inferred from it. As these practices become routine, exposure to social engineering attacks becomes an operational certainty, demanding a shared framework for assessment and mitigation. We make this exposure measurable by quantifying how accurately a target can be profiled, and how far that profile enables social engineering attacks. Because no existing model fully spans this continuum, we unify Social Media Intelligence (SOCMINT) and Cyber Human Intelligence (Cyber-HUMINT), two individual-focused disciplines that evolved separately, into a single doctrine-grounded taxonomy of 38 capabilities across the Cyber Threat Intelligence lifecycle, where user profiling bridges passive collection and active engagement. Domain experts validated the taxonomy (Fleiss' $κ$ = 0.92). We operationalize its core path (extraction, inference, and susceptibility assessment) as an LLM-augmented multi-agent pipeline, evaluated on real participants' public data. Susceptibility is assessed indirectly: the pipeline predicts how each target would rank personalized engagement options, matching their actual choices significantly above chance. This ranking capacity captures the personalization on which tailored attacks depend. The underlying profiles are accurate: extraction reaches F1 = 97.3%, and inferred attributes score 4.73/5, both far above rule-based and NER-based baselines at negligible cost. The framework augments security analysts' tradecraft rather than replacing it and enables defenders to gauge their own exposure before an adversary does.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31573v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI",
+        "cs.SI"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.SI (社交网络与信息网络)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31437v1",
+      "title": "Homomorphic Encryption with Coset Code Construction",
+      "authors": [
+        "Haodong Yang",
+        "Venkata Gandikota"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T15:34:33Z",
+      "summary": "Homomorphic encryption enables computation on input data without decrypting it. This paper extends a construction based on scalar message codes, utilizing coset codes to pack $k$ message symbols into a ciphertext vector of length $n$. For a given field and vector length, this packing method reduces the number of ciphertext vectors required to transmit a message record. A compatible family of evaluation codes supports public addition and multiplication operations up to a predetermined degree. We prove that the scheme achieves bounded chosen-plaintext security under the coordinate-label distinguishability assumption.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31437v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.IT",
+      "categories": [
+        "cs.IT",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.IT (信息论)",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": "28 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31404v1",
+      "title": "AgentPhishing: A Benchmark of LLM Email Agents Under Adaptive Attack",
+      "authors": [
+        "Justin Tan",
+        "Miao Li",
+        "Ding Zhao"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T15:07:49Z",
+      "summary": "Computer-use agents increasingly handle private information and act on users' behalf across desktop and web applications, including email. Phishing therefore poses privacy and security risks that depend not only on whether agents recognize malicious messages, but also on how they respond. Existing phishing datasets were developed primarily for conventional detection, leaving agent susceptibility to persuasive malicious requests insufficiently characterized. To expose vulnerabilities that pre-existing datasets may miss, we introduce AgentPhishing, a benchmark for evaluating whether persuasive phishing attacks can evade detection and induce LLM email agents to comply with malicious requests. We develop PhishOpt, which optimizes reusable email-generation skills against individual agents under fixed benchmark constraints and a realism constraint. We analyze the generated emails using Cialdini's persuasion principles to identify strategies associated with agent failures and use these findings to construct a universal generation skill. Our evaluation shows that agents can handle pre-existing phishing emails safely yet remain susceptible to attacks adapted to agent behavior, while in an AgentPhishing evaluation of nine agents, four exhibit phishing-detection rates below $10\\%$ and malicious-request compliance rates above $45\\%$. These results highlight the limits of inferring agent safety from conventional phishing evaluations and the need to assess how agents respond to persuasive malicious requests.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31404v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "28 pages, 6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31388v1",
+      "title": "Auditing the Hand-Written Inputs of Learned Access Control",
+      "authors": [
+        "Arsalan Jalil Sarghaleh",
+        "Mehdi Hazrati"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T14:53:37Z",
+      "summary": "Learned access control is typically deployed behind two hand-built artefacts: a hard-deny set enforced by a small trusted shield, and a region map that decides which requests mined rules answer and which the learner answers. Verifying the shield or measuring the learner validates neither. We audit both on the five public ABAC Lab policies. First, we formalise hard-deny soundness and check it exhaustively over relations of up to 794,250 tuples. Clauses that faithfully transcribe an explicit restriction are unsound at rates of 0.50-0.70 across four elicitors - an author and three blind language-model elicitors - because prose scopes restrictions to a section while the grant relation is a disjunction over all rules: 97% of counterexamples are granted by other rules. Shipped unchecked, these deny sets would withhold 16-78% of everything the policies grant; certified, they withhold nothing. Vacuity, a second silent failure, also occurs. Second, hybrid routing needs a two-class, abstaining rule set that ABAC miners do not emit, and ranking a mixed-effect candidate pool under a cap is one-class in all 24 cells for the two commonest ranking keys. Third, for additive losses the hybrid-versus-learner effect factorises into covered mass times a rule-learner risk contrast that must be reported on both false-non-grant and false-permit loss: on two real policies, most selection rules give opposite verdicts on the two losses, and the one favourable on both holds for one policy, one learner configuration and a band of noise levels. A released artefact regenerates and checks every reported number.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31388v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31366v1",
+      "title": "AfterDeleteBench: Auditing Post-Deletion Information Persistence in LLM Agents",
+      "authors": [
+        "Ehsan Saleh",
+        "Roozbeh Nahavandi",
+        "Sama Salarian",
+        "Raef Bassily",
+        "Andrew Perrault"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T14:41:36Z",
+      "summary": "Many LLM agents maintain external persistent memory and derive additional state from past interactions, such as summaries. Deleting an original memory record therefore need not remove information carried by its descendants. We introduce AfterDeleteBench, a controlled behavioral audit for this failure mode in fixed-weight LLM agents. For each synthetic secret, we compare an exposed-then-deleted agent with an otherwise matched agent that was never exposed to the secret, allowing post-deletion recovery to be attributed to the original exposure. In our primary setting, a single query recovers the deleted secret from Qwen2.5-7B-Instruct in roughly two thirds of cases, while matched never-exposed controls have zero recovery. Crucially, recovery does not require a surviving verbatim copy: when the complete secret string is absent and only separately stored components remain under a public composition rule, exact reconstruction succeeds in 62-99% of cases across Qwen, Mistral, and Phi-3. We also show that the response interface is part of the measurement system: target-bearing replies can be scored as failures when the requested format and parser are misaligned. Finally, we separate reconstruction from write-back and fresh-session recall. Provenance-aware closure eliminates observed recovery in the tested positive-baseline settings, whereas an exact-literal write filter blocks reinsertion but cannot erase information already present. Together, these results show that source deletion should be evaluated behaviorally at the level of the agent and its memory system, not only as a storage operation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31366v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "25 pages, 7 figures, 12 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31294v1",
+      "title": "Practical Auditing of Differentially Private Graph Release Mechanisms: Methodology, Toolkit, and Case Study",
+      "authors": [
+        "Nicholas D'Silva",
+        "Surya Nepal",
+        "Salil S. Kanhere"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T13:57:00Z",
+      "summary": "Differential Privacy (DP) has become a prominent approach for protecting graph data releases, yet empirical auditing methodologies have largely been developed for tabular datasets and machine learning pipelines rather than graph-structured outputs. We present a methodology for empirically auditing DP graph release mechanisms, identifying two graph-specific audit design problems: canary construction and witness statistic selection. We combine these components with an established statistically certified testing procedure and implement the resulting methodology as an open-source Python toolkit. To demonstrate the approach, we audit a published state-of-the-art Node-DP graph release mechanism. Across a series of synthetic and real-world canary pairs, we obtain certified lower bounds on the privacy parameter {\\varepsilon} that exceed the claimed value, yielding counterexamples sufficient to falsify the claimed guarantee for the audited implementation. The violations persist under progressively stronger restrictions on the input domain, including non-empty and connected graphs. We also show that witness selection can materially affect whether a violation is detected, highlighting the importance of evaluating a diverse battery of statistics when auditing DP graph release mechanisms.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31294v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": "Accepted to AISC '27",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31246v1",
+      "title": "Weaponizing the Exit: Input Privacy Leakage via Exit Routing Manipulation in Multi-Exit Networks",
+      "authors": [
+        "Yulong Tian",
+        "Lei Wang",
+        "Jincan Yang",
+        "Hao Wu",
+        "Hao Han"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T13:26:03Z",
+      "summary": "Multi-exit networks improve inference efficiency by allowing inputs to terminate early at intermediate exits. We identify a privacy vulnerability in cloud deployments of these networks: a malicious Cloud Service Provider (CSP) can infer sensitive properties of individual user inputs solely from inference latency, without accessing inputs, intermediate states, or model outputs. The attack exploits the CSP's control over the model supply chain. Prior to deployment, the CSP supplies a specially crafted multi-exit network manipulated so that inputs carrying a target sensitive property are routed to a designated exit with high probability, while other inputs exit elsewhere. At serving time, the CSP infers the exit index from per-query latency, thereby determining whether each input possesses the target property without accessing inputs, outputs, or internal model states. We propose a training framework combining selective label smoothing and entropy-covariance optimization to control confidence distributions across exits and reduce premature termination. We conduct experiments on four datasets across ten target properties. The results demonstrate strong attack effectiveness and stealthiness. The attack achieves an average F1 score of 0.73, compared to 0.25 for the strongest baseline, while main task accuracy drops by less than 1.3\\% and inference speedup degradation remains below 0.1 in most settings. Our code is available at https://github.com/kazefjj/Weaponizing_the_Exit.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31246v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31211v1",
+      "title": "Evolving Federated Density Peak Clustering with Shuffler-Based Anonymization",
+      "authors": [
+        "Miha Ožbot",
+        "Seiichi Ozawa",
+        "Igor Škrjanc"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T12:58:40Z",
+      "summary": "In this paper, we present a novel one-shot federated clustering approach based on evolving fuzzy clustering and shuffler-based anonymization. In federated clustering, each round reveals additional model information to the server and can increase the opportunity to infer properties of local datasets, even when raw samples are never shared. Consequently, fewer client-server exchanges and unlinkability are important, so transmitted information cannot be attributed to any single client. Data-stream clustering algorithms, which learn in a single pass over the data, align well with the one-shot federated learning paradigm, where a single communication round can be sufficient. The proposed Evolving Federated Density Peak Clustering (eFDPC) method combines evolving fuzzy data-stream clustering and density peak clustering in a federated setting. Each client independently evolves micro-clusters from private data mini-batches through cluster addition and merging. To limit communication, density peak clustering is applied to the learned micro-clusters and only the selected peaks are transmitted, rather than the full local models. A shuffler-based layer is introduced between the clients and the server to anonymize contributions prior to reconstruction and global peak selection. We consider a peak-only variant, eFDPC-P, as well as eFDPC-G with server-side label propagation. Experiments on synthetic and real-world benchmark datasets show that eFDPC outperforms recent federated clustering baselines in one-shot settings and scales to higher-dimensional, non-IID data.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31211v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CR",
+        "cs.DC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.CR (密码学与网络安全)",
+        "cs.DC (分布式计算与云计算)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "30 pages, 4 figures. Published open access (CC BY 4.0) in Evolving Systems 17, 123 (2026). Code: https://github.com/mihaozbot/eFDPC",
+      "journal_ref": "Evolving Systems 17, 123 (2026)",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31196v1",
+      "title": "Structural cryptanalysis of classic McEliece: Assessment of claims, costs and evidence",
+      "authors": [
+        "Ramses Fernandez"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T12:44:03Z",
+      "summary": "For the last two years, classical structural attacks on McEliece with binary Goppa codes progressed further, at the parameters of Classic McEliece, than in the previous four decades: a subexponential and then a quasi-polynomial distinguisher, key recoveries for public challenges with brute-force labels up to $254$, and conditional key-recovery estimates of about $2^{89}$ to $2^{128}$ per run of a large sparse linear-algebra computation, depending on the parameter set and on whether and how memory access is charged. On September 2026 the German BSI advised against new deployments of the scheme. This paper gives a version-aware critical assessment of these results. It separates proved distinguishers, conditional cost estimates and actual recoveries; analyses in detail Saarinen's HOVER algorithm, his conditional cost analysis and his recovery of the TII-254 challenge, together with Weis's cost study of Holdout/Hermite key recovery; and compares the other key-recovery routes and the objections raised against them. Our own analysis finds that the cost model is now the main quantitative uncertainty, with about thirty bits between the cheapest and the most expensive model for the same computation; that for the four larger parameter sets every model considered leaves the conditional estimates far below the targeted levels, whereas for mceliece348864 the shortfall is of the order of the spread between models; that the structural estimates are lower than Grover-accelerated information-set decoding for the four larger sets in essentially every model and comparable for mceliece348864; and that none of this is a demonstrated attack, since the underlying heuristics have been tested only on instances tens of thousands to hundreds of thousands of times smaller than the target. We close with open questions.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31196v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31178v1",
+      "title": "BelT Block Cipher",
+      "authors": [
+        "Sergey Agievich",
+        "Victor Galinskij",
+        "Nikolai Mikulich",
+        "Yuriy Kharin"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T12:31:10Z",
+      "summary": "BelT is a block cipher with a 128-bit block size and a 256-bit key, developed in Belarus and adopted as part of the Belarusian national standard STB 34.101.31 for encryption and integrity control. Its specification was issued as a preliminary standard in 2007, becoming a final standard in 2011. BelT employs an eight-round structure combining elements of a Feistel network and the Lai-Massey scheme. This paper presents a complete description of the cipher and explains the principles underlying its design. Software performance and possible optimizations of BelT are discussed in comparison with those of candidates in the Advanced Encryption Standard (AES) competition.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31178v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": "Upravlenie Zaschitoj Informacii. 2002. 6(4): 407-412. In Russian",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31152v1",
+      "title": "WildFakeToolBench: Benchmarking AI-Generated Image Detectors with Web-Sourced Image Processing",
+      "authors": [
+        "Mingjie Li",
+        "Yukun Jiang",
+        "Yicong Tan",
+        "Yang Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T12:09:13Z",
+      "summary": "As AI generated images are getting popular these days, discussions on such generations are widely existed in current public forums, software repositories, and photography tutorials. Moreover, with the help of LLM-assisted code translation, malicious actors can adopt such information to evade detectors without specialized knowledge or local GPU execution of the resulting tools. To evaluate such risks, we introduce \\textsc{WildFakeToolBench}, a benchmark suite of $156$ executable image-processing tools derived from $220$ public sources across $142$ domains. Each tool retains its source evidence and passes syntax, execution, and output-distortion checks without using feedback from the evaluated detectors. On $105$ generated images from five generators, we evaluate six state-of-the-art detectors with images processed by the tools in our collected bench to assess their effectiveness against such in-the-wild risks. The strongest individual tools achieve attack success rates of $25.25\\%$--$100\\%$ across detectors, exceeding the strongest of six selected image-processing baselines for each detector. Evaluating subsets of an eight-tool pool yields worst-case coverage above $80\\%$ for every detector. Effectiveness is sparse and detector-specific: high coverage across candidates does not imply reliable one-shot evasion. These findings not only highlight the potential of such web-sourced risks, but also show the potential on establishing AI-image detector robustness evaluation framework based on those in-the-wild information.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31152v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31069v1",
+      "title": "Federated Differentially Private Optimization via Low-Rank Preconditioning",
+      "authors": [
+        "Antti Koskela",
+        "Tejas Kulkarni",
+        "Elias Raninen"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T10:48:06Z",
+      "summary": "We consider differentially private (DP) optimization in the federated setting, where a DP estimate of the feature covariance matrix serves as a Hessian approximation for generalized linear models. Existing central DP methods for covariance estimation have communication cost that grows quadratically in the data dimension, while existing baselines with linear communication cost are only locally private and degrade as the number of clients increases. As a remedy, we propose a federated DP-PCA framework that achieves linear communication cost while providing central DP guarantees under secure aggregation. It consists of a DP rank selection step, a DP power method, and a noisy release of the covariance projected onto the selected low-dimensional subspace. We give error bounds for this covariance estimate and for the resulting low-communication preconditioned DP gradient descent. Empirically, our proposed DP optimization method matches a centralized baseline with quadratic communication cost at a fraction of the communication.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31069v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31000v1",
+      "title": "SecLog-Bench: A Scalable Benchmark for Cybersecurity Log Reasoning with Scaffolded Evidence",
+      "authors": [
+        "Yifan Wang",
+        "Dongliang Xu",
+        "Xiaoyong Li",
+        "Jing Li",
+        "Peter S. Pan"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T09:41:16Z",
+      "summary": "Large language models (LLMs) have shown strong potential for cybersecurity, leading to growing interest in LLM-based automated cybersecurity log analysis. However, current datasets (1) are limited in scale; (2) rely mainly on single-source evidence; and (3) have only binary or multi-class attack labels, without dense annotations of the reasoning process. To address these limitations, SecLog-Bench has three key features. First, we build an extensible simulation platform that covers 29 attack scenarios, supports repeated execution and the integration of new scenarios, and enables scalable generation of cybersecurity logs with attack-stage labels. Second, we use multi-source logs, including audit logs, application logs, and network traffic, to jointly analyze cyber attacks. Third, we annotate each sample with the essential context for cybersecurity log reasoning and a structured step-by-step evidence chain. We evaluate eight mainstream LLMs on this benchmark for post-detection attack-progress reasoning. Results show that, when provided with scaffolded evidence, current LLMs exhibit modest capability in attack-progress reasoning, with the best model achieving only 44.44% accuracy and 45.07% Macro-F1. Their reasoning remains unreliable; i.e., the highest Stage Reasoning F1 (SRF1) score is only 54.87%. Moreover, even correct predictions may be accompanied by flawed reasoning, and reasoning quality is often misaligned with prediction accuracy.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31000v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "17 pages, 9 figures. Submitted to IEEE Transactions on Dependable and Secure Computing. Code and data: https://github.com/SecLog-Open/SecLog",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30963v1",
+      "title": "ReDence: A Hybrid Agentic and Decision-Model Framework for Rapid, Evidence-Grounded Detection of Modern Social Engineering Scams",
+      "authors": [
+        "Jaishnoor Kaur",
+        "Josef Horáček",
+        "Ian Waskom",
+        "Sayak Saha Roy"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T09:08:33Z",
+      "summary": "Detecting online social engineering (SE) scams often requires examining website workflows, verifying claims against external sources, and connecting evidence across multiple pages. Existing detectors provide limited support for these investigations, leaving analysts to manually gather and validate evidence, which inevitably delays detection and subsequent takedown of these attacks. To address this gap, we present ReDence, an open-source hybrid framework for adaptive, evidence-grounded detection across diverse SE scam categories. ReDence combines two locally hosted models with complementary responsibilities: a fine-tuned multimodal agentic Investigator (Qwen3.5-4B) that performs investigative planning, evidence interpretation, and reporting, and a specialized Decider (Tev1) that handles binary and multiple-choice tasks, including browser-action selection, evidence assessment, and decisions about whether to continue an investigation. By delegating discrete decisions to a specialized model, ReDence reduces reliance on lengthy language-model responses, while preserving the reasoning capabilities required for complex investigations. Our evaluation demonstrates that ReDence achieves 96\\% accuracy in detecting scams across twelve SE scam categories, substantially outperforming existing detectors while being at least four times faster than comparable agentic models without compromising investigative depth. ReDence also produces structured, evidence-grounded reports that document investigative actions, supporting and contradictory evidence, and collected artifacts, which allow analysts to independently audit detection decisions and utilize the collected evidence to support subsequent mitigation and takedown efforts.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30963v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30935v1",
+      "title": "Bridging Number-Theoretic Primality Testing And Algorithmic Optimization: An Adaptive Cryptographic Framework",
+      "authors": [
+        "Tran Minh Thanh",
+        "Vo Hoai Viet"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T08:55:45Z",
+      "summary": "The security of modern public-key cryptographic systems, such as RSA, Diffie-Hellman, and ECC, depends entirely on the computational intractability of the integer factorization and discrete logarithm problems. For these asymmetric algorithms to operate, a core requirement is that the system must be capable of generating, testing, and simultaneously proving the primality of extraordinarily large numbers. To meet those requirements, this study proposes a comprehensive framework, bridging clas- sical number theory with modern machine learning models and optimization algorithms. Specifically, the paper delineates an adaptive, arbitrary-precision architecture dedicated exclusively to primality testing. Concurrently, the research deeply analyzes the theoretical foundations of testing methods (both deterministic and probabilistic), hardware-level optimization techniques, and the application of quantum-secured entropy sources, while providing rigorous mathematical proofs to guarantee security even when the prime distribution is biased.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30935v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30914v1",
+      "title": "MIG-COW: Transferable Adversarial Attacks on Deepfake Detectors via Gradient Decomposition",
+      "authors": [
+        "Wonjune Seo",
+        "Joonhyuk Baek",
+        "Yeseong Jung",
+        "Saerom Park"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T08:34:47Z",
+      "summary": "Despite recent advances, deepfake detectors remain vulnerable to adversarial examples, particularly in diverse, real-world settings. We propose MIG-COW, a novel adversarial attack framework that generates highly generalizable and visually imperceptible adversarial examples. By combining momentum-integrated gradients with a consensus-orthogonal decomposition, MIG-COW captures both shared and model-specific vulnerabilities across heterogeneous CNN and ViT detectors. On the AADD-2025 Challenge benchmarks, MIG-COW achieves a 99.96% white-box attack success rate (ASR) with high perceptual similarity (SSIM), significantly outperforming existing baselines. However, its limited 7.16% ASR against official black-box targets - despite achieving the best overall score - highlights the ongoing challenge of transferability. We also demonstrate that incorporating low-performing but diverse models in the ensemble can degrade attack effectiveness, underscoring the need for careful surrogate model selection in real-world adversarial settings.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30914v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "7 pages, 3 figures, ACM MM '25",
+      "journal_ref": "Proceedings of the 33rd ACM International Conference on Multimedia (ACM MM 2025), pp. 13730-13736",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30798v1",
+      "title": "Amplifying Latency and Cost of LLM Inference via Rowhammer Attack",
+      "authors": [
+        "Mrityunjay Shukla",
+        "Shubham Roy",
+        "Biswabandan Panda"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T06:24:35Z",
+      "summary": "Large language models (LLMs) achieve high inference efficiency using optimized GPU kernels generated by just-in-time (JIT) compilation frameworks such as Triton. Triton compiles GPU kernels through an MLIR/LLVM-based pipeline. We investigate whether a Rowhammer-induced bit-flip in the CPU's DRAM can degrade GPU-based LLM inference performance while preserving output correctness. We present LLVMhammer, the first Rowhammer attack that causes LLM inference slowdown by inducing a bit-flip in Triton's compilation pipeline. A bit-flip in a performance-critical optimization pass causes Triton to generate a functionally identical but suboptimal GPU kernel. Since Triton caches the generated kernel on disk, a single successful bit-flip causes persistent slowdown across subsequent inference executions. Triton's target-independent stages are shared across GPU vendors, which makes our attack GPU vendor-agnostic. To identify exploitable bit-flip locations without manual inspection, we build Karnage, a tool that isolates useful bit-flip locations in Triton's target-independent compilation pipeline. We evaluate LLVMHammer across a diverse set of LLMs, including Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3, and Deepseek-llm-7B-chat, across NVIDIA RTX 4090 and AMD RX 7900 XTX GPUs. LLVMhammer increases inference latency of an LLM inference server running on a single GPU by 4-16\\%, which, in turn, can translate into additional annual operating costs at the scale of multi-GPU deployments. We further show that LLVMhammer can also corrupt LLM outputs across different GPU vendors, reducing BERTScore to as low as 25\\%, illustrating the broader security implications of bit-flips in Triton's compilation pipeline.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30798v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30758v1",
+      "title": "Can Loan Processors and Underwriters Spot AI-Edited Statements? An Empirical Study",
+      "authors": [
+        "Simiao Ren",
+        "Xingyu Shen",
+        "Tommy Duong",
+        "Ankit Raj"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T05:26:04Z",
+      "summary": "AI-assisted editing can produce loan documents that preserve familiar issuer layouts while changing the applicant's identity. We investigated whether experienced underwriters and loan processors identify such forgeries in first-pass, document-only review. Three practitioners recruited through Upwork each received one applicant package drawn from 134 forged PDFs derived from 47 genuine financial documents supplied with full consent. The edits preserved amounts, dates and balances; identifier inconsistencies introduced by the pipeline were knowingly retained before distribution. Reviewers were not told that files had been altered and returned 132 file-level judgements. Checking their explanations against the originals yielded 14 edit-supported concerns (10.6%): 12 Suspicious judgements and two Insufficient information judgements. All supported concerns involved identifier disagreements within or across documents, and no reported visual cue identified an actual edit. Thus, approximately one in ten judgements contained evidence of the forgery, despite known inconsistencies remaining in the files. These observations motivate evaluating consistency checks and independent source verification alongside human review. With three reviewer-package pairs and no genuine-file controls, the findings describe this exploratory setting rather than population-wide detection accuracy.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30758v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CR",
+        "cs.HC",
+        "cs.SE"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CR (密码学与网络安全)",
+        "cs.HC (人机交互 (HCI))",
+        "cs.SE (软件工程)"
+      ],
+      "comment": "6 pages, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30738v1",
+      "title": "AgentTriage: Replayable Security Diagnosis Across Heterogeneous Agent Runtimes",
+      "authors": [
+        "Jie Ying",
+        "Xutao Zhang",
+        "Ningyuan Chen",
+        "Mengce Zheng",
+        "Jun Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T05:09:44Z",
+      "summary": "When tool-use agents write files, execute code, or send data, their final responses do not explain the resulting security events, and heterogeneous runtimes expose the relevant evidence through incompatible interfaces. We present AgentTriage, an executable contract for replayable security diagnosis across heterogeneous runtimes. The contract admits conclusions whose claims cite canonical runtime events and requires abstention when mandatory evidence is missing. Runtime overlays normalize native observations, while a deterministic pipeline joins invocation and result lifecycles, constructs a typed provenance graph, selects a policy-decisive slice, and binds claims to recorded evidence. Given the same normalized trace, overlay version, and pre-run policy oracle, the diagnosis can be recomputed and its claims re-checked without language-model judgment. Across five runtimes, one contract captures all 159 applicable executions, with an audit of native and synthesized identifiers. On 120 adjudicated cases, AgentTriage achieves 0.858 grounded joint diagnosis, 0.966 required-evidence coverage, and a 0.036 unsupported-claim rate, improving joint diagnosis by 0.175 (95% CI [0.092, 0.258]) over the strongest same-schema baseline. These results quantify the precision of replayable diagnosis and the observation boundaries that require abstention. We release an open-source implementation and selected sanitized evidence at https://github.com/AsnGs/agenttriage-open-source.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30738v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30713v1",
+      "title": "AIRO: A Streaming-Based Machine Learning Framework for Threat Detection and Security in Industrial Internet of Things",
+      "authors": [
+        "Raima Deb",
+        "Pranav M Pawar",
+        "Mithun Mukherjee",
+        "Raja Muthalagu",
+        "Mian Guo"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T04:30:48Z",
+      "summary": "Modern Industrial Internet of Things (IIoT) im- plementations now connect edge gateways, cloud dashboards and business applications. This improves visibility and remote monitoring. However it simultaneously exposes industrial traffic to various cyber threats including scanning, web attacks and Structured Query Language (SQL) injection (SQLi), phishing- driven credential theft, and command-and-control (C2) activity. Although rule-based tools remain useful for detecting known signatures, their efficacy decreases with minimally altered attacks or when alerts require manual investigation. This paper presents AIRO (Autonomous Intelligence-Driven Cybersecurity Risk Re- duction System), an efficient framework for IIoT monitoring and response. AIRO combines Apache Kafka streaming, attack- specific feature extraction, machine learning (ML) inference, confidence-based decision logic and risk reduction measures such as Internet Protocol (IP) blocking, account suspension and traffic limiting. We developed four specialized datasets for C2 beaconing, reconnaissance, SQLi, and phishing to evaluate AIRO. These datasets include noisy and overlapping characteristic distribu- tions to minimize label leakage. The best-performing models, primarily Gradient Boosting and LightGBM, achieve F1-scores up to 0.9229 while ensuring low-latency from event input to mitigation",
+      "pdf_url": "https://arxiv.org/pdf/2610.30713v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG",
+        "cs.NI"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "cs.LG (机器学习 (ML))",
+        "cs.NI (计算机网络与互联网通信)"
+      ],
+      "comment": "7 pages, 6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30678v1",
+      "title": "Scaling Laws for Safety Probes",
+      "authors": [
+        "Yuchen Wu",
+        "Jerry Wei"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T03:43:33Z",
+      "summary": "Safety probes trained on a model's activations are a standard tool for monitoring language models in real time. Each time a new model is released or a new harm area needs to be monitored, the probe must be retrained, which requires new labels and a choice of probe architecture. Yet neither the model nor the labels tell us in advance how well the resulting probe will perform. Finding out requires training and comparing many probe configurations. In this paper, we ask whether probe performance can instead be predicted in advance from model size and the number of labels. Existing safety datasets are insufficient for this, as they are either limited in scale or already saturated. We therefore construct six new safety datasets of sufficient size and difficulty. On these datasets, we train two probe architectures on 20 base models from five model families, with 32 to $10^{6}$ labels for each model. We measure performance using probe error, defined as 1 - AUROC, where lower values are better. We find that probe error follows two simple scaling laws. First, the lowest probe error a model can reach falls as a power law in its size. Second, probe error decreases towards its floor as the number of examples increases; the slope increases as the target model size increases. Both laws hold across tasks, model families and probe architectures, and only their fitted constants differ. When fitted on the smallest models of a family, the laws predict the error of the next larger model to within 0.02 in 72% of cases. They also identify whether more labels or a larger model is the cheaper way to reach a target error in 73% of cases. Finally, they choose the probe architecture with an extra error of only 0.006 on average when they pick the worse one. These laws allow safety researchers to determine how to create the best probe for any given model and label budget.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30678v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CR",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.CR (密码学与网络安全)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "62 pages, 23 figures, 33 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30666v1",
+      "title": "Your Token Is Gone: A Token-Consumption Countermeasure for Disrupting LLM-Based Scam Systems",
+      "authors": [
+        "Fudu Xing",
+        "Kailong Wang",
+        "Tianlong Yu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T03:31:03Z",
+      "summary": "LLM-based scam systems increasingly combine adaptive dialogue, persistent context, external tools, and multi-agent coordination to automate personalized fraud. These capabilities also create a resource dependency: every reasoning step, model call, and coordination round incurs inference cost. We present TokenTrap, a resource-oriented defense that redirects suspected scam systems toward benign, low-value computation while withholding credentials, payments, and other exploitable information. TokenTrap combines three components: an architecture-specific token-task library, a router that selects among single-agent, hierarchical, and flat multi-agent workflows, and a bounded anti-guardrail strategy that varies task presentation while enforcing token, round, time, and safety limits. Across 50-round traces, TokenTrap amplifies token consumption by $2{,}487.0\\times$, $1{,}616.0\\times$, and $567.8\\times$ relative to a no-token-task baseline for the three workflows. Its router achieves 85.67% accuracy on 300 architecture-labeled prompts. These results demonstrate that short, non-sensitive requests can impose substantial context-processing and coordination costs, motivating resource-aware defense as a complement to scam detection.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30666v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": "10 pages, 5 figures, 3 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30645v1",
+      "title": "FVQKD: A Formal Verification of Quantum Key Distribution Security in Rocq",
+      "authors": [
+        "Ruixuan Deng",
+        "Zhengfeng Ji",
+        "Jiayu Zhang",
+        "Li Zhou"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T03:06:21Z",
+      "summary": "Quantum key distribution (QKD), whose security is derived from quantum mechanics rather than computational assumptions, is moving into standardization and commercial deployment. Yet its security guarantees rest on technically delicate proofs checked by hand. Formal verification closes this gap, establishing a two-factor assurance: unconditional security from physical principles, and machine-checked proofs against reasoning errors. We present FVQKD, a Rocq library for machine-checking QKD security proofs. Its first result is a complete, end-to-end machine-checked proof of composable, finite-key security for BB84. The mechanization reconstructs the complete proof infrastructure from first principles, including the smooth entropy framework, the entropic uncertainty relation, and the Quantum Leftover Hash Lemma. It uncovers necessary side conditions that the published argument leaves unstated, one of which reveals a missing proof branch, and it grounds the information-theoretic bound in a formal semantics of protocol execution, which the pen-and-paper analysis lacks. The proof is entirely admit-free, relying only on the Rocq kernel and standard foundational axioms. To our knowledge, this is the first end-to-end formal verification of a QKD security proof. Built on MathComp, MathComp-Analysis, and CoqQ, the development provides quantum-information infrastructure designed for reuse across broader QKD variants and quantum cryptography applications.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30645v1.pdf",
+      "source": "arxiv",
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "cs.CR",
+        "cs.LO"
+      ],
+      "category_names_zh": [
+        "quant-ph (量子力学、量子通信与量子计算)",
+        "cs.CR (密码学与网络安全)",
+        "cs.LO (计算机科学逻辑)"
+      ],
+      "comment": "87 pages: 12 pages of main text, 4 pages of references, and 71 pages of appendices. Artifact: https://github.com/fvqkd/FVQKD",
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "cs.CR",
+      "name_zh": "密码学与网络安全",
+      "count": 25
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 11
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 8
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 2
+    },
+    {
+      "code": "cs.DS",
+      "name_zh": "数据结构与算法",
+      "count": 1
+    },
+    {
+      "code": "cs.SI",
+      "name_zh": "社交网络与信息网络",
+      "count": 1
+    },
+    {
+      "code": "cs.IT",
+      "name_zh": "信息论",
+      "count": 1
+    },
+    {
+      "code": "cs.DC",
+      "name_zh": "分布式计算与云计算",
+      "count": 1
+    },
+    {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 1
+    },
+    {
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 1
+    },
+    {
+      "code": "cs.HC",
+      "name_zh": "人机交互 (HCI)",
+      "count": 1
+    },
+    {
+      "code": "cs.SE",
+      "name_zh": "软件工程",
+      "count": 1
+    },
+    {
+      "code": "cs.NI",
+      "name_zh": "计算机网络与互联网通信",
+      "count": 1
+    },
+    {
+      "code": "quant-ph",
+      "name_zh": "量子力学、量子通信与量子计算",
+      "count": 1
+    },
+    {
+      "code": "cs.LO",
+      "name_zh": "计算机科学逻辑",
+      "count": 1
+    }
+  ],
+  "snapshot_synced_at": "2026-10-25T20:17:55.018967"
+}

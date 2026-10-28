@@ -1,0 +1,788 @@
+{
+  "query_expression": "cat:q-fin.TR",
+  "total_fetched": 25,
+  "total_results": 2433,
+  "papers": [
+    {
+      "paper_id": "2610.28075v1",
+      "title": "Speculative Imbalance Positions by Non-Physical Traders: Impacts on Electricity System Balancing in Great Britain",
+      "authors": [
+        "Joseph Cary",
+        "Thomas Morstyn"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T11:54:36Z",
+      "summary": "The electricity system in Great Britain (GB) allows participants to deliberately produce or consume a different volume to their traded position and has incentivised this practice with a single imbalance price since 2015. In particular, non-physical traders (NPTs) often take an open position to imbalance without any intention to produce or consume power. However, new government proposals could restrict this practice due to concerns over supply-demand balancing feasibility and costs. This article presents the first empirical analysis of speculative imbalance positioning (SIP) by NPTs in the GB electricity system through its effects on imbalance volumes, balancing costs, the imbalance price, and associated settlement costs over the period 2021-2024. Our research uses party-level imbalance data in each settlement period to run counterfactual simulations of the electricity balancing mechanism without the aggregate NPT imbalance. Our results indicate that SIP by NPTs reduced the total net balancing volume required by 3.1-3.9 TWh (16-20%), reduced system imbalance standard deviation by 48-65 MWh (13-17%), reduced balancing costs by £347-396m (5.9-6.7%), and reduced supplier imbalance costs by £193-325m (65-75%) over the analysis period. These results suggest that consumer bills would have been higher without SIP by NPTs, since the extra costs would likely have been passed on to consumers through levies, although the potential for effects in the wholesale (primarily late-stage intraday) markets complicates this picture.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28075v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "econ.GN",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "econ.GN (宏观与综合经济学)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.27100v1",
+      "title": "LOB-Impact Benchmark: Emergent Market Impact in Generative Limit Order Book Models",
+      "authors": [
+        "George Nigmatulin",
+        "Valentin Mohl",
+        "Sascha Frey",
+        "Kang Li",
+        "Aramis Marti-Shahandeh"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T18:01:00Z",
+      "summary": "Realistic market impact is essential for generative limit order book (LOB) models to serve as world models for trading agents. If a simulator misprices this mechanism, agents learn policies that are optimal in the simulator but wrong in the real market. Existing metrics assess generated streams purely through distributional comparison with historical data, leaving counterfactual response to an agent's own orders largely unexplored. Here, we show that market impact emerges naturally in neural LOB generators trained solely for next-token prediction. We inject execution-style metaorders into the generated message flow of five autoregressive models across five NASDAQ stocks and measure the response using estimators from the empirical impact literature, validated on baselines whose physics is known in advance. Our benchmark evaluates any message-level generator in three phases: free generation (reading order-flow persistence against price diffusivity); metaorder injection (yielding the impact law's exponent and amplitude); and a post-execution window (measuring relaxation). In addition, comparing each visible injection to a blind, simulator-only control isolates the model's learned response from standard book mechanics. For every model on every stock, we measure how the impact responds as a function of cumulative metaorder participation. Interestingly, we observe emergent impact in generative models of market data, with exponents in the range of 0.63 to 1.21, slightly above the traditional 0.5 of the square-root law of impact. In the family of models tested, we are so far unable to observe impact decay during relaxation. We tentatively attribute this to the still-short context windows of the models. We release the benchmark as open source to validate future generative models for market data.",
+      "pdf_url": "https://arxiv.org/pdf/2610.27100v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "9 pages, 4 figures, 3 tables. Accepted at ICAIF '26 (7th ACM International Conference on AI in Finance), Milan, Italy. Code: https://github.com/george-nigmatulin/lob-impact",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26789v1",
+      "title": "Cooperative Multi-Agent Reinforcement Learning for Market Making on Prediction-Market Order Books",
+      "authors": [
+        "Skander Lejmi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T17:38:36Z",
+      "summary": "A market maker provides liquidity by quoting prices to buy and sell an asset, earning the spread while managing inventory risk. We study market makers trained with multi-agent reinforcement learning on prediction markets, specifically Polymarket, whose thin order books pose distinct challenges. Three challenges underpin this research: adverse selection may cause a policy trained on real data to stop quoting; the consequences of a quote can arrive many steps after the action; and prediction-market L2 data does not identify individual orders needed for simulation. We address these challenges by reconstructing order-level LOBSTER-format data from Polymarket and training agents in JaxMARL-HFT on 417 real markets. We enrich the baseline market maker's observation space with the book and recent flow, redesign its actions and inventory controls, and propose a cooperative multi-agent decomposition into a quoter and a risk manager trained using recurrent Independent Proximal Policy Optimisation (IPPO) with RNN policies. We investigate reward shaping, particularly reward blending and post-fill markout, to mitigate credit-assignment difficulties between the agents. Our redesigned single-agent market maker quotes more frequently and incurs smaller held-out losses than the retrained JaxMARL-HFT baseline, although the contributions of jointly changed observations, actions and risk constraints are not separately identified. Decomposition alone performs poorly; careful reward design substantially improves the desk relative to the unshaped split and yields our best result. Models are evaluated on realised end-of-episode portfolio value on held-out markets. None establishes positive average portfolio value in periodic held-out evaluation, and each configuration was trained with one seed. The environment, data and protocol lay a foundation for makers that quote many linked markets at once.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26789v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "cs.MA",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "stat.ML (机器学习统计基础)",
+        "cs.LG (机器学习 (ML))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "50 pages, 8 figures, 7 tables. Extended version of a paper accepted at ICAIF 2026 Workshop on AI-Driven Market Microstructure. MSc dissertation, London School of Economics and Political Science (2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26324v1",
+      "title": "The Control Layer Behind Rule-Following Agents Trading Across Market Conditions",
+      "authors": [
+        "Saad Naja",
+        "Nasser Odtallah",
+        "Jake Van-Praag",
+        "Sarah May"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T13:01:10Z",
+      "summary": "Trading discipline often fails people. Our study tested whether four AI trading agents followed their strategies and risk rules. Offering traders the evidence and an agent evaluation toolkit to separate luck from following the rules, before giving agents meaningful autonomy or capital. Our study analysed 2,627 closed positions from 12 February to 27 August 2026 across the same asset universe and execution conditions. Most positions were simulated against live prices with a 0.09% round-trip fee; 18% involved real Hyperliquid orders. Each position declared a strategy, stop and target, with a limit of five open positions per agent. The fleet finished net positive after fees. Rule adherence was high across all four agents, including the unprofitable one. Profitability tracked how often agents won relative to their break-even win rates. Institutional-style controls ran by default and contained losses through a 29% market drawdown and recovery, with documented exceptions. The discipline held for all four agents. Agents kept 97.5% of gross loss within declared stops, and typical losses closed at declared levels. Declared risk remained stable after losses and broadly stable across calm and volatile months. Twenty-three of 24 runs respected the position limit; logs identify the exception's size and duration. The same live data produced different results across assigned strategies. The trade-log tests can be rerun from the published trade snapshot; regime tests also require the published Bitcoin prices and regime labels. Section 3.5 specifies the stop-breach tolerance. These trade-level results are not account-level returns or proof of a lasting edge. Our study provides an evaluation toolkit to help traders distinguish rule-following from luck before committing capital. For anyone considering allocating capital to agents to trade, discipline should be the entry test, not the only test.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26324v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.MA",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "47 pages, 0 figures, 16 numbered tables. Includes a trading-agent evaluation toolkit and checklist",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25756v1",
+      "title": "Topological Compression of Prediction Market Belief States for Event Forecasting",
+      "authors": [
+        "Aadit Jerfy"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T04:12:55Z",
+      "summary": "Topological Data Analysis (TDA) and Persistent Homology (PH) have been utilized in numerous fields$-$from protein modeling to financial analysis$-$to understand the underlying structure of data. In this paper, we incorporate TDA and PH into forecasting models over a prediction market universe to determine whether the belief state of such markets forms an underlying structure whose shape can provide predictive insight. We conclude that single-parameter PH is able to improve predictive ability and calibrated accuracy of linear forecasting models, while two-parameter multipersistence produces similar benefits for nonlinear models.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25756v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "41 pages, 19 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25495v1",
+      "title": "Probabilistic Limit Order Book Forecasting with Conditional Diffusion Models",
+      "authors": [
+        "Junyu Chen",
+        "Franklin Liu",
+        "Moshu Xu",
+        "Lijian Yang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-18T19:34:17Z",
+      "summary": "Modeling limit order book (LOB) dynamics is central to market forecasting and execution-strategy evaluation. While diffusion models achieve strong empirical performance, existing LOB snapshot models typically lack a learned recurrent encoder and formal statistical guarantees. We introduce LOBGrad, a conditional DDPM framework for probabilistic LOB forecasting that combines an autoregressive RNN encoder with a diffusion-based generator. In particular, we establish an excess-risk oracle inequality for the one-step DDPM noise-prediction objective under exponential mixing and regularity assumptions. We further show that, under contractive dynamics, the dependence on the conditioning-window length can be reduced to a dependence on the latent-state dimension. Experiments on BTC/USDT, GOOGL, and META show that LOBGrad improves on its encoder-free diffusion ablation across all reported queue metrics and obtains competitive results against other baselines. It also reproduces the key stylized facts of LOB microstructure, and yields reasonably calibrated queue-based predictive intervals. A stylized downstream task illustrates the potential value of the generated forecasts.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25495v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "econ.EM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "econ.EM (计量经济学)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23749v1",
+      "title": "From Alpha to Execution: Trading Horizons, Regimes, and Schedules under Concave Impact and Hurst Scaling",
+      "authors": [
+        "Dnyanesh Kulkarni",
+        "Revant Nayar"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T16:55:06Z",
+      "summary": "Classical execution models assume linear impact, diffusive prices, and an exogenous horizon. We study execution under concave power-law impact and Hurst-scaled price fluctuations, and make two contributions. First, we choose the execution horizon by maximizing the Sharpe ratio of the trade's realized P&L. Price moves during the execution window are part of that P&L, so executing more slowly reduces its variance, and because impact is concave it can also lower cost per share. Urgency comes only from alpha realized while the order is being worked. The problem is governed by the signs of two quantities: (i) the duration elasticity of impact $a$, which under a structural prior equals the impact-persistence gap $β- H$ and can take either sign; and (ii) the net urgency $ν$, the rate of alpha realization net of exposure relief. When $ν$ keeps its sign over the window, an interior optimum exists, to leading order in $T/t_f$, only when both are positive; otherwise the order should be worked at the fastest or slowest admissible pace. In the interior regime the first-order condition involves no impact coefficient, order size or volume, and the objective is flat: for a large-cap example, the window within 1% of maximal Sharpe spans more than an order of magnitude. Second, given the window, we derive the schedule shape by convex programming under an envelope cost. For any increasing per-share cost of delay $w(t)$, the KKT solution is $φ\\propto (λ- w(t))_+^{1/β}$. For a Hurst-scaled envelope $w \\propto t^H$, the normalized schedule depends only on $(β, H)$, has a closed form via the incomplete beta function, is front-loaded, and tapers smoothly to zero, saving 10-17% of envelope cost relative to a constant-rate (TWAP) schedule of equal duration. Whether it uses the whole window depends on a single dimensionless robustness level, for which we give a calibration.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23749v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "math.OC",
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "math.OC (运筹学、优化与控制论)",
+        "q-fin.MF (数理金融学)",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "19 pages, 5 figures, 4 tables, including an appendix",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23619v1",
+      "title": "Cross-product Modelling in Continuous Intraday Electricity Markets via Hawkes Processes",
+      "authors": [
+        "Ayoub Jhabli",
+        "Tarek Alskaif",
+        "Kwabena E. Bennin",
+        "Bedir Tekinerdogan",
+        "Joost M. E. Pennings"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T15:30:01Z",
+      "summary": "As renewable energy integration accelerates, intraday continuous (IDC) electricity markets have become essential for short-term balancing. However, the simultaneous trading of overlapping contracts with varying granularities creates complex, hidden liquidity dependencies that are critical to market stability but remain poorly understood. This paper proposes a multivariate State-Dependent Hawkes Process (SDHP) to model cross-product liquidity dynamics between Quarter-Hourly and Hourly IDC contracts. To determine how cross-product effects vary under different market conditions, we classify the trading sessions into two distinct regimes: 'Normal' and 'Stressed', based on a composite metric of the bid-ask spread, mid-price volatility and queue imbalance. The model is calibrated on the first month of each quarter of 2024 using level 3 limit order book (LOB) data from the Dutch EPEX SPOT IDC market. We find that order flow is overwhelmingly self-driven, with roughly 95\\% of orders arriving in reaction to earlier orders in both regimes. Cross-excitation runs mainly from the Quarter-Hourly to the Hourly contract, but this leadership weakens under stress: the ratio of cumulative cross-excitation falls from 2.8 to 1.5, so the two contracts influence each other almost equally. Stress also makes the Quarter-Hourly to Hourly channel much faster, cutting its mean lag from 6.05 to 0.93 seconds. The strong seasonal variation found in calm periods largely disappears under stress, where all four months converge to the same structure.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23619v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23517v2",
+      "title": "Combinatorial Arbitrage in Prediction Markets",
+      "authors": [
+        "Hongjian Shi",
+        "Daojing Zhai"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T14:22:23Z",
+      "summary": "We develop a framework to identify and quantify arbitrage across logically related prediction-market contracts. We prove that prices outside the convex hull of admissible payoff vectors admit arbitrage and identify optimal arbitrage portfolios through integer programming. Using venue metadata and semantic analysis of resolution criteria, we recover 1.9 million logical relations and compile them into constraint systems covering more than 255,000 contracts. We replay full-depth Polymarket order books to simulate an arbitrageur executing these portfolios against resting orders. Among settled portfolios, an ideal arbitrageur that takes the full displayed depth of every opportunity and reuses its capital at resolution earns a risk-free return of 3.5% a week after spreads and fees. We find that arbitrage opportunities persist longer and attract less observed participation where relation discovery and execution are more costly.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23517v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.CP (计算金融与量化模拟)"
+      ],
+      "comment": "47 pages, 10 figures, 10 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.22839v1",
+      "title": "Basis-Only Funding Is Not Dividend Fair: Settlement Design in Crypto Equity Perpetuals",
+      "authors": [
+        "Donghwa Seo",
+        "Doohwi Cha",
+        "Seunghan Son",
+        "Juyeong Lee",
+        "Minsuk Sung"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T02:30:09Z",
+      "summary": "Crypto venues increasingly list perpetual futures on equities and other real-world assets (RWAs), which trade continuously yet reference dividend-paying stocks: a long equity perpetual marked to the ex-dividend cash price bears the ex-dividend drop without receiving the dividend. We ask whether the premium-index funding architecture these venues run -- funding set from the contemporaneous basis $e_t=P_t-S_t$ rather than a carry target -- can replicate shareholder cash flows for traders entering and exiting at arbitrary times. It cannot. Funding serves two roles that coincide for non-dividend crypto assets but split apart for equities: basis control and settlement. We give the fair-funding identity, cast timing fairness as an optimal-stopping condition, and characterize when the basis is a sufficient statistic for the fair target. The decisive obstruction is measure-theoretic: a predictable dividend is an atom, and no absolutely continuous funding path can replicate an atom over holding intervals even in the weak limit, so fairness must match the atom with an atom -- an event credit. Exchange-native data confirm this: at each covered ex-date one venue posts a discrete funding atom equal to $-D/(\\mathrm{Mark}-D)$ while a standard premium-index venue posts none, transferring the dividend across venues -- from native funding alone, with no external spot.",
+      "pdf_url": "https://arxiv.org/pdf/2610.22839v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.PR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.PR (衍生品与资产定价)"
+      ],
+      "comment": "16 pages, 4 figures. Submitted manuscript of a paper accepted at MARBLE 2026 (7th International Conference on Mathematical Research for Blockchain Economy)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.22727v1",
+      "title": "OrderFlowDiT: Transport-Regularized Diffusion Transformer for Probabilistic Limit-Order Supply Forecasting",
+      "authors": [
+        "Jung Hun Phee",
+        "Tucker Balch"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T22:56:40Z",
+      "summary": "We study the conditional distribution of limit-order volume submitted over the next five minutes, given the current order book and recent order flow. The task requires capturing price placement, total volume, and predictive uncertainty jointly. Coordinate-wise diffusion losses do not explicitly account for price displacement, while normalizing fields to unit mass removes information about total volume. Agreement on selected summary statistics also does not establish fidelity to the joint field distribution. We introduce OrderFlowDiT, a conditional Diffusion Transformer for unnormalized bid and ask volume-at-price fields, trained with an unbalanced optimal-transport (UOT) auxiliary loss. We also develop a full-field evaluation framework that combines a transport cost sensitive to price placement and total volume with proper scoring rules and calibration diagnostics. In the primary comparison on 1950 validation conditions across 30 U.S. equities, adding UOT reduces full-field transport cost by 45.8% and the transport energy score by 26.1% relative to training with mean squared error alone. Both measures improve for every stock. These findings support incorporating price geometry and volume into generative modeling, with field accuracy and predictive uncertainty evaluated together.",
+      "pdf_url": "https://arxiv.org/pdf/2610.22727v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.22522v1",
+      "title": "Agentic AI in Automated Markets",
+      "authors": [
+        "Irene Aldridge",
+        "Lourenco Belleau-Bhowmik",
+        "James Chan",
+        "Josh Chang",
+        "Kelly Deng"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T18:15:59Z",
+      "summary": "Automated markets increasingly host autonomous, learning trading agents and are powered by formulaic automated market makers (AMMs). We study how heterogeneous agent behavior shapes stress, risk-adjusted performance, liquidity, and volatility in these types of markets. Three behavioral archetypes are modeled as agentic reinforcement learning (RL) systems: a rational arbitrageur, a manipulator, and a retail herd-follower. Each archetype is defined by its reward function within a common, asset-agnostic exposure-control environment, and each is trained with a value-based Deep Q-Network (DQN) and with REINFORCE using a learned baseline. A pilot on hourly cryptocurrency data (AAVE, ETC, SUI) motivates the hypotheses. Herd-followers produce the most frequent but shortest stress episodes, manipulators the fewest but most persistent, and rational agents the most stable rolling Sharpe ratios despite higher return volatility. SHAP attributions tie these patterns to drawdown and cross-asset signals, short-term volatility and position state, and momentum, respectively. The results motivate behavior-specific regulation rather than uniform limits on volatility or turnover.",
+      "pdf_url": "https://arxiv.org/pdf/2610.22522v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "cs.ET",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "cs.ET (新兴计算技术与量子体系)",
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "10 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21846v1",
+      "title": "Where Backtests and Live Trading Part Ways: Six Defects from One Intraday System",
+      "authors": [
+        "Alex Vidovich",
+        "Zivana Zerjal"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T13:24:52Z",
+      "summary": "Backtests of intraday strategies can drift away from what the live system actually does; in our case, the drift never showed in summary statistics. We report six defects found while running one intraday US equity system live and comparing its live days with their backtest replay. Three came from data: a default feed that carried a small fraction of real opening volume, historical prices adjusted for dividends that live orders never see, and data the live system downloaded but the backtest never did. Two came from code: a sizing step that exceeded a limit the live account enforces, and UTC timestamps read as New York time. One came from configuration: settings that were switched on but never reached the code that places orders. For each we give the symptom, the size of the error, the cause and the test or control that now guards against it. All six sat where two paths that should agree had drifted apart. We close with a ten-point checklist. We make no claim about whether the system is profitable.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21846v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.ST",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.ST (统计金融学与高频数据)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "8 pages. Also posted on SSRN, DOI 10.2139/ssrn.7517378. The paper makes no claim about whether the system is profitable",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21540v1",
+      "title": "Pricing the Unprovable: Ambiguity, Turnstile Runs, and the Verifiability Discount in Crypto Protocols",
+      "authors": [
+        "Doohwi Cha",
+        "Hanhee Kim",
+        "Hyeonjun Yeo",
+        "Minsuk Sung",
+        "Minjae Lee"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T09:06:12Z",
+      "summary": "Privacy-preserving protocols can repair a vulnerability without establishing whether it was exploited beforehand, even when no theft is reported and aggregate supply is protected. We call the potential value reduction from this gap the verifiability discount. A turnstile model shows how early withdrawal can shift a possible shortfall to remaining holders and why credible evidence can become more valuable as exposure grows. We introduce VDISC, a reproducible framework that records reported loss, exposed value, public evidence, returns, and pool flows separately. It combines Orchard's staged disclosures with reconstructed on-chain flows, earlier Zcash cases, and a 40-event security panel. Orchard follows the predicted direction: market responses were muted after repair and supply assurance, while the largest negative return and aggregate shielded-pool net outflow aligned with the acknowledgment that past abuse could not be ruled out. These patterns are directional, not causal. Across events, market-cap-normalized reported loss and unresolved exposure overlap among the 38 events with a public loss figure (Pearson 0.86, Spearman 0.56), partly because exposure is often coded from the loss itself, so returns alone cannot distinguish reported loss from unresolved history. The findings motivate three candidate design priorities: produce privacy-compatible evidence about past states, limit the state exposed by a single flaw, and disclose residual uncertainty explicitly.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21540v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "cs.CR",
+        "q-fin.GN",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "cs.CR (密码学与网络安全)",
+        "q-fin.GN (普通宏观金融与经济)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": "17 pages, 3 figures, 4 tables. Accepted at MARBLE 2026 (Mathematical Research for Blockchain Economy); to appear in Lecture Notes in Operations Research (Springer). Author version with post-submission corrections; not the Version of Record",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21510v1",
+      "title": "How Much Screening Buys a Second? Speed, Selection, and the Maker's Spread",
+      "authors": [
+        "Aleksei Adadurov",
+        "Eduard Airapetian",
+        "Anton Chtepine",
+        "Antero Eloranta",
+        "Boris Pletenev"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T08:45:19Z",
+      "summary": "We study the spread a liquidity provider needs to break even against counterparties that can exploit a stale quote, and we place two defenses on a single scale: repricing sooner and screening informed flow. A break-even condition pins down the exact screening rate at which a slower maker matches a faster unscreened venue: the selection that buys back the extra staleness. The result requires only an integrable price innovation and therefore holds under jumps, atoms, and infinite variance. Predictable drift is a centering problem: it widens a spot-centered quote, but its cost vanishes once the quote is recentered on the expected reference. In four USDC-WETH pools benchmarked against Binance ETH-USDT from June to August 2026, the one-second benchmark innovation is sharply non-Gaussian: 73% of seconds show no price change. Cutting cadence from twelve seconds to one sheds 84.5% of the expected shock, so a twelve-second maker must screen at least 84.5% of informed flow to match a one-second venue, far above the 71.1% that a Gaussian model implies. In trending markets, the stale pool is picked off at execution: with-trend fills obtain an effective spread 11.1 bps lower than against-trend fills, with the same sign in all four pools.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21510v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21491v1",
+      "title": "NEST: Stale-Robust Tokenized-Stock Measurement for a Crypto-Treasury LETF Stack",
+      "authors": [
+        "Doohwi Cha",
+        "Minsuk Sung",
+        "Minjae Lee",
+        "Hyeonjun Yeo",
+        "Hanhee Kim"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T08:28:59Z",
+      "summary": "Tokenized equities trade while listed markets are closed, so their marks could improve off-hours measurement along layered exposures that link Bitcoin, crypto-treasury stocks, and leveraged ETFs. A token return and the next opening gap, however, share the price move from the previous close to the token mark, so part of their apparent fit is mechanical. We develop NEST, a stale-robust protocol that separates this shared-history fit from conditional measurement value. A shared-history identity and a variance-clock bound show how much fit timing alone can generate. The partial determination index (PDI), the squared partial correlation between token and gap given public controls, measures what remains, and a finite-sample frontier expresses the partial-F decision in PDI units. Product, provenance, timestamp, and execution audits decide whether an informative mark is admissible. For MSTRx, a tracker certificate on MicroStrategy (MSTR), a token-only $R^2$ of 0.916 shrinks to a modest increment once Bitcoin, mark age, and a pre-09:00 MSTR premarket proxy are controlled: the token explains 15.7% of the remaining gap variation (1% frontier 0.031), and 14.0% to 17.0% under stricter clock variants, including one in which every token mark precedes 09:00. A trade-level reconstruction on Gate gives 25.2%; NVDAX and AAPLX clear their frontiers, whereas TSLAX does not. An admitted mark updates, rather than replaces, BTC-unit exposure diagnostics for the BTC-MSTR-LETF chain.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21491v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "cs.CR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "cs.CR (密码学与网络安全)"
+      ],
+      "comment": "20 pages, 3 figures, 7 tables. Extended version of a paper accepted for publication in the proceedings of MARBLE 2026 (Lecture Notes in Operations Research, Springer Nature)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.21081v1",
+      "title": "StochLOB: Heavy-Tailed Score Matching for Robust Limit Order Book Trend Prediction",
+      "authors": [
+        "Arshia Abolghasemi",
+        "Seyed Reza Tavakoli",
+        "Parsa Naderi",
+        "Nazanin Mirzaei",
+        "Behrad Jahani"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-15T01:33:30Z",
+      "summary": "Score-based diffusion methods usually perturb data with Brownian Gaussian noise, corresponding to a light-tailed forward stochastic differential equation (SDE). For market time series this SDE can be a poor abstraction: limit order book (LOB) order flow is heavy-tailed, bursty, and occasionally jump-like. We study STOCHLOB, a training-only score-matching framework that changes the forward diffusion corruption law while leaving the deployed predictor deterministic. Instead of Brownian-only Gaussian corruption, the noising process uses two non-Gaussian SDE-inspired alternatives: jump-Lévy noise through a compound-Poisson variance mixture, and clipped $α$-stable noise through a positive-stable Gaussian scale mixture. These corruptions inject finite jumps and heavy-tailed residuals into training without requiring reverse-time diffusion sampling at inference. The resulting score target has a useful interpretation: its radial factor $h_t(r)$ is the posterior expected corruption precision, so large residuals are weighted according to the latent corruption scale that most plausibly generated them. On chronologically held-out Coinbase LOB data, the proposed variants remain competitive on uncorrupted BTC and altcoin test horizons and improve several realized tail-window stress diagnostics. An exploratory Feishu A-share transfer study further tests whether the probability outputs remain usable under transaction costs and trading-rule constraints. Code and configuration files are available at https://github.com/ArshiAbolghasemi/Penny.",
+      "pdf_url": "https://arxiv.org/pdf/2610.21081v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.TR",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.TR (交易策略与市场微观结构)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "32 pages, 5 figures. NeurIPS 2026 Workshop: AI for Stochastic Dynamics",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.16588v1",
+      "title": "Demand Under a Mechanical Price: Elasticity and Welfare in Ethereum's Data-Availability Market",
+      "authors": [
+        "Farbod Ghasemlu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-12T11:10:21Z",
+      "summary": "Ethereum sells data-availability capacity to rollups through \"blobs\" priced by a controller: the blob fee rises and falls exponentially with cumulative usage above or below a target, and no auction sets it. We measure what this mechanical price costs. The Pectra upgrade of 7 May 2025 doubled blob capacity on a date fixed weeks in advance, while the market was congested, and the blob fee fell from 0.82 mETH per blob (about USD 1.40) to its 1-wei floor. Rollups' blob purchases rose 24%. The 95% interval, built from the same estimator at 516 placebo dates, runs from 8% to 40%, so removing the entire price raised purchases by at most 40%. The implied elasticity at the pre-shock price is -0.19, and no value below -0.31 is consistent with the interval. The estimate includes any rise in L2 activity that coincided with the fork, so it bounds the price response from above. With demand this inelastic, the controller works mainly as a transfer. Rollups paid USD 14.8 million in blob fees under the first blob regime, 67% of it in two quarters when capacity was full and any market-clearing mechanism would have collected comparable scarcity rents. Where capacity was slack, the reserve price introduced in December 2025 cost at most 2.6 ETH (USD 8,039) in deadweight loss under the most elastic demand the data allow. Mempool records for 5.4 million blob transactions show that when the fee sits at its floor, capacity is slack: transactions miss about one block and are almost never priced out.",
+      "pdf_url": "https://arxiv.org/pdf/2610.16588v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "21 pages, 7 figures, 6 tables. Data: https://doi.org/10.7910/DVN/4AOXKT. Code: https://github.com/farbodghasemlu/ethereum-blob-demand",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.16151v2",
+      "title": "Neural Estimation of Irreversibility in Real and Simulated Limit Order Book Paths",
+      "authors": [
+        "Hyeonjun Yeo",
+        "Doohwi Cha",
+        "Yoontae Hwang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-12T04:21:33Z",
+      "summary": "A path indistinguishable from its own reverse carries no arrow of time, so time irreversibility is a necessary condition for a directed mechanism to be readable from trajectories alone. In finance it has been measured only on scalar series such as returns and volatility. We define the irreversibility rate of a coarse-grained limit order book path as the forward-to-reverse log-density ratio per event, and estimate it from three weeks of Nasdaq market-by-order data with an order-invariant MLP and a temporal convolutional network that receive identical blocks. For NVDA, the order-invariant and order-sensitive estimates are 0.036 and 0.054 nats per event, respectively. Their difference, the ordering increment, is 0.018. A surrogate preserving the coarse one-step transition table recovers 30 percent less irreversibility than the observed paths. The increment is positive for all twelve symbols on every held-out daytime date, and for NVDA in each session window. It changes more than tenfold with the coarse-graining scale. Neither a linear score nor any single feature group reproduces the full fitted rate. A queue-reactive simulator calibrated on the same days matches the market's ordered rate, 0.052 against 0.054, yet its ordering increment is 0.0006 against 0.018, building temporal asymmetry out of block composition instead of block order. We propose the ordering and scale profile of path irreversibility as a benchmark for order book simulators. Code and audit materials are available at https://github.com/hjyeo30/lob-irreversibility.",
+      "pdf_url": "https://arxiv.org/pdf/2610.16151v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "Accepted for oral presentation at the 7th ACM International Conference on AI in Finance (ICAIF 2026). 9 pages, 5 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.15256v1",
+      "title": "Do Rollups Self-Organize? Multi-Agent Reinforcement Learning in the EIP-4844 Blob Fee Market",
+      "authors": [
+        "Alessio Brini"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-11T00:58:06Z",
+      "summary": "EIP-4844 gave Ethereum rollups a separate fee dimension for data, governed by a multiplicative update rule that targets three ``blobs'' per block. Whether this target is reached depends on how many independent, self-interested rollups choose to post data, a question that closed-form models address only for a single agent under exogenous prices or in a static equilibrium. We propose a calibrated multi-agent reinforcement learning environment for the blob fee market in which the blob base fee is endogenous, set by the EIP-4844 rule on the aggregated decisions of heterogeneous rollups fit to post-Dencun Ethereum data. After confirming that the environment reproduces the known single-agent analytical optimum, we show that independent learners, with no convergence guarantee, still settle near the target without coordination ($3.32\\pm0.01$ blobs per block over five seeds). Over a fiftyfold demand range ($10\\times$ to $500\\times$), supply stays at the target from $10\\times$ to $200\\times$ and rises above it at higher demand, where the fee can no longer hold it. Posting frequency increases with rollup size, an emergent analog of the size threshold predicted by prior theory. A costless layer-1 calldata outside option pushes the fee down by roughly an order of magnitude while aggregate supply stays at the target, so the fee rule acts as a negative-feedback controller on decentralized supply.",
+      "pdf_url": "https://arxiv.org/pdf/2610.15256v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.GT",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.MA (多智能体系统 (Multiagent))",
+        "cs.GT (计算机博弈论与算法经济)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "5 pages, 4 figures, 3 tables. Accepted for publication in the Proceedings of the 2026 IEEE 4th International Conference on Artificial Intelligence, Blockchain, and Internet of Things (AIBThings 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.14948v1",
+      "title": "Exact Phase-Type Point Processes for Certified Measurement and Prediction of Event Streams",
+      "authors": [
+        "Sayak Dutta"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-10T14:22:58Z",
+      "summary": "Temporal point processes are used both to measure market mechanisms, for example how fast prices absorb news and how much of the reaction is the market responding to itself, and to predict the next event. We show that one algebraic object, the phase-type (Erlang-chain) state space, serves both purposes with exact likelihoods. For measurement, we build a multiscale phase-type Hawkes process whose parameters all enter linearly. Its log-likelihood is concave, and we compute the global maximum together with a Fenchel duality-gap certificate. A Markov embedding gives the response to an exogenous shock, echoes included, in closed form, and this response is stable if and only if the spectral radius of the branching matrix is below one. Applied to six markets around 670 scheduled macroeconomic releases (2022-2026) with a built-in placebo test, the model shows that the direct reaction to CPI, payrolls, PPI and the FOMC statement is absorbed in about a second, while the market's own echoes stretch half of the response to 16-137 s. For prediction, we introduce EPT-X, a neural point process that adds a history-dependent mixture-of-Erlang renewal channel to a linear Hawkes backbone. Its intensity and compensator remain in closed form, its states follow an affine recursion that trains with a parallel scan, and it can start from the certified fit of the measurement model. EPT-X has the best test likelihood on all five LOBSTER order-book streams and on Retweet and Taobao, and is level with the best published model on StackOverflow. We also find that the EasyTPP implementation of IntensityFree clamps short inter-event times before scoring, and that the gaps of the EasyTPP Amazon data are uniform on two fixed intervals.",
+      "pdf_url": "https://arxiv.org/pdf/2610.14948v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.ST (统计金融学与高频数据)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "27 pages, 5 figures, 11 tables. Code: https://github.com/itz-sayak/infodiff",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13126v1",
+      "title": "MLP-Initialized Reinforcement Learning for Exit Timing in SPX Short-Straddle Portfolios",
+      "authors": [
+        "Jianning Wang",
+        "Robert Ślepaczuk",
+        "Paweł Sakowski"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T07:21:16Z",
+      "summary": "This paper studies exit timing for SPX short-straddle portfolios using a two-stage supervised and reinforcement-learning framework. Historical episodes first generate ex-post optimal hold/exit labels for training a multilayer perceptron (MLP) using only contemporaneously available state variables at deployment. The trained MLP then initializes reinforcement-learning actors that are fine-tuned with a risk-aware trading reward. Out-of-sample evaluation over 2024-2026 shows that the supervised MLP substantially outperforms passive holding and representative fixed-time and profit-and-loss-based exit rules. Across seven independent seeds, MLP-initialized Actor-Critic averages 37.54% cumulative return and a Sharpe ratio of 1.705, compared with 35.01% and 1.651 for the supervised MLP. Actor-Critic trained from scratch averages only 0.18% return. These findings show that oracle-guided supervised learning provides a stable foundation for reward-based policy fine-tuning in a sparse and path-dependent option-exit problem.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13126v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "13 pages, 3 figures, 8 tables. Full version of the paper accepted at ACM ICAIF 2026 (Milan, November 14-17, 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.13044v1",
+      "title": "FOMO: FLEX Options and Market Outcomes",
+      "authors": [
+        "Shivesh Prakash",
+        "Frank Ferstler",
+        "Nicholas Pezolano"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-09T06:01:33Z",
+      "summary": "FLEX options are customized exchange-traded contracts allowing participants to choose nonstandard strikes, expirations, exercise styles, and settlement terms while retaining central clearing. We investigate whether single-name FLEX activity leaves measurable footprints in regular listed-option markets and underlying equities. Using a linked dataset of FLEX consolidations, daily open-interest files, listed-option chains, equity returns, and corporate actions over 250 trading days (March 2025-March 2026) across 41 underlyings and 53 event dates, we document three primary empirical findings: (1) Matched-control difference-in-differences estimates reveal a robust post-event increase in listed-option open interest (beta = 0.3061, p = 0.0042, Benjamini-Hochberg p = 0.0168). (2) FLEX activity is strongly selected into high implied-volatility (IV) environments, concentrated in mid-price underlyings (date-fixed-effect ATM IV premium beta = 0.1235, p = 0.0030). (3) Event-day IV-minus-realized-volatility spreads predict execution-stressed short-straddle returns (beta = 0.0366, p = 0.0100). Short-lived equity return effects (CAR_0 difference of -0.85%, p = 0.0442) do not persist over 1-to-5-day horizons. Overall, FLEX activity serves primarily as an observable marker of institutional volatility demand and open-interest positioning rather than a directional stock-return predictor.",
+      "pdf_url": "https://arxiv.org/pdf/2610.13044v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PR",
+      "categories": [
+        "q-fin.PR",
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.PR (衍生品与资产定价)",
+        "q-fin.ST (统计金融学与高频数据)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.12537v1",
+      "title": "Market Impact Estimation via Causal Foundation Models",
+      "authors": [
+        "Dennis Thumm",
+        "Ying Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-08T13:29:39Z",
+      "summary": "When a trader executes a large order, the relevant question is not \\emph{what will the price be?} but \\emph{what would the price have been had I not traded?} Market impact is thus a causal quantity, yet classical models (Almgren--Chriss, propagators) regress price on flow, which is biased whenever informed flow moves prices through information as well as trading. We present a proof-of-concept \\emph{Causal Market Simulator}: a continuous-time causal prior-data fitted network (PFN) trained on a synthetic market prior in which a hidden informational flow confounds the flow--price relation by construction, with confounding strength an exact per-episode knob. On this prior, the naive estimator's bias follows a closed form we confirm empirically (up to 68\\% overestimation), while the PFN tracks the unbiased true-parameter oracle at high confounding. Its \\emph{do-ablated twin}, the same model with the intervention inputs removed, collapses onto the pre-window mean. Zero-shot, the model responds at the ground-truth scale to metaorders in an ABIDES limit-order book ($+0.38$ pre-onset standard deviations against seed-replay counterfactuals), and its intervention response replicates on about 2,300 detected flow bursts in BTC/ETH/SOL perpetuals and 3,800 on Nasdaq equities, evidence consistent with, though not proof of, causal transfer. Off-prior the response degrades gracefully, and split-conformal recalibration repairs interval calibration. Transfer hinges on encoding the metaorder as added flow rather than a clamped price level, not on more training. A recurrent state-space variant closes the remaining shape gap: its impact accrues over execution duration where the transformer's stays flat, raising the correlation with measured metaorder impact from $+0.68$ to between $+0.92$ and $+0.96$, at the cost of weaker on-prior deconfounding that traces to the training recipe rather than to recurrence.",
+      "pdf_url": "https://arxiv.org/pdf/2610.12537v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CE",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.CE (计算工程、金融与科学计算)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "In 7th ACM International Conference on AI in Finance (ICAIF '26), November 14-17, 2026, Milan, Italy",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.11691v2",
+      "title": "Diffusive Market Impact: A Consistent Microfoundation",
+      "authors": [
+        "Julius F. Bonart"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-08T11:01:26Z",
+      "summary": "Structural price diffusivity explains many empirical regularities of market impact including the ``square-root law'' and its crossover to a linear regime for low trading rates \\citep{bonart2026diffusive}. One of its central predictions is that an information-neutral trading strategy generates a diffusive impact state. We microfound this result in an economy with a trader and many arbitrageurs who progressively eliminate predictable returns. Each arbitrageur observes realized returns and a private signal of one component of the fundamental return. As aggregate private information becomes complete and under suitable convergence to a stationary limit, the trader's impact law is of the form $j=U\\cdot w$, where $w$ is the innovation in the trading schedule and $U$ is causal all-pass. Impact returns are therefore white, even though no individual arbitrageur can reconstruct the underlying trading strategy. We then investigate the economic meaning of the impact phase. We argue that the $U$ which has minimum distance from the filter $L$ generating the trade flow is an especially interesting candidate: Trade flow is then minimally distorted under impact and arbitrage, and it always guarantees positive impact costs. Under a trader flow generated by a biexponential $L$ (the simplest form allowed in our model) an interesting result emerges: Impact decline is confined to a narrow band of $50\\%$--$60\\%$, lower than some empirical estimates and quite consistent with others. More complicated flow models can lead to different decays. Finally, we argue that in real markets, the impact phase is probably somewhat ``distorted'' in its long-term tails which allows for a full relaxation of the impact propagator. The effect is weak, long-term mean-reversion of the impact state.",
+      "pdf_url": "https://arxiv.org/pdf/2610.11691v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
+      "count": 25
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 8
+    },
+    {
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 3
+    },
+    {
+      "code": "q-fin.RM",
+      "name_zh": "风险管理与控制",
+      "count": 3
+    },
+    {
+      "code": "q-fin.MF",
+      "name_zh": "数理金融学",
+      "count": 3
+    },
+    {
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
+      "count": 3
+    },
+    {
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 2
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 2
+    },
+    {
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
+      "count": 2
+    },
+    {
+      "code": "q-fin.PR",
+      "name_zh": "衍生品与资产定价",
+      "count": 2
+    },
+    {
+      "code": "cs.CR",
+      "name_zh": "密码学与网络安全",
+      "count": 2
+    },
+    {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 1
+    },
+    {
+      "code": "econ.GN",
+      "name_zh": "宏观与综合经济学",
+      "count": 1
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 1
+    },
+    {
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
+      "count": 1
+    },
+    {
+      "code": "q-fin.CP",
+      "name_zh": "计算金融与量化模拟",
+      "count": 1
+    },
+    {
+      "code": "cs.ET",
+      "name_zh": "新兴计算技术与量子体系",
+      "count": 1
+    },
+    {
+      "code": "q-fin.GN",
+      "name_zh": "普通宏观金融与经济",
+      "count": 1
+    },
+    {
+      "code": "cs.GT",
+      "name_zh": "计算机博弈论与算法经济",
+      "count": 1
+    },
+    {
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
+      "count": 1
+    }
+  ],
+  "snapshot_synced_at": "2026-10-21T14:36:00.975007"
+}

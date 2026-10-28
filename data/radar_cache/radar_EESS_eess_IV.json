@@ -1,0 +1,765 @@
+{
+  "query_expression": "cat:eess.IV",
+  "total_fetched": 25,
+  "total_results": 31921,
+  "papers": [
+    {
+      "paper_id": "2610.28179v1",
+      "title": "CAPS: Clinically-Verifiable Anatomy-Prioritized Synthesis for Missing MRI Imputation in Brain Tumor Segmentation",
+      "authors": [
+        "Cecilia Diana-Albelda",
+        "Arthur Longuefosse",
+        "Mario Rubén Paz Campos",
+        "Álvaro García-Martín",
+        "Jesus Bescos"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T13:17:35Z",
+      "summary": "Multi-parametric MRI is the gold standard for neuro-oncology, yet acquiring complete 4-modality protocols may be unfeasible in real-world clinical practice. When handling missing modalities, existing automated systems force a critical compromise: robust segmenters operate as uninterpretable \"black boxes\" that bypass image generation, while standard synthesis models often produce blurry reconstructions lacking diagnostic reliability. To address this issue, we propose CAPS, a Clinically-Verifiable Anatomy-Prioritized Synthesis framework that reconciles computational precision with clinical transparency. Our multi-modal generative architecture is driven by a hybrid objective function (L_1 + L_AFP + L_DualDice) that explicitly enforces the preservation of deep anatomical features and strict topological boundaries, rather than relying solely on pixel-wise optimization. Evaluated comprehensively on the BraTS Adult Glioma dataset, the framework achieves superior synthesis fidelity across intensity-based metrics, and demonstrates robust downstream segmentation performance (82.38% mean Dice), successfully restoring verifiable visual context. Furthermore, the framework exhibits exceptional zero-shot cross-domain generalization, maintaining high structural fidelity across completely unseen Meningioma, Pediatric, and Sub-Saharan African cohorts without domain-specific adaptation. Finally, a blinded radiological assessment confirms that our anatomy-aware approach significantly enhances both perceived image quality and clinical utility, providing clinicians with the reliable visual evidence required to trust downstream automated workflows.",
+      "pdf_url": "https://arxiv.org/pdf/2610.28179v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "20 pages, 6 figures, 8 tables. Cecilia Diana-Albelda and Arthur Longuefosse contributed equally",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.27037v1",
+      "title": "Channel-Level Mask Guidance for Slimmable Image Compression",
+      "authors": [
+        "Chen Chen",
+        "Chenggang Wu",
+        "Yongbiao Chen",
+        "Weidong Qiu",
+        "Zhengwei Qi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T17:19:04Z",
+      "summary": "Learned image compression (LIC) has achieved promising rate-distortion performance, but most methods lack scalability for diverse platforms with varying computational and storage constraints. Existing slimmable LIC methods achieve flexible complexity via consecutive-channel activation but suffer from two limitations: forced consecutive-channel selection degrades narrow-model performance at low bitrates, and the lack of stable variable-rate control limits adaptability to varying bandwidth. We propose a channel-level mask-guided slimmable image compression method. A learnable channel-wise mask with sparsity-promoting regularization enables non-contiguous top-w channel selection, letting narrow models use the most informative channels. After training, mask merging and channel reordering convert the model into a standard slimmable network via Mask-to-Slimmable (M2S) conversion, enabling efficient inference without architectural changes. For variable-rate control, we combine lambda- and width-conditioned modulation with quantization-step scaling and a progressive training pipeline stabilized by a freeze-then-fine-tune strategy. Experiments on Kodak across E2E, Hyperprior, and Checkerboard backbones show superior rate-distortion performance across widths and bitrates, with large gains for narrow models at low bitrates. At w=48, it achieves up to 19.22%, 24.11%, and 22.76% BD-rate savings over the same-width Slimmable baseline on E2E, Hyperprior, and CKBD, respectively. A single VBR model replaces 40 independent models, reducing storage by 14.8x to 15.9x. Code: https://github.com/sjtu-tcloud/MGSIC.",
+      "pdf_url": "https://arxiv.org/pdf/2610.27037v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "14 pages, 12 figures. Submitted to IEEE Transactions on Circuits and Systems for Video Technology (TCSVT)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26586v1",
+      "title": "Scaling Vision Foundation Models for Toxicologic Pathology",
+      "authors": [
+        "Jessica Loo",
+        "Theodoros Pissas",
+        "Byunghak Kang",
+        "Vincent A. Ella",
+        "Xiaoyan Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T15:34:37Z",
+      "summary": "Here, we present TOX-FM, a family of non-clinical PFMs trained on large-scale diverse histopathology datasets of over one million whole slide images consisting of over 60 organs across six animal species from over 14,000 toxicology studies across six decades. We introduce a comprehensive benchmark of 18 non-clinical downstream tasks, incorporate an established benchmark of 9 clinical downstream tasks, and evaluate TOX-FM against state-of-the-art clinical PFMs across both non-clinical and clinical domains. Notably, we explore open questions surrounding domain-specific training and cross-domain generalization, offering insights into the opportunities and challenges of applying PFMs in the non-clinical domain.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26586v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26457v1",
+      "title": "Progressive multi-scale tumor-state memory for incomplete multimodal brain tumor segmentation",
+      "authors": [
+        "Milad Rostamian",
+        "Mohammadreza Mohammadi",
+        "Mohsen Soryani"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T14:11:09Z",
+      "summary": "Brain tumor segmentation uses complementary magnetic resonance imaging (MRI) sequences, but some sequences may be unavailable in practice. Their absence changes the information available for segmenting different tumor regions. Fusion methods can support different input subsets. However, fusion at several scales does not by itself specify how tumor evidence is retained and updated to guide fusion at later stages. We propose a progressive multi-scale tumor-state memory network (PMTM) for segmentation from any non-empty subset of T1ce, T1, FLAIR, and T2. PMTM maintains a compact state for the current subject across the encoder stages. At each stage, we use assignment maps to pool spatial features into ordered evidence vectors for each available modality. We average these vectors across the available modalities, and a learned gate combines this evidence with the previous state. The up- dated state guides residual fusion at that stage and is used in the state update at the next stage. A modality-token mixer also models interactions among the available modalities at each stage. We apply semantic supervision to the assignment maps at all four stages. We evaluate PMTM on BraTS2018, BraTS2020, and BraTS2023 GLI across all 15 non-empty modality subsets. Averaged over the three tumor regions and the 15 subsets, PMTM achieves Dice scores of 75.31%, 77.54%, and 80.47% on BraTS2018, BraTS2020, and BraTS2023 GLI, respectively. These scores are higher than those of RobustSeg, RFNet, and mmFormer in our experiments on each dataset. Component ablations and internal state analysis are performed on BraTS2020.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26457v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26292v1",
+      "title": "Localization Gains from Explanation Regularization Should Not Be Interpreted as Faithfulness Gains.",
+      "authors": [
+        "Amrin Akter",
+        "Mauro Dalla Mura",
+        "Diana Mateus",
+        "Dawood Al Chanti"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T12:41:52Z",
+      "summary": "Training-time explanation regularization is often evaluated by whether saliency maps become more concentrated within annotated regions. We argue that this criterion alone is insufficient: transformation consistency, lesion localization, and faithfulness to the classifier are distinct properties and should be evaluated separately, particularly in medical imaging. We examine this distinction through a case study of Contrastive Grad-CAM Consistency (CGC) in three-class brain tumor MRI classification. Using a single-channel ResNet-50 with five-fold patient-grouped cross-validation, we compare a cross-entropy baseline with CGC. CGC changes overall Pointing Game (PG) from $27.24\\%$ to $36.02\\%$ and Relevance Mass Accuracy (RMA) from $11.17\\%$ to $18.01\\%$, while classification accuracy changes from $93.63\\%$ to $94.87\\%$. Perturbation-based faithfulness metrics show inconsistent changes: Insertion Area Under the Curve (IAUC) changes from $0.73$ to $0.78$, whereas Deletion Area Under the Curve (DAUC) favors the baseline ($0.36$ versus $0.41$; lower is better), and overall Iterative Removal Of Features (IROF) is $0.57$ for both models. These results support our position that improved spatial agreement with pathology should not be interpreted as a general improvement in explanation faithfulness. We therefore recommend property-specific evaluation in which the property targeted by the explanation objective, spatial agreement with reference regions, and model reliance are measured and reported separately.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26292v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25803v2",
+      "title": "Image CL-SEC: Cross-Layer Semantic Error Correction for Image Communication",
+      "authors": [
+        "Feifan Zhang",
+        "Xuelin Bai",
+        "Yirun Wang",
+        "Yuyang Du",
+        "Soung Chang Liew"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T05:15:49Z",
+      "summary": "Semantic error correction (SEC) uses the semantic knowledge of pretrained models to complement conventional channel decoding. By combining physical-layer decoding information with application-layer semantic predictions, cross-layer SEC (CL-SEC) has demonstrated substantial performance gains in text transmission; however, its applicability to image transmission remains largely unexplored. This paper proposes Image CL-SEC, which, to the best of our knowledge, is the first extension of the CL-SEC framework to image transmission. Image CL-SEC uses channel-decoding information together with contextual predictions from a pretrained visual model to resolve residual uncertainty after forward error correction (FEC) decoding. In our implementation, images are represented as discrete visual tokens. For each token position selected for re-evaluation, the probability distribution produced by the channel decoder is combined with the distribution predicted by the visual model to identify the most likely transmitted token. The resulting decision therefore reflects both channel evidence and visual context. Experiments across multiple channel conditions show that, at low and moderate signal-to-noise ratios (SNRs), Image CL-SEC improves pixel-level fidelity, perceptual similarity, and token-recovery accuracy relative to either channel decoding or visual-model inference alone. Supplementary experiments using different pretrained visual models further demonstrate that these gains are not specific to a single model.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25803v2.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25635v1",
+      "title": "Uncertainty-Gated SHAP-Dirichlet Refinement for MRI-Based Depression Classification",
+      "authors": [
+        "Phuc Truong Loc Nguyen",
+        "Nguyen Truong Toan To",
+        "Truong Thanh Hung Nguyen",
+        "Hoang-Loc Cao",
+        "Hung Cao"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-19T01:25:51Z",
+      "summary": "Structural MRI-based classification of major depressive disorder (MDD) remains challenging due to subtle, heterogeneous anatomical changes. We propose uncertainty-gated SHAP-Dirichlet refinement, a post-hoc reliability layer that improves predictions without retraining the classifier. The method retrieves similar labeled SHAP explanations, constructs Dirichlet class evidence, and selectively refines uncertain predictions through probabilistic fusion, while allowing unreliable cases to be deferred for expert review. We evaluate five classifiers on 504 SRPBS subjects (252 controls and 252 MDD patients) using 159 anatomical features and repeated nested cross-validation. Refinement improved accuracy across all 8 repetitions for TabM and ResNet, yielding mean gains of 1.04 and 0.45 percentage points (sign test p=0.008), while modifying at most 8.3% of predictions. Gains were concentrated among low-confidence cases, with significant improvements in calibration. The method also benefited an RBF support vector machine but not logistic regression or random forests. Ablations confirmed the importance of uncertainty gating and soft fusion. Dirichlet evidence identified baseline errors (AUROC 0.62), while deferring 50% of cases increased retained-case accuracy to approximately 75%. These findings support selective explanation-guided refinement as a practical approach to improving prediction reliability and facilitating expert triage in MDD classification.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25635v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25460v1",
+      "title": "Reliability-Preserving Compression for Deployable Medical Image Segmentation",
+      "authors": [
+        "Sagar Kumar",
+        "Shailja Sharma",
+        "Tirthajit Baruah",
+        "Punit Rathore"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-18T18:44:14Z",
+      "summary": "Post-training compression of pretrained medical segmentation models commonly uses quantization, pruning, or distillation to reduce model size and computational cost. Existing medical segmentation quantization studies mainly evaluate Dice, model size, memory, and latency, but this is incomplete for safety-critical use because compressed models should also preserve uncertainty signals that indicate unreliable predictions. We study this problem in compressed MRI/CT segmentation and formalize why Dice can remain stable while uncertainty changes. Motivated by this failure mode, we propose score-guided aggregate-validated mixed precision (SGAV-MP), a post-training compression framework that selects layer precisions under reliability constraints. SGAV-MP ranks quantization actions with a compact benefit-risk score and accepts them only after full-model reliability validation on a calibration set. Across five 2D backbones and three 3D benchmarks, SGAV-MP preserves FP32-level Dice and high uncertainty-map agreement, achieving $3.59\\times$--$7.8\\times$ compression in 2D and $4.73\\times$--$7.82\\times$ in 3D. We also report backend-supported TensorRT deployment measurements separately to distinguish runtime execution from reliability-preserving storage compression.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25460v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25438v1",
+      "title": "A New Hope for PRNU on Modern Smartphones? Evidence That Device-Specific Fingerprints Survive Computational Photography",
+      "authors": [
+        "Benjamin Loison",
+        "Quentin Bammey",
+        "Thibaud Ehret",
+        "Rafael Grompone von Gioi",
+        "Pablo Musé"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-18T18:00:12Z",
+      "summary": "Photo Response Non-Uniformity (PRNU) is widely regarded as the most reliable marker for source camera identification. Recent studies, however, report high correlations between images and fingerprints from different modern smartphones, which calls into question the discriminative power of PRNU on these devices. Using 30 recent smartphones under controlled acquisition conditions (e.g., no digital zoom), we investigate whether the fingerprint itself is at fault or the way it is compared. We find that a component shared by all fingerprints of the same model inflates the standard signed peak-to-correlation energy (sPCE). To counter this, we propose $Δ$sPCE: the sPCE between a query image and a candidate camera's fingerprint, minus the mean sPCE between that image and the fingerprints of the remaining candidates, in the spirit of T-norm score normalization. $Δ$sPCE improves attribution accuracy, suggesting that the device-specific PRNU signal is still present. Although the limited dataset size and the dependence of $Δ$sPCE on the candidate camera set currently restrict operational applicability, these results suggest that PRNU-based attribution of modern smartphones remains feasible when fingerprints are compared appropriately.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25438v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.25195v1",
+      "title": "Image Restoration with Impulse Noise Based on Minimax Concave Penalty: Grayscale and Color Images",
+      "authors": [
+        "Reza Parvaz"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-18T11:25:38Z",
+      "summary": "In today's world-where social networks play a significant role-images serve as one of the most important tools for transferring concepts. Image degradation caused by noise or blurring hinders the effective transmission of the information we expect to derive from an image. Consequently, developing image restoration methods capable of revealing crucial information is of great importance. In this work, a model for impulse noise image restoring is proposed by using a Minimax Concave Penalty. The proposed model is applicable to both color and grayscale images. Then, a numerical algorithm based on the alternating direction method of multipliers is introduced, and the convergence of the method is analyzed both theoretically and numerically. In the final step, the proposed method is evaluated through simulations on several examples, and the results demonstrate its effectiveness.",
+      "pdf_url": "https://arxiv.org/pdf/2610.25195v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24941v1",
+      "title": "LowNet: Looped Wavelet Neural Networks with 24 Learnable Parameters for Solving Poisson Equations",
+      "authors": [
+        "Yuanhao Gong"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-18T01:26:28Z",
+      "summary": "Poisson equations frequently appear in various fields, such as mathematics, physics and informatics. Solving Poisson equation, however, is challenging. Traditional methods are not data-specific, although have high certainty. They require a large number of iterations due to the CFL numerical stability. In contrast, deep learning methods are data-driven and more efficient, but require accurate training data and suffer from heavy computation. To tackle these issues, we propose a wavelet-inspired Poisson solver with 24 trainable scalars. The proposed network has several advantages. First, it is compact. It has four independent $5\\times5$ kernels, each represented by six parameters, leading to 24 scalars in total. Such compact format can be deployed on most devices. Second, thanks to the loop design, it achieves higher accuracy than previous methods. A residual loop reuses the wavelet block without increasing its parameters. Numerical experiments confirm that such loop indeed improves the solving accuracy. On 10000 images, one, two, and three loops of the wavelet block lead to PSNRs of $47.27$, $74.14$, and $100.74$ dB, respectively. Third, the proposed method is computationally fast. Thanks to the wavelet transform, the proposed method has linear computation complexity, leading to high computation performance. In short, we propose a novel looped wavelet neural network with compactness, accuracy and efficiency for solving Poisson equations. Our method can be applied in various fields, such as computational fluid dynamics, image reconstruction, biomedical engineering, electromagnetic field simulation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24941v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.LG",
+        "eess.IV",
+        "math.AP",
+        "math.NA"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))",
+        "eess.IV (图像与视频处理)",
+        "math.AP (偏微分方程 (PDE))",
+        "math.NA (数值分析与科学计算)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24773v1",
+      "title": "Evidence Field: Adaptive Covering Programs for Medical Imaging",
+      "authors": [
+        "Isarar Siddique",
+        "Raiyan Siddique",
+        "Arshi Niyaz",
+        "Jamyang Ugyen Tshomo",
+        "Atish Raza"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T16:31:27Z",
+      "summary": "Medical image classifiers typically return predictions without a native contract for independently reconstructing their spatial decision computation. Evidence Field is a trainable spatial-program architecture that jointly produces class scores, selected covering programs and signed evidence. Its encoder combines absolute and image-relative response fields with associative spatial moments and learned characteristic sums. A typed classifier scores individual regions and parent-conditioned multiplicative groups; a covering recursion selects scale, partition and composition. We establish exact one-fold coverage, optimality within the registered grammar, a bound relating smooth training to hard inference, signed-score conservation and class-centred offset invariance. Direct contractions and their adjoint specify arithmetic and storage scaling on two- and three-dimensional grids. Native output records bind inputs, parameters, supports, types and contextual dependencies to individual and ensemble predictions. In a separately reported histopathology application, patient-separated training and evaluation across held-out centres provide empirical evidence for the architecture. Trained mechanism and corrected-loss comparisons distinguish predictive effects from implementation correctness; independent readers reconstruct descriptors, routes, scores and probability mixtures. The principal contribution is a coupled representation, decision and evidence architecture whose selected computation can be reproduced independently.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24773v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "9 pages, 5 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24619v2",
+      "title": "Beyond Geometric Closure: Measuring and Diagnosing Mechanical Consistency in Visual Dynamics",
+      "authors": [
+        "Qibin Gu",
+        "Yunfeng Yan"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T10:50:32Z",
+      "summary": "Visual accuracy, geometric validity, and agreement with applied forces are distinct requirements for visual dynamics. We introduce a diagnostic framework that connects reaction-free SI measurements to controlled interventions on coordinate readout, training integration, and actuator response. Reference replay calibrates the measurement path, while continuous scoring exposes progress against fixed engineering targets. With three seeds per setting, we evaluate KeyCLD and CON across 343 planar assemblies at 64/256 pixels and V-JEPA + AC and LingBot-VA on 100 shared spatial test assemblies. CON reduces image MSE by 37.6%/37.2% relative to persistence, yet neither planar model attains valid native geometry. At 256 pixels, calibrated RGB replay places forecast errors far above the reference measurement floor. Exact-state KeyCLD has identical geometric pass rates under Euler and RK4 training, yet its score rises from 52.65 to 64.30 as force and energy errors decrease. In both spatial pathways, CAD/IK reconstruction restores geometry while mean actuator residuals exceed five times the engineering targets. These diagnoses distinguish coordinate correction, numerical improvement, and persistent force-response errors, guiding targeted improvements to visual dynamics.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24619v2.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "34 pages, including supplementary material; 16 figures and 38 tables. Code: https://github.com/BIGPAO123321/mechanical-consistency-visual-dynamics Data and spatial evaluation: https://zenodo.org/records/23448115 Trained models: https://zenodo.org/records/23448170 Pretrained models and continuation states: https://zenodo.org/records/23448172",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24599v1",
+      "title": "Severity-Channel Conditioning: An Injection-Level Study for Consumer-Device Deblurring",
+      "authors": [
+        "Abdullah Al Shafi",
+        "Kazi Saeed Alam",
+        "Sumaiya Rahim Suma",
+        "Sk. Imran Hossain"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T10:05:03Z",
+      "summary": "Motion-deblurring models lose substantial accuracy when transferred from professional cameras to smartphone-derived imagery. This paper studies whether a severity descriptor, partly derived from the paired sharp target, helps adaptation on the iPhoneBlur consumer-device benchmark. Under a shared update budget, input concatenation of a severity map is compared with global feature modulation by capture metadata, spatial feature modulation by the severity map, and a tier-contrastive output objective, together with an unconditioned spectral-loss control, all fine-tuned from the same domain-adapted latent-diffusion baseline. The primary experiment is an oracle diagnostic: target-derived information is supplied at inference. For the evaluated model pair, input concatenation improves overall peak signal-to-noise ratio from 31.23 to 31.30 dB, whereas feature modulation, the contrastive objective, and the spectral-loss control do not exceed the baseline. The gain is positive on 87.2% of test images and on 14 of 15 held-out source videos; this video-level analysis describes the evaluated checkpoint pair and does not establish robustness to retraining, and three training seeds are reported separately. The input-level gain recurs on a transformer backbone. In one exploratory run, zeroing the channel at inference retains most of the gain in peak signal-to-noise ratio but lowers structural similarity below the baseline. A normalized-step diagnostic does not support the expected larger-gradient explanation. The results characterize the evaluated configurations and do not establish injection location as the sole cause, a spatial-locality mechanism, or a reliable deployment advantage.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24599v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG",
+        "cs.MM"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))",
+        "cs.MM (多媒体系统与编解码)"
+      ],
+      "comment": "17 pages (12 main + 5 supplementary), 7 figures, 14 tables. Code: https://github.com/C-loud-Nine/Severity-Channel-Conditioning",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.26920v1",
+      "title": "Codec-Compatible Learned Compression for 3D Gaussian Splatting",
+      "authors": [
+        "Feiyang Yu",
+        "Qi Yang",
+        "Wenjie Huang",
+        "Yunfeng Guan",
+        "Yiling Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-17T08:19:35Z",
+      "summary": "Video-based 3D Gaussian Splatting (3DGS) compression methods provide a practical route by representing Gaussian attributes as 2D maps and coding them with standard video codecs. Among these maps, high-dimensional non-DC spherical harmonics (SH-AC) maps contain the largest number of channels and account for a dominant portion of the bitstream. However, their statistics differ substantially from those of natural images, and the nonlinear dependencies among SH-AC coefficients remain insufficiently exploited. To address these issues, we propose CCT-GS, a Codec-Compatible learned Transform framework for 3DGS compression. CCT-GS first learns a generalized SH-AC transform that captures cross-scene regularities and converts SH-AC maps into compact codec-friendly bottleneck maps. It further introduces LoRA-based scene adaptation to recover scene-specific appearance details with lightweight side information. Experiments on MPEG GSC sequences demonstrate that CCT-GS consistently outperforms representative video-based baselines, achieving an average BD-rate reduction of 51.30% over the video-based anchor.",
+      "pdf_url": "https://arxiv.org/pdf/2610.26920v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "Accepted at the IEEE International Conference on Visual Communications and Image Processing (VCIP 2026). 5 pages, 3 figures, and 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24046v1",
+      "title": "LUMINR: Intensity-conditioned Meta-learned INRs for Accelerated Medical Image Registration",
+      "authors": [
+        "Damian Rynczak",
+        "Marek Wodzinski"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T15:27:29Z",
+      "summary": "Implicit neural representations (INRs) have been applied to deformable image registration, where a lightweight network maps a spatial coordinate to a deformation vector. Because an INR encodes one specific signal in its parameters, a fresh network must be optimized for every image pair at test time, which is slow. Existing methods reduce this cost by meta-learning an initialization across a population of image pairs, and condition the weights of the INR globally, so the same conditioning applies at every coordinate while the deformation field it initializes varies across the domain. We propose LUMINR, a meta-learning framework that accelerates this per-pair fitting and in which the conditioning is local instead. LUMINR uses an INR that maps a coordinate, together with local intensity and gradient features, to a deformation vector, so the conditioning varies over the domain at the resolution of the field being modelled. Its objective is to find an initialization of the INR parameters from which the network can be fine-tuned to register any unseen pair in only a few optimization iterations. We evaluate LUMINR on 3D deformable registration of brain MRI from the OASIS dataset, where local conditioning and the meta-learned initialization prove complementary: early in fitting they reach a markedly higher accuracy than either does alone. Fine-tuned from that initialization, LUMINR matches the accuracy of the same conditioned INR fit from scratch in roughly a tenth of the gradient steps and a tenth of the wall-clock time, while the deformation fields stay smooth with negligible folding.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24046v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "13 pages, 7 figures, 3 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24044v1",
+      "title": "GliomaINK: A Tumor and Anatomy Conditioned Flow Matching Framework for 3D MRI Sequence Synthesis in Glioma Patients",
+      "authors": [
+        "Moinak Bhattacharya",
+        "Annie Singh",
+        "Mohammad Chaudhry",
+        "Prateek Prasanna",
+        "Gagandeep Singh"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T15:09:12Z",
+      "summary": "Background: Incomplete multiparametric MR examinations limit glioma characterization and downstream AI tools. Generative models can synthesize missing MRI sequences, but anatomical structure and clinically relevant tumor features are challenging to preserve. We propose GliomaINK, an anatomy-guided conditional flow matching framework for cross-sequence 3D brain MRI synthesis. Methods: A 3D SwinUNETR predicted the conditional velocity field while an auxiliary topology-preserving loss encouraged structural consistency. The model was trained on 1,083 patients from the BraTS-AG dataset and independently tested on an in-house clinical cohort. Downstream tasks include image quality, tumor segmentation, IDH1 mutation-status prediction, and overall survival prediction. Two radiologists independently evaluated the anatomical fidelity, pathological representation, and overall image quality of the synthesized images. Results: GliomaINK exhibited the highest PSNR across all six MRI translation directions in both evaluation cohorts. In the BraTS-AG test set, the PSNR reached $25.64\\pm0.55$ dB for the T2W-to-T1C synthesis, compared with $13.78\\pm0.32$ dB for Pix2Pix and $18.90\\pm0.53$ dB for SPADE. For downstream tumor segmentation, the method showed strong performance across tumor subregions with Dice scores reaching $0.928\\pm0.014$ for edema, and $0.885\\pm0.040$ for enhancing tumor. For the IDH1 mutation-status prediction, GliomaINK achieved the highest AUROC score in four of the six sequence configurations, reaching $0.827\\pm0.088$. Conclusion: Anatomy-guided conditional flow matching enables high-fidelity cross-sequence glioma MRI synthesis demonstrating potential for preservation of clinically relevant information in synthesized MRI and improving downstream tasks.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24044v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV",
+        "q-bio.TO"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "q-bio.TO (组织与器官建模)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23360v1",
+      "title": "UniPolar: Joint Image and Polarimetric Restoration under Compound Degradations via Physical Consistency Learning",
+      "authors": [
+        "Yang Jin",
+        "Guangyu Guo",
+        "Linghao Shen",
+        "Binglu Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T12:07:08Z",
+      "summary": "Polarimetric image restoration aims to recover polarization angle images and reliable polarimetric quantities from degraded observations. Beyond visual fidelity, it also requires preserving the physical relationships underlying reliable polarimetric estimation. However, existing methods typically address either device- or environment-induced degradations in isolation, limiting their applicability to color polarization filter array (CPFA) imaging, where both often coexist. Such compound degradations jointly perturb image intensities and cross angle polarization differences. Consequently, improved image fidelity alone does not necessarily ensure accurate Stokes, DoLP, and AoLP recovery. To address this challenge, we propose UniPolar, a coupled Image Stokes framework for joint image polarimetric restoration from compound-degraded CPFA observations. Specifically, UniPolar employs two complementary streams to reconstruct four polarization-angle images and directly predict Stokes difference components. To coordinate these streams, Degradation Conditioned Cross Domain Interaction combines Dual Domain Frequency Interaction for frequency selective evidence exchange with Degradation Conditioned Modulation for condition adaptive feature correction. Furthermore, at the output level, Image Stokes Physical Consistency Learning aligns image derived and directly predicted Stokes components while regularizing angular fidelity and the physical feasibility of DoLP. On the compound-degradation benchmark, UniPolar achieves average image and DoLP PSNR of 31.522 dB and 24.097 dB, respectively, with an average AoLP error of 16.833 degree. These results underscore the importance of jointly considering visual fidelity and polarimetric reliability, offering a physically grounded perspective on learning based restoration under compound degradations.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23360v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "13 pages, 11 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24037v1",
+      "title": "Benchmarking and Improvement of Artifact Segmentation Methods in H&E-Stained Whole Slide Imaging",
+      "authors": [
+        "Julia Merta",
+        "Daniel Mendelsohn",
+        "Benedikt Schoser",
+        "Joanna Polanska",
+        "Michal Marczyk"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T12:03:15Z",
+      "summary": "Technical artifacts introduced during tissue preparation or slide scanning remain a major obstacle to developing robust computational pathology algorithms for hematoxylin and eosin (HE)-stained whole-slide images (WSIs). Despite the growing number of quality-control tools, their real-world utility remains hard to assess because of the limited number of publicly available implementations and the lack of systematic, multi-dataset comparisons. This paper presents a benchmark of artifact segmentation methods for HE-stained WSIs. After a literature review, six publicly available algorithms were selected and compared in terms of their ability to segment artifact-free tissue and selected artifact classes. Two publicly available datasets and a newly introduced dataset released to support further research were used for evaluation. Tissue samples from multiple medical centers and different organs are included, enabling evaluation across heterogeneous data sources. Segmentation performance was assessed using Dice Index, pixel-level recall, and false discovery rate for artifact-free tissue segmentation. For algorithms supporting multiclass artifact segmentation, class-wise Dice Index and inter-class misclassification were evaluated. In addition to segmentation quality, processing time was assessed. Statistical analysis revealed significant differences in segmentation performance between methods. HistoKit, which incorporates a modified version of the GrandQC, was identified as the best-performing algorithm, while HistoQC was the worst. In terms of artifact types, dark spots and out of focus regions were harder to segment than others. Finally, a simple post-processing step was introduced for HistoKit, which further improved segmentation performance. The benchmark establishes a reference for evaluating and developing artifact segmentation methods for HE-stained WSIs.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24037v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23325v1",
+      "title": "TransNSNet: A Transformer-Enhanced Multi-Scale Adversarial Framework for CT-to-PET Image Synthesis",
+      "authors": [
+        "Shaojun Li",
+        "Xiaoyu Deng",
+        "Ikuo Keshi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T11:28:54Z",
+      "summary": "This study investigates CT-to-PET image synthesis using TransNSNet, a Transformer-enhanced multi-scale adversarial framework. A paired CT-PET dataset was curated from the public non-small cell lung cancer (NSCLC) Radiogenomics collection through patient screening, slice-level matching, preprocessing, and patient-level train-test separation. The proposed framework generates PET-like predictions at multiple spatial scales and applies coarse-to-fine reconstruction supervision, while TransPatchGAN introduces contextual feature interaction into adversarial evaluation. A progressive ablation study compares Pix2Pix, NSNet-Base, NSNet-D, and TransNSNet. Image-level performance was summarized over a fixed convergence window (epochs 80-101) from one training run per model. TransNSNet achieved the best mean value in nine of ten metrics, whereas NSNet-Base achieved the highest visual saliency-induced index. For fixed-fraction high-intensity regions, NSNet-D was marginally higher in slice-level recall and balanced accuracy, but the equal-weight patient-level values were nearly identical and the highest Dice values shifted to TransNSNet. These differences were small relative to between-patient variability. In the separate adaptive patient-level analysis (n=10), no pairwise model difference remained statistically significant after Holm correction. TransNSNet also had a substantially smaller parameter footprint than the original next-scale models. These findings indicate promising image-quality trends, but they do not establish statistical superiority or clinical validity; synthesized PET-like images should not be interpreted as substitutes for clinically acquired PET.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23325v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "21 pages, 7 figures. Supplementary material included. Under review at Biomedical Signal Processing and Control",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24034v2",
+      "title": "Implicit Neural Models for Direct Multi-Shell Diffusion MRI Signal Estimation",
+      "authors": [
+        "Sanna Persson",
+        "Fabian Leander Sinzinger",
+        "Christoffer Olsson",
+        "Rodrigo Moreno"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T11:12:13Z",
+      "summary": "Diffusion magnetic resonance imaging is a noninvasive technique that is sensitive to the motion of water molecules in human tissue. The image signal is commonly described in q-space; however, a complete coverage of this space is often infeasible due to hardware and acquisition time limitations. In this work, we propose to represent the entire diffusion signal using an implicit neural representation network with wavelet activation functions. The signal space is encoded using Fourier features and spherical harmonics basis functions for a continuous output distribution of the raw diffusion data, enabling both super-resolution and q-space interpolation. Additionally, we introduce a pretraining strategy using a group template, enabling faster per-subject optimisation when combined with nonlinear registrations of subjects into template space. We tested the method with 10 subjects from the Human Connectome Project and 26 subjects from in-house data (multidimensional diffusion MRI from a Parkinson's disease cohort). The results show that the proposed method yields high-fidelity reconstructions with significantly reduced memory requirements compared to raw diffusion-weighted images. The pretraining scheme showed good generalisability properties on data acquired with very different protocols. We further assess the method on downstream metrics relevant to diffusion MRI data from the learned representations.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24034v2.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "23 pages (9 pages main text + supplementary material), 9 figures, 18 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23297v1",
+      "title": "FlashReFocus: Interactive Image Refocusing in Seconds",
+      "authors": [
+        "Ching-Heng Cheng",
+        "Chia-Ming Lee",
+        "Ming-Ching Chang",
+        "Xin Li",
+        "Yu-Lun Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T11:04:18Z",
+      "summary": "Single-image refocusing changes the focal plane and depth of field of a photograph after capture. It is inherently interactive: users try many focal points and blur strengths on one image, so each edit should be fast and change only the blur. Recent generative methods, however, rerun large diffusion models for every edit. We observe that the two sub-problems differ in kind: recovering the all-in-focus image is ill-posed and needs a generative prior, whereas rendering blur is largely determined by depth and the focal plane. We therefore propose FlashReFocus, which runs diffusion once per photograph and renders every edit with a lightweight network. To address the ill-posed restoration, a one-step diffusion deblurrer with a decoder refiner recovers fine detail efficiently while balancing fidelity and perceptual quality. For precise control, the renderer is conditioned on an explicit defocus map and uses defocus-bias attention, which lets pixels at similar defocus share information without interference from pixels at other depths; in-focus content stays unchanged, and editing the map yields tilt-shift and two focal planes. To further test generalization to unseen cameras, we collect 3CReal, a three-camera benchmark of 89 pairs. FlashReFocus achieves the best perceptual fidelity for zero-shot bokeh rendering on EBB! and 3CReal, refocuses 148.3x faster than GenRefocus, and takes about half a second per further edit, 462x faster.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23297v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.AI (通用人工智能 (AI))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "38 pages (8 main + appendix), 47 figures, 16 tables. Project page: https://ming053l.github.io/FlashReFocus/ Code: https://github.com/ming053l/FlashReFocus",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.23099v1",
+      "title": "Spatiotemporal Adaptive Eigenspectrum Remapping in Transcranial Ultrasound Localization Microscopy",
+      "authors": [
+        "Stephen A Lee",
+        "Isidora Jelenkovic",
+        "Maia V. Kokoeva",
+        "Jean Provost"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T08:11:08Z",
+      "summary": "Clutter suppression is a critical preprocessing step in ultrasound blood flow imaging, yet conventional singular value decomposition (SVD) filtering depends on data-specific eigenvalue cutoffs that can remove slow flow along with tissue clutter. Here, we introduce adaptive eigenspectrum remapping (AER), a general framework in which clutter is suppressed by continuously remapping, rather than truncating, the eigenvalue spectrum of the spatiotemporal covariance, and we investigate zero-phase component analysis (ZCA) matrix whitening as an instance of AER for transcranial ultrasound localization microscopy (ULM). Rather than discarding eigenspaces, ZCA-based AER whitens the eigenvalue spectrum, reducing the dominance of coherent clutter, including skull reverberation, while retaining weak flow signals. We evaluate AER on both temporal and spatial covariance matrices in mouse brain datasets acquired with long temporal ensembles. Compared with SVD filtering, ZCA improves microbubble contrast and vascular image quality, increases trajectory density across low- and high-concentration regimes, and reveals more low-velocity trajectories in ULM velocity maps. Spatial AER further maintains reconstruction quality across extended ensembles and enables fuller single capillary reporter (SCaRe) reconstructions, including connected artery-to-capillary-to-vein tracks. These results support AER, here instantiated as ZCA whitening, as a data-adaptive alternative to manually thresholded SVD filtering for high-resolution microvascular imaging.",
+      "pdf_url": "https://arxiv.org/pdf/2610.23099v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "eess.SP",
+        "physics.med-ph"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "eess.SP (信号处理 (Signal Processing))",
+        "physics.med-ph (医学物理学)"
+      ],
+      "comment": "11 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.22958v1",
+      "title": "Stabilizing Illumination Conditioning in SSM-Based Low-Light Image Enhancement with Bottleneck Prompt Sidecars",
+      "authors": [
+        "Wei Chen Ng",
+        "Qiyi Xie",
+        "Jian Ding Tan",
+        "Yan Kang Lee",
+        "Abdulrab Hakim Qaid Abdullah"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T05:28:55Z",
+      "summary": "Low-light image enhancement (LLIE) requires more than brightness amplification because real low-light images often exhibit spatially varying illumination, amplified noise, color distortion, and local detail loss. Recent SSM- and Mamba-based restorers provide efficient long-range modeling, yet the route for introducing illumination priors into such backbones remains insufficiently studied. This study addresses safe illumination conditioning for SSM-based LLIE through a bottleneck-side PromptAdapter. A lightweight illumination estimator first predicts a single-channel illumination map, which is then converted into prompt tokens and injected through a residual sidecar adapter at the bottleneck, thereby avoiding direct modification of the state-space core. Under a locked three-seed evaluation protocol on LOL-v1, LOLv2-Real, and LOLv2-Synthetic, the PromptAdapter improves over the Base model by 0.94 dB, 1.24 dB, and 0.93 dB in PSNR, respectively, while also improving SSIM, LPIPS, and masked dark-region metrics. The clearest real-data evidence appears on LOLv2-Real. A Learned-Fixed control on LOL-v1 indicates that the present results support the utility of the sidecar conditioning pathway more strongly than a strict claim of illumination-conditioned superiority, and the LOLv2-Synthetic result remains stability-conditioned. These findings suggest that, in SSM-based LLIE, conditioning design can be as important as the conditioning signal itself.",
+      "pdf_url": "https://arxiv.org/pdf/2610.22958v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.24023v1",
+      "title": "ProtoGTX: Prototype-Aligned Graph Transformer for Explainable Whole-Slide Image Analysis",
+      "authors": [
+        "Iori Azuma",
+        "Hiroyuki Kusuhara",
+        "Tadahaya Mizuno"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-16T03:23:56Z",
+      "summary": "Deep learning has achieved strong performance in computational pathology, but explaining whole-slide image (WSI) predictions remains challenging. Existing explanation methods often highlight important regions without identifying their morphological patterns, leaving a gap between patch-level computational evidence and slide-level pathological interpretation. We propose ProtoGTX, a graph-based framework that combines spatial contextualization with a flexible morphological prototype vocabulary. ProtoGTX separates the reference prototypes used to define morphological concepts from the predictive model: the reference vocabulary can be generated from training data by unsupervised clustering or supplied externally, and remains fixed during classifier training. Patch features are first contextualized over a spatial graph, after which learnable prototypes representing morphological concepts are optimized through cross-attention. Their slide-level activation profile is aligned with the morphological composition induced by the fixed reference prototype bank. On the CPTAC and BRACS datasets, ProtoGTX outperforms the evaluated MIL, prototype-based, and graph-based baselines, with particularly pronounced improvements on BRACS. Qualitative analyses further show that spatial contextualization transforms fragmented patch-level prototype assignments into more coherent tissue regions. In BRACS, prototype maps also co-localize with pathologist annotations and regions relevant to slide-level prediction. These results demonstrate that ProtoGTX provides complementary semantic and spatial explanations while retaining a prototype vocabulary that can be defined independently of the predictive model. Code is available at https://github.com/mizuno-group/ProtoGTX.",
+      "pdf_url": "https://arxiv.org/pdf/2610.24023v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "14 pages, 3 figures, 2 tables. Code: https://github.com/mizuno-group/ProtoGTX",
+      "journal_ref": null,
+      "ai_summary": null
+    }
+  ],
+  "sub_distribution": [
+    {
+      "code": "eess.IV",
+      "name_zh": "图像与视频处理",
+      "count": 25
+    },
+    {
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 20
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 5
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 5
+    },
+    {
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 2
+    },
+    {
+      "code": "math.AP",
+      "name_zh": "偏微分方程 (PDE)",
+      "count": 1
+    },
+    {
+      "code": "math.NA",
+      "name_zh": "数值分析与科学计算",
+      "count": 1
+    },
+    {
+      "code": "cs.MM",
+      "name_zh": "多媒体系统与编解码",
+      "count": 1
+    },
+    {
+      "code": "q-bio.TO",
+      "name_zh": "组织与器官建模",
+      "count": 1
+    },
+    {
+      "code": "physics.med-ph",
+      "name_zh": "医学物理学",
+      "count": 1
+    },
+    {
+      "code": "q-bio.QM",
+      "name_zh": "生物医学定量方法",
+      "count": 1
+    }
+  ],
+  "snapshot_synced_at": "2026-10-21T14:36:42.268907"
+}

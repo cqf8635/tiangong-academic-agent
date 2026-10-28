@@ -1,0 +1,907 @@
+/* ==========================================================================
+   云海星津 · 天工雷达 (TianGong Radar) - 东方文人雅致云山纸墨美学
+   完全继承:
+   - 东方素雅宣纸墨韵 (--bg-card, --bg-card-subtle, --color-ink-deep)
+   - 松柏青黛 (--color-pine-jade, --color-pine-deep, --color-pine-soft)
+   - 云珀描金 (--color-amber-gold, --color-amber-soft)
+   - 丝绢素雅边框 (--color-silk-border, --color-silk-border-strong)
+   ========================================================================== */
+
+/* 顶部工作区切换雅致书签 (Scholar Workspace Tabs) */
+.header-center-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.workspace-nav-tabs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-silk-border-strong);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-ink-charcoal);
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 44, 38, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+}
+
+.nav-tab-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--color-pine-light);
+  color: var(--color-pine-deep);
+  transform: translateY(-1px);
+}
+
+.nav-tab-btn.active {
+  background: linear-gradient(135deg, var(--color-pine-jade), var(--color-pine-deep));
+  color: #ffffff;
+  border-color: var(--color-pine-jade);
+  box-shadow: 0 4px 16px var(--color-pine-glow);
+}
+
+.radar-live-badge {
+  font-size: 0.65rem;
+  background: linear-gradient(135deg, var(--color-amber-gold), var(--color-amber-light));
+  color: #ffffff;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px var(--color-amber-glow);
+}
+
+/* 雷达主工作台布局 (仿文人双卷案头) */
+.radar-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 84px);
+}
+
+.radar-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* 宣纸托盘卡片 (Scholar Rice-Paper Card) */
+.radar-card {
+  background: var(--bg-card);
+  border: 1px solid var(--color-silk-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-ethereal);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.radar-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(24, 76, 67, 0.15), transparent);
+}
+
+.radar-card-title {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.radar-card-title.between {
+  justify-content: space-between;
+}
+
+.card-icon {
+  font-size: 1rem;
+}
+
+/* 考据检索输入框与按钮 */
+.radar-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.radar-input-group input {
+  flex: 1;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-silk-border);
+  font-size: 0.84rem;
+  outline: none;
+  background: var(--bg-card-subtle);
+  color: var(--color-ink-deep);
+  transition: all 0.2s ease;
+}
+
+.radar-input-group input:focus {
+  border-color: var(--color-pine-jade);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--color-pine-soft);
+}
+
+.btn-radar-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-pine-jade), var(--color-pine-deep));
+  color: #ffffff;
+  border: none;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px var(--color-pine-glow);
+  transition: all 0.2s;
+}
+
+.btn-radar-primary:hover {
+  background: linear-gradient(135deg, var(--color-pine-light), var(--color-pine-jade));
+  transform: translateY(-1px);
+}
+
+.radar-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--color-ink-charcoal);
+}
+
+.radar-label {
+  font-family: var(--font-serif);
+  color: var(--color-ink-muted);
+}
+
+.radar-select {
+  padding: 5px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-silk-border);
+  font-size: 0.8rem;
+  background: #ffffff;
+  color: var(--color-ink-deep);
+  outline: none;
+}
+
+.radar-radio-group {
+  display: flex;
+  gap: 14px;
+}
+
+.radio-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-ink-charcoal);
+}
+
+.radio-label input {
+  accent-color: var(--color-pine-jade);
+}
+
+/* 九畴大典 · 八维学科选择器 (青玉印章书签排布) */
+.radar-major-pills {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.major-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-silk-border);
+  background: var(--bg-card-subtle);
+  font-size: 0.78rem;
+  color: var(--color-ink-charcoal);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+}
+
+.major-pill-btn:hover {
+  background: var(--color-pine-soft);
+  border-color: var(--color-pine-light);
+  transform: translateY(-1px);
+}
+
+.major-pill-btn.active {
+  background: var(--color-pine-soft);
+  border-color: var(--color-pine-jade);
+  color: var(--color-pine-deep);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1.5px var(--color-pine-jade);
+}
+
+/* 经脉细缕 · 细分子学科分类树 */
+.radar-tree-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+}
+
+.btn-text-action {
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  color: var(--color-amber-gold);
+  cursor: pointer;
+  font-family: var(--font-serif);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-text-action:hover {
+  color: var(--color-pine-jade);
+}
+
+.radar-sub-tree {
+  overflow-y: auto;
+  max-height: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 6px;
+}
+
+.sub-group-block {
+  border-left: 2px solid var(--color-pine-light);
+  padding-left: 10px;
+}
+
+.sub-group-title {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+  margin-bottom: 6px;
+}
+
+.sub-item-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--color-ink-charcoal);
+  margin: 4px 0;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+
+.sub-item-checkbox:hover {
+  color: var(--color-pine-jade);
+}
+
+.sub-item-checkbox input {
+  margin-top: 2px;
+  accent-color: var(--color-pine-jade);
+}
+
+/* 右侧万象经卷舞台 */
+.radar-content-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* 九畴大典 · 八维学科顶级直选导航带 */
+.radar-discipline-shelf {
+  background: var(--bg-card);
+  border: 1px solid var(--color-silk-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-ethereal);
+  flex-shrink: 0;
+}
+
+.shelf-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+  white-space: nowrap;
+}
+
+.radar-major-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 4px;
+  scrollbar-width: thin;
+}
+
+.radar-major-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-family: var(--font-serif, "Noto Serif SC", serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(15, 44, 38, 0.04);
+}
+
+.radar-major-tab-btn:hover {
+  background: #e6f4f1;
+  border-color: #2e7d6b;
+  color: #0f4c3a;
+  transform: translateY(-1px);
+}
+
+.radar-major-tab-btn.active {
+  background: linear-gradient(135deg, #1b6b55, #0f4c3a);
+  border-color: #0f4c3a;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(15, 76, 58, 0.28);
+}
+
+.radar-major-tab-btn.active .tab-code {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.radar-major-tab-btn .tab-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #e2e8f0;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.radar-header-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--color-silk-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-ethereal);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radar-query-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.radar-title-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.radar-active-major {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+}
+
+.radar-status-text {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+}
+
+.radar-expr-pill {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-pine-soft);
+  color: var(--color-pine-jade);
+  border: 1px solid var(--color-silk-border-strong);
+  max-width: 480px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 万象星图：子学科水墨分布直方图展示区 */
+.radar-distribution-container {
+  border-top: 1px solid var(--color-silk-border);
+  padding-top: 10px;
+}
+
+.dist-header {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+  margin-bottom: 8px;
+}
+
+.dist-header-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.btn-dist-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-serif, "Noto Serif SC", serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-dist-all:hover, .btn-dist-all.active {
+  background: #0f4c3a;
+  color: #ffffff;
+  border-color: #0f4c3a;
+  box-shadow: 0 2px 6px rgba(15, 76, 58, 0.2);
+}
+
+.dist-bars-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.dist-bar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--color-silk-border);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 0.74rem;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(15, 44, 38, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.dist-bar-chip:hover {
+  border-color: var(--color-pine-jade);
+  background: var(--color-pine-soft);
+  transform: translateY(-1px);
+}
+
+.dist-bar-chip.active {
+  background: #e6f4f1;
+  border-color: #0f4c3a;
+  color: #0f4c3a;
+  font-weight: 700;
+  box-shadow: 0 0 0 1.5px #0f4c3a;
+}
+
+.dist-chip-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-pine-jade);
+}
+
+.dist-chip-name {
+  font-family: var(--font-serif);
+  color: var(--color-ink-charcoal);
+}
+
+.dist-chip-count {
+  background: linear-gradient(135deg, var(--color-amber-gold), var(--color-amber-light));
+  color: #ffffff;
+  border-radius: var(--radius-full);
+  padding: 0 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  box-shadow: 0 1px 4px var(--color-amber-glow);
+}
+
+/* 经卷案头文献列表 (仿宣纸典籍折页) */
+.radar-paper-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 6px;
+}
+
+.radar-paper-card {
+  background: var(--bg-card);
+  border: 1px solid var(--color-silk-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-ethereal);
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radar-paper-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  background: linear-gradient(180deg, var(--color-pine-light), var(--color-pine-jade));
+  border-radius: 0 2px 2px 0;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.radar-paper-card:hover {
+  box-shadow: var(--shadow-elevated);
+  border-color: var(--color-silk-border-strong);
+  transform: translateY(-1px);
+}
+
+.radar-paper-card:hover::after {
+  opacity: 1;
+}
+
+.radar-card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.paper-id-tag {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-pine-deep);
+  background: var(--color-pine-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(24, 76, 67, 0.15);
+}
+
+.paper-date-tag {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+.paper-cat-badge {
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-pine-soft);
+  color: var(--color-pine-jade);
+  font-weight: 600;
+  border: 1px solid rgba(24, 76, 67, 0.2);
+}
+
+.paper-cat-badge.secondary {
+  background: var(--bg-card-subtle);
+  color: var(--color-ink-muted);
+  border-color: var(--color-silk-border);
+}
+
+.radar-paper-title {
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--color-ink-deep);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.radar-paper-authors {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  margin-bottom: 12px;
+}
+
+/* 玉简提要 (中英双璧与核心创新要旨) */
+.radar-ai-summary-box {
+  background: var(--color-amber-soft);
+  border-left: 3px solid var(--color-amber-gold);
+  padding: 10px 14px;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  font-size: 0.82rem;
+  color: #78350f;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.summary-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-badge-sub {
+  font-weight: 600;
+  color: var(--color-primary-forest);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-paper-translate {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--color-amber-gold);
+  color: #92400e;
+  border-radius: 14px;
+  padding: 3px 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 1px 3px rgba(180, 83, 9, 0.1);
+}
+
+.btn-paper-translate:hover {
+  background: var(--color-amber-gold);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(180, 83, 9, 0.25);
+}
+
+.btn-paper-translate.cached {
+  border-color: #059669;
+  color: #065f46;
+  background: rgba(240, 253, 244, 0.95);
+}
+
+.btn-paper-translate.cached:hover {
+  background: #059669;
+  color: #ffffff;
+}
+
+.summary-thesis-content {
+  color: #451a03;
+  line-height: 1.55;
+}
+
+.summary-zh-box {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(217, 119, 6, 0.22);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #78350f;
+  animation: fadeIn 0.25s ease;
+  box-shadow: 0 1px 4px rgba(180, 83, 9, 0.05);
+}
+
+.summary-zh-box .trans-title {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.45;
+  border-bottom: 1px dashed rgba(217, 119, 6, 0.2);
+  padding-bottom: 5px;
+}
+
+.summary-zh-box .trans-thesis {
+  line-height: 1.6;
+  color: #854d0e;
+  margin-bottom: 6px;
+  font-size: 0.81rem;
+}
+
+.summary-zh-box .trans-abstract {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(217, 119, 6, 0.15);
+  font-size: 0.80rem;
+  color: #334155;
+  line-height: 1.65;
+}
+
+.summary-zh-box .trans-abstract-header {
+  font-weight: 600;
+  color: #0f766e;
+  margin-bottom: 4px;
+}
+
+.radar-paper-abstract {
+  font-size: 0.82rem;
+  color: var(--color-ink-charcoal);
+  line-height: 1.65;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.radar-paper-abstract.expanded {
+  -webkit-line-clamp: unset;
+}
+
+/* 典籍操作按钮组 (印章风格) */
+.radar-paper-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--color-silk-border);
+  padding-top: 12px;
+}
+
+.btn-paper-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-silk-border);
+  background: #ffffff;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  color: var(--color-ink-charcoal);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-paper-action:hover {
+  background: var(--bg-card-subtle);
+  border-color: var(--color-pine-light);
+  transform: translateY(-1px);
+}
+
+.btn-paper-action.highlight {
+  background: linear-gradient(135deg, var(--color-pine-jade), var(--color-pine-deep));
+  color: #ffffff;
+  border-color: var(--color-pine-jade);
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--color-pine-glow);
+}
+
+.btn-paper-action.highlight:hover {
+  background: linear-gradient(135deg, var(--color-pine-light), var(--color-pine-jade));
+}
+
+.btn-paper-action.primary-trans {
+  background: #fffbeb;
+  color: #92400e;
+  border-color: #f59e0b;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(245, 158, 11, 0.18);
+}
+
+.btn-paper-action.primary-trans:hover {
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #d97706;
+}
+
+.btn-paper-action.primary-trans.cached {
+  background: #f0fdf4;
+  color: #166534;
+  border-color: #22c55e;
+}
+
+.btn-paper-action.primary-trans.cached:hover {
+  background: #dcfce7;
+  color: #14532d;
+}
+
+.abs-prefix {
+  font-weight: 600;
+  color: var(--color-primary-forest);
+  margin-right: 4px;
+}
+
+.btn-paper-action.gold {
+  background: var(--color-amber-soft);
+  color: var(--color-amber-gold);
+  border-color: rgba(179, 120, 48, 0.35);
+  font-weight: 600;
+}
+
+.btn-paper-action.gold:hover {
+  background: #fdf0dc;
+  border-color: var(--color-amber-gold);
+}
+
+/* 案头翻卷分页 */
+.radar-pagination-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.btn-page {
+  padding: 6px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-silk-border-strong);
+  background: #ffffff;
+  font-family: var(--font-serif);
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--color-ink-charcoal);
+  transition: all 0.15s;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: var(--color-pine-jade);
+  background: var(--color-pine-soft);
+  color: var(--color-pine-deep);
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-pine-deep);
+}
