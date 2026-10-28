@@ -443,6 +443,9 @@ class LangGraphVoiceAgent:
         print("=" * 55 + "\n")
 
 
+from voice_langgraph_agent import VoicePerceptionAgent  # noqa: E402,F401
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="基于 LangGraph 的语音感知与持久化智能体")
     parser.add_argument("--mode", choices=["mic", "system"], default="mic", help="mic: 麦克风, system: 视频扬声器内录")

@@ -439,6 +439,164 @@ class LangGraphVoiceAgent:
         print("=" * 55 + "\n")
 
 
+class _VoicePerceptionGraphRunner:
+    """适配器：将 VoicePerceptionAgent 的持续 VAD 监听与 WebSocket 钩子无缝桥接至 backend_api"""
+
+    def __init__(self, agent: "VoicePerceptionAgent"):
+        self.agent = agent
+
+    def invoke(self, init_state: Dict[str, Any]) -> Dict[str, Any]:
+        return self.agent._run_backend_loop(init_state)
+
+
+class VoicePerceptionAgent(LangGraphVoiceAgent):
+    """兼容 backend_api 的实时语音感知与会议流水转录智能体"""
+
+    def __init__(
+        self,
+        source: str = "default",
+        mode: str = "mic",
+        threshold: float = 600.0,
+        silence_timeout: float = 1.3,
+        records_dir: Optional[Path] = None,
+    ):
+        effective_mode = "system" if ("monitor" in str(source) or mode == "system") else "mic"
+        super().__init__(
+            mode=effective_mode,
+            threshold=threshold,
+            silence_timeout=silence_timeout,
+            records_dir=records_dir or (Path(__file__).resolve().parent / "records"),
+        )
+        self.source = source or "default"
+
+    def _is_still_running(self) -> bool:
+        mod = sys.modules.get("backend_api")
+        if mod and hasattr(mod, "voice_manager"):
+            return bool(getattr(mod.voice_manager, "is_running", False))
+        return True
+
+    def _clean_and_format(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """清洗转录文本并原地更新 state，以触发 backend_api 的 WebSocket 广播钩子"""
+        raw_text = (state.get("latest_raw_text") or state.get("raw_transcription") or "").strip()
+        sub_res = clean_and_format_node({"raw_transcription": raw_text})
+        cleaned = (sub_res.get("final_text") or "").strip()
+        state["cleaned_text"] = cleaned
+        if cleaned:
+            state["current_index"] = int(state.get("current_index") or 0) + 1
+        if sub_res.get("status") == "shutdown":
+            state["should_terminate"] = True
+        return state
+
+    def build_graph(self) -> _VoicePerceptionGraphRunner:
+        return _VoicePerceptionGraphRunner(self)
+
+    def _listen_chunked_vad(self) -> Optional[bytes]:
+        """支持 100ms 级响应停止信号的 VAD 录音监听"""
+        source = get_audio_source(self.mode) if self.source == "default" else self.source
+        rate = 16000
+        chunk_size = int(rate * 2 * 0.1)
+        silence_chunks_needed = int(self.silence_timeout / 0.1)
+
+        cmd = [
+            "ffmpeg", "-loglevel", "quiet",
+            "-f", "pulse", "-i", source,
+            "-f", "s16le", "-ar", str(rate), "-ac", "1",
+            "-",
+        ]
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        audio_buffer = bytearray()
+        is_speaking = False
+        silence_counter = 0
+        active_speech_chunks = 0
+
+        try:
+            noise_samples = []
+            for _ in range(2):
+                if not self._is_still_running():
+                    return None
+                chunk = proc.stdout.read(chunk_size) if proc.stdout else b""
+                if chunk:
+                    noise_samples.append(calc_rms(chunk))
+            ambient_noise = max(noise_samples) if noise_samples else 400.0
+            dynamic_threshold = max(self.threshold, ambient_noise * 2.5, 1100.0)
+
+            while self._is_still_running():
+                raw_chunk = proc.stdout.read(chunk_size) if proc.stdout else b""
+                if not raw_chunk:
+                    break
+                rms = calc_rms(raw_chunk)
+                if rms > dynamic_threshold:
+                    is_speaking = True
+                    audio_buffer.extend(raw_chunk)
+                    active_speech_chunks += 1
+                    silence_counter = 0
+                elif is_speaking:
+                    audio_buffer.extend(raw_chunk)
+                    silence_counter += 1
+                    if silence_counter >= silence_chunks_needed:
+                        break
+        finally:
+            try:
+                proc.terminate()
+                proc.wait(timeout=1.0)
+            except Exception:
+                pass
+
+        if len(audio_buffer) >= rate * 2 * 0.8 and active_speech_chunks >= 3:
+            return bytes(audio_buffer)
+        return None
+
+    def _run_backend_loop(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        import json
+        from datetime import datetime
+
+        session_start_time = datetime.now()
+        timestamp_str = session_start_time.strftime("%Y%m%d_%H%M%S")
+        jsonl_path = self.records_dir / f"record_{timestamp_str}.jsonl"
+        md_path = self.records_dir / f"record_{timestamp_str}.md"
+        state["session_file"] = str(jsonl_path)
+
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write(f"# 语音识别与会议记录流水 ({timestamp_str})\n\n")
+            f.write(f"- **开始时间**: {session_start_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"- **音频通道**: {'视频声音(扬声器内录)' if self.mode == 'system' else '麦克风人声'}\n\n")
+            f.write("## 逐字记录流水\n\n")
+
+        print(f"🎙️ [VoicePerceptionAgent] 已开启后台实时语音感知与会议流水记录: {jsonl_path.name}")
+        while self._is_still_running() and not state.get("should_terminate"):
+            audio_bytes = self._listen_chunked_vad()
+            if not audio_bytes:
+                if not self._is_still_running():
+                    break
+                continue
+
+            t_res = transcribe_node({"status": "speech_detected", "audio_bytes": audio_bytes})
+            raw_text = (t_res.get("raw_transcription") or "").strip()
+            if not raw_text:
+                continue
+
+            state["latest_raw_text"] = raw_text
+            state["active_source"] = "system" if self.mode == "system" else "mic"
+            # 调用（可能已被 backend_api 注入 WebSocket 广播钩子的）_clean_and_format
+            self._clean_and_format(state)
+            cleaned = (state.get("cleaned_text") or "").strip()
+            if cleaned:
+                now_str = datetime.now().strftime("%H:%M:%S")
+                record_item = {
+                    "index": state.get("current_index", 1),
+                    "timestamp": now_str,
+                    "source": state.get("active_source", "mic"),
+                    "text": cleaned,
+                }
+                with open(jsonl_path, "a", encoding="utf-8") as f_jsonl:
+                    f_jsonl.write(json.dumps(record_item, ensure_ascii=False) + "\n")
+                with open(md_path, "a", encoding="utf-8") as f_md:
+                    f_md.write(f"- `[{now_str}]` **{record_item['source']}**: {cleaned}\n")
+
+        print("🛑 [VoicePerceptionAgent] 语音感知已安全停止。")
+        return state
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="基于 LangGraph 的语音感知与持久化智能体")
     parser.add_argument("--mode", choices=["mic", "system"], default="mic", help="mic: 麦克风, system: 视频扬声器内录")
