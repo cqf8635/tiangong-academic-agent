@@ -356,10 +356,12 @@ class IntentRecognitionAgent:
                     ],
                     response_format={"type": "json_object"},
                     temperature=0.0,
-                    max_tokens=2048,
+                    max_tokens=8192,
                     timeout=get_llm_timeout(100.0),
                 )
                 raw_json = (resp.choices[0].message.content or "").strip()
+                if not raw_json:
+                    raise RuntimeError(f"模型 {active_model} 返回空内容 (finish_reason={resp.choices[0].finish_reason})")
                 if raw_json.startswith("```"):
                     raw_json = re.sub(r"^```[a-zA-Z]*\n?", "", raw_json)
                     raw_json = re.sub(r"\n?```$", "", raw_json).strip()

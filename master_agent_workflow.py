@@ -751,7 +751,7 @@ def safe_chat_completion(
     temperature: float = 0.3,
     max_retries: int = 3,
     timeout: Optional[float] = None,
-    max_tokens: Optional[int] = 4096,
+    max_tokens: Optional[int] = 12288,
 ) -> str:
     """带全局并发流控、智能错峰退避、实时 SSE 广播与精准分类熔断的 LLM 安全调用封装"""
     eff_timeout = timeout if timeout is not None else DEFAULT_LLM_TIMEOUT
@@ -1170,7 +1170,7 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     model=model,
                     messages=[{"role": "user", "content": spec_prompt}],
                     temperature=0.2,
-                    max_tokens=1500,
+                    max_tokens=6144,
                     timeout=get_llm_timeout(),
                 )
                 return {
@@ -1747,7 +1747,7 @@ def reflective_revision_node(state: MasterAgentState) -> Dict[str, Any]:
             model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
-            max_tokens=4096,
+            max_tokens=12288,
             timeout=get_llm_timeout(),
         )
         revised_answer = normalize_academic_numbering(revised_answer)
