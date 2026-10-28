@@ -701,30 +701,48 @@ class TianGongRadarController {
         });
       }
 
-      // 呼叫羽若深度研讨 (根据论文题名、核心要旨与所属学科动态定制针对性研读指令)
+      // 呼叫羽若深度研讨 (自动新建专属研讨会话窗口，并根据论文题名、核心要旨与所属学科动态定制研读指令)
       const btnDiscuss = document.getElementById(`btn-discuss-${paper.paper_id}`);
       if (btnDiscuss) {
-        btnDiscuss.addEventListener("click", () => {
-          // 1. 检查是否开启【研讨联动自动纳卷入阁】
+        btnDiscuss.addEventListener("click", async () => {
+          // 1. 提取定制研讨提示词与专属会话窗口标题
+          const discussPrompt = this.buildTargetedDiscussPrompt(paper, primaryCat, transBox);
+          let zhTitle = "";
+          if (transBox && transBox.dataset.loaded === "true") {
+            const titleSpan = transBox.querySelector(".trans-title span");
+            if (titleSpan) zhTitle = titleSpan.textContent.trim();
+          }
+          if (!zhTitle && paper.paper_id) {
+            try {
+              const cached = JSON.parse(localStorage.getItem(`radar_trans_${paper.paper_id}`) || "{}");
+              if (cached.title_zh) zhTitle = cached.title_zh;
+            } catch (e) {}
+          }
+          const sessionTitle = `📜 研读：${(zhTitle || paper.title || "前沿论文").slice(0, 28)}`;
+
+          // 2. 切换回研讨对话视图，并新建独立专属学术研讨窗口 (隔离旧会话历史与旧教材上下文)
+          this.switchView("dialogue");
+          if (typeof window.createNewChat === "function") {
+            await window.createNewChat(sessionTitle);
+          }
+
+          // 3. 检查是否开启【研讨联动自动纳卷入阁】
           const autoIngestEnabled = this.autoIngestCheckbox ? this.autoIngestCheckbox.checked : true;
           if (autoIngestEnabled) {
             // 异步后台静默入库，不阻断研讨流
             this.ingestPaper(paper, btnIngest, true);
           }
 
-          // 2. 切换回研讨对话视图
-          this.switchView("dialogue");
-
-          // 3. 经卷脉络优先切至「本轮精析」视角，即刻呈现羽若本轮针对该论文的深度推演
+          // 4. 经卷脉络优先切至「本轮精析」视角，即刻呈现羽若本轮针对该论文的深度推演
           if (window.switchMindmapScope) {
             window.switchMindmapScope('current');
           }
 
-          // 4. 发送定制研讨提示词
+          // 5. 发送定制研讨提示词
           const chatInput = document.getElementById("query-input") || document.getElementById("chat-input");
           const btnSend = document.getElementById("btn-send");
           if (chatInput) {
-            chatInput.value = this.buildTargetedDiscussPrompt(paper, primaryCat, transBox);
+            chatInput.value = discussPrompt;
             if (btnSend) {
               btnSend.click();
             }
@@ -807,11 +825,10 @@ class TianGongRadarController {
   }
 
   /**
-   * 🌟 根据文章题名、学科及华译要旨智能构建量身定制的学术研讨指令 (零生搬硬套)
+   * 🌟 基于论文真实题名、摘要及华译要旨动态构建学术研讨指令（零关键词分支硬编码）
    */
   buildTargetedDiscussPrompt(paper, primaryCat, transBox) {
     const title = (paper.title || "").trim();
-    const titleLower = title.toLowerCase();
     const summary = (paper.summary || "").trim();
 
     // 1. 若此前已生成【AI 提要与精译】，读取大模型生成的中文题名与核心要旨 (优先从 DOM，其次从本地缓存)
@@ -831,103 +848,17 @@ class TianGongRadarController {
       } catch (e) {}
     }
 
-    // 2. 根据论文标题与所属学科，智能生成最具学术针对性的核心提问引导语
-    let targetedRequirement = "";
-
-    if (
-      titleLower.includes("quantum") ||
-      titleLower.includes("qubit") ||
-      titleLower.includes("circuit") ||
-      titleLower.includes("hamiltonian") ||
-      titleLower.includes("entanglement") ||
-      primaryCat.toLowerCase().includes("quant-ph")
-    ) {
-      targetedRequirement = "请针对本文在量子体系演化与量子线路合成上的核心探索，深入推导其量子态演化机理与线路构造原理，剖析其相较于经典/传统量子方法的资源优化与算力优势，并评估其学术创新价值！";
-    } else if (
-      titleLower.includes("control") ||
-      titleLower.includes("lyapunov") ||
-      titleLower.includes("stability") ||
-      titleLower.includes("feedback") ||
-      titleLower.includes("mpc") ||
-      titleLower.includes("stabiliz") ||
-      primaryCat.toLowerCase().includes("eess.sy") ||
-      primaryCat.toLowerCase().includes("cs.sy")
-    ) {
-      targetedRequirement = "请针对本文在控制工程与动态系统建模上的核心课题，深入推导其系统状态方程与控制策略，剖析其闭环稳定性与收敛性证明，并评估其在实际动态环境下的控制性能与创新价值！";
-    } else if (
-      titleLower.includes("video") ||
-      titleLower.includes("vision") ||
-      titleLower.includes("3d") ||
-      titleLower.includes("4d") ||
-      titleLower.includes("perceiver") ||
-      titleLower.includes("nerf") ||
-      titleLower.includes("gaussian") ||
-      titleLower.includes("point cloud") ||
-      titleLower.includes("segmentation") ||
-      primaryCat.toLowerCase().includes("cs.cv")
-    ) {
-      targetedRequirement = "请针对本文在视觉感知、时空表征与几何重建上的核心构想，深入推导其几何投影与连续物理表征的数学模型，剖析其感知网络架构与创新突破点，并评估其在复杂物理场景下的前沿理论与工程落地价值！";
-    } else if (
-      titleLower.includes("robot") ||
-      titleLower.includes("manipulation") ||
-      titleLower.includes("locomotion") ||
-      titleLower.includes("trajectory") ||
-      primaryCat.toLowerCase().includes("cs.ro")
-    ) {
-      targetedRequirement = "请针对本文在具身智能与机器人动力学上的关键突破，深入推导其运动学/动力学方程与动作规划策略，剖析其软硬件协同工作机理，并评估其实际机器人系统的应用创新价值！";
-    } else if (
-      titleLower.includes("llm") ||
-      titleLower.includes("language model") ||
-      titleLower.includes("transformer") ||
-      titleLower.includes("diffusion") ||
-      titleLower.includes("reasoning") ||
-      titleLower.includes("agent") ||
-      titleLower.includes("reinforcement") ||
-      titleLower.includes("alignment") ||
-      primaryCat.toLowerCase().includes("cs.cl") ||
-      primaryCat.toLowerCase().includes("cs.ai") ||
-      primaryCat.toLowerCase().includes("cs.lg")
-    ) {
-      targetedRequirement = "请针对本文在深度模型架构、推理范式与学习算法上的核心设计，深入推导其关键数理机制与损失/目标优化函数，剖析其相较于主流基线模型的本质突破点，并评估其理论创新与泛化潜力！";
-    } else if (
-      titleLower.includes("finance") ||
-      titleLower.includes("financial") ||
-      titleLower.includes("market") ||
-      titleLower.includes("portfolio") ||
-      titleLower.includes("pricing") ||
-      titleLower.includes("econometric") ||
-      titleLower.includes("volatility") ||
-      titleLower.includes("esg") ||
-      primaryCat.toLowerCase().includes("q-fin") ||
-      primaryCat.toLowerCase().includes("econ")
-    ) {
-      targetedRequirement = "请针对本文在经济金融机理与量化分析上的核心论点，深入推导其数理金融/计量经济模型，剖析其实证检验结果与因果识别逻辑，并评估其实际学术贡献与市场决策价值！";
-    } else if (
-      titleLower.includes("protein") ||
-      titleLower.includes("molecular") ||
-      titleLower.includes("dna") ||
-      titleLower.includes("rna") ||
-      titleLower.includes("drug") ||
-      titleLower.includes("medical") ||
-      titleLower.includes("biological") ||
-      primaryCat.toLowerCase().includes("q-bio")
-    ) {
-      targetedRequirement = "请针对本文在生物分子计算与结构表征上的关键探索，推导其生化数理建模与算法推断机制，剖析其核心实验与计算验证结果，并评估其在生物医药领域的科学转化价值！";
-    } else {
-      targetedRequirement = `请紧密围绕《${title}》所解决的核心科学问题与理论命题，深入推导其数理理论框架与关键方法机制，剖析其相较于已有工作的本质突破点，并评估其前沿学术价值！`;
-    }
-
-    // 3. 构造学术研讨指令
+    // 2. 完全依据论文自身题名、摘要与核心要旨构造通用深度研读指令，不依赖任何学科词硬编码
     let prompt = `羽若，请重点研读这篇刚刚在天工雷达发现的最新前沿论文：\n《${title}》(arXiv:${paper.paper_id}，所属学科：${primaryCat})`;
     if (zhTitle) {
       prompt += `\n【题名华译】：${zhTitle}`;
     }
     if (zhThesis) {
       prompt += `\n【核心要旨】：${zhThesis}`;
-    } else {
-      prompt += `\n【核心摘要】：\n${summary.slice(0, 320)}...`;
+    } else if (summary) {
+      prompt += `\n【核心摘要】：\n${summary}`;
     }
-    prompt += `\n\n${targetedRequirement}`;
+    prompt += `\n\n请紧密围绕《${zhTitle || title}》的核心科学问题与摘要内容，深入推导其核心数理模型、控制方程与关键机理构造，剖析其相较于已有方法的本质突破点，并评估其学术创新价值与适用边界！`;
     return prompt;
   }
 

@@ -755,13 +755,15 @@ def safe_chat_completion(
 ) -> str:
     """带全局并发流控、智能错峰退避、实时 SSE 广播与精准分类熔断的 LLM 安全调用封装"""
     eff_timeout = timeout if timeout is not None else DEFAULT_LLM_TIMEOUT
+    fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
     last_err = None
     for attempt in range(1, max_retries + 1):
+        active_model = (fallback_model if (attempt >= 2 and fallback_model and fallback_model != model) else model)
         try:
             with GLOBAL_LLM_SEMAPHORE:
-                print(f"🌐 [LLM-API] 正在调用大模型 ({model} | 尝试 {attempt}/{max_retries} | 单次时限: {eff_timeout}s)...")
+                print(f"🌐 [LLM-API] 正在调用大模型 ({active_model} | 尝试 {attempt}/{max_retries} | 单次时限: {eff_timeout}s)...")
                 kwargs = {
-                    "model": model,
+                    "model": active_model,
                     "messages": messages,
                     "temperature": temperature,
                     "timeout": eff_timeout,
@@ -787,6 +789,7 @@ def safe_chat_completion(
                 if res_str:
                     print(f"✅ [LLM-API] 成功接收大模型完整回复 (总字数: {len(res_str)})")
                     return res_str
+                raise RuntimeError(f"上游接口返回空流式响应 (Empty stream from {active_model})")
         except Exception as e:
             last_err = e
             err_str = str(e).lower()
@@ -1209,8 +1212,9 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
     if state.get("retrieved_evidence"):
         evidence_chunks = state["retrieved_evidence"]
         context_parts = []
-        for i, chunk in enumerate(evidence_chunks, 1):
-            context_parts.append(f"【参考证据 {i}】 来源: 《{chunk.get('doc_name')}》 {chunk.get('location_label')}\n{chunk.get('text')}")
+        for i, chunk in enumerate(evidence_chunks[:6], 1):
+            chunk_text = str(chunk.get("text") or "")[:1200]
+            context_parts.append(f"【参考证据 {i}】 来源: 《{chunk.get('doc_name')}》 {chunk.get('location_label')}\n{chunk_text}")
         rag_context_str = "\n\n".join(context_parts)
 
     req_sources = decision.get("required_data_sources") if isinstance(decision, dict) else getattr(decision, "required_data_sources", None)

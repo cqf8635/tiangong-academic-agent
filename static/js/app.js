@@ -944,18 +944,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  async function createNewChat() {
+  async function createNewChat(customTitle = '新建学术研讨会话') {
     try {
       stopTTS();
-      // 新建会话时，主动清空底部输入框残留文本并重置高度
+      // 新建会话时，主动清空底部输入框残留文本与上一会话锁定的文档状态
       if (userInput) {
         userInput.value = '';
         userInput.style.height = 'auto';
       }
+      currentActiveDocumentName = '';
+      currentFullBookMindmap = '';
+      currentFullBookMindmapDoc = '';
+      const safeTitle = (typeof customTitle === 'string' && customTitle.trim())
+        ? customTitle.trim()
+        : '新建学术研讨会话';
       const resp = await fetch('/api/sessions/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: '新建学术研讨会话', domain: 'custom' }),
+        body: JSON.stringify({ title: safeTitle, domain: 'custom' }),
       });
       const data = await resp.json();
       currentSessionId = data.session.session_id;
@@ -2071,7 +2077,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 🌟 暴露全局经卷知识库交互接口，支持天工雷达等跨模块联动
+  // 🌟 暴露全局经卷知识库与新建会话交互接口，支持天工雷达等跨模块联动
+  window.createNewChat = createNewChat;
   window.loadDocumentList = loadDocumentList;
   window.fetchDocuments = loadDocumentList;
   window.loadAndRenderBookMindmap = loadAndRenderBookMindmap;

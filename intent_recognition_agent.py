@@ -343,11 +343,13 @@ class IntentRecognitionAgent:
 
         current_date_str = datetime.now().strftime("%Y-%m-%d")
         max_retries = 3
+        fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
         last_err = None
         for attempt in range(1, max_retries + 1):
+            active_model = (fallback_model if (attempt >= 2 and fallback_model and fallback_model != self.model) else self.model)
             try:
                 resp = self.client.chat.completions.create(
-                    model=self.model,
+                    model=active_model,
                     messages=[
                         {"role": "system", "content": self._build_system_prompt(current_date=current_date_str)},
                         {"role": "user", "content": user_content},
