@@ -2212,8 +2212,16 @@ document.addEventListener('DOMContentLoaded', () => {
       setAssistantState('THINKING', '正在对当前会议流水进行 Map-Reduce 提炼与待办抽取...');
       highlightGraphStep('EXECUTING', 'MeetingSummarizer');
       try {
+        const latestResp = await fetch('/api/meetings/latest');
+        const latest = await latestResp.json();
+        if (!latest.has_meeting || !latest.total_speeches) {
+          throw new Error('暂无有效会议转写流水，请先选择音源并完成一段会议录音。');
+        }
         const resp = await fetch('/api/meetings/summarize', { method: 'POST' });
-        if (!resp.ok) throw new Error('Summarization failed');
+        if (!resp.ok) {
+          const errorData = await resp.json().catch(() => ({}));
+          throw new Error(errorData.detail || '会议纪要生成失败');
+        }
         const data = await resp.json();
         const report = data.report;
 
@@ -2479,6 +2487,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportObsidianHeader = document.getElementById('btn-export-obsidian');
   if (btnExportObsidianHeader) {
     btnExportObsidianHeader.addEventListener('click', async () => {
+      if (!currentSessionId || currentSessionId === 'session_ai') {
+        alert('请先新建或选择一个有效的学术会话，再导出到 Obsidian。');
+        return;
+      }
       btnExportObsidianHeader.disabled = true;
       const originalHtml = btnExportObsidianHeader.innerHTML;
       btnExportObsidianHeader.innerHTML = '<span class="icon">⏳</span> 正在导出至 Obsidian...';
