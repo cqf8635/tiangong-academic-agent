@@ -749,7 +749,7 @@ class RadarTranslateRequest(BaseModel):
 
 @app.post("/api/radar/translate")
 async def radar_translate(req: RadarTranslateRequest):
-    """为雷达论文提供专业学术级中英双璧精译、核心创新提要与摘要翻译"""
+    """为单篇雷达论文提供中文标题、摘要翻译与核心解读"""
     try:
         from openai import OpenAI
         from config_utils import get_default_llm_model
@@ -761,15 +761,16 @@ async def radar_translate(req: RadarTranslateRequest):
         client = OpenAI(api_key=api_key, base_url=base_url)
 
         paper_abstract = (req.abstract or req.text or "").strip()
-        prompt = f"""你是一位严谨资深的学术学者与翻译专家。请针对以下 arXiv 论文进行中文学术提炼与精译：
+        prompt = f"""你是一位严谨资深的学术翻译专家。请将以下 arXiv 论文标题和英文摘要翻译成自然、准确的中文，供中文读者直接阅读。
+不得臆造原文没有的信息；专业术语保持学术规范；数学符号、变量名、缩写和模型名称保持原样。除标题与摘要翻译外，再用1~2句中文概括论文的核心方法与贡献：
 论文英文标题：{req.title}
 论文英文摘要：{paper_abstract}
 
 请严格按以下 JSON 格式输出，不要附加任何其他多余文本：
 {{
-  "title_zh": "精准流畅的中文学术规范标题",
-  "thesis_zh": "核心创新与突破提要（用1~2句专业凝练概括核心方法、解决的关键问题与创新贡献）",
-  "abstract_zh": "中文学术摘要精译（通顺严谨，保留专业学术术语与数学符号格式）"
+  "title_zh": "精准流畅的中文学术标题",
+  "thesis_zh": "基于原摘要的核心方法与贡献概括（1~2句）",
+  "abstract_zh": "完整、准确、通顺的中文摘要翻译"
 }}"""
 
         resp = client.chat.completions.create(

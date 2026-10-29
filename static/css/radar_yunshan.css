@@ -696,7 +696,15 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
   box-shadow: 0 1px 3px rgba(180, 83, 9, 0.1);
+}
+
+.btn-paper-translate:disabled,
+.btn-paper-action:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
 }
 
 .btn-paper-translate:hover {
@@ -785,6 +793,7 @@
 .radar-paper-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   border-top: 1px solid var(--color-silk-border);
   padding-top: 12px;
@@ -804,6 +813,7 @@
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .btn-paper-action:hover {
