@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>云山问学 · 多智能体科研研讨空间</title>
-  <link rel="stylesheet" href="css/style.css?v=20261014_v2">
+  <link rel="stylesheet" href="css/style.css?v=20261029_v3">
   <link rel="stylesheet" href="css/radar_yunshan.css?v=20261014_v2">
   <!-- KaTeX for Beautiful LaTeX Math Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -80,13 +80,6 @@
         <button id="btn-toggle-right" class="btn btn-ethereal" title="展开/收起右侧考据与待办案头">
           <span class="icon">📑</span> 案头考据
         </button>
-        <label class="voice-picker-box voice-capture-mode" title="选择实时转写的音频来源">
-          <span>🔊</span>
-          <select id="voice-capture-mode" class="voice-select-dropdown">
-            <option value="mic">🎤 麦克风</option>
-            <option value="system">🔊 系统声音（腾讯会议/视频）</option>
-          </select>
-        </label>
         <button id="btn-header-record" class="btn btn-ethereal" title="开启/停止全自动会议录音与转写">
           <span class="icon" id="header-record-icon">🎙️</span> <span id="header-record-text">开启会议录制</span>
         </button>
@@ -155,6 +148,15 @@
             <button id="btn-toggle-meeting-record" class="btn-stream-record" title="点击开启/停止自动会议录音与实时转写">
               <span class="record-dot"></span> <span class="record-text">开启会议录音</span>
             </button>
+          </div>
+          <div class="voice-capture-mode-row">
+            <label class="voice-picker-box voice-capture-mode" title="选择实时转写的音频来源">
+              <span>🔊 音源</span>
+              <select id="voice-capture-mode" class="voice-select-dropdown">
+                <option value="mic">🎤 麦克风</option>
+                <option value="system">🔊 系统声音（腾讯会议/视频）</option>
+              </select>
+            </label>
           </div>
           <div class="stream-log-container" id="stream-logs">
             <div class="stream-item">
