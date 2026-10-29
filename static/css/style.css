@@ -414,7 +414,27 @@ body.mist-mountain-theme {
 }
 
 .voice-capture-mode-row .voice-picker-box {
+  width: 100%;
+  box-sizing: border-box;
   padding: 2px 6px;
+  gap: 6px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-height: 28px;
+}
+
+.voice-capture-mode-row .voice-picker-box > span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.voice-capture-mode-row .voice-select-dropdown {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .badge-count {
