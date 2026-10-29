@@ -497,6 +497,28 @@ class TianGongRadarController {
     return first;
   }
 
+  formatPublishedDate(publishedAt) {
+    if (!publishedAt) return "";
+
+    const date = new Date(publishedAt);
+    if (Number.isNaN(date.getTime())) {
+      return String(publishedAt).substring(0, 10);
+    }
+
+    const parts = new Intl.DateTimeFormat("zh-CN", {
+      timeZone: "Asia/Shanghai",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(date);
+    const values = Object.fromEntries(
+      parts
+        .filter((part) => ["year", "month", "day"].includes(part.type))
+        .map((part) => [part.type, part.value])
+    );
+    return `${values.year}-${values.month}-${values.day}`;
+  }
+
   renderPaperCards(papers) {
     if (!this.paperListContainer) return;
     this.paperListContainer.innerHTML = "";
@@ -540,8 +562,12 @@ class TianGongRadarController {
       // 智能提取该论著的独特核心创新贡献与核心要旨句子 (杜绝模板化重复)
       const coreThesis = this.extractCoreThesis(paper.summary, paper.title, primaryCat);
 
-      const isLatestBatch = paper.published_at && (paper.published_at.startsWith("2026-10-16") || paper.published_at.startsWith("2026-10-19"));
-      const dateLabel = isLatestBatch ? "✨ 10-19 今日新发" : `📅 著于 ${paper.published_at ? paper.published_at.substring(0, 10) : paper.year || "近期"}`;
+      const publishedDate = this.formatPublishedDate(paper.published_at);
+      const todayDate = this.formatPublishedDate(new Date().toISOString());
+      const isLatestBatch = Boolean(publishedDate && publishedDate === todayDate);
+      const dateLabel = isLatestBatch
+        ? `✨ ${publishedDate} 今日新发`
+        : `📅 著于 ${publishedDate || paper.year || "近期"}`;
 
       // 检查本地持久化缓存 (免重复消耗 Token)
       let cachedTrans = null;
@@ -555,7 +581,7 @@ class TianGongRadarController {
       card.innerHTML = `
         <div class="radar-card-header-row">
           <span class="paper-id-tag">arXiv:${paper.paper_id}</span>
-          <span class="paper-date-tag" title="arXiv 今日全网公开上线批次 (作者封稿于 ${paper.published_at ? paper.published_at.substring(0, 10) : ''})">${dateLabel}</span>
+          <span class="paper-date-tag" title="arXiv 今日全网公开上线批次 (作者封稿于 ${publishedDate})">${dateLabel}</span>
           ${catTags}
         </div>
         <h3 class="radar-paper-title">${paper.title}</h3>
