@@ -829,7 +829,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     if translation_cache_path.exists() and translation_cache_path.stat().st_size > 0:
         try:
             cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
-            if cached.get("version") == 2 and cached.get("full_text_zh"):
+            if cached.get("version") == 3 and cached.get("full_text_zh"):
                 return cached
         except (OSError, json.JSONDecodeError):
             pass
@@ -844,6 +844,24 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
     client = OpenAI(api_key=api_key, base_url=base_url)
     model = get_default_llm_model()
+    summary_prompt = f"""请为下面这篇学术论文提供中文阅读预览。将英文摘要准确翻译成中文，并根据给出的核心论断整理1~2句中文核心解读。
+不得补充原文没有的信息，保留专业术语、缩写和数学符号。严格输出 JSON：
+{{"abstract_zh": "中文摘要翻译", "thesis_zh": "中文核心解读"}}
+
+论文标题：{req.title}
+核心论断：{req.text or ""}
+英文摘要：{req.abstract or ""}"""
+    summary_response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": summary_prompt}],
+        response_format={"type": "json_object"},
+        temperature=0.2,
+        timeout=120,
+    )
+    try:
+        summary_data = json.loads(summary_response.choices[0].message.content or "{}")
+    except json.JSONDecodeError:
+        summary_data = {}
     chunks = _split_translation_chunks(source_text)
     translated_chunks: List[str] = []
     for index, chunk in enumerate(chunks, start=1):
@@ -873,10 +891,10 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
     full_text_zh = "\n\n".join(translated_chunks)
     result = {
-        "version": 2,
+        "version": 3,
         "title_zh": req.title,
-        "thesis_zh": "全文翻译已生成",
-        "abstract_zh": "",
+        "thesis_zh": summary_data.get("thesis_zh", "").strip(),
+        "abstract_zh": summary_data.get("abstract_zh", "").strip(),
         "full_text_zh": full_text_zh,
         "source_chunks": len(chunks),
     }

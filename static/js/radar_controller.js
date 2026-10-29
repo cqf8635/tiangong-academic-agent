@@ -576,7 +576,7 @@ class TianGongRadarController {
         if (cachedStr) {
           const parsed = JSON.parse(cachedStr);
           // 只认全文翻译缓存；旧版摘要翻译缓存不会在卡片加载时自动展示。
-          if (parsed && parsed.version >= 2 && parsed.full_text_zh) {
+          if (parsed && parsed.version >= 3 && parsed.full_text_zh) {
             cachedTrans = parsed;
           }
         }
@@ -598,12 +598,12 @@ class TianGongRadarController {
             </button>
           </div>
           <div class="summary-thesis-content">
-            <strong>🎯 核心论断 (Core Thesis):</strong> <span>“${coreThesis}”</span>
+            <strong>🎯 核心解读：</strong> <span>“${coreThesis}”</span>
           </div>
           <div class="summary-zh-box" id="trans-box-${paper.paper_id}" aria-live="polite" style="display:none;"></div>
         </div>
         <p class="radar-paper-abstract" id="abs-${paper.paper_id}">
-          <strong class="abs-prefix">【英文摘要 Abstract】：</strong>${paper.summary}
+          <strong class="abs-prefix">【论文摘要 · 英文原文】：</strong>${paper.summary}
         </p>
         <div class="radar-paper-actions">
           <button class="btn-paper-action primary-trans ${cachedTrans ? 'cached' : ''}" id="btn-action-trans-${paper.paper_id}" title="按需翻译整篇论文">
@@ -642,8 +642,17 @@ class TianGongRadarController {
             .replace(/>/g, "&gt;")
             .replace(/\"/g, "&quot;")
             .replace(/'/g, "&#039;");
+          const thesisZh = escapeHtml((data.thesis_zh || "").replace(/\\\\/g, "\\"));
+          const abstractZh = escapeHtml((data.abstract_zh || "").replace(/\\\\/g, "\\"));
           const fullTextZh = escapeHtml((data.full_text_zh || data.abstract_zh || "").replace(/\\\\/g, "\\"));
+          const overviewHtml = thesisZh || abstractZh ? `
+            <div class="trans-overview">
+              ${thesisZh ? `<div class="trans-overview-thesis"><strong>🎯 【中文核心解读】</strong><span>${thesisZh}</span></div>` : ""}
+              ${abstractZh ? `<div class="trans-overview-abstract"><strong>📖 【中文摘要】</strong><span>${abstractZh}</span></div>` : ""}
+            </div>
+          ` : "";
           transBox.innerHTML = `
+            ${overviewHtml}
             <div class="trans-full-paper-header">📚 【中文全文】</div>
             <div class="trans-full-paper-body">${fullTextZh}</div>
           `;
