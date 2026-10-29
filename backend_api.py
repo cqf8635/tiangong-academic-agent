@@ -902,9 +902,45 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     return result
 
 
+def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
+    from openai import OpenAI
+    from config_utils import get_default_llm_model
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("未配置 API Key")
+    client = OpenAI(api_key=api_key, base_url=os.getenv("OPENAI_BASE_URL"))
+    prompt = f"""你是一位严谨资深的学术学者与翻译专家。请针对以下论文生成中文 AI 摘要与精译。
+请准确翻译标题和英文摘要，并用1~2句概括核心方法、解决的问题与创新贡献。不得臆造信息，保留专业术语、缩写、公式和变量。
+请严格按 JSON 输出：
+{{"title_zh":"中文学术标题","thesis_zh":"中文核心创新与突破提要","abstract_zh":"中文摘要精译"}}
+
+论文英文标题：{req.title}
+论文英文摘要：{(req.abstract or req.text or "").strip()}"""
+    response = client.chat.completions.create(
+        model=get_default_llm_model(),
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_object"},
+        temperature=0.3,
+        timeout=25,
+    )
+    return json.loads(response.choices[0].message.content or "{}")
+
+
 @app.post("/api/radar/translate")
 async def radar_translate(req: RadarTranslateRequest):
-    """用户点击后按需提取并翻译单篇论文全文，不在论文列表加载时自动调用。"""
+    """原有的 AI 摘要与精译入口；只在用户点击后调用。"""
+    try:
+        loop = asyncio.get_running_loop()
+        data = await loop.run_in_executor(None, _translate_summary, req)
+        return {"status": "success", "data": data}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+
+@app.post("/api/radar/translate_full")
+async def radar_translate_full(req: RadarTranslateRequest):
+    """独立的整篇论文翻译入口；只在用户点击全文按钮后调用。"""
     try:
         loop = asyncio.get_running_loop()
         data = await loop.run_in_executor(None, _translate_full_paper, req)

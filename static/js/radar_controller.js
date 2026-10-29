@@ -570,16 +570,16 @@ class TianGongRadarController {
         : `📅 著于 ${publishedDate || paper.year || "近期"}`;
 
       // 检查本地持久化缓存 (免重复消耗 Token)
-      let cachedTrans = null;
+      let cachedSummary = null;
+      let cachedFull = null;
       try {
-        const cachedStr = localStorage.getItem(`radar_trans_${paper.paper_id}`);
-        if (cachedStr) {
-          const parsed = JSON.parse(cachedStr);
-          // 只认全文翻译缓存；旧版摘要翻译缓存不会在卡片加载时自动展示。
-          if (parsed && parsed.version >= 3 && parsed.full_text_zh) {
-            cachedTrans = parsed;
-          }
-        }
+        const summaryStr = localStorage.getItem(`radar_trans_summary_${paper.paper_id}`)
+          || localStorage.getItem(`radar_trans_${paper.paper_id}`);
+        const fullStr = localStorage.getItem(`radar_trans_full_${paper.paper_id}`);
+        const summaryParsed = summaryStr ? JSON.parse(summaryStr) : null;
+        const fullParsed = fullStr ? JSON.parse(fullStr) : null;
+        if (summaryParsed && summaryParsed.title_zh && !summaryParsed.full_text_zh) cachedSummary = summaryParsed;
+        if (fullParsed && fullParsed.version >= 3 && fullParsed.full_text_zh) cachedFull = fullParsed;
       } catch (e) {}
 
       card.innerHTML = `
@@ -593,21 +593,22 @@ class TianGongRadarController {
         <div class="radar-ai-summary-box">
           <div class="summary-meta-header">
             <span class="summary-badge-sub">🎋 ${catZh ? catZh + " · " : ""}${primaryCat}</span>
-            <button class="btn-paper-translate ${cachedTrans ? 'cached' : ''}" id="btn-trans-${paper.paper_id}" title="按需翻译整篇论文">
-              ${cachedTrans ? '🇨🇳 查看中文全文' : '🇨🇳 翻译全文'}
+            <button class="btn-paper-translate ${cachedSummary ? 'cached' : ''}" id="btn-summary-trans-${paper.paper_id}" title="按需生成中文摘要与核心解读">
+              ${cachedSummary ? '📜 查看 AI 精译' : '✨ AI 摘要与精译'}
             </button>
           </div>
           <div class="summary-thesis-content">
             <strong>🎯 核心解读：</strong> <span>“${coreThesis}”</span>
           </div>
-          <div class="summary-zh-box" id="trans-box-${paper.paper_id}" aria-live="polite" style="display:none;"></div>
+          <div class="summary-zh-box" id="summary-trans-box-${paper.paper_id}" aria-live="polite" style="display:none;"></div>
         </div>
         <p class="radar-paper-abstract" id="abs-${paper.paper_id}">
           <strong class="abs-prefix">【论文摘要 · 英文原文】：</strong>${paper.summary}
         </p>
+        <div class="summary-zh-box full-paper-zh-box" id="full-trans-box-${paper.paper_id}" aria-live="polite" style="display:none;"></div>
         <div class="radar-paper-actions">
-          <button class="btn-paper-action primary-trans ${cachedTrans ? 'cached' : ''}" id="btn-action-trans-${paper.paper_id}" title="按需翻译整篇论文">
-            ${cachedTrans ? '🇨🇳 查看中文全文' : '🇨🇳 翻译全文'}
+          <button class="btn-paper-action full-trans ${cachedFull ? 'cached' : ''}" id="btn-full-trans-${paper.paper_id}" title="按需翻译整篇论文">
+            ${cachedFull ? '🇨🇳 查看中文全文' : '🇨🇳 翻译全文'}
           </button>
           <button class="btn-paper-action" id="btn-toggle-abs-${paper.paper_id}">📖 展开英文摘要</button>
           <a href="https://arxiv.org/abs/${paper.paper_id}" target="_blank" class="btn-paper-action">🔗 arXiv 原文</a>
@@ -619,100 +620,105 @@ class TianGongRadarController {
 
       this.paperListContainer.appendChild(card);
 
-      // 按需翻译整篇论文 (用户点击后才下载 PDF、调用模型，并使用本地缓存)
-      const btnTrans = document.getElementById(`btn-trans-${paper.paper_id}`);
-      const btnActionTrans = document.getElementById(`btn-action-trans-${paper.paper_id}`);
-      const transBox = document.getElementById(`trans-box-${paper.paper_id}`);
-
-      const updateTransButtons = (text, isCached = false, disabled = false) => {
-        [btnTrans, btnActionTrans].forEach(b => {
-          if (!b) return;
-          b.disabled = disabled;
-          b.textContent = text;
-          if (isCached) b.classList.add("cached");
-          else b.classList.remove("cached");
-        });
+      // AI 摘要与精译：保留原有能力，只在用户点击后生成/展开
+      const btnSummaryTrans = document.getElementById(`btn-summary-trans-${paper.paper_id}`);
+      const summaryTransBox = document.getElementById(`summary-trans-box-${paper.paper_id}`);
+      const escapeHtml = (value) => String(value || "")
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
+      const renderSummaryData = (data) => {
+        const titleZh = escapeHtml((data.title_zh || "").replace(/\\\\/g, "\\"));
+        const thesisZh = escapeHtml((data.thesis_zh || "").replace(/\\\\/g, "\\"));
+        const abstractZh = escapeHtml((data.abstract_zh || "").replace(/\\\\/g, "\\"));
+        summaryTransBox.innerHTML = `
+          <div class="trans-title"><strong>🏷️ 【题名华译】</strong> <span>${titleZh}</span></div>
+          <div class="trans-thesis"><strong>🎯 【核心突破】</strong> <span>${thesisZh}</span></div>
+          <div class="trans-abstract"><div class="trans-abstract-header">📖 【中文摘要精译】</div><div class="trans-abstract-body">${abstractZh}</div></div>
+        `;
+        summaryTransBox.style.display = "block";
+        summaryTransBox.dataset.loaded = "true";
+        btnSummaryTrans.textContent = "📜 收起 AI 精译";
+        btnSummaryTrans.classList.add("cached");
+        this.renderMathEquations(summaryTransBox);
       };
-
-      if (transBox) {
-        const renderTransData = (data) => {
-          const escapeHtml = (value) => String(value || "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-          const thesisZh = escapeHtml((data.thesis_zh || "").replace(/\\\\/g, "\\"));
-          const abstractZh = escapeHtml((data.abstract_zh || "").replace(/\\\\/g, "\\"));
-          const fullTextZh = escapeHtml((data.full_text_zh || data.abstract_zh || "").replace(/\\\\/g, "\\"));
-          const overviewHtml = thesisZh || abstractZh ? `
-            <div class="trans-overview">
-              ${thesisZh ? `<div class="trans-overview-thesis"><strong>🎯 【中文核心解读】</strong><span>${thesisZh}</span></div>` : ""}
-              ${abstractZh ? `<div class="trans-overview-abstract"><strong>📖 【中文摘要】</strong><span>${abstractZh}</span></div>` : ""}
-            </div>
-          ` : "";
-          transBox.innerHTML = `
-            ${overviewHtml}
-            <div class="trans-full-paper-header">📚 【中文全文】</div>
-            <div class="trans-full-paper-body">${fullTextZh}</div>
-          `;
-          transBox.style.display = "block";
-          transBox.dataset.loaded = "true";
-          updateTransButtons("📜 收起中文全文", true, false);
-          this.renderMathEquations(transBox);
-        };
-
-        const handleTransClick = async () => {
-          if (transBox.dataset.loaded === "true") {
-            const isHidden = transBox.style.display === "none";
-            transBox.style.display = isHidden ? "block" : "none";
-            updateTransButtons(isHidden ? "📜 收起中文全文" : "🇨🇳 查看中文全文", true, false);
-            if (isHidden) {
-              transBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }
+      if (btnSummaryTrans && summaryTransBox) {
+        btnSummaryTrans.addEventListener("click", async () => {
+          if (summaryTransBox.dataset.loaded === "true") {
+            const hidden = summaryTransBox.style.display === "none";
+            summaryTransBox.style.display = hidden ? "block" : "none";
+            btnSummaryTrans.textContent = hidden ? "📜 收起 AI 精译" : "✨ AI 摘要与精译";
             return;
           }
-
-          if (cachedTrans) {
-            renderTransData(cachedTrans);
-            transBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          if (cachedSummary) {
+            renderSummaryData(cachedSummary);
             return;
           }
-
-          updateTransButtons("⏳ 正在翻译全文...", false, true);
+          btnSummaryTrans.disabled = true;
+          btnSummaryTrans.textContent = "⏳ 精译生成中...";
           try {
             const resp = await fetch("/api/radar/translate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                title: paper.title,
-                paper_id: paper.paper_id,
-                pdf_url: paper.pdf_url,
-                text: coreThesis,
-                abstract: paper.summary,
-              }),
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ title: paper.title, text: coreThesis, abstract: paper.summary }),
             });
-            const resData = await resp.json();
-            if (resData.status === "success" && resData.data) {
-              const d = resData.data;
-              try {
-                localStorage.setItem(`radar_trans_${paper.paper_id}`, JSON.stringify(d));
-              } catch (e) {
-                console.warn("存储翻译缓存失败:", e);
-              }
-              renderTransData(d);
-              transBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            } else {
-              throw new Error(resData.detail || "翻译异常");
+            const result = await resp.json();
+            if (result.status !== "success" || !result.data) throw new Error(result.detail || "精译异常");
+            try {
+              localStorage.setItem(`radar_trans_summary_${paper.paper_id}`, JSON.stringify(result.data));
+            } catch (storageError) {
+              console.warn("保存 AI 精译缓存失败:", storageError);
             }
+            renderSummaryData(result.data);
           } catch (err) {
-            updateTransButtons("🇨🇳 翻译全文", false, false);
-            alert(`翻译失败: ${err.message}`);
+            btnSummaryTrans.textContent = "✨ AI 摘要与精译";
+            alert(`精译失败: ${err.message}`);
+          } finally {
+            btnSummaryTrans.disabled = false;
           }
-        };
+        });
+      }
 
-        if (btnTrans) btnTrans.addEventListener("click", handleTransClick);
-        if (btnActionTrans) btnActionTrans.addEventListener("click", handleTransClick);
+      // 整篇论文翻译：与 AI 摘要精译完全独立，点击全文按钮后才执行
+      const btnFullTrans = document.getElementById(`btn-full-trans-${paper.paper_id}`);
+      const fullTransBox = document.getElementById(`full-trans-box-${paper.paper_id}`);
+      const renderFullData = (data) => {
+        const fullTextZh = escapeHtml((data.full_text_zh || "").replace(/\\\\/g, "\\"));
+        fullTransBox.innerHTML = `<div class="trans-full-paper-header">📚 【中文全文】</div><div class="trans-full-paper-body">${fullTextZh}</div>`;
+        fullTransBox.style.display = "block";
+        fullTransBox.dataset.loaded = "true";
+        btnFullTrans.textContent = "📜 收起中文全文";
+        btnFullTrans.classList.add("cached");
+        this.renderMathEquations(fullTransBox);
+      };
+      if (btnFullTrans && fullTransBox) {
+        btnFullTrans.addEventListener("click", async () => {
+          if (fullTransBox.dataset.loaded === "true") {
+            const hidden = fullTransBox.style.display === "none";
+            fullTransBox.style.display = hidden ? "block" : "none";
+            btnFullTrans.textContent = hidden ? "📜 收起中文全文" : "🇨🇳 查看中文全文";
+            return;
+          }
+          if (cachedFull) {
+            renderFullData(cachedFull);
+            return;
+          }
+          btnFullTrans.disabled = true;
+          btnFullTrans.textContent = "⏳ 正在翻译全文...";
+          try {
+            const resp = await fetch("/api/radar/translate_full", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ title: paper.title, paper_id: paper.paper_id, pdf_url: paper.pdf_url, text: coreThesis, abstract: paper.summary }),
+            });
+            const result = await resp.json();
+            if (result.status !== "success" || !result.data) throw new Error(result.detail || "翻译异常");
+            localStorage.setItem(`radar_trans_full_${paper.paper_id}`, JSON.stringify(result.data));
+            renderFullData(result.data);
+          } catch (err) {
+            btnFullTrans.textContent = "🇨🇳 翻译全文";
+            alert(`全文翻译失败: ${err.message}`);
+          } finally {
+            btnFullTrans.disabled = false;
+          }
+        });
       }
 
       // 展开/收起英文摘要 (使用 document.getElementById 避免 arXiv ID 包含小数点引起 querySelector 语法错误)
