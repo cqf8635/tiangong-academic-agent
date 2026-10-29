@@ -9,10 +9,13 @@ Provides:
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import logging
 import os
+import re
 import shutil
+import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -743,45 +746,150 @@ async def radar_ingest_paper(req: RadarIngestRequest):
 
 class RadarTranslateRequest(BaseModel):
     title: str
+    paper_id: Optional[str] = ""
+    pdf_url: Optional[str] = ""
     text: Optional[str] = ""
     abstract: Optional[str] = ""
 
 
-@app.post("/api/radar/translate")
-async def radar_translate(req: RadarTranslateRequest):
-    """为单篇雷达论文提供中文标题、摘要翻译与核心解读"""
-    try:
-        from openai import OpenAI
-        from config_utils import get_default_llm_model
-        api_key = os.getenv("OPENAI_API_KEY")
-        base_url = os.getenv("OPENAI_BASE_URL")
-        model = get_default_llm_model()
-        if not api_key:
-            raise ValueError("未配置 API Key")
-        client = OpenAI(api_key=api_key, base_url=base_url)
+PAPER_TRANSLATION_CACHE_DIR = UPLOAD_DIR / ".paper_translation_cache"
+PAPER_TRANSLATION_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-        paper_abstract = (req.abstract or req.text or "").strip()
-        prompt = f"""你是一位严谨资深的学术翻译专家。请将以下 arXiv 论文标题和英文摘要翻译成自然、准确的中文，供中文读者直接阅读。
-不得臆造原文没有的信息；专业术语保持学术规范；数学符号、变量名、缩写和模型名称保持原样。除标题与摘要翻译外，再用1~2句中文概括论文的核心方法与贡献：
-论文英文标题：{req.title}
-论文英文摘要：{paper_abstract}
 
-请严格按以下 JSON 格式输出，不要附加任何其他多余文本：
-{{
-  "title_zh": "精准流畅的中文学术标题",
-  "thesis_zh": "基于原摘要的核心方法与贡献概括（1~2句）",
-  "abstract_zh": "完整、准确、通顺的中文摘要翻译"
-}}"""
+def _safe_translation_stem(req: RadarTranslateRequest) -> str:
+    identity = (req.paper_id or req.title or "paper").strip()
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", identity).strip("._")[:100]
+    return safe or hashlib.sha256(identity.encode("utf-8")).hexdigest()[:20]
 
-        resp = client.chat.completions.create(
+
+def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
+    """按需下载并提取 PDF 全文；缓存只写入被 .gitignore 忽略的 uploads 目录。"""
+    stem = _safe_translation_stem(req)
+    text_path = PAPER_TRANSLATION_CACHE_DIR / f"{stem}.txt"
+    if text_path.exists() and text_path.stat().st_size > 0:
+        return text_path.read_text(encoding="utf-8")
+
+    pdf_path = UPLOAD_DIR / f".paper_translation_{stem}.pdf"
+    if not pdf_path.exists() or pdf_path.stat().st_size == 0:
+        pdf_url = (req.pdf_url or "").strip()
+        if not pdf_url.startswith(("http://", "https://")):
+            return (req.abstract or req.text or "").strip()
+        request = urllib.request.Request(
+            pdf_url,
+            headers={"User-Agent": "Mozilla/5.0 ResearchScholar/1.0"},
+        )
+        with urllib.request.urlopen(request, timeout=45) as response, pdf_path.open("wb") as output:
+            total = 0
+            while True:
+                chunk = response.read(1024 * 1024)
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > 80 * 1024 * 1024:
+                    raise ValueError("论文 PDF 超过 80 MB，暂不支持在线全文翻译")
+                output.write(chunk)
+
+    import pymupdf
+
+    pages = []
+    with pymupdf.open(str(pdf_path)) as document:
+        for page_number, page in enumerate(document, start=1):
+            page_text = page.get_text("text").strip()
+            if page_text:
+                pages.append(f"【第 {page_number} 页】\n{page_text}")
+    full_text = "\n\n".join(pages).strip()
+    if not full_text:
+        full_text = (req.abstract or req.text or "").strip()
+    if full_text:
+        text_path.write_text(full_text, encoding="utf-8")
+    return full_text
+
+
+def _split_translation_chunks(text: str, max_chars: int = 11000) -> List[str]:
+    paragraphs = [part.strip() for part in re.split(r"\n{2,}", text) if part.strip()]
+    chunks: List[str] = []
+    current = ""
+    for paragraph in paragraphs:
+        pieces = [paragraph[i : i + max_chars] for i in range(0, len(paragraph), max_chars)] or [paragraph]
+        for piece in pieces:
+            if current and len(current) + len(piece) + 2 > max_chars:
+                chunks.append(current)
+                current = ""
+            current = f"{current}\n\n{piece}".strip()
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
+    from openai import OpenAI
+    from config_utils import get_default_llm_model
+
+    translation_cache_path = PAPER_TRANSLATION_CACHE_DIR / f"{_safe_translation_stem(req)}.json"
+    if translation_cache_path.exists() and translation_cache_path.stat().st_size > 0:
+        try:
+            cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
+            if cached.get("version") == 2 and cached.get("full_text_zh"):
+                return cached
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    base_url = os.getenv("OPENAI_BASE_URL")
+    if not api_key:
+        raise ValueError("未配置 API Key")
+    source_text = _extract_paper_pdf_text(req)
+    if not source_text:
+        raise ValueError("无法提取论文正文，请检查 PDF 链接是否可访问")
+
+    client = OpenAI(api_key=api_key, base_url=base_url)
+    model = get_default_llm_model()
+    chunks = _split_translation_chunks(source_text)
+    translated_chunks: List[str] = []
+    for index, chunk in enumerate(chunks, start=1):
+        prompt = f"""你是一位严谨的学术翻译专家。请把下面论文正文的第 {index}/{len(chunks)} 段完整翻译成中文。
+只翻译，不要总结，不要删减，不要补充原文没有的内容。保留章节标题、公式、变量、引用编号、表格数据、代码和专业缩写；原文中的页码标记也保留。
+论文标题：{req.title}
+
+原文：
+{chunk}
+
+请严格输出 JSON：{{"translation": "对应的完整中文译文"}}"""
+        response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
-            temperature=0.3,
-            timeout=25,
+            temperature=0.2,
+            timeout=120,
         )
-        content = resp.choices[0].message.content
-        data = json.loads(content)
+        content = response.choices[0].message.content or ""
+        try:
+            translated = json.loads(content).get("translation", "").strip()
+        except json.JSONDecodeError:
+            translated = content.strip()
+        if not translated:
+            raise ValueError(f"第 {index} 段翻译结果为空")
+        translated_chunks.append(translated)
+
+    full_text_zh = "\n\n".join(translated_chunks)
+    result = {
+        "version": 2,
+        "title_zh": req.title,
+        "thesis_zh": "全文翻译已生成",
+        "abstract_zh": "",
+        "full_text_zh": full_text_zh,
+        "source_chunks": len(chunks),
+    }
+    translation_cache_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+    return result
+
+
+@app.post("/api/radar/translate")
+async def radar_translate(req: RadarTranslateRequest):
+    """用户点击后按需提取并翻译单篇论文全文，不在论文列表加载时自动调用。"""
+    try:
+        loop = asyncio.get_running_loop()
+        data = await loop.run_in_executor(None, _translate_full_paper, req)
         return {"status": "success", "data": data}
     except Exception as e:
         return {"status": "error", "detail": str(e)}

@@ -574,7 +574,11 @@ class TianGongRadarController {
       try {
         const cachedStr = localStorage.getItem(`radar_trans_${paper.paper_id}`);
         if (cachedStr) {
-          cachedTrans = JSON.parse(cachedStr);
+          const parsed = JSON.parse(cachedStr);
+          // 只认全文翻译缓存；旧版摘要翻译缓存不会在卡片加载时自动展示。
+          if (parsed && parsed.version >= 2 && parsed.full_text_zh) {
+            cachedTrans = parsed;
+          }
         }
       } catch (e) {}
 
@@ -589,21 +593,21 @@ class TianGongRadarController {
         <div class="radar-ai-summary-box">
           <div class="summary-meta-header">
             <span class="summary-badge-sub">🎋 ${catZh ? catZh + " · " : ""}${primaryCat}</span>
-            <button class="btn-paper-translate ${cachedTrans ? 'cached' : ''}" id="btn-trans-${paper.paper_id}" title="翻译论文标题与英文摘要">
-              ${cachedTrans ? '📜 收起中文翻译' : '🇨🇳 中文翻译'}
+            <button class="btn-paper-translate ${cachedTrans ? 'cached' : ''}" id="btn-trans-${paper.paper_id}" title="按需翻译整篇论文">
+              ${cachedTrans ? '🇨🇳 查看中文全文' : '🇨🇳 翻译全文'}
             </button>
           </div>
           <div class="summary-thesis-content">
             <strong>🎯 核心论断 (Core Thesis):</strong> <span>“${coreThesis}”</span>
           </div>
-          <div class="summary-zh-box" id="trans-box-${paper.paper_id}" aria-live="polite" style="${cachedTrans ? 'display:block;' : 'display:none;'}"></div>
+          <div class="summary-zh-box" id="trans-box-${paper.paper_id}" aria-live="polite" style="display:none;"></div>
         </div>
         <p class="radar-paper-abstract" id="abs-${paper.paper_id}">
           <strong class="abs-prefix">【英文摘要 Abstract】：</strong>${paper.summary}
         </p>
         <div class="radar-paper-actions">
-          <button class="btn-paper-action primary-trans ${cachedTrans ? 'cached' : ''}" id="btn-action-trans-${paper.paper_id}" title="翻译论文标题与英文摘要">
-            ${cachedTrans ? '📜 收起中文翻译' : '🇨🇳 中文翻译'}
+          <button class="btn-paper-action primary-trans ${cachedTrans ? 'cached' : ''}" id="btn-action-trans-${paper.paper_id}" title="按需翻译整篇论文">
+            ${cachedTrans ? '🇨🇳 查看中文全文' : '🇨🇳 翻译全文'}
           </button>
           <button class="btn-paper-action" id="btn-toggle-abs-${paper.paper_id}">📖 展开英文摘要</button>
           <a href="https://arxiv.org/abs/${paper.paper_id}" target="_blank" class="btn-paper-action">🔗 arXiv 原文</a>
@@ -615,7 +619,7 @@ class TianGongRadarController {
 
       this.paperListContainer.appendChild(card);
 
-      // 一键中文翻译 (标题 + 摘要 + 核心解读，并使用本地缓存避免重复调用模型)
+      // 按需翻译整篇论文 (用户点击后才下载 PDF、调用模型，并使用本地缓存)
       const btnTrans = document.getElementById(`btn-trans-${paper.paper_id}`);
       const btnActionTrans = document.getElementById(`btn-action-trans-${paper.paper_id}`);
       const transBox = document.getElementById(`trans-box-${paper.paper_id}`);
@@ -632,51 +636,49 @@ class TianGongRadarController {
 
       if (transBox) {
         const renderTransData = (data) => {
-          const cleanTitle = (data.title_zh || "").replace(/\\\\/g, "\\");
-          const cleanThesis = (data.thesis_zh || "").replace(/\\\\/g, "\\");
-          const cleanAbsZh = (data.abstract_zh || "").replace(/\\\\/g, "\\");
-          let absHtml = "";
-          if (cleanAbsZh) {
-            absHtml = `
-              <div class="trans-abstract">
-                <div class="trans-abstract-header">📖 【中文摘要】</div>
-                <div class="trans-abstract-body">${cleanAbsZh}</div>
-              </div>
-            `;
-          }
+          const escapeHtml = (value) => String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+          const fullTextZh = escapeHtml((data.full_text_zh || data.abstract_zh || "").replace(/\\\\/g, "\\"));
           transBox.innerHTML = `
-            <div class="trans-title"><strong>🏷️ 【中文标题】</strong> <span>${cleanTitle}</span></div>
-            <div class="trans-thesis"><strong>🎯 【中文解读】</strong> <span>${cleanThesis}</span></div>
-            ${absHtml}
+            <div class="trans-full-paper-header">📚 【中文全文】</div>
+            <div class="trans-full-paper-body">${fullTextZh}</div>
           `;
           transBox.style.display = "block";
           transBox.dataset.loaded = "true";
-          updateTransButtons("📜 收起中文翻译", true, false);
+          updateTransButtons("📜 收起中文全文", true, false);
           this.renderMathEquations(transBox);
         };
-
-        if (cachedTrans && (cachedTrans.title_zh || cachedTrans.abstract_zh)) {
-          renderTransData(cachedTrans);
-        }
 
         const handleTransClick = async () => {
           if (transBox.dataset.loaded === "true") {
             const isHidden = transBox.style.display === "none";
             transBox.style.display = isHidden ? "block" : "none";
-            updateTransButtons(isHidden ? "📜 收起中文翻译" : "🇨🇳 中文翻译", true, false);
+            updateTransButtons(isHidden ? "📜 收起中文全文" : "🇨🇳 查看中文全文", true, false);
             if (isHidden) {
               transBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
             }
             return;
           }
 
-          updateTransButtons("⏳ 翻译生成中...", false, true);
+          if (cachedTrans) {
+            renderTransData(cachedTrans);
+            transBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            return;
+          }
+
+          updateTransButtons("⏳ 正在翻译全文...", false, true);
           try {
             const resp = await fetch("/api/radar/translate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 title: paper.title,
+                paper_id: paper.paper_id,
+                pdf_url: paper.pdf_url,
                 text: coreThesis,
                 abstract: paper.summary,
               }),
@@ -695,7 +697,7 @@ class TianGongRadarController {
               throw new Error(resData.detail || "翻译异常");
             }
           } catch (err) {
-            updateTransButtons("🇨🇳 中文翻译", false, false);
+            updateTransButtons("🇨🇳 翻译全文", false, false);
             alert(`翻译失败: ${err.message}`);
           }
         };
