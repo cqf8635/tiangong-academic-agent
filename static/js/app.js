@@ -2252,6 +2252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnHeaderRecord = document.getElementById('btn-header-record');
   const headerRecordText = document.getElementById('header-record-text');
   const headerRecordIcon = document.getElementById('header-record-icon');
+  const voiceCaptureMode = document.getElementById('voice-capture-mode');
   let isMeetingRecording = false;
 
   async function toggleMeetingRecording() {
@@ -2268,9 +2269,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (headerRecordText) headerRecordText.textContent = '录制中 (点击停止)';
       if (headerRecordIcon) headerRecordIcon.textContent = '🔴';
-      setAssistantState('LISTENING', '已开启讲堂/会议全自动监听，实时流水转写中...');
+      const captureMode = voiceCaptureMode ? voiceCaptureMode.value : 'mic';
+      if (voiceCaptureMode) voiceCaptureMode.disabled = true;
+      const modeLabel = captureMode === 'system' ? '系统声音（腾讯会议/视频）' : '麦克风';
+      setAssistantState('LISTENING', `已开启${modeLabel}监听，实时流水转写中...`);
       try {
-        await fetch('/api/voice/start', { method: 'POST' });
+        await fetch('/api/voice/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: captureMode }),
+        });
       } catch (e) {
         console.error('Failed to start voice perception:', e);
       }
@@ -2284,6 +2292,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (headerRecordText) headerRecordText.textContent = '开启会议录制';
       if (headerRecordIcon) headerRecordIcon.textContent = '🎙️';
+      if (voiceCaptureMode) voiceCaptureMode.disabled = false;
       setAssistantState('IDLE');
       try {
         await fetch('/api/voice/stop', { method: 'POST' });

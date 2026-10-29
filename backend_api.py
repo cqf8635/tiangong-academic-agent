@@ -529,15 +529,16 @@ class VoiceSessionManager:
             if ws in self.connected_websockets:
                 self.connected_websockets.remove(ws)
 
-    def start_voice_agent(self, loop):
+    def start_voice_agent(self, loop, mode: str = "mic"):
         if self.is_running:
             return
         self.is_running = True
+        mode = mode if mode in {"mic", "system"} else "mic"
 
         def run_worker():
             try:
                 from voice_langgraph_agent import VoicePerceptionAgent
-                agent = VoicePerceptionAgent(source="default")
+                agent = VoicePerceptionAgent(source="default", mode=mode)
                 
                 # 回调推送到 WebSocket
                 orig_clean_and_format = agent._clean_and_format
@@ -596,10 +597,14 @@ async def websocket_voice_endpoint(websocket: WebSocket):
             voice_manager.connected_websockets.remove(websocket)
 
 
+class VoiceStartRequest(BaseModel):
+    mode: str = "mic"  # mic: 麦克风；system: 系统声音/视频会议回环
+
+
 @app.post("/api/voice/start")
-async def start_voice_perception():
+async def start_voice_perception(req: Optional[VoiceStartRequest] = None):
     loop = asyncio.get_event_loop()
-    voice_manager.start_voice_agent(loop)
+    voice_manager.start_voice_agent(loop, mode=(req.mode if req else "mic"))
     return {"status": "started", "is_recording": True}
 
 
