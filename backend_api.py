@@ -863,33 +863,47 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     except json.JSONDecodeError:
         summary_data = {}
     chunks = _split_translation_chunks(source_text)
-    translated_chunks: List[str] = []
-    for index, chunk in enumerate(chunks, start=1):
-        prompt = f"""你是一位严谨的学术翻译专家。请把下面论文正文的第 {index}/{len(chunks)} 段完整翻译成中文。
+    translated_chunks: List[str] = [""] * len(chunks)
+
+    def _translate_single_chunk(task_info):
+        idx, chunk_content = task_info
+        chunk_prompt = f"""你是一位严谨的学术翻译专家。请把下面论文正文的第 {idx}/{len(chunks)} 段完整翻译成中文。
 只翻译，不要总结，不要删减，不要补充原文没有的内容。保留章节标题、公式、变量、引用编号、表格数据、代码和专业缩写；原文中的页码标记也保留。
 论文标题：{req.title}
 
 原文：
-{chunk}
+{chunk_content}
 
 请严格输出 JSON：{{"translation": "对应的完整中文译文"}}"""
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"},
-            temperature=0.2,
-            timeout=120,
-        )
-        content = response.choices[0].message.content or ""
-        try:
-            translated = json.loads(content).get("translation", "").strip()
-        except json.JSONDecodeError:
-            translated = content.strip()
-        if not translated:
-            raise ValueError(f"第 {index} 段翻译结果为空")
-        translated_chunks.append(translated)
+        for retry in range(2):
+            try:
+                resp = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": chunk_prompt}],
+                    response_format={"type": "json_object"},
+                    temperature=0.2,
+                    timeout=90,
+                )
+                c = resp.choices[0].message.content or ""
+                try:
+                    t_str = json.loads(c).get("translation", "").strip()
+                except json.JSONDecodeError:
+                    t_str = c.strip()
+                if t_str:
+                    return idx, t_str
+            except Exception as e:
+                print(f"⚠️ [TranslateChunk Note] 第 {idx} 段翻译尝试 {retry+1} 异常: {e}")
+                time.sleep(1.0)
+        return idx, chunk_content
 
-    full_text_zh = "\n\n".join(translated_chunks)
+    # 🚀 并发翻译多个分段，大幅缩减总等待时长，杜绝单次请求超时
+    from concurrent.futures import ThreadPoolExecutor
+    tasks = [(i, c) for i, c in enumerate(chunks, start=1)]
+    with ThreadPoolExecutor(max_workers=min(len(chunks), 4)) as pool:
+        for idx, trans_text in pool.map(_translate_single_chunk, tasks):
+            translated_chunks[idx - 1] = trans_text
+
+    full_text_zh = "\n\n".join(translated_chunks).strip()
     result = {
         "version": 3,
         "title_zh": req.title,

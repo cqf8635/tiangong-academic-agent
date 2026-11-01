@@ -1,8 +1,222 @@
 {
   "query_expression": "cat:q-bio.GN",
   "total_fetched": 25,
-  "total_results": 3998,
+  "total_results": 4010,
   "papers": [
+    {
+      "paper_id": "2610.40556v1",
+      "title": "Advancing Clinical Genomic Analysis with a Skill-Centred Agent",
+      "authors": [
+        "Qiaoyu Zheng",
+        "Weike Zhao",
+        "Yanjie Fan",
+        "Ye Cao",
+        "Mengqi Jiang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-29T17:40:24Z",
+      "summary": "Clinical genomic analysis requires experts to integrate evolving guidelines, databases, and computational evidence. As sequencing has become increasingly accessible, this complex and labor-intensive process has become a major bottleneck to the timely use of genomic information in clinical decision-making. To fill this gap, we developed ClinGeX, a large-language-model agent that composes 105 curated executable skills through task-specific retrieval and dependency-aware orchestration. On 223 temporally held-out benchmark cases, ClinGeX achieved 71.7\\% macro-averaged task-level concordance with expert reference classifications, compared with 45.7\\% for the strongest comparator. In a three-condition, counterbalanced human-AI collaboration study, 45 clinical genomic professionals assessed 135 clinically derived cases under routine (no AI assistance), DeepSeek-assisted and ClinGeX-assisted conditions. ClinGeX assistance increased raw case-level concordance across criterion-level variant analysis, genomic interpretation in rare disease and molecular oncology decision-making (51.1\\%, 57.8\\%, 64.4\\% versus 15.6\\%, 31.1\\%, 20.0\\% in comparator conditions) and reduced reported interpretation time in all scenarios. During an exploratory one-month real-world non-interventional assessment, 11 experienced professionals submitted feedback on 96 self-selected analysis episodes and reported frequent conclusion adoption and time savings. These findings support executable domain skills as a promising approach to augment specialist genomic interpretation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.40556v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.37851v1",
+      "title": "Evaluating and improving AI agents for sequencing protocol understanding",
+      "authors": [
+        "Chi-Lam Poon",
+        "Michael Goneos",
+        "Zezheng Song",
+        "Xi Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-27T18:58:58Z",
+      "summary": "Existing scientific-agent benchmarks rarely evaluate whether agents can reconstruct the exact molecular structures and generation workflows specified by sequencing protocols, a capability critical for analyzing customized sequencing assays. We introduce LibStructBench, a document-grounded benchmark for reconstructing sequencing-library structures and molecular workflows. Our experiments show that frontier agents often produce approximately correct reconstructions but remain unreliable at exact reconstruction, particularly in molecular-state representation and workflow connectivity. Switching the underlying language model produced larger average performance differences than switching agent harnesses, with a statistically significant difference only for molecular-state reconstruction. Additional knowledge improved oligo-family recovery in a small pilot without improving mean molecular-workflow scores. Autonomous accumulation of procedural rules and cross-protocol examples showed non-monotonic validation performance and no mean held-out molecular-workflow improvement in the tested trajectory. These findings highlight the need for more controlled and verifiable approaches to scientific reasoning about molecular processes in complex experimental protocols.",
+      "pdf_url": "https://arxiv.org/pdf/2610.37851v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.37031v2",
+      "title": "pyTransRate: reference-free quality assessment of de novo transcriptome assemblies with current aligners and quantifiers",
+      "authors": [
+        "Matthew MacManes"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-27T11:08:52Z",
+      "summary": "Summary: The original software TransRate scores a de novo transcriptome assembly by mapping the reads it was built from back to it, with no reference required. Its last release (1.0.3) depends on Ruby 2.2 and on aligner and quantifier versions that can no longer be installed on most systems. pyTransRate is a Python reimplementation of the TransRate method built on snap-aligner 2.0.5 and salmon 2.7.0. In 5,031 paired comparisons (39 assembly-level metrics on each of 129 public assemblies), it reproduces the original sequence metrics and read counts exactly and ranks assemblies consistently with 1.0.3 (Spearman rho = 0.94 for assembly score, 0.98 for good-mapping rate), although its read-based scores are not numerically interchangeable with the original. It also reads gzip- and bgzip-compressed input directly. Availability and Implementation: pyTransRate is implemented in Python 3 and is freely available under the MIT license at https://github.com/macmanes-lab/pytransrate. It runs on Linux and macOS; snap-aligner and salmon are installed from Bioconda. Supplementary information: Supplementary data are available online. Supplementary Table S1 lists the assembly and read accessions for every assembly analyzed; Supplementary Table S2 gives per-assembly values from both implementations.",
+      "pdf_url": "https://arxiv.org/pdf/2610.37031v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.36500v1",
+      "title": "ACOR: incremental evidence accumulation towards real-time DNA storage reconstruction",
+      "authors": [
+        "Linxuan Han",
+        "Huaming Wu",
+        "Shi Jia",
+        "Guanjin Qu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-27T01:58:03Z",
+      "summary": "DNA offers high-density, durable storage by encoding digital information into synthetic strands and retrieving it through sequencing. Sequence reconstruction combines noisy copies of each strand before downstream decoding. Conventional offline methods typically reconstruct completed read clusters, separating reconstruction from ongoing read collection. Streaming reconstruction offers a way to overlap evidence processing with sequencing and reduce the computation remaining before downstream decoding. We present ACOR, a streaming consensus reconstruction method that records $k$-mer transitions and boundary support in a persistent ledger, then decodes through length-constrained beam search and priority-based selection at cluster closure. Evaluation on real and simulated DNA-storage datasets showed competitive recovery. On our own short-read next-generation sequencing (NGS) wet-lab library, ACOR combined near-complete recovery with second-scale reconstruction of more than ten million reads. A smaller public benchmark was completed in a fraction of a second. Parallel ACOR achieved speedups of tens to over a thousand-fold relative to the tested serial baseline configurations. Sparse storage reduced high-context memory requirements, while parallel execution accelerated reconstruction computation. ACOR is designed for streaming readout pipelines that process assigned reads while sequencing continues.",
+      "pdf_url": "https://arxiv.org/pdf/2610.36500v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.IR (信息检索与推荐系统)",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.36361v1",
+      "title": "HELICS: Biobank-scale Conditional Synthetic Genome Generation via Latent Flow Matching",
+      "authors": [
+        "Ahmad Abdel-Azim",
+        "Xihong Lin"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-26T22:25:36Z",
+      "summary": "Individual-level genotype data underpin genetic discovery, disease-risk modeling, and therapeutic development, yet many critical settings remain data-limited, including underrepresented ancestries, rare or imbalanced disease cohorts, and restricted-access biobanks. Conditional synthetic genome generation would support privacy-aware benchmarking, simulation, and data augmentation, but requires learning an ultra-high-dimensional discrete distribution over hundreds of thousands to tens of millions of correlated single-nucleotide polymorphisms (SNPs), or sites of DNA variation. We introduce HELICS: High-fidelity gEneration via Latent Interpolant Conditional Synthesis, a phasing-free latent flow matching framework for genome-wide SNP-level generation from biobank-scale genotype data. HELICS tokenizes chromosomes with convolutional autoencoders, reducing >600K SNPs to 4,096 continuous latent tokens, and trains a transformer parameterized conditional flow matching model over the concatenated multi-chromosome latent representation. Trained on over 417K genomes in the UK Biobank, HELICS generates genome-wide common-variant synthetic cohorts without haplotype phasing and achieves stronger fidelity to real genotypes than existing haplotype-based simulators, including high allele-frequency agreement in external evaluation and superior preservation of local and long-range SNP correlation structure. Conditioning on ancestry and genetic liability summaries enables targeted generation across genetic risk profiles; in perturbation analyses, by increasing the conditioned disease trait liability, HELICS induces SNP-level dosage changes in generated genomes that are highly correlated with published association weights. HELICS provides a scalable generative modeling framework for SNP-level genome data and a path toward conditional synthetic cohorts for data-limited genetic studies.",
+      "pdf_url": "https://arxiv.org/pdf/2610.36361v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "NeurIPS 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.36344v1",
+      "title": "Enhancing Clinical Classifier Robustness with Deep Representation Learning Based OOD Detection on DNA Methylation Data",
+      "authors": [
+        "Md Zahangir Alom",
+        "Quynh T. Tran",
+        "Breuer Alexandar",
+        "Brent A. Orr"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-26T22:11:07Z",
+      "summary": "DNA methylation (DNAM) array-based tumor classification is a powerful clinical diagnostic tool, but models trained on fixed reference cohorts can produce faulty predictions for tumor types not represented in the training distribution. We propose an end-to-end deep representation learning-based out-of-distribution (OOD) detection framework for DNAm array data. Deep neural network (DNN) classifiers were trained on public sarcoma (SARC) (GSE140686) and brain tumor (BT) (GSE90496) cohorts, and feature vectors were extracted from bottleneck layers. Five OOD methods, including 1dimension (1D)-Subspace Analysis (1D-SSA), K-Nearest Neighbors (KNN), Ridge Regression, Mahalanobis Distance (MD), and Sum of Squared Distances (SSD), were explored with 200 and 500-dimensional embeddings. Spectral discrepancy was used to discriminate in-distribution (IND) from OOD samples. Performance was measured via cross-validation, holdout samples, and an independent clinical dataset. 1D-SSA was the most effective approach. In the sarcoma-IND/brain tumor-OOD setting, the framework achieved an AUROC of 0.975 and True Negative Rate (TNR)@95TPR of 0.930, and an AUROC of 0.9569 and TNR@95TPR of 0.8660 for the brain tumor-IND/sarcoma-OOD setting. On the independent clinical test set, the method yielded a mean AUROC of 0.976, a DE of 0.032, an FPR@95TPR of 0.065, and a TNR@95TPR of 0.935. These results show deep representation-based OOD detection as a practical quality-control layer for clinical-grade methylation-based tumor classification systems.",
+      "pdf_url": "https://arxiv.org/pdf/2610.36344v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "11 pages, 8 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.33960v1",
+      "title": "Benchmarking miRNA Target Prediction Methods",
+      "authors": [
+        "Congliang Jin",
+        "Weibo Niu",
+        "Zhexing Wen",
+        "Zhaohui S Qin",
+        "Ximing Ran"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-25T00:23:22Z",
+      "summary": "Background: MicroRNAs (miRNAs) regulate gene expression by binding to target mRNAs. Although many tools predict miRNA-target interactions, predictions show limited concordance, and benchmarks relying on curated databases may be biased by overlap with tool-development data. Methods: We benchmarked seven tools (TargetScan, miRDB, miRmap, DIANA-microT, RNA22, miRWalk, and mirDIP) across approximately 59.7 million candidate miRNA-mRNA pairs. Each pair received an evidence-graded reference score (0-3) combining validated interactions from miRTarBase and TarBase with expression-derived evidence from paired miRNA-seq and mRNA-seq data in an induced pluripotent stem cell (iPSC) cohort of 22q11.2 deletion syndrome and control lines. Performance was evaluated using Type I error, statistical power, and false discovery proportion (FDP). Robustness was assessed by increasing reference-score stringency (truth signal) and including progressively lower-confidence predictions (model signal). Optimal cutoffs maximized Youden's J statistic. Results: Rankings were largely consistent across settings. TargetScan and miRDB maintained Type I error rates below 0.05, with TargetScan showing the lowest FDP, but both had limited power. mirDIP achieved the highest power at the cost of the highest Type I error rate. At optimal cutoffs, mirDIP best balanced sensitivity and specificity (Youden's J = 0.566), followed by DIANA-microT (J = 0.481); miRWalk and RNA22 had FDPs near the random-prediction baseline. No tool was optimal across all metrics; tool and cutoff selection should reflect whether sensitivity or specificity is prioritized.\"\"\"",
+      "pdf_url": "https://arxiv.org/pdf/2610.33960v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "Accepted for presentation at the 2026 IEEE International Conference on Bioinformatics and Biomedicine (BIBM 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31816v1",
+      "title": "TAPESTRY: an interactive resource for exploring tumor-enriched splice junctions in pediatric brain tumors",
+      "authors": [
+        "Patricia J. Sullivan",
+        "Ryan J. Corbett",
+        "Chao Di",
+        "Alex Sickler",
+        "Aylar Babaei"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T18:53:50Z",
+      "summary": "TAPESTRY (https://tapestry.rokitalab.com) is a database and web application for exploring recurrent tumor-enriched splice junctions (TEJs) in pediatric brain tumors, cancers that carry few protein-coding mutations and therefore few mutation-derived neoantigens. However, TEJs represent a much larger source of neoantigens as potential therapeutic targets in these tumors. TAPESTRY catalogs 45,430 recurrent TEJs across 19 histologies, identified in 1,962 RNA-seq specimens (including 1,272 independent primary tumors) from the Pediatric Brain Tumor Atlas and compared to four normal brain reference cohorts comprising adult, pediatric, developmental and cell-type-resolved tissue. Each junction is classified as tumor-specific or oncofetal; annotated for splice-event type, coding consequence, novelty relative to GENCODE v39 and overlap with Pfam and UniProt protein domains; and scored for recurrence within each histology. Users can search by gene or splicing event and filter results by histology, junction class, and annotation. Users can also generate gene-level expression heatmaps across cohorts, junction-level expression boxplots, and transcript and exon diagrams, and download all tables and figures. A documented REST API supports programmatic access, and all source code is openly available. By making tumor-selective and developmentally reactivated splicing events searchable and interpretable, TAPESTRY supports the prioritization of splice-derived targets for antibody-based, cell-based and vaccine immunotherapies in pediatric brain and central nervous system tumors.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31816v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2610.31454v1",
       "title": "Benchmarking Recent Single-Cell Synthetic Data Generation Methods on the OneK1K Dataset",
@@ -79,7 +293,7 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.27331v1",
+      "paper_id": "2610.27331v2",
       "title": "Reading Between the Reads: A Decade On, Revisiting Sequencing Protocol Annotation in the Sequence Read Archive",
       "authors": [
         "Jamie J. Alnasir"
@@ -87,7 +301,7 @@
       "year": 2026,
       "published_at": "2026-10-19T21:49:36Z",
       "summary": "Background: Experimental metadata are essential for interpreting archived sequencing data. In 2015, Alnasir and Shanahan examined the annotation of fragmentation, adapter ligation and enrichment in the Sequence Read Archive (SRA). This study revisits those measurements using the original SQL keyword definitions on a September 2026 NCBI metadata snapshot reconstructed in the historical SRAdb schema. Results: The contemporary database contained 41,593,302 experiments, compared with 419,620 in 2013. In library_construction_protocol, the proportion matching all three historical keyword groups declined from 4.06% to 1.42%. The protocol field was NULL in 67.65% of contemporary experiments. Searching design_description alongside the protocol field increased combined three-step keyword detection to 1,197,367 experiments (2.88%), with most additional matches occurring where the protocol field was NULL. Coverage varied across sequencing library strategies, ranging from 0.26% for AMPLICON to 7.69% for RNA-Seq. Independent comparison of 150 sampled experiment records against source XML confirmed agreement in all historical keyword classifications. Conclusions: The original criteria identify a smaller proportion of experiments in the designated protocol field than a decade earlier. Additional preparation-related terminology is detectable in general experiment descriptions, exposing the limitations of searches restricted to one metadata field. Differences among sequencing strategies complicate historical comparisons as preparation methods evolve. The findings support more consistent protocol annotation and the need to distinguish keyword occurrence from the adequacy of experimental documentation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27331v1.pdf",
+      "pdf_url": "https://arxiv.org/pdf/2610.27331v2.pdf",
       "source": "arxiv",
       "primary_category": "q-bio.GN",
       "categories": [
@@ -98,7 +312,7 @@
         "q-bio.GN (基因组学与生物信息)",
         "q-bio.QM (生物医学定量方法)"
       ],
-      "comment": "15 pages, 2 figures, 8 tables",
+      "comment": "15 pages, 2 figures, 8 tables. Clarified the practical implications of the experiment-level cross-field analysis, explicitly quantifying the 50.60% of historical three-step keyword detections missed by protocol-field-only searches. Refined methodological definitions and validation qualifications. The underlying experimental results remain unchanged",
       "journal_ref": null,
       "ai_summary": null
     },
@@ -453,216 +667,6 @@
       "comment": "55 pages, 39 figures, 10 tables",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.14566v2",
-      "title": "manylp: reproducible, exact, and batched linear programming for genome-scale dynamic flux balance analysis",
-      "authors": [
-        "Fabio Cumbo"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-10T04:36:08Z",
-      "summary": "Dynamic flux balance analysis (dFBA) and its community, spatial and ensemble variants predict microbial metabolism by solving one linear program (LP) per species and time step, often 10^6 to 10^8 LPs per study. These LPs share their constraint matrix and objective and differ only in their bounds, yet general-purpose solvers treat each one independently, and GPU first-order solvers struggle with the degenerate, badly scaled matrices of genome-scale models. Moreover, metabolic optima are usually faces rather than vertices, so solvers return arbitrary flux vectors and dFBA predictions depend on the solver used. We present manylp, a batched solver for such bounds-parametric LP families that returns certified vertex solutions. Building on the bunching technique of stochastic programming, manylp caches optimal bases and certifies whole batches with one dense matrix product per basis on CPUs or GPUs; LPs outside the cached critical regions are re-solved by a warm-started lexicographic dual simplex, and new bases are propagated across the batch. Each LP is certified optimal and unique under a lexicographic flux rule, or infeasible, in independent double-precision arithmetic. On a genome-scale dFBA workload, manylp certified 47,889 LPs per second on a CPU, 12 to 33 times faster than HiGHS, Gurobi, FICO Xpress, GLPK and OR-Tools (32 processes), and reached 682,000 LPs per second on one GPU for community ensembles, needing 76 simplex solves for 94.6 million LPs. Integrated into the muODE simulator, it accelerated single trajectories 84-fold and 16-member ensembles 635-fold, and made adaptive Runge-Kutta integration affordable, reducing biomass errors 83-fold. Integrating 49 equally optimal flux policies in one batched run showed that alternative optima change predicted acetate 4.2-fold and shift community composition. manylp is open source: https://github.com/cumbof/manylp.",
-      "pdf_url": "https://arxiv.org/pdf/2610.14566v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.MS",
-      "categories": [
-        "cs.MS",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.MS (数学计算软件)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "36 pages, 3 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.13073v2",
-      "title": "Double-Take: Improving Capacity, Binding, and Selectivity In Long-Context Within Bidirectional Memory",
-      "authors": [
-        "Vakul Raghavan",
-        "Utkarsh Grover",
-        "Mingyang Mao",
-        "Chengwen Wang",
-        "Xiaomin Lin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-09T06:31:57Z",
-      "summary": "Processing a long sequence does not guarantee that distant information remains usable. As context grows, a fixed-size memory must retain many associations, connect information across positions, and preserve relevant structure without being overwhelmed by everything it observes. These are distinct requirements: a memory may store more information without representing the relationships needed for retrieval, and it may transport those relationships without preserving the ones that matter. Thus, the challenge is not simply extending context length, but constructing a memory that remains usable as context grows. We study this problem in large-chunk test-time training (TTT) and identify two basic failures: single-step writes accumulate interference, limiting capacity, while self-associative writes cannot form cross-position bindings. We introduce Double-Take (DT), which repairs these failures with multi-step unpinned updates and cross-position mixing, and adds bidirectional change-sensitive writes for selective retention. Capacity alone leaves end-to-end recall at the $0.10$ chance floor; adding binding raises it to $0.92$. Trained only on $32\\,\\mathrm{kb}$ genomic contexts, DT reaches $0.927$ AUROC at $131\\,\\mathrm{kb}$ and $0.856$ near $1\\,\\mathrm{Mb}$, while transferring zero-shot from human to mouse. Together, these results identify capacity, binding, and selectivity as three requirements for usable long-range memory.",
-      "pdf_url": "https://arxiv.org/pdf/2610.13073v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.GN",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "23 pages, 4 figures, 15 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.12281v1",
-      "title": "Unlocking the Regulatory Genome by ARGUS: An Evidence-Constrained Agentic Framework for Interpreting Single Nucleotide Variants",
-      "authors": [
-        "Pratik Dutta",
-        "Matthew B. Obusan",
-        "Max Chao",
-        "Rekha Sathian",
-        "Nimisha Papineni"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-08T16:38:32Z",
-      "summary": "Over 90% of disease-associated variants from genome-wide association studies fall in noncoding regulatory regions, yet their functional interpretation remains a central open problem in genomic medicine. Large language models prompted to interpret such variants routinely hallucinate transcription factor (TF) binding changes, fabricate experimental support, and assign biological significance to statistically negligible signals. We present ARGUS (Agentic Regulatory Genomics for an Uncertainty-aware Scientist), which strictly separates deterministic biological computation from LLM-mediated reasoning. ARGUS wraps 458 DNABERT-based TF binding models in a hypothesis-directed investigation loop where a planner selects evidence sources based on current uncertainty, a verifier deterministically interprets each observation, and intermediate results change the investigation path. On variant rs6983267 at the 8q24 cancer risk locus, the same planner produces four divergent trajectories for four TFs. FOXA1 is rescued in 3 steps when real ADASTRA allele-specific binding data (15 experiments, FDR = 0.030) reveals a model false negative masked by saturation. KLF6 traverses 8 steps across ADASTRA, JASPAR motif analysis, and ENCODE cCRE regulatory annotation before abstaining due to mixed indirect evidence. RAD21 abstains in 8 steps after ADASTRA returns a coverage-qualified but nonsignificant allelic test (5 experiments, FDR = 0.65), and SP1, which shares FOXA1's saturated retained prediction, abstains because no direct experimental evidence exists at this locus. All observations come from real ADASTRA, JASPAR, and ENCODE cCRE queries; none are simulated. A comparison of fixed-priority and LLM-mediated planning shows that the LLM planner reaches identical verdicts with fewer tool calls by declining evidence that cannot resolve the claim under test.",
-      "pdf_url": "https://arxiv.org/pdf/2610.12281v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.AI",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "Accepted at the NeurIPS 2026 Workshop on Agentic AI for Biological Discovery (AgenticLS). Code: https://github.com/duttaprat/ARGUS",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.11185v1",
-      "title": "Predictive Multiplicity in Cell-Fate Assignment: Label-Free Rashomon Sets and the Limits of Per-Cell Certification",
-      "authors": [
-        "Arjun Bhupatiraju",
-        "Abhiram Bhupatiraju"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-08T03:43:28Z",
-      "summary": "Single-cell trajectory inference maps transcriptomic measurements onto developmental continua, yet configurations that fit the data equally well can assign conflicting cell fates. FateMultiplicity is a label-free framework that constructs a statistically admissible model set, or Rashomon set, without lineage labels, by evaluating model discrepancy on cross-fitted held-out genes under non-inferiority testing calibrated against random-seed variation. Multiplicity is large and depends more on the diversity of the model space than its size: twelve configurations of a second algorithm expose 20.0% of cells where twenty-four of the first expose 3.8%. Whether the per-cell certified fate margin FM yields more reliable assignments than the fitted model already provides is then tested, and it does not. On simulation ground truth, on the same cells, FM discriminates misassignment at AUC 0.682, against 0.965 for the baseline configuration's own decision margin (p = 0.003) and 0.854 for a seed-dispersion baseline. Informativeness is governed by the breadth of the admitted set, not its cardinality: at cardinality four, seed refits give 0.933 and hyperparameter-perturbed sets 0.701. Relaxing the infimum to a q-quantile recovers discrimination but converges toward the single model's own confidence; the supremum reaches 0.973 because theta*'s membership bounds it from below, while the infimum is unanchored. Multiplicity in trajectory inference is worth measuring and reporting, but per-cell certification over a label-free Rashomon set is not a route to more reliable fate calls. Two constructions survive: a margin-erosion ratio separates real from spurious branch points in simulation (AUC 0.890, untested on real data), and against clonally observed fate, uncertified cells disagree with their clone's outcome 16.4 percentage points more often than certified cells (p < 0.001).",
-      "pdf_url": "https://arxiv.org/pdf/2610.11185v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "14 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.10500v2",
-      "title": "Taxonomic Classification with Tag Arrays",
-      "authors": [
-        "Travis Gagie",
-        "Gonzalo Navarro"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-07T17:49:27Z",
-      "summary": "Taxonomic classifiers based on exact matches differ in which matches they use and in how each match splits its credit among the taxa containing it: Kraken~2 gives a $k$-mer's credit to the lowest common ancestor of those taxa, SPUMONI~2 labels each position of the read, Tagger gives each maximal exact match (MEM) one label, and Cliffy splits a match's credit evenly over a roughly logarithmic sample of the taxa. We compare these schemes on the same long MEMs, mainly on short 16S rRNA reads classified to genera with SILVA, where credit proportional to the number of occurrences of the MEM in each taxon is the most accurate, by 1.0 to 6.8 percentage points. We compute long MEMs with Boyer--Moore--Li on a run-length compressed suffix array, and count their occurrences in each taxon with a complete, run-length compressed tag array, in time proportional to the number of tag runs in the MEM's BWT interval, without locating any occurrence. We bound the number of tag runs in terms of the BWT runs and of how often suffixes with long common prefixes have different tags, and show that tags constant on $d$ blocks of the text have a macro scheme with at most $r + 2d$ phrases. On SILVA our index takes 1.44\\,GB and classifies a read in 66\\,$μ$s with one thread at 93.8\\% accuracy, about what Cliffy reports for its 9\\,GB index; over minimizer digests it takes 0.49\\,GB and reaches 92.5\\%, against 84.2\\% for Cliffy's digested index on the same reads. On nanopore reads from whole genomes, where almost every long MEM occurs in one species, we instead use each read's longest MEMs, found in one pass of a variant of Boyer--Moore--Li with a $k$-mer filter, which assigns 99.6\\% of the reads to their species with no length threshold.",
-      "pdf_url": "https://arxiv.org/pdf/2610.10500v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.DS",
-      "categories": [
-        "cs.DS",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.DS (数据结构与算法)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "Preliminary version: The ideas in this paper are the authors'; the code, the experiments and the text were developed by Claude Opus 5.5, an AI model by Anthropic, under the authors' direction. We are in the process of verifying the results, including running a comparison with Cliffy, which we cannot build on the commodity machine we are currently using",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.10482v1",
-      "title": "Truecell reproduces R Seurat's single-cell analysis outputs natively in the Python ecosystem",
-      "authors": [
-        "Nuzla Ismail",
-        "Shanika Amarasoma",
-        "Michelle Galeas-Pena",
-        "Sarah C. Glover"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-07T17:38:28Z",
-      "summary": "Single-cell RNA-sequencing analyses predominantly use either Seurat (R) or Scanpy (Python), with the choice often driven by programming language preference. However, by default, these tools produce divergent variable features, neighbour graphs, clusters, and marker genes. Laboratories requiring Python, which supports most deep-learning, foundation-model, and agent tools, must re-implement Seurat analyses in a framework that does not replicate Seurat's results. Truecell was developed as a Python implementation of the Seurat interface, preserving function names, arguments, default settings, and the object model to facilitate seamless transfer of analyses. In eighteen paired end-to-end evaluations against R Seurat, deterministic outputs matched to floating-point precision, and fold-change order was identical across all nine differential expression tests. In a three-arm benchmark on three datasets, with fixed user parameters and 20 seeds per tool, Truecell more closely reproduced Seurat's clustering than a Seurat-configured Scanpy in all 12 combinations of dataset and resolution settings. Truecell's marker genes and enriched pathways were also closer to Seurat's than Scanpy's were, and pseudobulk DESeq2 reproduced Seurat's gene lists with a Jaccard index ranging from 0.95 to 1.00. This agreement reflects fidelity to Seurat rather than biological correctness.",
-      "pdf_url": "https://arxiv.org/pdf/2610.10482v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.09054v1",
-      "title": "Beyond the Transcriptome: Chromatin-Informed Prediction of Cell-State-Dependent Perturbation Responses",
-      "authors": [
-        "Jiafa Ruan",
-        "Chenyang He",
-        "Ruijie Quan",
-        "Fanglei Xue",
-        "Zongxin Yang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-06T20:05:35Z",
-      "summary": "Predicting transcriptional responses to genetic perturbations is central to understanding gene function. Existing predictors primarily rely on transcriptomic measurements, although chromatin accessibility provides complementary information about the cellular context in which perturbations act. Using this information requires linking chromatin context to specific perturbations and accounting for baseline differences between independently sampled control and perturbed populations. We propose ChromaPert, a chromatin-informed framework for predicting state-dependent perturbation responses. ChromaPert combines molecular and DNA-informed locus priors with paired control RNA--ATAC features to jointly represent target identity and measured cellular context. Its Chromatin-Guided Response Router (CGRR) builds a source bank of control-derived expression offsets and retrieves relevant sources using perturbation/locus or control-ATAC similarity. These offsets account for baseline differences, while conditional transport flow learns the remaining response. Across three unseen-target and held-out-state settings on K562 CAT-ATAC and Perturb-Multiome, ChromaPert achieves the highest all-gene response correlation among evaluated methods. When transferring known perturbations to held-out states, it improves correlation by 23.2% across all genes and 46.2% for the twenty most responsive genes over the strongest respective baselines. Correct RNA--ATAC pairing improves recovery of chromatin-associated response slopes over shuffled pairing, while cross-state predictions retain state-specific responses to the same perturbation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.09054v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.08376v1",
-      "title": "HRPv2: an automated and enhanced method for full-length homology-based R-gene prediction",
-      "authors": [
-        "Giuseppe Andolfo",
-        "Thomas Holzweber",
-        "Juliane C. Dohm",
-        "Heinz Himmelbauer"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-06T14:00:44Z",
-      "summary": "Motivation: Plant disease resistance genes, particularly those encoding NB-LRR proteins, are important targets for crop improvement. Proteome-based domain or motif searches can only identify NB-LRRs among existing gene models, meaning they cannot recover loci that have been missed or incorrectly predicted by the reference annotation. The full-length, homology-based R-gene prediction (HRP) method circumvents this issue by reconstructing gene models directly on the genome. However, the original implementation of this method requires several separate phases of classification, comparison and filtering operations. Results: HRPv2 is an automated, enhanced version of the original strategy. The labour-intensive, step-by-step curation process used in HRP has been replaced by a reproducible filtering framework. Enhancing two steps of the homology search process has enabled HRPv2 to better account for the specific NB-LRR variability of the genome. Performance validation confirmed that the number of full-length NB-LRRs annotated in both the automatically predicted gene set of the respective genome assembly and the final NB-LRR repertoire has increased in HRPv2 compared to HRP. Availability and implementation: HRPv2 and its associated documentation and reproducible test data are available at https://github.com/AndolfoG/HRPv2. Detailed installation and dependency information is provided in the repository README. A version-pinned Conda package has also been developed and locally validated to provide a reproducible execution environment.",
-      "pdf_url": "https://arxiv.org/pdf/2610.08376v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "Supplementary data available at https://doi.org/10.6084/m9.figshare.34085769",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -672,24 +676,29 @@
       "count": 25
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 6
     },
     {
       "code": "q-bio.QM",
       "name_zh": "生物医学定量方法",
-      "count": 5
+      "count": 6
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 4
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 5
     },
     {
       "code": "stat.ME",
       "name_zh": "统计推断与方法学",
       "count": 2
+    },
+    {
+      "code": "cs.IR",
+      "name_zh": "信息检索与推荐系统",
+      "count": 1
     },
     {
       "code": "stat.AP",
@@ -735,17 +744,7 @@
       "code": "cs.CR",
       "name_zh": "密码学与网络安全",
       "count": 1
-    },
-    {
-      "code": "cs.MS",
-      "name_zh": "数学计算软件",
-      "count": 1
-    },
-    {
-      "code": "cs.DS",
-      "name_zh": "数据结构与算法",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-10-25T20:18:55.818909"
+  "snapshot_synced_at": "2026-11-01T09:56:21.810810"
 }

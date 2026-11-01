@@ -1,19 +1,18 @@
 {
   "query_expression": "cat:q-fin.PM",
   "total_fetched": 25,
-  "total_results": 2506,
+  "total_results": 2517,
   "papers": [
     {
-      "paper_id": "2610.27751v1",
-      "title": "Market Regime-Based Multi-Asset Portfolio Optimization Using Nested Clustered Optimization for Tactical Asset Allocation",
+      "paper_id": "2610.40129v1",
+      "title": "The Generalised Kessler Syndrome and the Persian Gulf",
       "authors": [
-        "Supriadi",
-        "Bambang Siswoyo"
+        "Bernhard K Meister"
       ],
       "year": 2026,
-      "published_at": "2026-10-20T07:13:17Z",
-      "summary": "We propose a regime-aware tactical asset allocation (TAA) framework integrating market regime detection with Nested Clustered Optimization (NCO) for multi-asset portfolio construction. The central hypothesis is that incorporating market regime information into the NCO pipeline, specifically at the stages of covariance estimation, hierarchical clustering, and weight optimization, yields portfolios with improved risk-adjusted performance and reduced downside risk relative to regime-agnostic baselines. Market regimes (Bullish, Sideways/Neutral, Bearish) are detected using a Gaussian Hidden Markov Model (HMM) fitted exclusively on information available up to each decision point, thereby preventing look-ahead bias. Regime-conditional covariance matrices and clustering structures parameterize NCO at each rebalancing event. An adaptive rebalancing rule, triggered by regime transitions or material changes in optimal weights, replaces fixed-calendar rebalancing. The framework is evaluated on a heterogeneous monthly multi-asset universe comprising Indonesian government bonds (SBN), the LQ45 equity index, gold (IDR-denominated), foreign exchange (CNY/IDR), and Bitcoin/IDR (BTC). Out-of-sample performance is assessed via rolling walk-forward backtesting. Benchmarks include equal-weight (1/N), buy-and-hold, standard NCO without regime awareness, minimum variance, hierarchical risk parity (HRP), and a rule-based regime strategy. Performance metrics include cumulative return, annualized Sharpe ratio, Sortino ratio, maximum drawdown, Calmar ratio, turnover, and net-of-cost returns. Statistical significance is assessed using the Jobson-Korkie test. The empirical analysis indicates that the proposed regime-aware TAA framework successfully limits tail risk, achieving a maximum drawdown of 4.44% and demonstrating the utility of HMM-based regime detection in multi-asset risk management.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27751v1.pdf",
+      "published_at": "2026-10-29T14:21:42Z",
+      "summary": "The term Kessler syndrome was coined for a runaway orbital cascade creating a high-density debris field. The idea is generalised and applied to supply chains. An additive channel enables failures to generate further failures; a subtractive channel erodes the capacity to contain and restore. When damage outpaces repair, failure becomes irreversible and the system settles into a new state. Supplies connect the theory to its application. Stocks insulate subsystems from one another, and their exhaustion exposes dependencies. For the Persian Gulf states, restrictions on maritime supplies from spring 2026 are inadequately compensated by air and road transport alternatives. This depletes inventories unevenly across products and impairs the functioning of the logistics system itself. Throughput optimisation builds fragility everywhere; the Gulf is where it is becoming visible, with the Strait of Hormuz restriction as the trigger. Formulated as a Kelly portfolio allocation under a weakest-link payoff, the optimal strategy concentrates resources on the lagging rather than the leading inputs.",
+      "pdf_url": "https://arxiv.org/pdf/2610.40129v1.pdf",
       "source": "arxiv",
       "primary_category": "q-fin.PM",
       "categories": [
@@ -22,7 +21,297 @@
       "category_names_zh": [
         "q-fin.PM (资产组合管理)"
       ],
-      "comment": "8 pages, 6 figures, 8 tables",
+      "comment": "10 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.39205v1",
+      "title": "Sparse Autoencoders as Implicit Diversification Regularisers for Cross-Sectional Cryptocurrency Returns",
+      "authors": [
+        "Weijia Han",
+        "Lisha Qu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-29T02:28:10Z",
+      "summary": "Factor models are central to asset pricing and portfolio construction, but neural factors are often difficult to interpret, and their effect on portfolio risk is unclear. A sparse autoencoder (SAE) may address both concerns by describing daily returns across many assets with only a few active features. We ask whether this sparse representation produces stable financial factors and better-diversified portfolios. We study cryptocurrency returns, use equities as a secondary test, and compare the SAE with common benchmarks in a time-ordered evaluation. We find consistently lower volatility in SAE portfolios and link this result to lower correlations among the selected assets. However, the SAE does not outperform a simple contrarian strategy on risk-adjusted return, and its factor identities are not stable across training runs. Our contribution is to show that sparse coding can support portfolio diversification, while clearly separating this risk effect from claims about alpha or stable factor identities.",
+      "pdf_url": "https://arxiv.org/pdf/2610.39205v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.PM (资产组合管理)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "8 pages, 4 figures. Accepted at the 7th ACM International Conference on AI in Finance (ICAIF '26)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.36491v1",
+      "title": "Simple Portfolios that Deliver Consistent Decent Returns",
+      "authors": [
+        "Oskar Edén Wallberg",
+        "Alexander Karolin"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-27T01:45:09Z",
+      "summary": "Portfolio construction has been studied extensively in both academia and industry. Its applications range from pension funds and hedge funds to private savings. The academic literature centers on methodology, commonly evaluated in settings that allow short selling, leverage, and frequent trading. Industry, on the other hand, operates under real constraints, but its data and methods are proprietary and largely unpublished. Neither is directly available to the private investor. This paper is an empirical study of established portfolio construction methods in the setting of the private investor. We consider a small investable universe of liquid US ETFs, where trading is monthly and carries a cost, and neither shorting nor leverage is permitted. Portfolio construction is posed as a convex optimization problem, its inputs are estimated from public data, and every parameter is interpretable. We denote such portfolios simple. We show that simple portfolios of as few as three ETFs deliver consistent and decent returns, without tuning to the backtest period. To find them, we have developed a framework, which we share publicly, able to backtest hundreds of portfolios on a standard laptop over a twenty year period or longer. When no return forecast is made, portfolios are constructed from risk alone, using methods such as risk parity and minimum volatility, built on a statistical factor model fitted with expectation maximization. When a forecast is made, we combine the Markowitz formulation with momentum signals and ridge regression. We report what works and what each component adds, weighing its gain against its complexity and the effort it demands of the investor. The findings are supported by numerical experiments over the past two decades, and the proposed portfolios outperform the standard 60/40 allocation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.36491v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "71 pages, 27 figures. Code available at https://github.com/AlexEmrik/consistent-decent-returns. Risk model package available at https://github.com/oskaredenwallberg/covforge and via pip install covforge",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.37705v1",
+      "title": "Decorrelating the Advice Layer: A Calibrated Fragility Metric and Tested Mitigations for Synchronized Liquidation in Agentic Wealth Management",
+      "authors": [
+        "Saurabh Kohli"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-26T18:30:56Z",
+      "summary": "Conversational AI agents are turning wealth management into a continuous loop of market analysis, allocation, risk checks and execution, run for millions of clients on a handful of foundation models. We build a multi-asset agent-based model of this layer, calibrated to measured model concentration, cross-model correlation, retail turnover and 33 years of real equity returns, and ask when the layer amplifies market declines and what prevents it. The effective number of independent decision-makers is bounded however many clients the layer serves: about 2.0 at today's consumer concentration. This monoculture of views drives crowding in individual securities and sets the blast radius of a compromised model provider, but it does not drive market-wide liquidation. Index tail losses rise with the square root of agentic adoption, are 1.47-1.90 times larger under an agentic than under a periodic robo-advice architecture, and do not rise with model concentration; synchronized automation (risk overlays, drawdown cuts and attention-driven execution) drives them. A fragility index computed from aggregate flow, public returns and an impact estimate forecasts tail liquidation out of sample (hold-out R^2 of 0.56) far better than concentration or correlation measures. Decorrelating the automation, not the models, works: dispersing overlay parameters, staging execution and a participation breaker together cut tail liquidation by 63% at no measurable cost to client welfare, whereas provider diversification has no effect. Because the statistics required are sums, they can be computed across platforms under secure aggregation with differential privacy at negligible cost for realistic client populations. In historical replays, an agentic layer holding 10% of the market would have deepened the 2020 crash by about 858 basis points.",
+      "pdf_url": "https://arxiv.org/pdf/2610.37705v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "q-fin.PM (资产组合管理)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "30 pages, 13 figures, 9 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.34153v2",
+      "title": "Certifying Reward Alignment in Portfolio Reinforcement Learning",
+      "authors": [
+        "Matin Tavakoli",
+        "Seyedreza Tavakoli",
+        "Faezeh Salmani",
+        "Amir Amini",
+        "Mohammad Hosein Rohban"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-25T08:38:59Z",
+      "summary": "Financial reinforcement learning often translates an investment objective into an additive risk-adjusted reward. An agent can optimise that reward accurately yet implement a different financial preference. We develop a decision audit for terminal mean-variance equilibrium that separates reward misspecification from learning error. In a finite exogenous-state market, we bound the gain from changing one action using actor, reward and continuation-critic residuals. The certificate ignores state-constant critic offsets, accommodates convex action constraints, and has an independent-sample extension that does not require the equilibrium policy. A continuation-aware actor-critic method estimates the future-policy correction from samples. Across nine controlled markets and twenty seeds, it reduces policy distance by and one-step deviation gain by relative to a matched myopic-reward network. A separate PPO comparison tests the same reward intervention within a standard optimiser. Historical tests cross seven covariance estimators and 10, 30 and 49 US industry portfolios over 432 months: joint reward calibration preserves each fitted mean-variance target, but does not improve realised investment performance. Together, these results provide a way to quantify whether a learned decision implements its stated financial objective, separately from how well that objective performs in a backtest.",
+      "pdf_url": "https://arxiv.org/pdf/2610.34153v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "8 pages, Accepted the Workshop on Interpretability and Alignment of Financial Models(IAFM),ACMICAIF2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.33597v1",
+      "title": "Optimal portfolio choice under green transition timing risk",
+      "authors": [
+        "Emma Kroell",
+        "Mogens Steffensen"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-24T10:48:43Z",
+      "summary": "We study an investor's optimal portfolio choice problem when they account for the impact of a possible future green transition, whose timing is uncertain. We model the green transition as a discontinuity in the stock price processes, driven by a single jump process with constant intensity, in which 'green' stocks increase in value and 'brown' stocks decrease in value. The investor is ambiguous about the timing of the green transition and designs an investment strategy which is robust to this risk. The investor has constant relative risk aversion preferences over both wealth and model ambiguity, which introduce a multiplicative ambiguity penalty for power utility and an additive ambiguity penalty for log utility. We separate the problem into pre- and post-transition cases, derive the solution, and provide a verification theorem. We further show that the log utility, ambiguity-neutral, and worst-case problems are obtained as special cases of our general problem. In a case study with one green and one brown stock, we show that when the stock prices are positively correlated, an investor who is aware of transition risk increases their investment in the green stock and reduces their investment in the brown stock, compared to when they ignore the possibility of a transition. We illustrate the difference between an ambiguity-averse and a risk-averse investor, and show how an ambiguity-averse investor re-allocates their portfolio as their view on the probability of a green transition changes.",
+      "pdf_url": "https://arxiv.org/pdf/2610.33597v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.MF",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.MF (数理金融学)",
+        "q-fin.PM (资产组合管理)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.32959v1",
+      "title": "Optimal collective investment under regulatory uncertainty",
+      "authors": [
+        "An Chen",
+        "Christian Laudagé",
+        "Shihao Zhu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-23T17:50:55Z",
+      "summary": "We study optimal collective investment subject to a Value-at-Risk (VaR)-type constraint that accounts for uncertainty about future regulatory requirements. The constraint incorporates several possible wealth thresholds and imposes a minimum weighted average probability of meeting them. We characterize the optimal terminal wealth, which combines regions of constant wealth at regulatory thresholds with Merton-type investment regions. Unlike a classical VaR constraint with only one threshold, our formulation generates protection against several thresholds. For two possible thresholds, we identify when both are protected and when protection concentrates on the larger one. Numerical results show that the regulatory constraint can substantially reshape the optimal payoff and generate large welfare losses relative to unconstrained investment when the required compliance probability is high, even the smaller wealth threshold is high, or initial capital is limited. In heterogeneous investor pools, welfare losses depend strongly on the composition of the risk aversions and the Pareto weights governing risk sharing. Losses are particularly pronounced when highly risk-averse investors dominate the pool. Moreover, investors with smaller capital contributions can bear disproportionately large shares of the total welfare loss, while larger contributors may bear less than their capital-proportional share. Thus, regulatory uncertainty not only reduces aggregate welfare but can also create substantial disparities in how its costs are distributed among investors.",
+      "pdf_url": "https://arxiv.org/pdf/2610.32959v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.MF",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)",
+        "q-fin.MF (数理金融学)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.32237v1",
+      "title": "Financial Context-Rich Strategy for Actor-Critic based Agents: A Deep Reinforcement Learning Approach for Stock Trading",
+      "authors": [
+        "Hrishikesh Singh",
+        "Aarti Sharma",
+        "Millie Pant"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-23T06:46:09Z",
+      "summary": "In modern financial markets, more than 3/4th of the large volume trade is executed by algorithmic trading based on advanced trading strategies to attain higher precision and speed than traditional human traders. The conventional strategies focused on price-based indicators are inadequate in capturing the market dynamism arising from real-world events such as social sentiments, political instability, or sudden economic shifts. With the rise of Deep Reinforcement Learning (DRL) and data availability, there is a requirement for more efficient algorithms that can incorporate these external factors in trading strategies. DRL has shown potential in simulating real-world scenarios and in simplifying complex decision-making since DRL agents can automate the trading process i.e. executing trades in a manner comparable to human traders. They have shown reliable performance since they can update their policies based on risk and quantitative factors. In this paper, we propose a DRL approach based on partial and deep-infusion of sentimental analysis. It features distinct policy designs of actor-critic-based agents: only policy optimization (A2C & PPO) and policy optimization along with Q-learning principles (DDPG, TD3 & SAC). Our findings reveal, that the agents based on policy optimization combined with Q-learning, significantly and consistently demonstrate improved performance upon sentiment deep-infusion in profit maximization as well as risk-averse trading.",
+      "pdf_url": "https://arxiv.org/pdf/2610.32237v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "q-fin.CP (计算金融与量化模拟)",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.31074v1",
+      "title": "Directionally Correct Views in Portfolio Optimization",
+      "authors": [
+        "Ojas Kumar",
+        "Sreejit Dey",
+        "Sarvesh Ravichandran Iyer",
+        "Sandeep Juneja"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T10:51:07Z",
+      "summary": "Portfolio optimization techniques often use historical data to estimate parameters for Markowitz-type or ML models. Effective allocation requires a way to align the available data with conditions expected over the investment horizon. Inspired by the Black-Litterman framework, we ask whether incorporating expert views leads to better portfolio allocations. In a simple Markowitz setting, we show that even a small amount of directionally correct information can materially improve investment decisions. We also discuss how expert views can be incorporated in end-to-end portfolio models using entropy-based ideas. Somewhat surprisingly, our empirical results indicate that simpler Markowitz-type model perform as well as an end-to-end model, once directionally correct experts are incorporated.",
+      "pdf_url": "https://arxiv.org/pdf/2610.31074v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "13 pages, 3 figures, accepted at NeuRIPS MLxOR workshop 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30564v1",
+      "title": "When News Gets Old: Portfolio Allocation with Reinforcement Learning and Large Language Models",
+      "authors": [
+        "Bolin Song",
+        "Surui Xiang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T00:44:03Z",
+      "summary": "Financial news can influence investment decisions long after publication. Timely news may reach an investor before prices fully adjust, whereas older news may already be reflected in prices. We examine two ways to handle aging signals: retain them and give a portfolio policy timing information, or filter them out before portfolio selection. A fixed large language model (LLM) extracts signals from public SEC disclosures. We compare these treatments in reinforcement learning (RL) policies and LLMs that choose portfolios directly. We evaluate returns after trading costs in historical tests over 2023-2025. RL choices respond to timing information in a controlled test, but historical returns show no consistent benefit from adding it. For the LLM, filtering old news produced the highest average net return, reaching 18.43% per year when news delivery was delayed by four weeks. This exceeded the returns of all RL strategies that used news.",
+      "pdf_url": "https://arxiv.org/pdf/2610.30564v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.30557v1",
+      "title": "Governed Self-Evolution for Autonomous Investing: A Multi-Agent LLM System with an Invariant Core",
+      "authors": [
+        "Yebo Feng",
+        "Jingyang Dai",
+        "Liangrui Pan",
+        "Nelson Lau",
+        "Jiahua Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-22T00:22:47Z",
+      "summary": "LLM agents that act on live Web data must combine heterogeneous evidence, remember what they have done and improve from outcomes without weakening their own safeguards. We study this problem in autonomous investing, where every action is irreversible and based on untrusted Web content. We present Steward, a multi-agent LLM system that draws the boundary of self-evolution in its type system. First, nine role-specialised agents decide jointly: four analysts read news feeds, SEC filings, macroeconomic series and market data and emit typed reports, from which a Portfolio Manager sets target positions that a protected Risk Manager audits. Second, a seven-layer shared memory, assembled by code from the system's own record, gives each decision its position context, the market narrative, calibration and the agent's past decisions. Third, the system improves itself by review: code grades every trade and forecast nightly and writes the grades into memory, and each quarter a reflector proposes prompt learnings that a deterministic gate applies reversibly and replay of recorded inputs verifies. All three operate around an invariant core of order arithmetic, risk rules and discipline-agent prompts that no self-edit can reach. In a five-month live deployment (102 trading days, 1,632 LLM calls), the system contained a 24.6% sector drawdown to a 0.3% loss; in replay of its recorded inputs, a single model given the same raw data traded more and lost 1.35 points against the market over five days where the joint design showed no significant loss, and no injected instruction was followed; and a 2015-2026 backtest shows the core alone lowering the maximum drawdown under all 50 random entry policies. The reflector traced the dominant failure to its root cause, and the gate applied a learning that the agent adopted on trigger evenings and on no control evening. Code: https://github.com/yebof/quant-agent",
+      "pdf_url": "https://arxiv.org/pdf/2610.30557v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.MA",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.27751v4",
+      "title": "Market Regime-Based Multi-Asset Portfolio Optimization Using Nested Clustered Optimization for Tactical Asset Allocation",
+      "authors": [
+        "Supriadi",
+        "Bambang Siswoyo"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T07:13:17Z",
+      "summary": "We investigate the interaction between market regime detection and Nested Clustered Optimization (NCO) for tactical asset allocation across heterogeneous multi-asset portfolios. The central empirical question is whether conditioning the NCO pipeline, encompassing covariance estimation, hierarchical clustering, and weight allocation, on latent market states genuinely enhances risk-adjusted performance, or conversely, whether estimation uncertainty within regime-filtered sub-samples induces severe turnover and performance drag. We implement a causal rolling Gaussian Hidden Markov Model (HMM) coupled with an adaptive rebalancing mechanism that distinguishes regime shifts from portfolio weight drift. The framework is evaluated on a monthly Indonesian multi-asset universe comprising sovereign bond yields (SBN), the LQ45 equity index, spot gold (XAU/IDR), foreign exchange (CNY/IDR), and Bitcoin (BTC/IDR) across a 56-month out-of-sample period (January 2021 to August 2025). Rigorous walk-forward backtesting reveals that standard regime-agnostic NCO achieves remarkable capital preservation and risk-adjusted efficiency, delivering a 29.97% cumulative return (5.78% annualized), a maximum drawdown of only 2.18%, a Calmar ratio of 2.65, and low monthly turnover of 5.41%. In contrast, conditioning NCO on an unconstrained HMM in a small multi-asset universe amplifies parameter estimation noise and induces excessive rebalancing (47 events; 24.58% average monthly turnover), which erodes net cumulative return to 1.60% and increases drawdown to 9.99%. These findings demonstrate that without explicit transition persistence or asymmetric downside objectives, regime-switching frameworks can degrade rather than improve clustered portfolio stability, establishing crucial empirical boundaries for machine learning asset allocation.",
+      "pdf_url": "https://arxiv.org/pdf/2610.27751v4.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "12 pages, 6 figures, 7 tables. synchronized performance metrics. Code available at: https://github.com/obo-cloud/nco-regime-taa",
       "journal_ref": null,
       "ai_summary": null
     },
@@ -370,295 +659,6 @@
       "comment": "82 pages, 10 figures, 4 tables",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.15144v1",
-      "title": "From Economic Explanation to Performance Improvement in Machine-Learning Portfolios",
-      "authors": [
-        "Yunqi Liang",
-        "Stefan Zohren",
-        "Mihai Cucuringu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-10T19:44:27Z",
-      "summary": "To extend conventional model-level feature importance to economically meaningful portfolio outcomes and decisions, we propose a local first-order attribution-propagation framework that maps allocation-function feature exposures to local sensitivities of sequential portfolio performance metrics. We relate the propagated attributions to Shapley values defined directly for portfolio objectives and derive statistical inference for Sharpe-ratio attributions. The resulting attribution-guided feature-exposure intervention enables post-training adaptation, translating portfolio-metric explanations into out-of-sample decisions without retraining the underlying allocation model. We further introduce temporal stabilisation and cross-model averaging as complementary regularisation mechanisms. Empirically, the interventions yield statistically significant improvements in net Sharpe ratios across different model classes.",
-      "pdf_url": "https://arxiv.org/pdf/2610.15144v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "q-fin.ST"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "q-fin.ST (统计金融学与高频数据)"
-      ],
-      "comment": "70 pages, 19 figures, 13 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.14959v3",
-      "title": "AlphaRLM: Aligning Language Models for Literature-Grounded Symbolic Factor Discovery",
-      "authors": [
-        "Jie Huang",
-        "Yuecheng Hong",
-        "Yao Chen",
-        "Hao Zhong",
-        "Linfeng Xiao"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-10T14:32:10Z",
-      "summary": "Formulaic alpha mining seeks to discover executable expressions that capture predictive market signals in a vast, noisy search space. Recent LLM-based approaches use prompting, iterative search, or seed-factor evolution, leaving direct factor construction through policy learning less explored. To address this, we introduce AlphaRLM, a reinforcement-learning framework that trains LLMs to construct executable symbolic factors from financial literature without input factor expressions. AlphaRLM incorporates Literature-Guided Operator Assembly (LEGO), which conditions factor construction on literature-derived ideas and executable operators, providing semantic priors for exploration. It further aligns the generation policy with market feedback through executable-validity and grouped-return-separation rewards that capture non-monotonic structures across factor quantiles. Extensive experiments on CSI 300, CSI 1000, and S&P 500 show that AlphaRLM outperforms strong factor-mining and LLM-based baselines in annualized excess return. Notably, the 8B model achieves strong cross-market performance, highlighting the promise of literature-conditioned, market-aligned factor generation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.14959v3.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.CL",
-        "cs.LG",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "cs.LG (机器学习 (ML))",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "25 pages, 5 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.14821v1",
-      "title": "Ex Ante and Scenario-Conditional Value of Information in Dynamic Portfolio Choice",
-      "authors": [
-        "Tom Pohlschmidt",
-        "Shihao Zhu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-10T11:32:48Z",
-      "summary": "Portfolio decisions are often made under uncertainty about expected returns, and investors revise their beliefs as new information arrives. Although richer information generally cannot reduce optimized value ex ante, the trading strategy it induces need not improve on the strategy induced by a less informative information structure in every fixed-drift scenario. We introduce scenario-conditional expected utility and value of information to evaluate strategies selected under the investor's current belief. In a finite-horizon Gaussian portfolio choice model, we compare a fixed-belief investor, a price observer, and an attentive investor who also processes an auxiliary signal under an attention capacity constraint. Ex ante, price learning and auxiliary attention are valuable, and the total value of attention increases with capacity. Scenario-conditionally, learning creates a correction benefit by reducing the initial trading-position gap relative to the full-information strategy, but also a fluctuation cost through belief revisions, so the ex ante ranking can reverse. We derive the current-belief distribution of scenario-conditional value and the associated underperformance probability, defined as the probability of negative scenario-conditional value relative to fixed-belief choice. Over sufficiently short horizons, the scenario-conditional value of learning is negative when belief error is small relative to posterior uncertainty. For a given horizon, sufficiently high attention capacity yields a higher scenario-conditional value than any fixed finite-capacity benchmark across all drift scenarios. We also derive sharp convergence rates to full-information performance under Shannon and Tsallis technologies.",
-      "pdf_url": "https://arxiv.org/pdf/2610.14821v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.13162v1",
-      "title": "Entropy Regularization under No-Shorting: Structure Preservation and Convexity in Dynamic Mean-Variance Portfolio Selection",
-      "authors": [
-        "Xinagyu Cui",
-        "Xun Li",
-        "Ziyan Li",
-        "Yun Shi"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-09T07:51:54Z",
-      "summary": "This paper studies entropy regularization for the discrete-time dynamic mean--variance portfolio problem with no-shorting constraints. In the unconstrained setting, entropy regularization can be introduced without changing the basic quadratic structure of the dynamic program. Under no-shorting, this property is lost: a standard fixed-temperature formulation generally preserves convexity but no longer preserves the homogeneous Bellman structure and the associated piecewise-linear feedback form. We introduce a state-dependent temperature that is matched to the homogeneity of the original mean--variance problem. This restores the piecewise-quadratic value function and the finite-dimensional Bellman recursion. The resulting formulation, however, makes convexity depend on the continuation coefficients generated by the soft recursion. We show that negative continuation coefficients lead to loss of convexity and prove that a common sufficiently small temperature preserves the Bellman structure and convexity over the entire finite horizon. The original no-shorting solution is recovered as the temperature vanishes. We also develop a sample-based implementation for unknown return distributions. Numerical and empirical results illustrate both the structural advantage of the state-dependent temperature and the practical relevance of the convexity-preserving temperature restriction.",
-      "pdf_url": "https://arxiv.org/pdf/2610.13162v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.11822v1",
-      "title": "Weighted selection from elliptical distributions: a stochastic representation and an application to portfolio separation",
-      "authors": [
-        "Nils Chr Framstad"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-08T12:24:02Z",
-      "summary": "We represent (weighted-)selection-elliptical distributions as an affine combination of the $q$ selection variables plus an elliptical term whose direction alone is independent. This form suffices for $q+2$ fund separation via first-order stochastic dominance, inter alia relaxing Simaan's (1993) three-fund assumptions.",
-      "pdf_url": "https://arxiv.org/pdf/2610.11822v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.PR"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.PR (概率论与随机过程)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.10407v1",
-      "title": "SOTA: Stock Options Trading Agents Guided by Option-Implied Return Distributions",
-      "authors": [
-        "Yizhen Xie",
-        "Mengyang Liu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-07T16:55:05Z",
-      "summary": "As option markets grow and AI advances, agentic systems for option trading are gaining increasing attention. Language-model-based agents can reason over contextual information such as news, but option trading presents a particularly challenging decision problem: a single stock can have thousands of contracts, and the agent must decide both which contracts to trade and how to combine them. Existing approaches often sidestep this complexity by restricting the policy to a fixed strategy structure, such as a straddle, limiting their ability to switch strategies as market conditions change. We present SOTA (Stock Options Trading Agents), an agentic trading framework for structured option-strategy selection. SOTA abstracts the large option universe into strategy-level decisions while deterministic resolvers handle portfolio implementation. We develop SOTA by post-training Qwen3.8-27B with supervised fine-tuning followed by reinforcement learning. SOTA is evaluated on options on nine large-cap U.S. equities and SPY against rule-based and machine-learning strategy selectors in the same trading environment. Over a six-month out-of-sample period, SOTA earns an 18.3% total return with a Sharpe ratio of 1.60 and a maximum drawdown of 8.96%. We also document an asymmetric role of news: news improves frontier-teacher trajectories, but retaining news during reinforcement learning reduces out-of-sample return from 18.3% to -2.7%.",
-      "pdf_url": "https://arxiv.org/pdf/2610.10407v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "q-fin.PM",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "q-fin.PM (资产组合管理)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "Accepted at the NeurIPS 2026 Agenthon Workshop",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.10256v1",
-      "title": "OOM-RL II: Reality Is an Oracle, Not a Debugger Provenance-Constrained Diagnosis in Continually Evolving Agent-Engineered Systems",
-      "authors": [
-        "Kun Liu",
-        "Liqun Chen"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-07T15:33:17Z",
-      "summary": "Reality may establish that an outcome occurred without identifying which evolving procedure produced it or why. This distinction matters in production ML systems whose code, configuration, and artifacts change while external feedback accumulates. We examine it in a human-directed, agent-engineered quantitative trading system, using oracle to mean an external source of realized outcomes rather than a complete correctness specification. Across one year, the account gained and outperformed a broad market index, while annual alpha was not statistically distinguishable from zero under the main retrospective specification. Retrospectively selected subperiods include adverse relative performance and conditional candidate-level weakness under declared approximate references. Engineering records document changes during the episode, and complete recommendation-to-runtime binding is unavailable. The archive does not establish a common frozen instance or a unique cause. The case motivates an outcome--diagnosis gap: outcome evidence, evaluated-object identity, and causal explanation support distinct claims. We distinguish frozen instances, pre-specified adaptive procedures, and ad-hoc development; organize archive-relative claim identifiability and an evidence hierarchy; and propose a prospective production-binding protocol. An illustrative compatible-history example shows how factual binding can resolve a recommendation's referent without supplying its counterfactual effect. The protocol is proposed rather than prospectively validated. External feedback constrains outcome claims, while provenance and additional identification structure determine the resolution of diagnosis.",
-      "pdf_url": "https://arxiv.org/pdf/2610.10256v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.SE",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.SE (软件工程)",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "38 pages, 14 figures, 9 tables. Supplementary Dataset S1: https://doi.org/10.5281/zenodo.23215521. Follow-up to arXiv:2604.11477",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.09246v1",
-      "title": "Conditional value-at-risk under reward-penalty mechanism with applications to robust portfolio management",
-      "authors": [
-        "Jun Cai",
-        "Tiantian Mao",
-        "Zhiqiao Song"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-07T00:18:21Z",
-      "summary": "In this paper, we present robust portfolio selection models by incorporating a reward and penalty mechanism into portfolio management. We assume that the joint distribution of the losses of the underlying risky assets in a portfolio is uncertain but lies within a multivariate distribution set. Our goal is to identify optimal portfolio allocations by minimizing the worst-case conditional value-at-risk (CVaR) of portfolio loss under the reward and penalty mechanism and distribution uncertainty. Our models can also be used to investigate the problem of how to balance portfolio losses with their associated downside risk in portfolio management. We first derive an explicit closed-form expression for the worst-case CVaR under the reward-penalty mechanism, which generalizes several existing models and results regarding the worst-case CVaR, such as those studied in Jagannathan (1977), Chen et al. (2011), and Cai et al. (2024). We then apply this expression to obtain optimal portfolio allocations that minimize the worst-case CVaR under both a classical mean-covariance-based multivariate distribution set and a generalized mean-covariance-based multivariate distribution set introduced in Kang et al. (2019). Additionally, we utilize real market data to illustrate the application of the proposed models and the corresponding optimal portfolio allocations in portfolio management. Our empirical experiments show that portfolios based on the proposed models have the potential to outperform those based on several existing related models. Furthermore, the results demonstrate that incorporating downside risk into portfolio loss helps better manage risk and can achieve higher investment returns than considering either downside risk or portfolio loss alone. Moreover, our experiments reveal the trade-off between improving expected portfolio return and controlling the worst-case portfolio CVaR.",
-      "pdf_url": "https://arxiv.org/pdf/2610.09246v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.08631v1",
-      "title": "Exponential investors with weakly mean-reverting prices",
-      "authors": [
-        "Balazs Hoffmann",
-        "Miklos Rasonyi"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-06T16:28:09Z",
-      "summary": "We investigate a continuous-time financial market where the asset price exhibits weak (sublinear) mean reversion and has a nonzero drift. Complementing earlier work on strong (superlinear) mean reversion, we show that, for an investor maximizing expected exponential utility, the certainty equivalent grows as $O(T^{2β+1})$ where $0<β<1$ is the strength of mean reversion. An explicit asymptotically optimal strategy is also given.",
-      "pdf_url": "https://arxiv.org/pdf/2610.08631v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.PR"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.PR (概率论与随机过程)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.06947v1",
-      "title": "FactorBench: A Portfolio-Aware Benchmark for Automated Factor Mining",
-      "authors": [
-        "Zhuohan Wang",
-        "Carmine Ventre"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-03T10:57:37Z",
-      "summary": "Factor mining seeks to discover signals from financial data that predict future asset returns and guide portfolio construction. Automated factor mining now spans genetic programming, reinforcement learning, generative models, and large language model agents. Yet it remains unclear whether advances across these paradigms yield more generalizable, distinct, and economically useful financial signals. We introduce FactorBench, a portfolio-aware benchmark comparing roughly five thousand mined factors from nine automated mining methods across five equity markets. A shared data and evaluation contract supports both symbolic expressions and executable Python factors, connecting heterogeneous discovery algorithms to common signal combination and portfolio construction procedures. FactorBench traces the outputs of mining systems across three levels: factor validity, temporal generalization, and predictiveness beyond measured risk and style exposures; within- and across-method pool distinctness, including similarity to the benchmark Alpha101; and composite-signal quality and after-cost long-only and long--short portfolio performance. After systematically assessing whether advances in factor mining translate into signal quality and portfolio performance, FactorBench finds that no paradigm consistently dominates.",
-      "pdf_url": "https://arxiv.org/pdf/2610.06947v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "30 pages, 21 figures, 8 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.04221v1",
-      "title": "Robust enhanced index tracking portfolio selection under distributional uncertainty",
-      "authors": [
-        "Jun Cai",
-        "Zhiqiao Song"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-03T02:20:47Z",
-      "summary": "The enhanced index tracking (EIT) portfolio selection problem aims to construct a portfolio that is expected to outperform a benchmark index. In practice, investors face uncertainty in the joint distribution of asset and index losses, as the true distribution is typically unknown and only partial information is available. Moreover, portfolio selection requires balancing the trade-off between mean loss and downside risk while targeting higher returns. Effectively modeling and managing these factors in EIT portfolio selection is therefore of both practical and research interest. To address these challenges, this paper proposes robust EIT portfolio selection models under distributional uncertainty, guided by Pareto-optimality theory. The models minimize a convex combination of worst-case mean loss and downside risk, subject to a constraint on worst-case mean return. Two uncertainty sets are considered: one assuming a known mean loss vector and covariance matrix, and a more general set with unknown moments. Closed-form solutions are derived for the former, while the latter reduces to tractable convex optimization problems. Empirical results based on real market data show that the proposed models outperform not only the tracked index but also the equally weighted portfolio, robust mean-variance models, and robust variance models in terms of out-of-sample cumulative wealth, as well as Sharpe, Sortino, and Omega ratios. Moreover, portfolios that minimize a convex combination of worst-case mean loss and downside risk consistently outperform those that minimize downside risk alone. We also provide practical guidance for selecting optimal weighting coefficients to effectively balance risk and return.",
-      "pdf_url": "https://arxiv.org/pdf/2610.04221v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -668,33 +668,33 @@
       "count": 25
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 5
-    },
-    {
       "code": "q-fin.MF",
       "name_zh": "数理金融学",
-      "count": 5
-    },
-    {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
-      "count": 5
+      "count": 7
     },
     {
       "code": "q-fin.RM",
       "name_zh": "风险管理与控制",
+      "count": 5
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
       "count": 4
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 3
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 4
     },
     {
       "code": "q-fin.CP",
       "name_zh": "计算金融与量化模拟",
+      "count": 3
+    },
+    {
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
       "count": 2
     },
     {
@@ -703,8 +703,8 @@
       "count": 2
     },
     {
-      "code": "q-fin.ST",
-      "name_zh": "统计金融学与高频数据",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 2
     },
     {
@@ -713,9 +713,9 @@
       "count": 2
     },
     {
-      "code": "math.PR",
-      "name_zh": "概率论与随机过程",
-      "count": 2
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 1
     },
     {
       "code": "physics.soc-ph",
@@ -731,12 +731,7 @@
       "code": "stat.ME",
       "name_zh": "统计推断与方法学",
       "count": 1
-    },
-    {
-      "code": "cs.SE",
-      "name_zh": "软件工程",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-10-21T14:35:51.312330"
+  "snapshot_synced_at": "2026-11-01T09:56:32.872145"
 }
