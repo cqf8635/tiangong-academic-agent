@@ -167,13 +167,13 @@ HALLUCINATION_PATTERNS = [
 def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
     """节点 1: 自动声音活动检测与自适应环境降噪静音断句"""
     mode = state.get("mode", "mic")
-    silence_timeout = state.get("silence_timeout", 1.3)
+    silence_timeout = state.get("silence_timeout", 2.5)
 
     source = get_audio_source(mode)
     rate = 16000
     chunk_size = int(rate * 2 * 0.1)  # 100ms
     silence_chunks_needed = int(silence_timeout / 0.1)
-    max_speech_chunks = int(7.0 / 0.1)  # 最长 7 秒强制切片断句，避免视频持续发声卡死
+    max_speech_chunks = int(15.0 / 0.1)  # 最长 15 秒强制切片断句，避免视频持续发声卡死
 
     cmd = [
         "ffmpeg", "-loglevel", "quiet",
@@ -368,7 +368,7 @@ class LangGraphVoiceAgent:
         self,
         mode: str = "mic",
         threshold: float = 600.0,
-        silence_timeout: float = 1.3,
+        silence_timeout: float = 2.5,
         records_dir: Path = Path(__file__).resolve().parent / "records",
     ):
         self.mode = mode

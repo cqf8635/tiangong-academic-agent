@@ -2362,33 +2362,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let browserRecognizer = null;
   let isBrowserRecognizing = false;
+  let recognitionSilenceTimer = null;
+  let basePromptText = '';
 
   if (SpeechRecognition) {
     browserRecognizer = new SpeechRecognition();
     browserRecognizer.lang = 'zh-CN';
-    browserRecognizer.continuous = false;
+    browserRecognizer.continuous = true; // 开启连续收音，避免说话稍有停顿就被浏览器掐断
     browserRecognizer.interimResults = true;
+
+    function resetSilenceTimer() {
+      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
+      // 延长静音判定至 4.5 秒无声才自动停止，留足组织语言与长句思考时间
+      recognitionSilenceTimer = setTimeout(() => {
+        if (isBrowserRecognizing && browserRecognizer) {
+          try { browserRecognizer.stop(); } catch (e) {}
+        }
+      }, 4500);
+    }
 
     browserRecognizer.onstart = () => {
       isBrowserRecognizing = true;
       btnMic.classList.add('recording');
-      userInput.placeholder = '🎙️ 正在倾听您的发声，请说话...';
-      setAssistantState('LISTENING', '正在聆听学者发声，捕获学术问答与研讨意旨...');
+      basePromptText = userInput.value.trim();
+      userInput.placeholder = '🎙️ 正在倾听长句发声，说话停顿不会被掐断，请畅所欲言...';
+      setAssistantState('LISTENING', '正在聆听学者发声，捕获长句学术问答与研讨意旨...');
+      resetSilenceTimer();
     };
 
     browserRecognizer.onresult = (event) => {
+      resetSilenceTimer();
       let interim = '';
       let final = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
+      for (let i = 0; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
           final += event.results[i][0].transcript;
         } else {
           interim += event.results[i][0].transcript;
         }
       }
-      const recognized = final || interim;
+      const recognized = final + interim;
       if (recognized) {
-        userInput.value = recognized;
+        userInput.value = (basePromptText ? (basePromptText + ' ') : '') + recognized;
         userInput.style.height = 'auto';
         userInput.style.height = (userInput.scrollHeight) + 'px';
       }
@@ -2396,6 +2411,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     browserRecognizer.onerror = (event) => {
       console.warn('Speech recognition error:', event.error);
+      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
       isBrowserRecognizing = false;
       btnMic.classList.remove('recording');
       userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
@@ -2403,6 +2419,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     browserRecognizer.onend = () => {
+      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
       isBrowserRecognizing = false;
       btnMic.classList.remove('recording');
       userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
