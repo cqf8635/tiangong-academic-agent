@@ -2316,6 +2316,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnHeaderRecord) {
     btnHeaderRecord.addEventListener('click', toggleMeetingRecording);
   }
+  if (voiceCaptureMode) {
+    voiceCaptureMode.addEventListener('change', (e) => {
+      const mode = e.target.value;
+      const modeText = mode === 'system' ? '🔊 系统声音（腾讯会议/视频内录）' : '🎤 麦克风';
+      if (!isMeetingRecording) {
+        appendStreamLog(new Date().toTimeString().split(' ')[0], '系统提示', `已切换至【${modeText}】通道。请点击上方【开启会议录音】或顶部【开启会议录制】按钮开始监听。`);
+      }
+    });
+  }
 
   // WebSocket 与实时语音流
   function connectVoiceWebSocket() {
