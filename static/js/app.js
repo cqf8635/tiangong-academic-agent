@@ -2327,10 +2327,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = JSON.parse(event.data);
         if (data.type === 'speech' && data.text) {
           appendStreamLog(data.timestamp, data.source, data.text);
-          // 若麦克风处于开启状态，将语音识别到的文本填入并自动发送 (语音交流模式: isVoice = true)
+          // 若开启了语音输入，将识别到的文本填入输入框，保留给用户确认和微调，不自动发送
           if (isRecording && data.text.trim()) {
-            userInput.value = data.text;
-            handleSendMessage(data.text, true);
+            userInput.value = data.text.trim();
+            userInput.style.height = 'auto';
+            userInput.style.height = (userInput.scrollHeight) + 'px';
+            userInput.focus();
+            userInput.setSelectionRange(userInput.value.length, userInput.value.length);
           }
         }
       } catch (e) {}
@@ -2396,10 +2399,11 @@ document.addEventListener('DOMContentLoaded', () => {
       userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
       setAssistantState('IDLE');
       
+      // 保持转录文字留在输入框内，光标聚焦在文本末尾，交由用户确认/微调后再手动发送
       const query = userInput.value.trim();
-      if (query) {
-        // 自动触发多智能体推理与语音问答 (语音模式: isVoice = true)
-        handleSendMessage(query, true);
+      if (query && userInput) {
+        userInput.focus();
+        userInput.setSelectionRange(userInput.value.length, userInput.value.length);
       }
     };
   }
