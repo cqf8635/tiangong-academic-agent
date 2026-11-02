@@ -107,11 +107,32 @@ class WhisperEngine:
 # ==========================================
 def get_audio_source(mode: str) -> str:
     if mode == "system":
+        # 1. 优先获取当前系统正在使用的 Default Sink，其 .monitor 即为真实发声通道（自动兼容扬声器/耳机/蓝牙）
         try:
-            res = subprocess.run(["pactl", "list", "short", "sources"], capture_output=True, text=True, check=True)
-            for line in res.stdout.strip().splitlines():
+            sink_res = subprocess.run(
+                ["pactl", "get-default-sink"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=1.0,
+            )
+            def_sink = sink_res.stdout.strip()
+            if def_sink:
+                return f"{def_sink}.monitor"
+        except Exception:
+            pass
+
+        # 2. 备选：从 pactl sources 中自动探测带有 monitor 的可用声卡通道
+        try:
+            res = subprocess.run(["pactl", "list", "short", "sources"], capture_output=True, text=True, check=True, timeout=1.0)
+            lines = res.stdout.strip().splitlines()
+            for line in lines:
                 parts = line.split("\t")
-                if len(parts) >= 2 and "monitor" in parts[1] and "Speaker" in parts[1]:
+                if len(parts) >= 2 and "monitor" in parts[1] and ("Speaker" in parts[1] or "RUNNING" in line):
+                    return parts[1]
+            for line in lines:
+                parts = line.split("\t")
+                if len(parts) >= 2 and "monitor" in parts[1]:
                     return parts[1]
         except Exception:
             pass
@@ -152,6 +173,7 @@ def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
     rate = 16000
     chunk_size = int(rate * 2 * 0.1)  # 100ms
     silence_chunks_needed = int(silence_timeout / 0.1)
+    max_speech_chunks = int(7.0 / 0.1)  # 最长 7 秒强制切片断句，避免视频持续发声卡死
 
     cmd = [
         "ffmpeg", "-loglevel", "quiet",
@@ -160,22 +182,25 @@ def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
         "-",
     ]
 
-    print(f"\n🟢 [ListenVAD] 正在监听: {'🎬 视频声音(扬声器)' if mode == 'system' else '🎤 麦克风人声'} ...")
+    print(f"\n🟢 [ListenVAD] 正在监听: {'🎬 视频声音(扬声器)' if mode == 'system' else '🎤 麦克风人声'} [源: {source}] ...")
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     audio_buffer = bytearray()
     is_speaking = False
     silence_counter = 0
     active_speech_chunks = 0
 
-    # 动态环境噪音校准（初始 200ms）
-    noise_samples = []
-    for _ in range(2):
-        chunk = proc.stdout.read(chunk_size)
-        if chunk:
-            noise_samples.append(calc_rms(chunk))
-    ambient_noise = max(noise_samples) if noise_samples else 400.0
-    # 动态动态阈值：至少高于底噪 2.5 倍，底限 1100
-    dynamic_threshold = max(state.get("threshold", 1100.0), ambient_noise * 2.5, 1100.0)
+    if mode == "system":
+        # 扬声器内录：纯数字流无环境风噪，低阈值高灵敏度捕获
+        dynamic_threshold = max(state.get("threshold", 220.0), 220.0)
+    else:
+        # 麦克风：动态环境噪音校准（初始 200ms）
+        noise_samples = []
+        for _ in range(2):
+            chunk = proc.stdout.read(chunk_size) if proc.stdout else b""
+            if chunk:
+                noise_samples.append(calc_rms(chunk))
+        ambient_noise = max(noise_samples) if noise_samples else 300.0
+        dynamic_threshold = max(state.get("threshold", 450.0), ambient_noise * 1.6, 450.0)
 
     try:
         while True:
@@ -194,6 +219,10 @@ def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
                 audio_buffer.extend(raw_chunk)
                 active_speech_chunks += 1
                 silence_counter = 0
+                if active_speech_chunks >= max_speech_chunks:
+                    sys.stdout.write(" ⏱️ [达到分段上限，触发转录]\n")
+                    sys.stdout.flush()
+                    break
             elif is_speaking:
                 audio_buffer.extend(raw_chunk)
                 silence_counter += 1
@@ -205,8 +234,9 @@ def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
         proc.terminate()
         proc.wait()
 
-        # 有效说话判定：总时长 >= 0.8s 且实际高能量语音片段 >= 3帧(300ms)，避免呼吸/底噪误触发
-        if len(audio_buffer) >= rate * 2 * 0.8 and active_speech_chunks >= 3:
+        min_len = rate * 2 * (0.5 if mode == "system" else 0.8)
+        min_chunks = 2 if mode == "system" else 3
+        if len(audio_buffer) >= min_len and active_speech_chunks >= min_chunks:
             return {
                 "audio_bytes": bytes(audio_buffer),
                 "status": "speech_detected",
