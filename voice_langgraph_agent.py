@@ -269,12 +269,13 @@ def transcribe_node(state: VoiceAgentState) -> Dict[str, Any]:
     samples = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32) / 32768.0
 
     try:
+        input_data = {"raw": samples, "sampling_rate": 16000}
         res = pipe(
-            samples,
+            input_data,
             generate_kwargs={"task": "transcribe"},
-            return_timestamps=True,
+            return_timestamps=False,
         )
-        text = res.get("text", "").strip()
+        text = res.get("text", "").strip() if isinstance(res, dict) else ""
         return {
             "raw_transcription": text,
             "status": "transcribed" if text else "empty_transcription",
