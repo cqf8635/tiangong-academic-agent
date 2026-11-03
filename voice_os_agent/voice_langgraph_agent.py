@@ -298,10 +298,10 @@ def clean_and_format_node(state: VoiceAgentState) -> Dict[str, Any]:
     if not raw_text:
         return {"final_text": "", "status": "completed"}
 
-    # 1. 过滤 Whisper 常见的静音/杂音幻觉模式
+    # 1. 过滤 Whisper 常见的静音/杂音幻觉模式（仅针对孤立短串过滤，避免误杀正常英文句式如包含 thank you 的学术发言）
     lower_text = raw_text.lower().strip(". !?,，。？！")
     for pattern in HALLUCINATION_PATTERNS:
-        if pattern in lower_text or lower_text == pattern:
+        if lower_text == pattern or (len(lower_text) < 30 and pattern in lower_text and len(lower_text.split()) <= 4):
             return {"final_text": "", "status": "filtered_hallucination"}
 
     # 2. 文本格式规整

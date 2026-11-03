@@ -83,7 +83,7 @@ def main() -> int:
         torch_dtype=dtype,
         device=device,
     )
-    result = transcribe(str(output_path), generate_kwargs={"language": "zh", "task": "transcribe"})
+    result = transcribe(str(output_path), generate_kwargs={"task": "transcribe"})
     print(f"识别结果: {result['text'].strip() or '[没有识别到语音]'}")
     return 0
 

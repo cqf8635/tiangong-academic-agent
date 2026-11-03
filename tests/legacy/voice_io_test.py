@@ -123,7 +123,7 @@ def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000) -> 
         return False
 
 
-def transcribe_audio(wav_path: Path, model_dir: Path) -> str:
+def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") -> str:
     """Transcribe audio using local Whisper model."""
     if not (model_dir / "config.json").is_file() or not (model_dir / "model.safetensors").is_file():
         print(f"[错误] Whisper 模型文件不完整: {model_dir}")
@@ -162,10 +162,14 @@ def transcribe_audio(wav_path: Path, model_dir: Path) -> str:
         device=device,
     )
 
-    print("🔍 正在进行语音识别...")
+    generate_kwargs = {"task": "transcribe"}
+    if language and language != "auto":
+        generate_kwargs["language"] = language
+
+    print(f"🔍 正在进行语音识别 (语言模式: {language})...")
     result = pipe(
         str(wav_path),
-        generate_kwargs={"language": "zh", "task": "transcribe"},
+        generate_kwargs=generate_kwargs,
     )
     return result.get("text", "").strip()
 
@@ -174,6 +178,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本")
     parser.add_argument("--seconds", type=int, default=5, help="录音时长（默认: 5秒）")
     parser.add_argument("--model", type=Path, default=MODEL_DIR, help="本地 Whisper 模型路径")
+    parser.add_argument("--language", type=str, default="auto", choices=["auto", "zh", "en"], help="识别语言模式: auto(自适应中英文), zh(强制中文), en(强制英文)")
     parser.add_argument("--skip-beep", action="store_true", help="跳过发声测试提示音")
     args = parser.parse_args()
 
@@ -203,7 +208,7 @@ def main() -> int:
 
     # 4. Whisper 语音识别测试 (STT Inference)
     print("\n--- [第 4 步] 🧠 Whisper-large-v3 语音转文字识别 ---")
-    text = transcribe_audio(RECORDED_WAV, args.model)
+    text = transcribe_audio(RECORDED_WAV, args.model, language=args.language)
 
     print("\n" + "=" * 60)
     print("🎉 测试结果汇总:")
