@@ -650,6 +650,7 @@ async def transcribe_voice_upload(file: UploadFile = File(...)):
         raw_text = res.get("text", "").strip() if isinstance(res, dict) else ""
         cleaned_res = clean_and_format_node({"raw_transcription": raw_text})
         final_text = cleaned_res.get("final_text", raw_text) or raw_text
+        print(f"🎙️ [Whisper Upload STT] 接收录音 ({len(content)} 字节) -> 本地转录完成: '{final_text}'")
         return {"text": final_text, "raw_text": raw_text, "status": "success"}
     except Exception as e:
         logger.error(f"Whisper 本地转录失败: {e}")

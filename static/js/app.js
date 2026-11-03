@@ -2359,19 +2359,68 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================
-  // 🎙️ 本地 Whisper-large-v3 极速高精语音录入器 (优先)
-  // 100% 本地运算，零网络依赖，支持长句与中英混合，彻底根治丢词截断
+  // 🎙️ 纯本地 Whisper-large-v3 极速高精语音录入器 (完全停用浏览器云端接口)
+  // 100% 本地运算，原生支持中英混合与学术专业词汇 (如 Transformers / LoRA)
   // ========================================================
   let localMediaRecorder = null;
   let localAudioChunks = [];
   let isWhisperRecording = false;
   let localRecordingStream = null;
   let whisperSilenceTimer = null;
+  let whisperAudioCtx = null;
+  let whisperAnalyser = null;
+  let whisperAnimFrameId = null;
+
+  function startVolumeFeedback(stream) {
+    try {
+      whisperAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = whisperAudioCtx.createMediaStreamSource(stream);
+      whisperAnalyser = whisperAudioCtx.createAnalyser();
+      whisperAnalyser.fftSize = 256;
+      source.connect(whisperAnalyser);
+
+      const dataArray = new Uint8Array(whisperAnalyser.frequencyBinCount);
+      let dots = 0;
+
+      function checkVolume() {
+        if (!isWhisperRecording) return;
+        whisperAnalyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const avg = sum / dataArray.length;
+        if (avg > 12) {
+          btnMic.classList.add('speaking');
+          btnMic.style.transform = `scale(${Math.min(1.22, 1 + avg / 220)})`;
+          dots = (dots + 1) % 4;
+          userInput.placeholder = `🎙️ [正在收音${'.'.repeat(dots + 1)}] 听到中英混合发言中... 说完再次点击话筒完成转写`;
+        } else {
+          btnMic.classList.remove('speaking');
+          btnMic.style.transform = 'scale(1)';
+        }
+        whisperAnimFrameId = requestAnimationFrame(checkVolume);
+      }
+      checkVolume();
+    } catch (e) {
+      console.warn('AudioContext volume feedback not supported:', e);
+    }
+  }
+
+  function stopVolumeFeedback() {
+    if (whisperAnimFrameId) cancelAnimationFrame(whisperAnimFrameId);
+    if (whisperAudioCtx && whisperAudioCtx.state !== 'closed') {
+      try { whisperAudioCtx.close(); } catch (e) {}
+    }
+    btnMic.style.transform = '';
+    btnMic.classList.remove('speaking');
+  }
 
   async function startLocalWhisperRecording() {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('getUserMedia not supported in this browser environment');
+        alert('当前浏览器环境不支持获取麦克风，请检查麦克风权限。');
+        return;
       }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       localRecordingStream = stream;
@@ -2397,6 +2446,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       localMediaRecorder.onstop = async () => {
+        stopVolumeFeedback();
         if (whisperSilenceTimer) clearTimeout(whisperSilenceTimer);
         if (localRecordingStream) {
           localRecordingStream.getTracks().forEach(track => track.stop());
@@ -2404,14 +2454,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const audioBlob = new Blob(localAudioChunks, { type: localMediaRecorder.mimeType || 'audio/webm' });
-        if (audioBlob.size < 1000) {
+        if (audioBlob.size < 1200) {
+          // 录音过短或未发声
           btnMic.classList.remove('recording');
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
           setAssistantState('IDLE');
           return;
         }
 
-        userInput.placeholder = '🧠 本地 Whisper-large-v3 正在极速转写中，请稍候...';
+        userInput.placeholder = '🧠 本地 Whisper-large-v3 显卡正在极速转写中英文混合语音...';
         setAssistantState('THINKING', '本地 Whisper-large-v3 显卡正在高精度转录长句语音...');
 
         try {
@@ -2442,153 +2493,38 @@ document.addEventListener('DOMContentLoaded', () => {
       localMediaRecorder.start(200);
       isWhisperRecording = true;
       btnMic.classList.add('recording');
-      userInput.placeholder = '🎙️ 正在录音（本地 Whisper-large-v3 大模型），说完后请再次点击话筒完成转录...';
-      setAssistantState('LISTENING', '正在录制学者长句发声，本地 Whisper-large-v3 将为您完整转录...');
+      userInput.placeholder = '🎙️ [正在收音] 请畅所欲言（支持中文、英文、中英夹杂），说完请再次点击话筒完成转录...';
+      setAssistantState('LISTENING', '正在录制学者学术发声，本地 Whisper-large-v3 准备转录...');
+      startVolumeFeedback(stream);
 
-      // 最长单次录音保护（最长 60 秒自动转写）
+      // 最长录音保护（最长 90 秒自动转写）
       whisperSilenceTimer = setTimeout(() => {
         if (isWhisperRecording) {
           stopLocalWhisperRecording();
         }
-      }, 60000);
+      }, 90000);
 
     } catch (e) {
-      console.warn('本地录音初始化受限，降级启用备选引擎:', e);
-      fallbackToBrowserRecognizer();
+      console.error('本地录音启动失败:', e);
+      alert('无法打开麦克风录音，请确认浏览器已授予麦克风权限。');
+      btnMic.classList.remove('recording');
+      setAssistantState('IDLE');
     }
   }
 
   function stopLocalWhisperRecording() {
     if (whisperSilenceTimer) clearTimeout(whisperSilenceTimer);
+    stopVolumeFeedback();
     if (localMediaRecorder && localMediaRecorder.state !== 'inactive') {
       localMediaRecorder.stop();
     }
     isWhisperRecording = false;
   }
 
-  // 备用浏览器原生 Web Speech API 实时语音识别器
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let browserRecognizer = null;
-  let isBrowserRecognizing = false;
-  let recognitionSilenceTimer = null;
-  let basePromptText = '';
-  let maxSeenTranscript = '';
-
-  if (SpeechRecognition) {
-    browserRecognizer = new SpeechRecognition();
-    browserRecognizer.lang = 'zh-CN';
-    browserRecognizer.continuous = true;
-    browserRecognizer.interimResults = true;
-
-    function resetSilenceTimer() {
-      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
-      recognitionSilenceTimer = setTimeout(() => {
-        if (isBrowserRecognizing && browserRecognizer) {
-          try { browserRecognizer.stop(); } catch (e) {}
-        }
-      }, 5000);
-    }
-
-    browserRecognizer.onstart = () => {
-      isBrowserRecognizing = true;
-      btnMic.classList.add('recording');
-      basePromptText = userInput.value.trim();
-      maxSeenTranscript = '';
-      userInput.placeholder = '🎙️ 正在倾听长句发声，说话停顿不会被掐断，请畅所欲言...';
-      setAssistantState('LISTENING', '正在聆听学者发声，捕获长句学术问答与研讨意旨...');
-      resetSilenceTimer();
-    };
-
-    browserRecognizer.onresult = (event) => {
-      resetSilenceTimer();
-      let interim = '';
-      let final = '';
-      for (let i = 0; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
-        } else {
-          interim += event.results[i][0].transcript;
-        }
-      }
-      let recognized = (final + interim).trim();
-
-      // 🛡️ 防吞字/防截断保护机制：
-      // 如果之前已经识别到的长文本以当前 final 开头，但当前 final 突然变短并丢掉了尾巴（比如 Google 裁决时把末尾的英文 "you know" 当作杂音吞掉了），
-      // 则保留先前已识别到的完整长串，绝不倒退删除！
-      if (recognized.length < maxSeenTranscript.length && maxSeenTranscript.startsWith(recognized)) {
-        recognized = maxSeenTranscript;
-      } else if (recognized.length >= maxSeenTranscript.length) {
-        maxSeenTranscript = recognized;
-      }
-
-      if (recognized) {
-        userInput.value = (basePromptText ? (basePromptText + ' ') : '') + recognized;
-        userInput.style.height = 'auto';
-        userInput.style.height = (userInput.scrollHeight) + 'px';
-      }
-    };
-
-    browserRecognizer.onerror = (event) => {
-      console.warn('Speech recognition error:', event.error);
-      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
-      isBrowserRecognizing = false;
-      btnMic.classList.remove('recording');
-      userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
-      setAssistantState('IDLE');
-    };
-
-    browserRecognizer.onend = () => {
-      if (recognitionSilenceTimer) clearTimeout(recognitionSilenceTimer);
-      isBrowserRecognizing = false;
-      btnMic.classList.remove('recording');
-      userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
-      setAssistantState('IDLE');
-
-      // 最终确认：确保把曾经捕获到的最全文本保留在输入框内，不被截断冲刷
-      if (maxSeenTranscript) {
-        const full = (basePromptText ? (basePromptText + ' ') : '') + maxSeenTranscript;
-        if (full.length > userInput.value.length) {
-          userInput.value = full;
-        }
-      }
-
-      const query = userInput.value.trim();
-      if (query && userInput) {
-        userInput.focus();
-        userInput.setSelectionRange(userInput.value.length, userInput.value.length);
-      }
-    };
-  }
-
-  function fallbackToBrowserRecognizer() {
-    if (browserRecognizer) {
-      if (isBrowserRecognizing) {
-        browserRecognizer.stop();
-      } else {
-        try {
-          browserRecognizer.start();
-        } catch (err) {
-          console.log('Recognizer start error:', err);
-        }
-      }
-    }
-  }
-
   if (btnMic) {
     btnMic.addEventListener('click', async () => {
-      // 优先启用支持实时流式逐字打字的识别器（带防吞字防回滚锁），若不支持则启用本地 Whisper
-      if (browserRecognizer) {
-        if (isBrowserRecognizing) {
-          browserRecognizer.stop();
-        } else {
-          try {
-            browserRecognizer.start();
-          } catch (e) {
-            console.warn('browserRecognizer 启动异常，尝试本地 Whisper:', e);
-            await startLocalWhisperRecording();
-          }
-        }
-      } else if (isWhisperRecording) {
+      // 100% 纯本地 Whisper 大模型交互，彻底摒弃浏览器云端识别
+      if (isWhisperRecording) {
         stopLocalWhisperRecording();
       } else {
         await startLocalWhisperRecording();
