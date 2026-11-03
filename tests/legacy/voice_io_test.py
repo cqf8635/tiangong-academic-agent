@@ -158,7 +158,9 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
         model=model,
         tokenizer=processor.tokenizer,
         feature_extractor=processor.feature_extractor,
-        torch_dtype=dtype,
+        chunk_length_s=30,
+        return_timestamps=True,
+        dtype=dtype,
         device=device,
     )
 

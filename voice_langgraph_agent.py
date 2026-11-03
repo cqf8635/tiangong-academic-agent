@@ -92,6 +92,8 @@ class WhisperEngine:
                 model=model,
                 tokenizer=processor.tokenizer,
                 feature_extractor=processor.feature_extractor,
+                chunk_length_s=30,
+                return_timestamps=True,
                 dtype=dtype,
                 device=0 if use_cuda else -1,
             )
