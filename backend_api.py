@@ -618,6 +618,37 @@ async def stop_voice_perception():
     return {"status": "stopped", "is_recording": False}
 
 
+@app.post("/api/voice/transcribe")
+async def transcribe_voice_upload(file: UploadFile = File(...)):
+    """接收前端录音文件 (WebM/WAV/OGG)，使用本地 Whisper-large-v3 极速高精度转写"""
+    import tempfile
+    from voice_langgraph_agent import WhisperEngine, clean_and_format_node
+
+    filename = file.filename or "recording.webm"
+    suffix = Path(filename).suffix or ".webm"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp_path = Path(tmp.name)
+        content = await file.read()
+        tmp.write(content)
+
+    try:
+        pipe = WhisperEngine.get_pipeline()
+        res = pipe(str(tmp_path), generate_kwargs={"task": "transcribe"})
+        raw_text = res.get("text", "").strip() if isinstance(res, dict) else ""
+        cleaned_res = clean_and_format_node({"raw_transcription": raw_text})
+        final_text = cleaned_res.get("final_text", raw_text) or raw_text
+        return {"text": final_text, "raw_text": raw_text, "status": "success"}
+    except Exception as e:
+        logger.error(f"Whisper 本地转录失败: {e}")
+        return {"text": "", "error": str(e), "status": "error"}
+    finally:
+        try:
+            if tmp_path.exists():
+                tmp_path.unlink()
+        except Exception:
+            pass
+
+
 # ==========================================
 # 5. 音频资源播放与动态语音合成接口
 # ==========================================
