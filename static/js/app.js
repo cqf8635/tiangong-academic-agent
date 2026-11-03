@@ -2576,12 +2576,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnMic) {
     btnMic.addEventListener('click', async () => {
-      if (isWhisperRecording) {
+      // 优先启用支持实时流式逐字打字的识别器（带防吞字防回滚锁），若不支持则启用本地 Whisper
+      if (browserRecognizer) {
+        if (isBrowserRecognizing) {
+          browserRecognizer.stop();
+        } else {
+          try {
+            browserRecognizer.start();
+          } catch (e) {
+            console.warn('browserRecognizer 启动异常，尝试本地 Whisper:', e);
+            await startLocalWhisperRecording();
+          }
+        }
+      } else if (isWhisperRecording) {
         stopLocalWhisperRecording();
-      } else if (isBrowserRecognizing) {
-        if (browserRecognizer) browserRecognizer.stop();
       } else {
-        // 优先使用本地 Whisper 引擎，高精度完整长句录写
         await startLocalWhisperRecording();
       }
     });
