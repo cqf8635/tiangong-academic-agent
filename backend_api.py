@@ -71,8 +71,21 @@ master_app = build_master_workflow()
 
 @app.on_event("startup")
 async def on_app_startup():
-    """应用启动挂钩：自动拉起天工雷达后台静默轮询与断点续航同步引擎"""
+    """应用启动挂钩：自动拉起天工雷达后台静默轮询与断点续航同步引擎，并预热音频大模型"""
     radar_sync_engine.start_scheduler()
+
+    # 预热预加载本地 Whisper-large-v3 音频大模型至 GPU 显存，确保首次语音交互零延迟
+    def warmup_whisper():
+        try:
+            from voice_langgraph_agent import WhisperEngine
+            print("🚀 [Startup Warmup] 正在预加载本地 Whisper-large-v3 音频大模型至 GPU 显存...")
+            WhisperEngine.get_pipeline()
+            print("✅ [Startup Warmup] 本地 Whisper-large-v3 音频模型预热完成，随时待命！")
+        except Exception as e:
+            print(f"⚠️ [Startup Warmup] Whisper 模型预热提示: {e}")
+
+    import threading
+    threading.Thread(target=warmup_whisper, daemon=True).start()
 
 
 @app.on_event("shutdown")
