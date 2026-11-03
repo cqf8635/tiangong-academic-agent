@@ -633,9 +633,10 @@ async def stop_voice_perception():
 
 @app.post("/api/voice/transcribe")
 async def transcribe_voice_upload(file: UploadFile = File(...)):
-    """接收前端录音文件 (WebM/WAV/OGG)，使用本地 Whisper-large-v3 极速高精度转写"""
+    """接收前端录音文件 (WebM/WAV/OGG)，转换为标准 16kHz WAV 后由本地 Whisper-large-v3 极速高精转写"""
+    import subprocess
     import tempfile
-    from voice_langgraph_agent import WhisperEngine, clean_and_format_node
+    from voice_langgraph_agent import WhisperEngine
 
     filename = file.filename or "recording.webm"
     suffix = Path(filename).suffix or ".webm"
@@ -644,21 +645,35 @@ async def transcribe_voice_upload(file: UploadFile = File(...)):
         content = await file.read()
         tmp.write(content)
 
+    wav_path = tmp_path.with_suffix(".wav")
     try:
+        # 1. 采用 ffmpeg 将前端录制的 WebM/Opus 严格转码为 16kHz 单声道 PCM WAV，彻底消除容器格式不兼容与空转问题
+        conv_res = subprocess.run(
+            ["ffmpeg", "-y", "-i", str(tmp_path), "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", str(wav_path)],
+            capture_output=True,
+            timeout=8.0,
+        )
+
+        target_file = str(wav_path if wav_path.exists() and wav_path.stat().st_size > 44 else tmp_path)
+
         pipe = WhisperEngine.get_pipeline()
-        res = pipe(str(tmp_path), generate_kwargs={"task": "transcribe"})
+        res = pipe(target_file, generate_kwargs={"task": "transcribe"})
         raw_text = res.get("text", "").strip() if isinstance(res, dict) else ""
-        cleaned_res = clean_and_format_node({"raw_transcription": raw_text})
-        final_text = cleaned_res.get("final_text", raw_text) or raw_text
-        print(f"🎙️ [Whisper Upload STT] 接收录音 ({len(content)} 字节) -> 本地转录完成: '{final_text}'")
+        
+        # 规整文本，去除前后空格与多余标点
+        final_text = raw_text.strip(" ,，。？！") or raw_text
+        print(f"🎙️ [Whisper Upload STT] 接收 {len(content)} 字节音频 -> 显卡极速转录完成: '{final_text}'")
         return {"text": final_text, "raw_text": raw_text, "status": "success"}
     except Exception as e:
         logger.error(f"Whisper 本地转录失败: {e}")
+        print(f"❌ [Whisper Upload STT] 转录失败: {e}")
         return {"text": "", "error": str(e), "status": "error"}
     finally:
         try:
             if tmp_path.exists():
                 tmp_path.unlink()
+            if wav_path.exists():
+                wav_path.unlink()
         except Exception:
             pass
 

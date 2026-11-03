@@ -2383,6 +2383,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let dots = 0;
       let hasSpoken = false;
       let speechSilenceTimeout = null;
+      let startRecordTime = Date.now();
 
       function checkVolume() {
         if (!isWhisperRecording) return;
@@ -2392,27 +2393,33 @@ document.addEventListener('DOMContentLoaded', () => {
           sum += dataArray[i];
         }
         const avg = sum / dataArray.length;
-        if (avg > 14) {
+
+        // 灵敏度适配：平均能量大于 8 即判定已发声
+        if (avg > 8) {
           hasSpoken = true;
           if (speechSilenceTimeout) {
             clearTimeout(speechSilenceTimeout);
             speechSilenceTimeout = null;
           }
           btnMic.classList.add('speaking');
-          btnMic.style.transform = `scale(${Math.min(1.22, 1 + avg / 220)})`;
+          btnMic.style.transform = `scale(${Math.min(1.25, 1 + avg / 180)})`;
           dots = (dots + 1) % 4;
-          userInput.placeholder = `🎙️ [正在收音${'.'.repeat(dots + 1)}] 听到发声中... 说完停顿两秒自动转写，或点击话筒完成`;
+          userInput.placeholder = `🎙️ [听到您的声音${'.'.repeat(dots + 1)}] 讲完停顿 1.5 秒将自动完成转写，无需点击`;
         } else {
           btnMic.classList.remove('speaking');
           btnMic.style.transform = 'scale(1)';
-          // 若已经开口说完且连续停顿 2.2 秒，自动触发转写，无需手动二次点击话筒
+
+          // 核心特性：说完自然停顿 1.5 秒即自动触发本地转写，彻底告别手动点击结束
           if (hasSpoken && !speechSilenceTimeout) {
             speechSilenceTimeout = setTimeout(() => {
               if (isWhisperRecording) {
-                console.log('检测到说话停顿，自动提交本地 Whisper 转写...');
+                console.log('检测到说话停顿 (1.5s)，自动触发本地 Whisper 转写...');
                 stopLocalWhisperRecording();
               }
-            }, 2200);
+            }, 1500);
+          } else if (!hasSpoken && (Date.now() - startRecordTime > 5000)) {
+            // 若 5 秒未检测到有效声音，自动结束避免空转
+            stopLocalWhisperRecording();
           }
         }
         whisperAnimFrameId = requestAnimationFrame(checkVolume);
