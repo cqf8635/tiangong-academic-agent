@@ -2472,6 +2472,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isBrowserRecognizing = false;
   let recognitionSilenceTimer = null;
   let basePromptText = '';
+  let maxSeenTranscript = '';
 
   if (SpeechRecognition) {
     browserRecognizer = new SpeechRecognition();
@@ -2492,6 +2493,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isBrowserRecognizing = true;
       btnMic.classList.add('recording');
       basePromptText = userInput.value.trim();
+      maxSeenTranscript = '';
       userInput.placeholder = '🎙️ 正在倾听长句发声，说话停顿不会被掐断，请畅所欲言...';
       setAssistantState('LISTENING', '正在聆听学者发声，捕获长句学术问答与研讨意旨...');
       resetSilenceTimer();
@@ -2508,7 +2510,17 @@ document.addEventListener('DOMContentLoaded', () => {
           interim += event.results[i][0].transcript;
         }
       }
-      const recognized = final + interim;
+      let recognized = (final + interim).trim();
+
+      // 🛡️ 防吞字/防截断保护机制：
+      // 如果之前已经识别到的长文本以当前 final 开头，但当前 final 突然变短并丢掉了尾巴（比如 Google 裁决时把末尾的英文 "you know" 当作杂音吞掉了），
+      // 则保留先前已识别到的完整长串，绝不倒退删除！
+      if (recognized.length < maxSeenTranscript.length && maxSeenTranscript.startsWith(recognized)) {
+        recognized = maxSeenTranscript;
+      } else if (recognized.length >= maxSeenTranscript.length) {
+        maxSeenTranscript = recognized;
+      }
+
       if (recognized) {
         userInput.value = (basePromptText ? (basePromptText + ' ') : '') + recognized;
         userInput.style.height = 'auto';
@@ -2531,6 +2543,15 @@ document.addEventListener('DOMContentLoaded', () => {
       btnMic.classList.remove('recording');
       userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
       setAssistantState('IDLE');
+
+      // 最终确认：确保把曾经捕获到的最全文本保留在输入框内，不被截断冲刷
+      if (maxSeenTranscript) {
+        const full = (basePromptText ? (basePromptText + ' ') : '') + maxSeenTranscript;
+        if (full.length > userInput.value.length) {
+          userInput.value = full;
+        }
+      }
+
       const query = userInput.value.trim();
       if (query && userInput) {
         userInput.focus();
