@@ -2381,6 +2381,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const dataArray = new Uint8Array(whisperAnalyser.frequencyBinCount);
       let dots = 0;
+      let hasSpoken = false;
+      let speechSilenceTimeout = null;
 
       function checkVolume() {
         if (!isWhisperRecording) return;
@@ -2390,14 +2392,28 @@ document.addEventListener('DOMContentLoaded', () => {
           sum += dataArray[i];
         }
         const avg = sum / dataArray.length;
-        if (avg > 12) {
+        if (avg > 14) {
+          hasSpoken = true;
+          if (speechSilenceTimeout) {
+            clearTimeout(speechSilenceTimeout);
+            speechSilenceTimeout = null;
+          }
           btnMic.classList.add('speaking');
           btnMic.style.transform = `scale(${Math.min(1.22, 1 + avg / 220)})`;
           dots = (dots + 1) % 4;
-          userInput.placeholder = `🎙️ [正在收音${'.'.repeat(dots + 1)}] 听到中英混合发言中... 说完再次点击话筒完成转写`;
+          userInput.placeholder = `🎙️ [正在收音${'.'.repeat(dots + 1)}] 听到发声中... 说完停顿两秒自动转写，或点击话筒完成`;
         } else {
           btnMic.classList.remove('speaking');
           btnMic.style.transform = 'scale(1)';
+          // 若已经开口说完且连续停顿 2.2 秒，自动触发转写，无需手动二次点击话筒
+          if (hasSpoken && !speechSilenceTimeout) {
+            speechSilenceTimeout = setTimeout(() => {
+              if (isWhisperRecording) {
+                console.log('检测到说话停顿，自动提交本地 Whisper 转写...');
+                stopLocalWhisperRecording();
+              }
+            }, 2200);
+          }
         }
         whisperAnimFrameId = requestAnimationFrame(checkVolume);
       }
@@ -2454,8 +2470,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const audioBlob = new Blob(localAudioChunks, { type: localMediaRecorder.mimeType || 'audio/webm' });
-        if (audioBlob.size < 1200) {
-          // 录音过短或未发声
+        if (audioBlob.size < 200) {
           btnMic.classList.remove('recording');
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
           setAssistantState('IDLE');
@@ -2472,6 +2487,9 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             body: formData,
           });
+          if (!resp.ok) {
+            throw new Error(`服务响应异常: ${resp.status}`);
+          }
           const res = await resp.json();
           if (res.status === 'success' && res.text) {
             const current = userInput.value.trim();
@@ -2480,9 +2498,12 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.style.height = (userInput.scrollHeight) + 'px';
             userInput.focus();
             userInput.setSelectionRange(userInput.value.length, userInput.value.length);
+          } else if (res.error) {
+            console.error('Whisper 转写返回错误:', res.error);
           }
         } catch (err) {
           console.error('Whisper transcribe error:', err);
+          alert('语音转录请求失败：请确认终端中的 python run.py 后端服务是否正常运行！');
         } finally {
           btnMic.classList.remove('recording');
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
