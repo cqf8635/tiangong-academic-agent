@@ -2388,37 +2388,42 @@ document.addEventListener('DOMContentLoaded', () => {
       function checkVolume() {
         if (!isWhisperRecording) return;
         whisperAnalyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          sum += dataArray[i];
-        }
-        const avg = sum / dataArray.length;
 
-        // 灵敏度适配：平均能量大于 8 即判定已发声
-        if (avg > 8) {
+        // 精准采样人类语音核心频段 (100Hz ~ 3200Hz，前 35 个频段区间)
+        let voiceSum = 0;
+        let peak = 0;
+        const voiceBins = Math.min(35, dataArray.length);
+        for (let i = 1; i < voiceBins; i++) {
+          voiceSum += dataArray[i];
+          if (dataArray[i] > peak) peak = dataArray[i];
+        }
+        const voiceAvg = voiceSum / (voiceBins - 1);
+
+        // 高灵敏度发声判定：人声区间平均能量 > 2.5 或 峰值 > 12 即判定已发声
+        if (voiceAvg > 2.5 || peak > 12) {
           hasSpoken = true;
           if (speechSilenceTimeout) {
             clearTimeout(speechSilenceTimeout);
             speechSilenceTimeout = null;
           }
           btnMic.classList.add('speaking');
-          btnMic.style.transform = `scale(${Math.min(1.25, 1 + avg / 180)})`;
+          btnMic.style.transform = `scale(${Math.min(1.25, 1 + peak / 180)})`;
           dots = (dots + 1) % 4;
-          userInput.placeholder = `🎙️ [听到您的声音${'.'.repeat(dots + 1)}] 讲完停顿 1.5 秒将自动完成转写，无需点击`;
+          userInput.placeholder = `🎙️ [正在聆听${'.'.repeat(dots + 1)}] 讲完停顿约 1 秒将自动识别，无需点击`;
         } else {
           btnMic.classList.remove('speaking');
           btnMic.style.transform = 'scale(1)';
 
-          // 核心特性：说完自然停顿 1.5 秒即自动触发本地转写，彻底告别手动点击结束
+          // 核心特性：检测到发声后，说完停顿 1.2 秒自动触发本地 Whisper 转写，彻底告别二次点击
           if (hasSpoken && !speechSilenceTimeout) {
             speechSilenceTimeout = setTimeout(() => {
               if (isWhisperRecording) {
-                console.log('检测到说话停顿 (1.5s)，自动触发本地 Whisper 转写...');
+                console.log('检测到语音停顿 (1.2s)，自动触发本地 Whisper 转写...');
                 stopLocalWhisperRecording();
               }
-            }, 1500);
-          } else if (!hasSpoken && (Date.now() - startRecordTime > 5000)) {
-            // 若 5 秒未检测到有效声音，自动结束避免空转
+            }, 1200);
+          } else if (!hasSpoken && (Date.now() - startRecordTime > 25000)) {
+            // 若 25 秒仍未说话，自动休眠避免无意义等待
             stopLocalWhisperRecording();
           }
         }
@@ -2445,7 +2450,13 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('当前浏览器环境不支持获取麦克风，请检查麦克风权限。');
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        }
+      });
       localRecordingStream = stream;
       localAudioChunks = [];
 
@@ -2521,7 +2532,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localMediaRecorder.start(200);
       isWhisperRecording = true;
       btnMic.classList.add('recording');
-      userInput.placeholder = '🎙️ [正在收音] 请畅所欲言（支持中文、英文、中英夹杂），说完请再次点击话筒完成转录...';
+      userInput.placeholder = '🎙️ [正在收音] 请直接说话（支持中英混说），讲完停顿 1 秒自动识别...';
       setAssistantState('LISTENING', '正在录制学者学术发声，本地 Whisper-large-v3 准备转录...');
       startVolumeFeedback(stream);
 

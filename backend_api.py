@@ -647,9 +647,9 @@ async def transcribe_voice_upload(file: UploadFile = File(...)):
 
     wav_path = tmp_path.with_suffix(".wav")
     try:
-        # 1. 采用 ffmpeg 将前端录制的 WebM/Opus 严格转码为 16kHz 单声道 PCM WAV，彻底消除容器格式不兼容与空转问题
+        # 1. 采用 ffmpeg 将前端录制的 WebM/Opus 严格转码为 16kHz 单声道 PCM WAV，适度增益提升信噪比
         conv_res = subprocess.run(
-            ["ffmpeg", "-y", "-i", str(tmp_path), "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", str(wav_path)],
+            ["ffmpeg", "-y", "-i", str(tmp_path), "-af", "volume=1.5", "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", str(wav_path)],
             capture_output=True,
             timeout=8.0,
         )
