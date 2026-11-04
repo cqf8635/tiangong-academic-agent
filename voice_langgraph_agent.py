@@ -112,18 +112,24 @@ class WhisperEngine:
                 download_root = str(model_dir.parent) if model_dir.parent.exists() else None
                 use_cuda = torch.cuda.is_available()
 
+                print("🧠 [WhisperEngine] 安全加载 OpenAI 官方原生 large-v3 模型 (CPU 反序列化中转，杜绝显存双倍复制)...")
+                # 1. 先在 CPU 完成反序列化与字典赋值，避免在 GPU 显存内同时存在 checkpoint + model 两份 3GB 副本
+                m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+                gc.collect()
+
+                # 2. 若 GPU 显存充裕 (>= 3.2GB)，迁移至 GPU；若已被 RAG 占用则安全留在 CPU，彻底消除 OOM 与进程被杀隐患
                 if use_cuda:
+                    torch.cuda.empty_cache()
                     free_bytes, total_bytes = torch.cuda.mem_get_info()
                     free_gb = free_bytes / (1024 ** 3)
-                    print(f"🧠 [WhisperEngine] 加载 OpenAI 官方原生 large-v3 模型 (设备: CUDA FP16 原生半精度, 剩余显存: {free_gb:.2f}GB)...")
-                    # 直接在 cuda 加载以激活 Whisper 官方的原生 FP16 模式（仅占 2.88GB，杜绝 FP32 占用 6GB）
-                    try:
-                        m = whisper.load_model("large-v3", device="cuda", download_root=download_root)
-                    except torch.OutOfMemoryError:
-                        print("⚠️ [WhisperEngine] GPU 显存紧张，直接降级在 CPU 加载...")
-                        m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+                    if free_gb >= 3.2:
+                        m = m.to("cuda")
+                        torch.cuda.empty_cache()
+                        print(f"🧠 [WhisperEngine] 成功移入 GPU FP16 通道 (仅占 2.88GB，剩余显存: {free_gb - 2.88:.2f}GB)")
+                    else:
+                        print(f"🧠 [WhisperEngine] GPU 剩余显存 ({free_gb:.2f}GB < 3.2GB)，模型安全驻留 CPU 多核通道，确保系统绝对稳定")
                 else:
-                    m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+                    print("🧠 [WhisperEngine] 当前运行于 CPU 多核推理模式")
 
                 cls._whisper_native_model = m
             except Exception as e:
