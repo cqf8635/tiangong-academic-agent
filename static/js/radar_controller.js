@@ -748,16 +748,20 @@ class TianGongRadarController {
       const btnDiscuss = document.getElementById(`btn-discuss-${paper.paper_id}`);
       if (btnDiscuss) {
         btnDiscuss.addEventListener("click", async () => {
-          // 1. 提取定制研讨提示词与专属会话窗口标题
-          const discussPrompt = this.buildTargetedDiscussPrompt(paper, primaryCat, transBox);
+          // 1. 提取定制研讨提示词与专属会话窗口标题 (使用 summaryTransBox 避免未定义错误)
+          const discussPrompt = this.buildTargetedDiscussPrompt(paper, primaryCat, summaryTransBox);
           let zhTitle = "";
-          if (transBox && transBox.dataset.loaded === "true") {
-            const titleSpan = transBox.querySelector(".trans-title span");
+          if (summaryTransBox && summaryTransBox.dataset.loaded === "true") {
+            const titleSpan = summaryTransBox.querySelector(".trans-title span");
             if (titleSpan) zhTitle = titleSpan.textContent.trim();
           }
           if (!zhTitle && paper.paper_id) {
             try {
-              const cached = JSON.parse(localStorage.getItem(`radar_trans_${paper.paper_id}`) || "{}");
+              const cached = JSON.parse(
+                localStorage.getItem(`radar_trans_summary_${paper.paper_id}`) ||
+                localStorage.getItem(`radar_trans_${paper.paper_id}`) ||
+                "{}"
+              );
               if (cached.title_zh) zhTitle = cached.title_zh;
             } catch (e) {}
           }
@@ -781,15 +785,20 @@ class TianGongRadarController {
             window.switchMindmapScope('current');
           }
 
-          // 5. 发送定制研讨提示词
-          const chatInput = document.getElementById("query-input") || document.getElementById("chat-input");
-          const btnSend = document.getElementById("btn-send");
-          if (chatInput) {
-            chatInput.value = discussPrompt;
-            if (btnSend) {
-              btnSend.click();
+          // 5. 填入并触发定制研讨提示词发送
+          setTimeout(() => {
+            const chatInput = document.getElementById("query-input") || document.getElementById("chat-input");
+            const btnSend = document.getElementById("btn-send");
+            if (chatInput) {
+              chatInput.value = discussPrompt;
+              chatInput.dispatchEvent(new Event('input', { bubbles: true }));
+              chatInput.style.height = 'auto';
+              chatInput.style.height = (chatInput.scrollHeight) + 'px';
+              if (btnSend) {
+                btnSend.click();
+              }
             }
-          }
+          }, 200);
         });
       }
     });
