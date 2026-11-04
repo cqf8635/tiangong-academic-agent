@@ -84,30 +84,59 @@ def play_audio(wav_path: Path) -> bool:
         return False
 
 
-def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000) -> bool:
-    """Record audio from microphone using PulseAudio/PipeWire default source."""
-    # 1. 优先使用 ffmpeg 抓取 pulse/pipewire 系统默认麦克风（杜绝 arecord 声卡静音通道陷阱）
+def get_audio_source(mode: str = "mic") -> str:
+    """获取 PulseAudio/PipeWire 录音通道（支持麦克风或视频/会议系统声音内录）"""
+    if mode in ("system", "video", "meeting"):
+        # 1. 优先获取当前系统正在使用的 Default Sink 的 monitor (扬声器/耳机内录通道)
+        try:
+            sink_res = subprocess.run(["pactl", "get-default-sink"], capture_output=True, text=True, timeout=1.0)
+            def_sink = sink_res.stdout.strip()
+            if def_sink:
+                return f"{def_sink}.monitor"
+        except Exception:
+            pass
+        # 2. 从 sources 列表中查找 monitor
+        try:
+            res = subprocess.run(["pactl", "list", "short", "sources"], capture_output=True, text=True, timeout=1.0)
+            for line in res.stdout.strip().splitlines():
+                parts = line.split("\t")
+                if len(parts) >= 2 and "monitor" in parts[1]:
+                    return parts[1]
+        except Exception:
+            pass
+        return "default.monitor"
+    return "default"
+
+
+def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000, mode: str = "mic") -> bool:
+    """Record audio using PulseAudio/PipeWire from microphone or system/meeting monitor."""
+    source = get_audio_source(mode)
+    is_sys = mode in ("system", "video", "meeting")
+    source_name = "🎬 视频/会议声音(系统扬声器内录)" if is_sys else "🎤 麦克风人声"
+
+    # 1. 优先使用 ffmpeg 抓取 pulse/pipewire 通道（支持麦克风与系统视频/会议内录）
     if shutil.which("ffmpeg"):
         cmd = [
             "ffmpeg", "-y",
             "-f", "pulse",
-            "-i", "default",
+            "-i", source,
             "-t", str(seconds),
             "-ac", "1",
             "-ar", str(sample_rate),
             str(wav_path),
         ]
         try:
-            print(f"🎤 [正在录音...] 请对准麦克风说话（倒计时 {seconds} 秒）:")
+            hint = "请在电脑上播放视频或保持会议发声" if is_sys else "请对准麦克风说话"
+            print(f"\n🎙️ [正在录制: {source_name}] ({hint}，倒计时 {seconds} 秒)...")
             subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
             print("✅ 录音完成！")
             return True
         except subprocess.CalledProcessError as exc:
             print(f"[警告] ffmpeg 录音异常: {exc}，尝试备用方式...")
 
-    # 2. 备用 arecord (指定 pulse 通道)
+    # 2. 备用 arecord (仅麦克风模式)
     arecord = shutil.which("arecord")
-    if arecord:
+    if arecord and not is_sys:
         for dev in ["pulse", "default"]:
             cmd = [
                 arecord,
@@ -127,19 +156,22 @@ def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000) -> 
             except subprocess.CalledProcessError:
                 continue
 
-    # 3. 备用 sounddevice
-    try:
-        import sounddevice as sd
-        import soundfile as sf
-        print(f"🎤 [正在录音 (sounddevice)...] 请对准麦克风说话（倒计时 {seconds} 秒）:")
-        recording = sd.rec(int(seconds * sample_rate), samplerate=sample_rate, channels=1, dtype="int16")
-        sd.wait()
-        sf.write(str(wav_path), recording, sample_rate)
-        print("✅ 录音完成！")
-        return True
-    except Exception as e:
-        print(f"[错误] 麦克风录音失败: {e}")
-        return False
+    # 3. 备用 sounddevice (仅麦克风模式)
+    if not is_sys:
+        try:
+            import sounddevice as sd
+            import soundfile as sf
+            print(f"🎤 [正在录音 (sounddevice)...] 请对准麦克风说话（倒计时 {seconds} 秒）:")
+            recording = sd.rec(int(seconds * sample_rate), samplerate=sample_rate, channels=1, dtype="int16")
+            sd.wait()
+            sf.write(str(wav_path), recording, sample_rate)
+            print("✅ 录音完成！")
+            return True
+        except Exception as e:
+            print(f"[错误] 麦克风录音失败: {e}")
+            return False
+
+    return False
 
 
 def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") -> str:
@@ -198,22 +230,22 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本")
-    parser.add_argument("--file", type=Path, default=None, help="指定已有音频文件直接识别")
+    parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本 (支持麦克风、系统视频播放与会议内录)")
+    parser.add_argument("--file", type=Path, default=None, help="指定已有视频/音频文件直接识别 (如 .mp4, .mkv, .wav, .mp3)")
+    parser.add_argument("--mode", type=str, default="mic", choices=["mic", "system", "meeting", "video"], help="音频来源: mic(麦克风), system/meeting/video(视频或在线会议内录)")
     parser.add_argument("--language", type=str, default="auto", choices=["auto", "zh", "en"], help="识别语言模式: auto(自适应中英文), zh(强制中文), en(强制英文)")
     parser.add_argument("--seconds", type=int, default=5, help="录音时长（默认: 5秒）")
     parser.add_argument("--model", type=Path, default=MODEL_DIR, help="本地 Whisper 模型路径")
-    parser.add_argument("--language", type=str, default="auto", choices=["auto", "zh", "en"], help="识别语言模式: auto(自适应中英文), zh(强制中文), en(强制英文)")
     parser.add_argument("--skip-beep", action="store_true", help="跳过发声测试提示音")
     args = parser.parse_args()
 
-    # 如果直接指定了 --file，跳过录音和蜂鸣音，直接识别指定音频
+    # 如果直接指定了 --file，跳过录音和蜂鸣音，直接识别指定音频/视频
     if args.file:
         target_file = Path(args.file)
         if not target_file.is_absolute():
             target_file = (BASE_DIR / target_file).resolve()
         print("=" * 60)
-        print(f"      🎙️  Whisper 语音文件直接识别: {target_file.name}")
+        print(f"      🎙️  Whisper 音视频文件直接识别: {target_file.name}")
         print("=" * 60)
         text = transcribe_audio(target_file, args.model, language=args.language)
         print("\n" + "=" * 60)
@@ -222,22 +254,23 @@ def main() -> int:
         print("=" * 60)
         return 0
 
+    mode_name = "🎬 视频/会议声音(系统扬声器内录)" if args.mode in ("system", "meeting", "video") else "🎤 麦克风人声"
     print("=" * 60)
-    print("      🎙️  语音输入 & 🔊 语音输出 综合测试")
+    print(f"      🎙️  语音测试 ({mode_name}) & 🔊 语音输出 综合测试")
     print("=" * 60)
 
-    # 1. 语音输出测试 (Speaker / Audio Output Test)
-    if not args.skip_beep:
+    # 1. 语音输出测试 (仅麦克风模式播放提示音，内录模式跳过避免污染视频声音)
+    if not args.skip_beep and args.mode == "mic":
         print("\n--- [第 1 步] 🔊 语音输出测试（播放提示音） ---")
         print("正在播放一段测试提示音，请确认扬声器/耳机是否能听到声音...")
         generate_beep_wav(BEEP_WAV, duration_sec=0.8, freq=523.25)
         play_audio(BEEP_WAV)
         print("✅ 提示音播放完毕。")
 
-    # 2. 语音输入测试 (Microphone Recording)
-    print("\n--- [第 2 步] 🎙️ 语音输入测试（麦克风录音） ---")
-    if not record_audio(RECORDED_WAV, seconds=args.seconds):
-        print("❌ 麦克风录音失败，请检查麦克风权限与设备连接。")
+    # 2. 语音输入测试 (录制)
+    print(f"\n--- [第 2 步] 🎙️ 语音输入录制 ({mode_name}) ---")
+    if not record_audio(RECORDED_WAV, seconds=args.seconds, mode=args.mode):
+        print(f"❌ 录音失败，请检查音源权限与连接。")
         return 1
 
     # 3. 录音回放测试 (Play Back Recorded Voice)
