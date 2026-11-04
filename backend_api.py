@@ -631,6 +631,12 @@ async def stop_voice_perception():
     return {"status": "stopped", "is_recording": False}
 
 
+VOICE_INITIAL_PROMPT = (
+    "这是一段学术科研与技术讨论，保留专业英文术语与专有名词（如 Transformer, Attention, LLM, RAG, "
+    "Python, PyTorch, LoRA, Prompt, English, China 等），中英文混合原词输出，不要将英文翻译成中文。"
+)
+
+
 @app.post("/api/voice/transcribe")
 async def transcribe_audio_file(file: UploadFile = File(...)):
     """接收前端麦克风录制的高清音频切片，直接调用本地 OpenAI 官方原生 Whisper Large-v3 引擎转录"""
@@ -660,11 +666,12 @@ async def transcribe_audio_file(file: UploadFile = File(...)):
                     tmp_path,
                     language=None,
                     task="transcribe",
+                    initial_prompt=VOICE_INITIAL_PROMPT,
                     fp16=is_cuda,
-                    beam_size=1,
-                    best_of=1,
-                    temperature=0.0,
+                    temperature=(0.0, 0.2, 0.4),
+                    compression_ratio_threshold=2.4,
                     no_speech_threshold=0.6,
+                    condition_on_previous_text=False,
                 )
             except torch.OutOfMemoryError:
                 logger.warning("⚠️ [Whisper Large-v3] GPU 显存紧张，自动无缝降级至 CPU 极速转录通道...")
@@ -676,11 +683,12 @@ async def transcribe_audio_file(file: UploadFile = File(...)):
                     tmp_path,
                     language=None,
                     task="transcribe",
+                    initial_prompt=VOICE_INITIAL_PROMPT,
                     fp16=False,
-                    beam_size=1,
-                    best_of=1,
-                    temperature=0.0,
+                    temperature=(0.0, 0.2, 0.4),
+                    compression_ratio_threshold=2.4,
                     no_speech_threshold=0.6,
+                    condition_on_previous_text=False,
                 )
 
             text = res.get("text", "").strip()

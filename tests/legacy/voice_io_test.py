@@ -201,7 +201,13 @@ def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mod
     return False
 
 
-def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") -> str:
+DEFAULT_INITIAL_PROMPT = (
+    "这是一段学术科研与技术讨论，保留专业英文术语与专有名词（如 Transformer, Attention, LLM, RAG, "
+    "Python, PyTorch, LoRA, English, China, of course 等），中英混合原词输出，不要将英文翻译成中文。"
+)
+
+
+def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto", prompt: str | None = None) -> str:
     """Transcribe audio prioritizing OpenAI official whisper library (Solution 1)."""
     # -------------------------------------------------------------------------
     # 方案 1: OpenAI 官方原生库 (最强降温回退、内置重复压缩率检测、完美支持中英混合与长篇研讨)
@@ -236,18 +242,22 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
 
         lang_code = "zh" if language in ("zh", "chinese") else (None if language == "auto" else language)
         lang_desc = "中文 / 中英混合" if lang_code == "zh" else (lang_code or "auto (自适应识别)")
+        used_prompt = prompt if prompt is not None else DEFAULT_INITIAL_PROMPT
         print(f"🔍 正在进行官方原生语音转录 (语言模式: {lang_desc}，支持长篇滑动窗口)...")
+        if used_prompt:
+            print("🛡️ [中英混杂防强翻]: 已注入学术/技术专有名词提示词，保护英文术语原生输出")
 
-        # 官方原生推理：自动处理音频重采样、长音频分段、VAD切片与中英文混合
+        # 官方原生推理：启用温度回退与压缩比循环打断，彻底消除幻觉与复读
         result = model.transcribe(
             str(wav_path),
             language=lang_code,
             task="transcribe",
+            initial_prompt=used_prompt,
             fp16=(device == "cuda"),
-            beam_size=1,
-            best_of=1,
-            condition_on_previous_text=False, # 防止长音频长篇研讨出现重复循环
-            temperature=0.0,
+            temperature=(0.0, 0.2, 0.4),
+            compression_ratio_threshold=2.4,  # 核心防复读：检测到循环文本立即打断
+            no_speech_threshold=0.6,           # 核心防幻觉：静音或微弱噪音不脑补 Thank you
+            condition_on_previous_text=False,  # 长音频不强行依赖前文，防止循环吸引子
         )
 
         segments = result.get("segments", [])
@@ -276,9 +286,10 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
 def main() -> int:
     parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本 (支持长篇视频研读、在线会议与麦克风长音频)")
     parser.add_argument("--file", type=Path, default=None, help="指定已有视频/音频文件直接识别 (如 .mp4, .mkv, .wav, .mp3)")
-    parser.add_argument("--mode", type=str, default="system", choices=["mic", "system", "meeting", "video"], help="音频来源: system/meeting/video(视频/会议系统声音内录, 默认), mic(麦克风)")
+    parser.add_argument("--mode", type=str, default="mic", choices=["mic", "system", "meeting", "video"], help="音频来源: mic(麦克风人声, 默认), system/meeting/video(视频或在线会议内录)")
     parser.add_argument("--seconds", type=int, default=0, help="录音时长 (秒，默认 0 表示无限时长随时按回车停止，亦可指定如 30、60)")
     parser.add_argument("--language", type=str, default="auto", choices=["auto", "zh", "en"], help="识别语言模式: auto(自适应中英文), zh(强制中文), en(强制英文)")
+    parser.add_argument("--prompt", type=str, default=None, help="自定义专有名词或引导 Prompt，保留英文词汇不被翻译为中文")
     parser.add_argument("--playback", action="store_true", help="是否在识别前完整回放刚才录入的声音")
     parser.add_argument("--model", type=Path, default=MODEL_DIR, help="本地 Whisper 模型路径")
     parser.add_argument("--skip-beep", action="store_true", help="跳过发声测试提示音")
@@ -292,7 +303,7 @@ def main() -> int:
         print("=" * 60)
         print(f"      🎙️  Whisper 长篇音视频文件直接识别: {target_file.name}")
         print("=" * 60)
-        text = transcribe_audio(target_file, args.model, language=args.language)
+        text = transcribe_audio(target_file, args.model, language=args.language, prompt=args.prompt)
         print("\n" + "=" * 60)
         print("🎉 测试结果汇总:")
         print(f"📝 识别文字: {text if text else '[未识别到有效文字]'}")
@@ -327,7 +338,7 @@ def main() -> int:
 
     # 4. Whisper 语音识别测试 (STT Inference)
     print("\n--- [第 4 步] 🧠 Whisper-large-v3 长音频转文字识别 ---")
-    text = transcribe_audio(RECORDED_WAV, args.model, language=args.language)
+    text = transcribe_audio(RECORDED_WAV, args.model, language=args.language, prompt=args.prompt)
 
     print("\n" + "=" * 60)
     print("🎉 测试结果汇总:")

@@ -158,12 +158,17 @@ class WhisperEngine:
             
             # 判断模型当前所在设备
             is_cuda = next(native_model.parameters()).is_cuda
+            academic_prompt = (
+                "这是一段学术科研与技术讨论，保留专业英文术语与专有名词（如 Transformer, Attention, LLM, RAG, "
+                "Python, PyTorch, LoRA, Prompt, English, China 等），中英文混合原词输出，不要将英文翻译成中文。"
+            )
 
             try:
                 res = native_model.transcribe(
                     audio,
                     language=lang_code,
                     task="transcribe",
+                    initial_prompt=academic_prompt,
                     fp16=is_cuda,
                     beam_size=1,       # 方案 A: 贪婪单分支解码，降低 500MB+ 动态显存开销
                     best_of=1,
@@ -179,6 +184,7 @@ class WhisperEngine:
                     audio,
                     language=lang_code,
                     task="transcribe",
+                    initial_prompt=academic_prompt,
                     fp16=False,
                     beam_size=1,
                     best_of=1,
