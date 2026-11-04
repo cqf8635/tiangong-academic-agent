@@ -227,8 +227,12 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
         print(f"⚡ 计算设备: {device.upper()} (GPU FP16 极致显存优化)")
         print("=" * 60)
 
-        # 原生以指定设备初始化
-        model = whisper.load_model("large-v3", device=device, download_root=download_root)
+        # 核心显存保护: 先在 CPU 完成反序列化与字典释放，彻底避开 GPU 显存双倍 Checkpoint 复制陷阱 (杜绝暴涨至 7.43GB)
+        model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+        if device == "cuda":
+            model = model.to("cuda")
+            gc.collect()
+            torch.cuda.empty_cache()
 
         lang_code = "zh" if language in ("zh", "chinese") else (None if language == "auto" else language)
         lang_desc = "中文 / 中英混合" if lang_code == "zh" else (lang_code or "auto (自适应识别)")
