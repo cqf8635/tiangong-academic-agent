@@ -20,25 +20,30 @@ def resolve_model_root(output_dir: Optional[Path] = None) -> Path:
     val = os.getenv("PAPER_MODEL_ROOT")
     if val:
         return Path(val)
+    if (BASE_DIR.parent / "models").exists():
+        return BASE_DIR.parent / "models"
     return BASE_DIR / "models"
 
+
+WHISPER_OFFICIAL_URL = "https://openaipublic.azureedge.net/main/whisper/models/e5b1a55b89c1367d088e3e072d91832e54e18b42f8922cca8f979260d243e782/large-v3.pt"
 
 DEFAULT_MODELS = {
     "embedding": "BAAI/bge-m3",
     "reranker": "BAAI/bge-reranker-v2-m3",
+    "whisper": WHISPER_OFFICIAL_URL,
 }
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Download embedding and reranker model snapshots."
+        description="Download embedding, reranker, and official native whisper model snapshots."
     )
     parser.add_argument(
         "models",
         nargs="*",
         default=["all"],
         metavar="MODEL",
-        help="embedding, reranker, or all (default: all).",
+        help="embedding, reranker, whisper, or all (default: all).",
     )
     parser.add_argument(
         "--output-dir",
@@ -74,7 +79,7 @@ def selected_models(names: list[str]) -> list[tuple[str, str]]:
     unknown = sorted(set(names) - set(DEFAULT_MODELS) - {"all"})
     if unknown:
         raise ValueError(
-            "unknown model(s): {}. Expected embedding, reranker, or all".format(
+            "unknown model(s): {}. Expected embedding, reranker, whisper, or all".format(
                 ", ".join(unknown)
             )
         )
@@ -140,6 +145,29 @@ def main() -> int:
     records: list[dict[str, object]] = []
 
     for name, repo_id in models:
+        if name == "whisper":
+            pt_file = output_dir / "large-v3.pt"
+            print(f"Checking OpenAI Whisper large-v3 native model -> {pt_file}", flush=True)
+            if pt_file.exists() and pt_file.stat().st_size > 2_500_000_000:
+                print(f"✅ OpenAI 官方原生模型已就绪: {pt_file} ({pt_file.stat().st_size / 1e9:.2f} GB)，跳过下载。")
+            else:
+                print(f"Downloading OpenAI native model from {repo_id} -> {pt_file}", flush=True)
+                try:
+                    import whisper
+                    whisper._download(repo_id, str(output_dir), False)
+                except Exception:
+                    import urllib.request
+                    urllib.request.urlretrieve(repo_id, str(pt_file))
+            records.append(
+                {
+                    "name": "whisper",
+                    "repo_id": "openai/whisper-large-v3",
+                    "url": repo_id,
+                    "path": str(pt_file.resolve()),
+                }
+            )
+            continue
+
         local_dir = output_dir / name
         print(f"Downloading {repo_id} -> {local_dir}", flush=True)
         resolved_path = snapshot_download(

@@ -83,6 +83,15 @@ def resolve_whisper_path(base_dir: Optional[Path] = None) -> Path:
             return Path(val)
 
     if base_dir:
+        # 1. 优先解析 OpenAI 官方原生模型文件 (large-v3.pt)
+        for pt_cand in [
+            (base_dir / "models" / "large-v3.pt"),
+            (base_dir.parent / "models" / "large-v3.pt"),
+        ]:
+            if pt_cand.exists():
+                return pt_cand.resolve()
+
+        # 2. 备选项目内与同级 models/whisper-large-v3 目录
         local_dir = (base_dir / "models" / "whisper-large-v3").resolve()
         if local_dir.exists():
             return local_dir

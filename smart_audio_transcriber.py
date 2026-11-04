@@ -107,54 +107,37 @@ def extract_audio_from_file(media_file: Path, output_file: Path = DEFAULT_OUTPUT
 
 
 def load_whisper_pipeline(model_dir: Path = MODEL_DIR):
-    """Load local Whisper large-v3 pipeline."""
+    """Load local Whisper large-v3 model using OpenAI official whisper library."""
     import torch
-    from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+    import whisper
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    download_root = str(model_dir.parent) if model_dir.parent.exists() else None
+
+    print(f"🧠 加载本地 Whisper 模型: {model_dir.name} (计算设备: {device.upper()})...")
+    model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+    if device == "cuda":
+        model = model.to("cuda")
+        torch.cuda.empty_cache()
+    return model
+
+
+def transcribe(model, wav_file: Path = DEFAULT_OUTPUT_WAV, lang: str = "auto") -> str:
+    """Run transcription supporting both short and arbitrary long audio (>30s)."""
+    import torch
+
+    lang_code = "zh" if lang in ("zh", "chinese") else (None if lang == "auto" else lang)
+    lang_desc = "中文 / 中英混合" if lang_code == "zh" else (lang_code or "auto (自适应识别)")
+    print(f"🎙️ 正在进行语音识别转文本 (语言模式: {lang_desc})...")
 
     use_cuda = torch.cuda.is_available()
-    device = 0 if use_cuda else -1
-    dtype = torch.float16 if use_cuda else torch.float32
-
-    print(f"🧠 加载本地 Whisper 模型: {model_dir.name} (计算设备: {'NVIDIA CUDA (GPU)' if use_cuda else 'CPU'})...")
-    model = AutoModelForSpeechSeq2Seq.from_pretrained(
-        model_dir,
-        dtype=dtype,
-        low_cpu_mem_usage=True,
-        use_safetensors=True,
-    )
-    if use_cuda:
-        model.to("cuda:0")
-
-    processor = AutoProcessor.from_pretrained(model_dir)
-    return pipeline(
-        "automatic-speech-recognition",
-        model=model,
-        tokenizer=processor.tokenizer,
-        feature_extractor=processor.feature_extractor,
-        dtype=dtype,
-        device=device,
-    )
-
-
-def transcribe(pipe, wav_file: Path = DEFAULT_OUTPUT_WAV, lang: str = "auto") -> str:
-    """Run transcription supporting both short and arbitrary long audio (>30s)."""
-    print(f"🎙️ 正在进行语音识别转文本 (语言模式: {lang})...")
-
-    generate_kwargs = {
-        "task": "transcribe",
-    }
-
-    if lang == "en":
-        generate_kwargs["language"] = "english"
-    elif lang == "zh":
-        generate_kwargs["language"] = "chinese"
-
-    result = pipe(
+    result = model.transcribe(
         str(wav_file),
-        generate_kwargs=generate_kwargs,
-        return_timestamps=True,  # 关键参数：开启长音频（>30秒）自动时间戳切片与对齐
+        language=lang_code,
+        task="transcribe",
+        fp16=use_cuda,
     )
-    return result["text"]
+    return result.get("text", "").strip()
 
 
 def main():

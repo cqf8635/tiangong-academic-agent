@@ -69,24 +69,135 @@ class VoiceAgentState(TypedDict):
 class WhisperEngine:
     _instance = None
     _pipe = None
+    _model = None
+    _processor = None
+    _device = None
+    _dtype = None
+
+    @classmethod
+    def get_model_and_processor(cls, model_dir: Path = MODEL_DIR):
+        if cls._model is None or cls._processor is None:
+            use_cuda = torch.cuda.is_available()
+            if use_cuda and torch.cuda.is_bf16_supported():
+                cls._dtype = torch.bfloat16
+            else:
+                cls._dtype = torch.float16 if use_cuda else torch.float32
+            cls._device = "cuda:0" if use_cuda else "cpu"
+            print(f"🧠 [WhisperEngine] 加载本地模型: {model_dir.name} (GPU CUDA: {use_cuda}, dtype: {cls._dtype})...")
+            cls._model = AutoModelForSpeechSeq2Seq.from_pretrained(
+                model_dir,
+                dtype=cls._dtype,
+                low_cpu_mem_usage=True,
+                use_safetensors=True,
+            ).to(cls._device)
+            cls._processor = AutoProcessor.from_pretrained(model_dir)
+        return cls._model, cls._processor, cls._device, cls._dtype
+
+    _whisper_native_model = None
+
+    @classmethod
+    def get_whisper_native_model(cls, model_dir: Path = MODEL_DIR):
+        if cls._whisper_native_model is None:
+            try:
+                import gc
+                import os
+                import torch
+                import whisper
+
+                os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+                gc.collect()
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+                download_root = str(model_dir.parent) if model_dir.parent.exists() else None
+                use_cuda = torch.cuda.is_available()
+
+                if use_cuda:
+                    free_bytes, total_bytes = torch.cuda.mem_get_info()
+                    free_gb = free_bytes / (1024 ** 3)
+                    print(f"🧠 [WhisperEngine] 加载 OpenAI 官方原生 large-v3 模型 (设备: CUDA FP16 原生半精度, 剩余显存: {free_gb:.2f}GB)...")
+                    # 直接在 cuda 加载以激活 Whisper 官方的原生 FP16 模式（仅占 2.88GB，杜绝 FP32 占用 6GB）
+                    try:
+                        m = whisper.load_model("large-v3", device="cuda", download_root=download_root)
+                    except torch.OutOfMemoryError:
+                        print("⚠️ [WhisperEngine] GPU 显存紧张，直接降级在 CPU 加载...")
+                        m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+                else:
+                    m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+
+                cls._whisper_native_model = m
+            except Exception as e:
+                print(f"🧠 [WhisperEngine] 官方库加载提示: {e}")
+        return cls._whisper_native_model
+
+    @classmethod
+    def transcribe(cls, samples: np.ndarray, sampling_rate: int = 16000, language: str = "chinese") -> str:
+        # 优先使用 OpenAI 官方原生引擎
+        native_model = cls.get_whisper_native_model()
+        if native_model is not None:
+            import gc
+            import torch
+            import whisper
+
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+            # 将 16kHz float32 numpy 数组直接喂给官方原生 transcribe
+            audio = samples.astype(np.float32)
+            max_amp = float(np.max(np.abs(audio)))
+            if max_amp > 0.001:
+                audio = audio / max_amp
+            lang_code = "zh" if language in ("chinese", "zh") else (None if language == "auto" else language)
+            
+            # 判断模型当前所在设备
+            is_cuda = next(native_model.parameters()).is_cuda
+
+            try:
+                res = native_model.transcribe(
+                    audio,
+                    language=lang_code,
+                    task="transcribe",
+                    fp16=is_cuda,
+                    beam_size=1,       # 方案 A: 贪婪单分支解码，降低 500MB+ 动态显存开销
+                    best_of=1,
+                    temperature=0.0,
+                )
+                return res.get("text", "").strip()
+            except torch.OutOfMemoryError:
+                print("⚠️ [WhisperEngine] GPU 显存突发不足，自动无缝切换至 CPU 极速转录...")
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                cls._whisper_native_model = native_model.to("cpu")
+                res = cls._whisper_native_model.transcribe(
+                    audio,
+                    language=lang_code,
+                    task="transcribe",
+                    fp16=False,
+                    beam_size=1,
+                    best_of=1,
+                    temperature=0.0,
+                )
+                return res.get("text", "").strip()
+
+        # 备用 Hugging Face pipeline
+        pipe = cls.get_pipeline()
+        generate_kwargs = {"task": "transcribe"}
+        if language in ("chinese", "zh"):
+            generate_kwargs["language"] = "chinese"
+        elif language in ("english", "en"):
+            generate_kwargs["language"] = "english"
+        result = pipe(
+            samples,
+            generate_kwargs=generate_kwargs,
+            return_timestamps=True,
+        )
+        return result.get("text", "").strip()
 
     @classmethod
     def get_pipeline(cls, model_dir: Path = MODEL_DIR):
         if cls._pipe is None:
-            use_cuda = torch.cuda.is_available()
-            dtype = torch.float16 if use_cuda else torch.float32
-
-            print(f"🧠 [WhisperEngine] 加载本地模型: {model_dir.name} (GPU CUDA: {use_cuda})...")
-            model = AutoModelForSpeechSeq2Seq.from_pretrained(
-                model_dir,
-                dtype=dtype,
-                low_cpu_mem_usage=True,
-                use_safetensors=True,
-            )
-            if use_cuda:
-                model.to("cuda:0")
-
-            processor = AutoProcessor.from_pretrained(model_dir)
+            model, processor, device, dtype = cls.get_model_and_processor(model_dir)
             cls._pipe = pipeline(
                 "automatic-speech-recognition",
                 model=model,
@@ -95,7 +206,7 @@ class WhisperEngine:
                 chunk_length_s=30,
                 return_timestamps=True,
                 dtype=dtype,
-                device=0 if use_cuda else -1,
+                device=0 if torch.cuda.is_available() else -1,
             )
         return cls._pipe
 
@@ -165,13 +276,13 @@ HALLUCINATION_PATTERNS = [
 def listen_vad_node(state: VoiceAgentState) -> Dict[str, Any]:
     """节点 1: 自动声音活动检测与自适应环境降噪静音断句"""
     mode = state.get("mode", "mic")
-    silence_timeout = state.get("silence_timeout", 2.5)
+    silence_timeout = state.get("silence_timeout", 4.0)
 
     source = get_audio_source(mode)
     rate = 16000
     chunk_size = int(rate * 2 * 0.1)  # 100ms
     silence_chunks_needed = int(silence_timeout / 0.1)
-    max_speech_chunks = int(15.0 / 0.1)  # 延长单段连续最长收音至 15 秒，提供充裕上下文并避免零碎切断
+    max_speech_chunks = int(30.0 / 0.1)  # 延长单段连续最长收音至 30 秒 (匹配 Whisper Large 原生 30s 最佳注意力感受野)
 
     cmd = [
         "ffmpeg", "-loglevel", "quiet",
@@ -265,19 +376,10 @@ def transcribe_node(state: VoiceAgentState) -> Dict[str, Any]:
         return {"raw_transcription": ""}
 
     audio_bytes = state["audio_bytes"]
-    pipe = WhisperEngine.get_pipeline()
-
-    # 转换为 float32 numpy 数组
     samples = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32) / 32768.0
 
     try:
-        input_data = {"raw": samples, "sampling_rate": 16000}
-        res = pipe(
-            input_data,
-            generate_kwargs={"task": "transcribe"},
-            return_timestamps=False,
-        )
-        text = res.get("text", "").strip() if isinstance(res, dict) else ""
+        text = WhisperEngine.transcribe(samples)
         return {
             "raw_transcription": text,
             "status": "transcribed" if text else "empty_transcription",

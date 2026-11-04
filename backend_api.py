@@ -632,50 +632,71 @@ async def stop_voice_perception():
 
 
 @app.post("/api/voice/transcribe")
-async def transcribe_voice_upload(file: UploadFile = File(...)):
-    """接收前端录音文件 (WebM/WAV/OGG)，转换为标准 16kHz WAV 后由本地 Whisper-large-v3 极速高精转写"""
-    import subprocess
+async def transcribe_audio_file(file: UploadFile = File(...)):
+    """接收前端麦克风录制的高清音频切片，直接调用本地 OpenAI 官方原生 Whisper Large-v3 引擎转录"""
     import tempfile
+    import shutil
+    import torch
     from voice_langgraph_agent import WhisperEngine
 
-    filename = file.filename or "recording.webm"
-    suffix = Path(filename).suffix or ".webm"
+    suffix = Path(file.filename).suffix or ".webm"
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-        tmp_path = Path(tmp.name)
-        content = await file.read()
-        tmp.write(content)
+        shutil.copyfileobj(file.file, tmp)
+        tmp_path = tmp.name
 
-    wav_path = tmp_path.with_suffix(".wav")
     try:
-        # 1. 采用 ffmpeg 将前端录制的 WebM/Opus 严格转码为 16kHz 单声道 PCM WAV，适度增益提升信噪比
-        conv_res = subprocess.run(
-            ["ffmpeg", "-y", "-i", str(tmp_path), "-af", "volume=1.5", "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", str(wav_path)],
-            capture_output=True,
-            timeout=8.0,
-        )
+        import gc
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
-        target_file = str(wav_path if wav_path.exists() and wav_path.stat().st_size > 44 else tmp_path)
+        native_model = WhisperEngine.get_whisper_native_model()
+        if native_model is not None:
+            # 官方原生 whisper 支持直接传音频文件路径，ffmpeg 自动提取 16kHz float32
+            # 方案 A: 严格 FP16 半精度 + 贪婪单分支解码 (beam_size=1)，动态显存直降 500MB~1GB
+            is_cuda = next(native_model.parameters()).is_cuda
+            try:
+                res = native_model.transcribe(
+                    tmp_path,
+                    language=None,
+                    task="transcribe",
+                    fp16=is_cuda,
+                    beam_size=1,
+                    best_of=1,
+                    temperature=0.0,
+                    no_speech_threshold=0.6,
+                )
+            except torch.OutOfMemoryError:
+                logger.warning("⚠️ [Whisper Large-v3] GPU 显存紧张，自动无缝降级至 CPU 极速转录通道...")
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                cpu_model = native_model.to("cpu")
+                WhisperEngine._whisper_native_model = cpu_model
+                res = cpu_model.transcribe(
+                    tmp_path,
+                    language=None,
+                    task="transcribe",
+                    fp16=False,
+                    beam_size=1,
+                    best_of=1,
+                    temperature=0.0,
+                    no_speech_threshold=0.6,
+                )
 
-        pipe = WhisperEngine.get_pipeline()
-        res = pipe(target_file, generate_kwargs={"task": "transcribe"})
-        raw_text = res.get("text", "").strip() if isinstance(res, dict) else ""
-        
-        # 规整文本，去除前后空格与多余标点
-        final_text = raw_text.strip(" ,，。？！") or raw_text
-        print(f"🎙️ [Whisper Upload STT] 接收 {len(content)} 字节音频 -> 显卡极速转录完成: '{final_text}'")
-        return {"text": final_text, "raw_text": raw_text, "status": "success"}
+            text = res.get("text", "").strip()
+            logger.info(f"🎙️ [Whisper Large-v3 方案A 原生识别成功]: {text}")
+            return {"text": text, "status": "success", "engine": "whisper-large-v3-native"}
+        else:
+            return {"text": "", "status": "error", "message": "Whisper 原生引擎未就绪"}
     except Exception as e:
-        logger.error(f"Whisper 本地转录失败: {e}")
-        print(f"❌ [Whisper Upload STT] 转录失败: {e}")
-        return {"text": "", "error": str(e), "status": "error"}
+        logger.error(f"本地 Whisper 转录异常: {e}", exc_info=True)
+        return {"text": "", "status": "error", "message": str(e)}
     finally:
-        try:
-            if tmp_path.exists():
-                tmp_path.unlink()
-            if wav_path.exists():
-                wav_path.unlink()
-        except Exception:
-            pass
+        if os.path.exists(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except Exception:
+                pass
 
 
 # ==========================================

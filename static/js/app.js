@@ -2358,215 +2358,164 @@ document.addEventListener('DOMContentLoaded', () => {
     streamLogs.scrollTop = streamLogs.scrollHeight;
   }
 
-  // ========================================================
-  // 🎙️ 纯本地 Whisper-large-v3 极速高精语音录入器 (完全停用浏览器云端接口)
-  // 100% 本地运算，原生支持中英混合与学术专业词汇 (如 Transformers / LoRA)
-  // ========================================================
+  // 智能格式化语音文本（中英文自然间隙排版与防粘连）
+  function formatSpokenText(text) {
+    if (!text) return '';
+    return text
+      .replace(/([\u4e00-\u9fa5])([a-zA-Z0-9])/g, '$1 $2')
+      .replace(/([a-zA-Z0-9])([\u4e00-\u9fa5])/g, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // =========================================================================
+  // 本地 OpenAI 官方原生 Whisper Large-v3 高保真语音研讨录音引擎 (MediaRecorder 驱动)
+  // 彻底废弃易丢字、易截断、吞英文词的 Chrome 远程 Web Speech，全链路交由本地顶级 Whisper
+  // =========================================================================
+  let localMediaStream = null;
   let localMediaRecorder = null;
-  let localAudioChunks = [];
+  let recordedAudioChunks = [];
   let isWhisperRecording = false;
-  let localRecordingStream = null;
-  let whisperSilenceTimer = null;
-  let whisperAudioCtx = null;
-  let whisperAnalyser = null;
-  let whisperAnimFrameId = null;
+  let whisperRecordTimer = null;
+  let whisperRecordSeconds = 0;
 
-  function startVolumeFeedback(stream) {
-    try {
-      whisperAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const source = whisperAudioCtx.createMediaStreamSource(stream);
-      whisperAnalyser = whisperAudioCtx.createAnalyser();
-      whisperAnalyser.fftSize = 256;
-      source.connect(whisperAnalyser);
-
-      const dataArray = new Uint8Array(whisperAnalyser.frequencyBinCount);
-      let dots = 0;
-      let hasSpoken = false;
-      let speechSilenceTimeout = null;
-      let startRecordTime = Date.now();
-
-      function checkVolume() {
-        if (!isWhisperRecording) return;
-        whisperAnalyser.getByteFrequencyData(dataArray);
-
-        // 精准采样人类语音核心频段 (100Hz ~ 3200Hz，前 35 个频段区间)
-        let voiceSum = 0;
-        let peak = 0;
-        const voiceBins = Math.min(35, dataArray.length);
-        for (let i = 1; i < voiceBins; i++) {
-          voiceSum += dataArray[i];
-          if (dataArray[i] > peak) peak = dataArray[i];
-        }
-        const voiceAvg = voiceSum / (voiceBins - 1);
-
-        // 高灵敏度发声判定：人声区间平均能量 > 2.5 或 峰值 > 12 即判定已发声
-        if (voiceAvg > 2.5 || peak > 12) {
-          hasSpoken = true;
-          if (speechSilenceTimeout) {
-            clearTimeout(speechSilenceTimeout);
-            speechSilenceTimeout = null;
-          }
-          btnMic.classList.add('speaking');
-          btnMic.style.transform = `scale(${Math.min(1.25, 1 + peak / 180)})`;
-          dots = (dots + 1) % 4;
-          userInput.placeholder = `🎙️ [正在聆听${'.'.repeat(dots + 1)}] 讲完停顿约 1 秒将自动识别，无需点击`;
-        } else {
-          btnMic.classList.remove('speaking');
-          btnMic.style.transform = 'scale(1)';
-
-          // 核心特性：检测到发声后，说完停顿 1.2 秒自动触发本地 Whisper 转写，彻底告别二次点击
-          if (hasSpoken && !speechSilenceTimeout) {
-            speechSilenceTimeout = setTimeout(() => {
-              if (isWhisperRecording) {
-                console.log('检测到语音停顿 (1.2s)，自动触发本地 Whisper 转写...');
-                stopLocalWhisperRecording();
-              }
-            }, 1200);
-          } else if (!hasSpoken && (Date.now() - startRecordTime > 25000)) {
-            // 若 25 秒仍未说话，自动休眠避免无意义等待
-            stopLocalWhisperRecording();
-          }
-        }
-        whisperAnimFrameId = requestAnimationFrame(checkVolume);
-      }
-      checkVolume();
-    } catch (e) {
-      console.warn('AudioContext volume feedback not supported:', e);
-    }
+  function formatDuration(sec) {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = (sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   }
 
-  function stopVolumeFeedback() {
-    if (whisperAnimFrameId) cancelAnimationFrame(whisperAnimFrameId);
-    if (whisperAudioCtx && whisperAudioCtx.state !== 'closed') {
-      try { whisperAudioCtx.close(); } catch (e) {}
-    }
-    btnMic.style.transform = '';
-    btnMic.classList.remove('speaking');
+  function updateWhisperRecordPrompt() {
+    if (!isWhisperRecording) return;
+    const durationStr = formatDuration(whisperRecordSeconds);
+    userInput.placeholder = `🎙️ 正在录制学术语音 (已录制 ${durationStr}) · 支持长篇研讨与中英混杂，讲完后再次点击麦克风完成...`;
   }
 
-  async function startLocalWhisperRecording() {
+  async function startWhisperRecording() {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('当前浏览器环境不支持获取麦克风，请检查麦克风权限。');
+        alert('当前浏览器环境不支持麦克风音频采集，请检查权限或使用现代浏览器。');
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({
+      localMediaStream = await navigator.mediaDevices.getUserMedia({
         audio: {
+          channelCount: 1,
+          sampleRate: 16000,
           echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          noiseSuppression: true
         }
       });
-      localRecordingStream = stream;
-      localAudioChunks = [];
-
-      let mimeType = '';
-      if (typeof MediaRecorder !== 'undefined') {
-        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-          mimeType = 'audio/webm;codecs=opus';
-        } else if (MediaRecorder.isTypeSupported('audio/webm')) {
-          mimeType = 'audio/webm';
-        } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
-          mimeType = 'audio/ogg;codecs=opus';
-        }
-      }
-
-      localMediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-
-      localMediaRecorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) {
-          localAudioChunks.push(e.data);
+      recordedAudioChunks = [];
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : (MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg');
+      
+      localMediaRecorder = new MediaRecorder(localMediaStream, { mimeType });
+      
+      localMediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedAudioChunks.push(event.data);
         }
       };
 
       localMediaRecorder.onstop = async () => {
-        stopVolumeFeedback();
-        if (whisperSilenceTimer) clearTimeout(whisperSilenceTimer);
-        if (localRecordingStream) {
-          localRecordingStream.getTracks().forEach(track => track.stop());
-          localRecordingStream = null;
+        // 释放音轨硬件占用
+        if (localMediaStream) {
+          localMediaStream.getTracks().forEach(track => track.stop());
+          localMediaStream = null;
         }
 
-        const audioBlob = new Blob(localAudioChunks, { type: localMediaRecorder.mimeType || 'audio/webm' });
-        if (audioBlob.size < 200) {
-          btnMic.classList.remove('recording');
+        if (recordedAudioChunks.length === 0) return;
+        
+        const audioBlob = new Blob(recordedAudioChunks, { type: mimeType });
+        if (audioBlob.size < 1000) {
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
           setAssistantState('IDLE');
           return;
         }
 
-        userInput.placeholder = '🧠 本地 Whisper-large-v3 显卡正在极速转写中英文混合语音...';
-        setAssistantState('THINKING', '本地 Whisper-large-v3 显卡正在高精度转录长句语音...');
+        userInput.placeholder = '⚡ 本地 Whisper Large-v3 顶级引擎正在极速精准转录中，请稍候...';
+        setAssistantState('THINKING', '本地 Whisper Large-v3 正在识别中英文长句及学术专有名词...');
 
         try {
           const formData = new FormData();
           formData.append('file', audioBlob, 'mic_recording.webm');
           const resp = await fetch('/api/voice/transcribe', {
             method: 'POST',
-            body: formData,
+            body: formData
           });
-          if (!resp.ok) {
-            throw new Error(`服务响应异常: ${resp.status}`);
-          }
-          const res = await resp.json();
-          if (res.status === 'success' && res.text) {
-            const current = userInput.value.trim();
-            userInput.value = current ? (current + ' ' + res.text) : res.text;
+          const result = await resp.json();
+          if (result && result.status === 'success' && result.text) {
+            const rawTranscribed = result.text.trim();
+            const formatted = formatSpokenText(rawTranscribed);
+            const currentVal = userInput.value.trim();
+            const finalVal = currentVal ? `${currentVal} ${formatted}` : formatted;
+            
+            userInput.value = finalVal;
             userInput.style.height = 'auto';
             userInput.style.height = (userInput.scrollHeight) + 'px';
             userInput.focus();
             userInput.setSelectionRange(userInput.value.length, userInput.value.length);
-          } else if (res.error) {
-            console.error('Whisper 转写返回错误:', res.error);
+
+            // 同步输出到左下角【临流听琴·课堂时间轴】
+            const now = new Date().toTimeString().split(' ')[0];
+            appendStreamLog(now, 'Whisper 麦克风录入', formatted);
+            setAssistantState('IDLE', '已就绪');
+          } else {
+            console.warn('Whisper 转录返回异常:', result);
+            setAssistantState('IDLE');
           }
         } catch (err) {
-          console.error('Whisper transcribe error:', err);
-          alert('语音转录请求失败：请确认终端中的 python run.py 后端服务是否正常运行！');
-        } finally {
-          btnMic.classList.remove('recording');
-          userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
+          console.error('Whisper 转录网络/服务异常:', err);
           setAssistantState('IDLE');
+        } finally {
+          userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
         }
       };
 
-      localMediaRecorder.start(200);
+      localMediaRecorder.start(250); // 每 250ms 切片收集一次音频数据
       isWhisperRecording = true;
       btnMic.classList.add('recording');
-      userInput.placeholder = '🎙️ [正在收音] 请直接说话（支持中英混说），讲完停顿 1 秒自动识别...';
-      setAssistantState('LISTENING', '正在录制学者学术发声，本地 Whisper-large-v3 准备转录...');
-      startVolumeFeedback(stream);
+      whisperRecordSeconds = 0;
+      updateWhisperRecordPrompt();
+      setAssistantState('LISTENING', '正在录制高清人声：支持长篇学术阐述，停顿不掐断...');
 
-      // 最长录音保护（最长 90 秒自动转写）
-      whisperSilenceTimer = setTimeout(() => {
-        if (isWhisperRecording) {
-          stopLocalWhisperRecording();
-        }
-      }, 90000);
+      if (whisperRecordTimer) clearInterval(whisperRecordTimer);
+      whisperRecordTimer = setInterval(() => {
+        whisperRecordSeconds++;
+        updateWhisperRecordPrompt();
+      }, 1000);
 
-    } catch (e) {
-      console.error('本地录音启动失败:', e);
-      alert('无法打开麦克风录音，请确认浏览器已授予麦克风权限。');
+    } catch (err) {
+      console.error('无法启动麦克风录制:', err);
+      alert('无法开启麦克风，请检查浏览器是否已授予音频权限。');
       btnMic.classList.remove('recording');
+      isWhisperRecording = false;
       setAssistantState('IDLE');
     }
   }
 
-  function stopLocalWhisperRecording() {
-    if (whisperSilenceTimer) clearTimeout(whisperSilenceTimer);
-    stopVolumeFeedback();
-    if (localMediaRecorder && localMediaRecorder.state !== 'inactive') {
-      localMediaRecorder.stop();
-    }
+  function stopWhisperRecording() {
+    if (!isWhisperRecording) return;
     isWhisperRecording = false;
+    btnMic.classList.remove('recording');
+    if (whisperRecordTimer) {
+      clearInterval(whisperRecordTimer);
+      whisperRecordTimer = null;
+    }
+    if (localMediaRecorder && localMediaRecorder.state !== 'inactive') {
+      try {
+        localMediaRecorder.stop();
+      } catch (e) {}
+    }
   }
 
   if (btnMic) {
     btnMic.addEventListener('click', async () => {
-      // 100% 纯本地 Whisper 大模型交互，彻底摒弃浏览器云端识别
       if (isWhisperRecording) {
-        stopLocalWhisperRecording();
+        stopWhisperRecording();
       } else {
-        await startLocalWhisperRecording();
+        startWhisperRecording();
       }
     });
   }

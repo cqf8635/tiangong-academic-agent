@@ -35,31 +35,18 @@ TEMP_WAV = BASE_DIR / "auto_temp.wav"
 
 
 def load_whisper_pipeline(model_dir: Path = MODEL_DIR):
-    """Load local Whisper large-v3 model."""
-    use_cuda = torch.cuda.is_available()
-    device = 0 if use_cuda else -1
-    dtype = torch.float16 if use_cuda else torch.float32
+    """Load local Whisper large-v3 model using OpenAI official whisper library."""
+    import whisper
 
-    print(f"🧠 正在加载本地 Whisper 模型: {model_dir.name} (计算设备: {'NVIDIA CUDA (GPU)' if use_cuda else 'CPU'})...")
-    model = AutoModelForSpeechSeq2Seq.from_pretrained(
-        model_dir,
-        dtype=dtype,
-        low_cpu_mem_usage=True,
-        use_safetensors=True,
-    )
-    if use_cuda:
-        model.to("cuda:0")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    download_root = str(model_dir.parent) if model_dir.parent.exists() else None
 
-    processor = AutoProcessor.from_pretrained(model_dir)
-    pipe = pipeline(
-        "automatic-speech-recognition",
-        model=model,
-        tokenizer=processor.tokenizer,
-        feature_extractor=processor.feature_extractor,
-        dtype=dtype,
-        device=device,
-    )
-    return pipe
+    print(f"🧠 正在加载本地 Whisper 模型: {model_dir.name} (计算设备: {device.upper()})...")
+    model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+    if device == "cuda":
+        model = model.to("cuda")
+        torch.cuda.empty_cache()
+    return model
 
 
 def calculate_rms(chunk_bytes: bytes) -> float:
@@ -141,7 +128,8 @@ def live_stream_transcribe(
                         # 将当前 buffer 转为 float32 numpy 格式喂给 pipeline
                         samples = np.frombuffer(audio_buffer, dtype=np.int16).astype(np.float32) / 32768.0
                         try:
-                            partial_res = pipe(samples, generate_kwargs={"task": "transcribe"})
+                            use_cuda = torch.cuda.is_available()
+                            partial_res = pipe.transcribe(samples, language="zh", task="transcribe", fp16=use_cuda)
                             partial_text = partial_res.get("text", "").strip()
                             if partial_text:
                                 current_display_text = partial_text
@@ -165,7 +153,8 @@ def live_stream_transcribe(
             if len(audio_buffer) >= rate * 2 * 0.6:
                 samples = np.frombuffer(audio_buffer, dtype=np.int16).astype(np.float32) / 32768.0
                 try:
-                    final_res = pipe(samples, generate_kwargs={"task": "transcribe"}, return_timestamps=True)
+                    use_cuda = torch.cuda.is_available()
+                    final_res = pipe.transcribe(samples, language="zh", task="transcribe", fp16=use_cuda)
                     final_text = final_res.get("text", "").strip()
                     if final_text:
                         # 覆盖当前行并输出最终确定句子
