@@ -12,11 +12,13 @@ from __future__ import annotations
 import argparse
 import math
 import os
-import os
 import shutil
+import signal
 import struct
 import subprocess
 import sys
+import threading
+import time
 import wave
 from pathlib import Path
 from dotenv import load_dotenv
@@ -108,33 +110,82 @@ def get_audio_source(mode: str = "mic") -> str:
     return "default"
 
 
-def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000, mode: str = "mic") -> bool:
-    """Record audio using PulseAudio/PipeWire from microphone or system/meeting monitor."""
+def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mode: str = "mic") -> bool:
+    """Record audio using PulseAudio/PipeWire from microphone or system/meeting monitor with manual Enter-to-stop support."""
     source = get_audio_source(mode)
     is_sys = mode in ("system", "video", "meeting")
     source_name = "🎬 视频/会议声音(系统扬声器内录)" if is_sys else "🎤 麦克风人声"
 
-    # 1. 优先使用 ffmpeg 抓取 pulse/pipewire 通道（支持麦克风与系统视频/会议内录）
     if shutil.which("ffmpeg"):
         cmd = [
             "ffmpeg", "-y",
             "-f", "pulse",
             "-i", source,
-            "-t", str(seconds),
             "-ac", "1",
             "-ar", str(sample_rate),
-            str(wav_path),
         ]
-        try:
-            hint = "请在电脑上播放视频或保持会议发声" if is_sys else "请对准麦克风说话"
-            print(f"\n🎙️ [正在录制: {source_name}] ({hint}，倒计时 {seconds} 秒)...")
-            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-            print("✅ 录音完成！")
-            return True
-        except subprocess.CalledProcessError as exc:
-            print(f"[警告] ffmpeg 录音异常: {exc}，尝试备用方式...")
+        if seconds > 0:
+            cmd.extend(["-t", str(seconds)])
+        cmd.append(str(wav_path))
 
-    # 2. 备用 arecord (仅麦克风模式)
+        hint = "请在电脑上播放视频或保持会议发声" if is_sys else "请对准麦克风说话"
+        duration_desc = f"上限 {seconds} 秒 (或按回车提前结束)" if seconds > 0 else "无限时长 (随时按回车完成)"
+
+        print(f"\n🎙️ [正在录制: {source_name}]")
+        print(f"👉 提示: {hint}")
+        print(f"⏱️ 录音模式: 【{duration_desc}】")
+        print("💡 说明: 讲完或播完后，随时在键盘轻按【回车键 Enter】即可立即停止并开始识别！")
+
+        proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        stop_event = threading.Event()
+
+        # 启动计时与状态打印线程
+        def timer_worker():
+            start_t = time.time()
+            while not stop_event.is_set():
+                if proc.poll() is not None:
+                    break
+                elapsed = int(time.time() - start_t)
+                m, s = divmod(elapsed, 60)
+                sys.stdout.write(f"\r⏳ [正在收音: {m:02d}:{s:02d}] · 随时按 [Enter 回车] 结束录制... ")
+                sys.stdout.flush()
+                time.sleep(0.5)
+
+        t_thread = threading.Thread(target=timer_worker, daemon=True)
+        t_thread.start()
+
+        # 监听用户按回车
+        def wait_enter():
+            try:
+                sys.stdin.readline()
+                stop_event.set()
+            except Exception:
+                pass
+
+        input_thread = threading.Thread(target=wait_enter, daemon=True)
+        input_thread.start()
+
+        # 等待进程自然结束（若设置了固定时长）或用户按回车提前终止
+        while proc.poll() is None:
+            if stop_event.is_set():
+                break
+            time.sleep(0.1)
+
+        stop_event.set()
+        if proc.poll() is None:
+            # 优雅向 ffmpeg 发送 SIGINT 让其写入 wav 头部并安全关闭
+            try:
+                proc.send_signal(signal.SIGINT)
+                proc.wait(timeout=2.0)
+            except Exception:
+                proc.terminate()
+                proc.wait()
+
+        print("\n✅ 录音已结束，正在转入高精度 Whisper 模型进行识别...")
+        return wav_path.exists() and wav_path.stat().st_size > 44
+
+    # 2. 备用 arecord (仅麦克风固定时长)
+    sec_fixed = seconds if seconds > 0 else 10
     arecord = shutil.which("arecord")
     if arecord and not is_sys:
         for dev in ["pulse", "default"]:
@@ -145,31 +196,16 @@ def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000, mod
                 "-f", "S16_LE",
                 "-r", str(sample_rate),
                 "-c", "1",
-                "-d", str(seconds),
+                "-d", str(sec_fixed),
                 str(wav_path),
             ]
             try:
-                print(f"🎤 [正在录音 (arecord -D {dev})...] 请对准麦克风说话（倒计时 {seconds} 秒）:")
+                print(f"🎤 [正在录音 (arecord -D {dev})...] 录音 {sec_fixed} 秒:")
                 subprocess.run(cmd, check=True)
                 print("✅ 录音完成！")
                 return True
             except subprocess.CalledProcessError:
                 continue
-
-    # 3. 备用 sounddevice (仅麦克风模式)
-    if not is_sys:
-        try:
-            import sounddevice as sd
-            import soundfile as sf
-            print(f"🎤 [正在录音 (sounddevice)...] 请对准麦克风说话（倒计时 {seconds} 秒）:")
-            recording = sd.rec(int(seconds * sample_rate), samplerate=sample_rate, channels=1, dtype="int16")
-            sd.wait()
-            sf.write(str(wav_path), recording, sample_rate)
-            print("✅ 录音完成！")
-            return True
-        except Exception as e:
-            print(f"[错误] 麦克风录音失败: {e}")
-            return False
 
     return False
 
@@ -177,15 +213,17 @@ def record_audio(wav_path: Path, seconds: int = 5, sample_rate: int = 16000, mod
 def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") -> str:
     """Transcribe audio prioritizing OpenAI official whisper library (Solution 1)."""
     # -------------------------------------------------------------------------
-    # 方案 1: OpenAI 官方原生库 (最强降温回退、内置重复压缩率检测、完美支持中英混合)
+    # 方案 1: OpenAI 官方原生库 (最强降温回退、内置重复压缩率检测、完美支持中英混合与长篇研讨)
     # -------------------------------------------------------------------------
     try:
+        import gc
         import os
-        import whisper
         import torch
+        import whisper
 
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
         device = "cuda" if torch.cuda.is_available() else "cpu"
+        gc.collect()
         if device == "cuda":
             torch.cuda.empty_cache()
 
@@ -198,26 +236,37 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
         print(f"⚡ 计算设备: {device.upper()} (GPU FP16 极致显存优化)")
         print("=" * 60)
 
-        # 先在 CPU 完成初始化，随后安全迁移至 GPU，内部由 transcribe 自动托管 fp16
-        model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
-        if device == "cuda":
-            model = model.to("cuda")
-            torch.cuda.empty_cache()
+        # 原生以指定设备初始化
+        model = whisper.load_model("large-v3", device=device, download_root=download_root)
 
         lang_code = "zh" if language in ("zh", "chinese") else (None if language == "auto" else language)
-        lang_desc = "中文 / 中英混合" if lang_code == "zh" else (lang_code or "auto (自动识别)")
-        print(f"🔍 正在进行官方原生语音转录 (语言模式: {lang_desc})...")
+        lang_desc = "中文 / 中英混合" if lang_code == "zh" else (lang_code or "auto (自适应识别)")
+        print(f"🔍 正在进行官方原生语音转录 (语言模式: {lang_desc}，支持长篇滑动窗口)...")
 
-        # 官方原生推理：自动处理音频重采样、VAD切片与中英文混合
+        # 官方原生推理：自动处理音频重采样、长音频分段、VAD切片与中英文混合
         result = model.transcribe(
             str(wav_path),
             language=lang_code,
             task="transcribe",
             fp16=(device == "cuda"),
+            beam_size=1,
+            best_of=1,
+            condition_on_previous_text=False, # 防止长音频长篇研讨出现重复循环
+            temperature=0.0,
         )
 
+        segments = result.get("segments", [])
+        if len(segments) > 1:
+            print("\n📜 [长音频学术时间轴详细分段]:")
+            for seg in segments:
+                start_m, start_s = divmod(int(seg.get("start", 0)), 60)
+                end_m, end_s = divmod(int(seg.get("end", 0)), 60)
+                seg_text = seg.get("text", "").strip()
+                if seg_text:
+                    print(f"   [{start_m:02d}:{start_s:02d} -> {end_m:02d}:{end_s:02d}] {seg_text}")
+
         text = result.get("text", "").strip()
-        print(f"📋 OpenAI 官方原生识别结果: '{text}'")
+        print(f"\n📋 OpenAI 官方原生完整识别结果:\n'{text}'")
         if text:
             return text
     except ImportError:
@@ -230,11 +279,12 @@ def transcribe_audio(wav_path: Path, model_dir: Path, language: str = "auto") ->
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本 (支持麦克风、系统视频播放与会议内录)")
+    parser = argparse.ArgumentParser(description="语音输入与语音输出整合测试脚本 (支持长篇视频研读、在线会议与麦克风长音频)")
     parser.add_argument("--file", type=Path, default=None, help="指定已有视频/音频文件直接识别 (如 .mp4, .mkv, .wav, .mp3)")
-    parser.add_argument("--mode", type=str, default="mic", choices=["mic", "system", "meeting", "video"], help="音频来源: mic(麦克风), system/meeting/video(视频或在线会议内录)")
+    parser.add_argument("--mode", type=str, default="system", choices=["mic", "system", "meeting", "video"], help="音频来源: system/meeting/video(视频/会议系统声音内录, 默认), mic(麦克风)")
+    parser.add_argument("--seconds", type=int, default=0, help="录音时长 (秒，默认 0 表示无限时长随时按回车停止，亦可指定如 30、60)")
     parser.add_argument("--language", type=str, default="auto", choices=["auto", "zh", "en"], help="识别语言模式: auto(自适应中英文), zh(强制中文), en(强制英文)")
-    parser.add_argument("--seconds", type=int, default=5, help="录音时长（默认: 5秒）")
+    parser.add_argument("--playback", action="store_true", help="是否在识别前完整回放刚才录入的声音")
     parser.add_argument("--model", type=Path, default=MODEL_DIR, help="本地 Whisper 模型路径")
     parser.add_argument("--skip-beep", action="store_true", help="跳过发声测试提示音")
     args = parser.parse_args()
@@ -245,7 +295,7 @@ def main() -> int:
         if not target_file.is_absolute():
             target_file = (BASE_DIR / target_file).resolve()
         print("=" * 60)
-        print(f"      🎙️  Whisper 音视频文件直接识别: {target_file.name}")
+        print(f"      🎙️  Whisper 长篇音视频文件直接识别: {target_file.name}")
         print("=" * 60)
         text = transcribe_audio(target_file, args.model, language=args.language)
         print("\n" + "=" * 60)
@@ -256,10 +306,10 @@ def main() -> int:
 
     mode_name = "🎬 视频/会议声音(系统扬声器内录)" if args.mode in ("system", "meeting", "video") else "🎤 麦克风人声"
     print("=" * 60)
-    print(f"      🎙️  语音测试 ({mode_name}) & 🔊 语音输出 综合测试")
+    print(f"      🎙️  长语音测试 ({mode_name}) & 语音识别")
     print("=" * 60)
 
-    # 1. 语音输出测试 (仅麦克风模式播放提示音，内录模式跳过避免污染视频声音)
+    # 1. 语音输出测试 (仅麦克风模式且未禁用时播放提示音，内录模式跳过避免污染视频声音)
     if not args.skip_beep and args.mode == "mic":
         print("\n--- [第 1 步] 🔊 语音输出测试（播放提示音） ---")
         print("正在播放一段测试提示音，请确认扬声器/耳机是否能听到声音...")
@@ -267,25 +317,26 @@ def main() -> int:
         play_audio(BEEP_WAV)
         print("✅ 提示音播放完毕。")
 
-    # 2. 语音输入测试 (录制)
+    # 2. 语音输入测试 (长录制，随时按回车结束)
     print(f"\n--- [第 2 步] 🎙️ 语音输入录制 ({mode_name}) ---")
     if not record_audio(RECORDED_WAV, seconds=args.seconds, mode=args.mode):
         print(f"❌ 录音失败，请检查音源权限与连接。")
         return 1
 
-    # 3. 录音回放测试 (Play Back Recorded Voice)
-    print("\n--- [第 3 步] 🔊 录音回放测试 ---")
-    print("正在通过扬声器回放刚才录入的声音...")
-    play_audio(RECORDED_WAV)
-    print("✅ 回放完毕。")
+    # 3. 录音回放测试 (仅当指定 --playback 时回放，长篇录音默认不强制回放避免浪费时间)
+    if args.playback:
+        print("\n--- [第 3 步] 🔊 录音回放测试 ---")
+        print("正在通过扬声器回放刚才录入的声音...")
+        play_audio(RECORDED_WAV)
+        print("✅ 回放完毕。")
 
     # 4. Whisper 语音识别测试 (STT Inference)
-    print("\n--- [第 4 步] 🧠 Whisper-large-v3 语音转文字识别 ---")
+    print("\n--- [第 4 步] 🧠 Whisper-large-v3 长音频转文字识别 ---")
     text = transcribe_audio(RECORDED_WAV, args.model, language=args.language)
 
     print("\n" + "=" * 60)
     print("🎉 测试结果汇总:")
-    print(f"📝 识别文字: {text if text else '[未识别到有效文字]'}")
+    print(f"📝 完整识别文字: {text if text else '[未识别到有效文字]'}")
     print("=" * 60)
     return 0
 
