@@ -111,7 +111,7 @@ def get_audio_source(mode: str = "mic") -> str:
 
 
 def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mode: str = "mic") -> bool:
-    """Record audio using PulseAudio/PipeWire from microphone or system/meeting monitor with manual Enter-to-stop support."""
+    """Record audio using PulseAudio/PipeWire from microphone or system/meeting monitor with manual Enter/Ctrl+C support."""
     source = get_audio_source(mode)
     is_sys = mode in ("system", "video", "meeting")
     source_name = "🎬 视频/会议声音(系统扬声器内录)" if is_sys else "🎤 麦克风人声"
@@ -119,6 +119,7 @@ def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mod
     if shutil.which("ffmpeg"):
         cmd = [
             "ffmpeg", "-y",
+            "-nostdin",  # 核心关键: 彻底禁止 ffmpeg 争夺终端标准输入，确保回车键 100% 毫秒级响应
             "-f", "pulse",
             "-i", source,
             "-ac", "1",
@@ -129,51 +130,41 @@ def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mod
         cmd.append(str(wav_path))
 
         hint = "请在电脑上播放视频或保持会议发声" if is_sys else "请对准麦克风说话"
-        duration_desc = f"上限 {seconds} 秒 (或按回车提前结束)" if seconds > 0 else "无限时长 (随时按回车完成)"
+        duration_desc = f"上限 {seconds} 秒 (随时按回车提前结束)" if seconds > 0 else "无限时长 (随时按回车结束)"
 
         print(f"\n🎙️ [正在录制: {source_name}]")
         print(f"👉 提示: {hint}")
         print(f"⏱️ 录音模式: 【{duration_desc}】")
-        print("💡 说明: 讲完或播完后，随时在键盘轻按【回车键 Enter】即可立即停止并开始识别！")
+        print("💡 结束方式: 讲完或播完后，在键盘轻按【回车键 Enter】或【Ctrl+C】即可立即停止并转录！\n")
 
-        proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        stop_event = threading.Event()
+        # stdin 彻底指向 DEVNULL，杜绝任何外部子进程劫持终端输入
+        proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        start_t = time.time()
 
-        # 启动计时与状态打印线程
-        def timer_worker():
-            start_t = time.time()
-            while not stop_event.is_set():
-                if proc.poll() is not None:
-                    break
+        try:
+            import select
+            has_select = hasattr(select, "select")
+        except ImportError:
+            has_select = False
+
+        try:
+            while proc.poll() is None:
                 elapsed = int(time.time() - start_t)
                 m, s = divmod(elapsed, 60)
-                sys.stdout.write(f"\r⏳ [正在收音: {m:02d}:{s:02d}] · 随时按 [Enter 回车] 结束录制... ")
+                sys.stdout.write(f"\r⏳ [正在收音: {m:02d}:{s:02d}] · 随时按 [回车 Enter] 结束录制... ")
                 sys.stdout.flush()
-                time.sleep(0.5)
 
-        t_thread = threading.Thread(target=timer_worker, daemon=True)
-        t_thread.start()
+                if has_select:
+                    rlist, _, _ = select.select([sys.stdin], [], [], 0.3)
+                    if rlist:
+                        sys.stdin.readline()
+                        break
+                else:
+                    time.sleep(0.3)
+        except (KeyboardInterrupt, EOFError):
+            print("\n⏹️ [收到终止指令]")
 
-        # 监听用户按回车
-        def wait_enter():
-            try:
-                sys.stdin.readline()
-                stop_event.set()
-            except Exception:
-                pass
-
-        input_thread = threading.Thread(target=wait_enter, daemon=True)
-        input_thread.start()
-
-        # 等待进程自然结束（若设置了固定时长）或用户按回车提前终止
-        while proc.poll() is None:
-            if stop_event.is_set():
-                break
-            time.sleep(0.1)
-
-        stop_event.set()
         if proc.poll() is None:
-            # 优雅向 ffmpeg 发送 SIGINT 让其写入 wav 头部并安全关闭
             try:
                 proc.send_signal(signal.SIGINT)
                 proc.wait(timeout=2.0)
@@ -181,7 +172,7 @@ def record_audio(wav_path: Path, seconds: int = 0, sample_rate: int = 16000, mod
                 proc.terminate()
                 proc.wait()
 
-        print("\n✅ 录音已结束，正在转入高精度 Whisper 模型进行识别...")
+        print("\n✅ 录音已结束，正在转入本地高精度 Whisper 模型进行识别...")
         return wav_path.exists() and wav_path.stat().st_size > 44
 
     # 2. 备用 arecord (仅麦克风固定时长)
