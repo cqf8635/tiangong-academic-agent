@@ -1,8 +1,370 @@
 {
   "query_expression": "cat:q-bio.BM",
   "total_fetched": 25,
-  "total_results": 6955,
+  "total_results": 6968,
   "papers": [
+    {
+      "paper_id": "2611.06363v1",
+      "title": "Discrete Backbone Elasticity and Curvature-Dependent Torsion Statistics in Proteins",
+      "authors": [
+        "Yiquan Wang",
+        "Mingyu Bian",
+        "Jiayuan Ma"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T11:25:47Z",
+      "summary": "Coarse-grained models of protein conformational dynamics use $\\mathrm{C}_α$ geometry to describe the probabilities of regular helices, ordered turns and disordered conformations. To test how much of this order arises from local chain elasticity, we connect discrete Hasimoto frame transport to neighboring bending mismatch, deriving a curvature-product torsion interaction and a six-parameter generalized von Mises density. Fitted on 194 chains from the ATLAS molecular dynamics database and tested on 1744 sequence-nonredundant proteins, this baseline reduces negative log-density loss from 1.490 to 1.160 nats, torsion-sign error from 12.26 to 2.15 percentage points, and helix-fraction error from 21.84 to 10.41 points. Ablations and circular-moment projections against reference generative models motivate extensions to anisotropic stiffness and two partition-function-weighted elastic states, further lowering test loss to 0.790 nats and helix error to 1.65 points. The fixed hierarchy also improves predictions across 72 trajectories of peptides $\\mathrm{Fs}$ and $(\\mathrm{AAQAA})_3$ and miniprotein $\\mathrm{HP35}$ spanning varied starting conformations and force fields. Remaining angular errors in these trajectories are associated with atomic context at shared bends, as bend-matched peptide frames adopt opposite torsion signs with distinct hydrogen-bond patterns and a proline-containing $\\mathrm{HP35}$ turn remains at negative torsion. Introducing a bilinearly coupled $\\mathrm{C}_α$--$\\mathrm{N}$ orientation angle largely reparameterizes the existing bend-dependent harmonics, with an empirical $L^2$ Gram projection placing 96.7\\% to 99.6\\% of its added coefficient-function squared norm within the original six-function span. These results link discrete Hasimoto elasticity to statistical backbone potentials and clarify the scope and limits of local $\\mathrm{C}_α$ geometry.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06363v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "cond-mat.soft",
+        "math-ph",
+        "physics.bio-ph",
+        "physics.chem-ph"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "cond-mat.soft (软凝聚态物理)",
+        "math-ph (数学物理与严格推演)",
+        "physics.bio-ph (生物物理)",
+        "physics.chem-ph (化学物理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05270v1",
+      "title": "iGC: Antibody Optimization via Reinforcement Learning over a Learned Somatic Hypermutation Prior",
+      "authors": [
+        "Thao Nguyen",
+        "Robert G. Alberstein",
+        "Ewa Nowara",
+        "Homa MohammadiPeyhani",
+        "Holly R. Steach"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T17:55:25Z",
+      "summary": "Antibody affinity maturation is a natural optimization process in which B cells acquire mutations through somatic hypermutation (SHM), undergo selection for improved antigen binding, and iteratively evolve toward higher affinity. Computationally modeling this process requires capturing both biologically plausible mutations and antigen-specific selection. However, existing mutation models do not directly optimize binding, while affinity optimization often neglects realistic mutation trajectories. We introduce iGC (in silico Germinal Centers), a two-stage reinforcement learning (RL) framework for antigen-specific antibody optimization. Stage 1 learns an SHM mutation prior from parent-child pairs in B-cell lineage trees and adapts it to a target affinity-maturation dataset. Stage 2 initializes an RL policy from this prior and optimizes antigen binding with Kullback-Leibler (KL) regularization toward the frozen prior. To prevent reward exploitation, including repetitive high-reward substitutions and structurally tolerated framework mutations, we introduce a Reward-Tax Meta-Gradient objective. RewardNet smooths the affinity landscape, while TaxNet penalizes reward overexploitation, jointly defining a learned meta-reward for policy optimization. We evaluate iGC on mutation prediction, SHM consistency, affinity optimization, and mutation diversity. The mutation prior more than doubles the strongest baseline in mutation-site prediction. Following RL optimization, iGC maintains SHM sequence structure. It also achieves a strong exploration-exploitation balance, yielding competitive reward-diversity products across candidate-selection cutoffs. These results demonstrate that iGC integrates biologically plausible mutation generation with antigen-specific affinity selection, providing an in silico framework for iterative antibody affinity maturation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05270v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "10 pages with supplementary documents",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05202v1",
+      "title": "Empirical Bayes Flow Matching for Continuous Cryo-EM Heterogeneity",
+      "authors": [
+        "Daniel Aibinder",
+        "Azmi Haider",
+        "Dan Rosenbaum"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T16:51:30Z",
+      "summary": "We address the problem of learning generative priors over high-dimensional latent variables from indirect, noisy observations, with a focus on continuous heterogeneity in cryo-electron microscopy (cryo-EM). In this setting, 3D atomic structures $x \\in \\mathbb{R}^{3N_a}$ are never directly observed and must be inferred from 2D projection images $y$ generated by a complex, non-linear forward operator. We propose Empirical Bayes Flow Matching (EB-FM), a method that learns a flow matching prior $p_θ(x)$ directly from observations using a Monte Carlo stochastic approximation Expectation-Maximization framework. EB-FM alternates between an E-step that performs approximate posterior sampling from $p_θ(x \\mid y)$ via guided flow-based generation while maintaining persistent latent estimates through stochastic approximation, and an M-step that updates the flow model using these stabilized latent variables as training targets. This approach eliminates the need for pretraining on clean data and naturally accommodates non-linear forward models. We validate our method on controlled inverse problems using two-moons and MNIST data, and demonstrate its effectiveness on simulated cryo-EM data with known poses, showing that EB-FM can recover continuous distributions of protein conformations directly in atomic-coordinate space.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05202v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "Accepted at NeurIPS 2026. 20 pages, 6 figures, 5 tables. Code: https://daiyral.github.io/Empirical-Bayes-Flow-Matching-for-Continuous-Cryo-EM-Heterogeneity/",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05055v1",
+      "title": "Ablating Design Choices for Protein Ensemble Generators Across Structural Regimes",
+      "authors": [
+        "Eoin Quinn",
+        "Oliver Bent"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T15:20:50Z",
+      "summary": "Generative models of protein conformational ensembles inherit much of their design from structure prediction for folded proteins. Ordered and disordered proteins, however, occupy distinct structural regimes, and we investigate how design choices hold up across them. Using a minimal C$α$ flow-matching model, we ablate choices of architecture, sequence conditioning, rigid-body alignment and training source, and evaluate each variant against experimental SAXS and NMR chemical-shift data partitioned into ordered, disordered, multi-domain and transitional proteins. Mixture-of-experts routing, a static pair representation and a disorder probe have no detectable effect, a smaller protein language model performs worse on ordered proteins but not on disordered ones, and alignment in the loss degrades agreement with SAXS. Replacing coarse-grained simulations of disordered proteins with fragment-assembled ensembles improves agreement with chemical shifts at a cost to SAXS, while an equal mixture of the two keeps most of the gain at a smaller cost. This points to the training data, rather than the architecture, as the main constraint.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05055v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "13 pages, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.04287v2",
+      "title": "Predicting protein structures at any folding stage from sequence",
+      "authors": [
+        "Lisheng Zhang",
+        "Qingsong Li",
+        "Zinan Xie",
+        "Yanting Yang",
+        "Qikui Yang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T04:15:20Z",
+      "summary": "Protein structure prediction has largely focused on native conformations, leaving the continuum of unfolded states, folding intermediates, and native structures difficult to access. We present FoldScape, a sequence-conditioned deep learning framework for generating protein conformational ensembles at specified folding fractions $Q$. Trained on approximately one million conformations from 10,000 protein sequences, FoldScape combines coarse-grained folding and all-atom mechanical-unfolding trajectories. It reconstructs three-dimensional $C_α$ chains through hierarchical sliding-window regressions of inter-residue distances, chain-level assembly, and a rectified-flow decoder. By conditioning on folding progress, FoldScape generates conformations from unfolded states through intermediates to native-state structures without protein-specific molecular dynamics at inference. In matched-sample comparisons, FoldScape achieves median conformational-space coverage of 0.989, 0.722, and 0.877 along radius of gyration, fraction of native contacts $Q$, and secondary-structure fraction, respectively, versus 0.05, 0.05, and 0.10 for seed-varied AlphaFold 3 ensembles. Coverage advantages are consistent across the evaluated proteins and robust to binning choices. Reconstruction accuracy remains approximately stable across the evaluated stages of a folding trajectory, and stride-one crop-and-superpose inference extends predictions to chains several times longer than the single-pass limit. Analyses of mechanical-unfolding trajectories show residue-resolved pathways, reproducible extension-conditioned observables across pulling velocities, and geometrically coherent segments in partially unfolded chains. FoldScape extends sequence-based structure prediction beyond a single folded endpoint to controllable conformational-ensemble generation across protein folding.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04287v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03963v1",
+      "title": "ProteoCraft: Protein Design as Proposal-Verification Search",
+      "authors": [
+        "Fang Wu",
+        "Hongbin Lin",
+        "Bingchen Duan",
+        "Yuchen Wang",
+        "Li Erran Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T21:03:10Z",
+      "summary": "Protein-protein interactions underpin nearly all biological processes. Yet, designing proteins with desired interactions remains challenging due to the structural complexity governing molecular recognition. This study views protein design as a search optimization problem over a combinatorial sequence space under expensive structural evaluation. Toward this goal, we introduce a novel tree-based search framework, ProteoCraft, that employs approximate structural gradients from diffusion-based structure predictors as effective proposal policies to specify where the search should explore. Complete no-gradient inference of folding models separately assigns values to the resulting sequences, determining what is good. ProteoCraft allocates this verification budget through a coarse-to-fine paradigm: multi-site edits first explore distinct sequence basins, then verified promising states undergo strict single-site refinement. Across fourteen de novo binder-design settings spanning eight target proteins, five immune-relevant TCR-facing targets, and four localized CDR redesign tasks, ProteoCraft improves design quality and high-confidence yield. These improvements persist under independent AF2-IG and Rosetta-based interface evaluation. Prospective experimental validation further yielded an 82.9% binding hit rate for PD-L1 miniproteins, with a best measured KD of 0.879 nM, and confirmed binding of designed IFNAR2 VHH. Our code is available at https://github.com/smiles724/ProteoCraft_v1.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03963v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE",
+        "cs.AI",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.CE (计算工程、金融与科学计算)",
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03832v1",
+      "title": "El Agente Fármaco: A Scalable AI Scientist for Drug Discovery",
+      "authors": [
+        "Marcel Müller",
+        "Mohammad Ghazi Vakili",
+        "Yoshihiro Ogura",
+        "Ella Ashoori",
+        "Shimeng Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T19:08:49Z",
+      "summary": "Computational drug discovery offers a growing range of tools for proposing and evaluating molecules, but combining them and deciding what to do next still requires substantial expert effort. Here, we introduce El Agente Fármaco, an AI scientist that uses modern large language model (LLM) technology to turn discovery goals expressed in everyday language into complex, scalable computational screening workflows. The agentic harness selects scientific tools, reviews their results, and adjusts subsequent steps to the target and the user's objectives. Our approach centers on a shared scientific memory: Fármaco Atlas, which stores molecules, structures, and results together with their provenance -- a record of how they were obtained. The agent uses targeted database queries to retrieve the evidence needed for each decision. A single request can launch calculations for an entire collection of molecules, without requiring a separate LLM decision for every compound. This design limits the information the model must process as screening collections grow, while keeping the underlying results available for inspection and further analysis. The integrated tools support molecule generation, prediction of binding and molecular properties, and searches for compounds available for purchase. In a retrospective comparison with an expert-led campaign, the agent proposed chemically distinct candidates with competitive docking scores and higher calculated drug-likeness under explicitly imposed selection criteria. In a 22-task benchmark against plain tool calls and Codex, the agent achieved the highest observed mean model-judged score, with lower median cumulative token use and peak context. Fármaco provides a foundation for flexible, scalable drug discovery workflows that connect scientific reasoning with an enduring, traceable record of computational work.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03832v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "63 pages, 13 figures, including Supporting Information",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03603v1",
+      "title": "Automatic Generation of Novel Highly-Functional Molecular Sequences",
+      "authors": [
+        "Vincent R. Ragusa",
+        "Chrisoph Adami"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T18:41:20Z",
+      "summary": "While multiple methods now exist to generate functional sequence variants from existing annotated examples, it is unclear how well such methods can be used to generate sequences that exceed the functionality of those contained in the example set. Using two complete fitness landscapes, we quantify how effectively generative tools can search sequence space and find rare, novel, highly functional sequences, focusing on variational auto-encoders and information-theoretic methods. We find that an information-theoretic method that does not require training and runs significantly faster than standard Machine-Learning/Artificial Intelligence (ML/AI) methods also is significantly more effective in finding rare highly-functional sequences. We discuss the application of this novel method to discover rare polypeptides with anti-bacterial properties that are specific to bacterial, but not eukaryotic, cell membranes.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03603v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "24 pages, 5 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03379v1",
+      "title": "RangeFinder: Predicting Ligand Property Ranges from Protein Pockets",
+      "authors": [
+        "Alan Nadelsticher Ruvalcaba",
+        "Chris Alvin",
+        "Supratik Mukhopadhyay",
+        "Adam Bess"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:21:09Z",
+      "summary": "Identifying ligands for a protein target requires searching a vast chemical space for a comparatively small set of compatible molecules. Existing machine learning approaches primarily address this problem by generating candidate ligands or scoring individual protein-ligand pairs, but provide limited information about the broader chemical space compatible with a binding pocket. We introduce RangeFinder, an SE(3)-equivariant transformer pocket-level model, trained and evaluated on BioLiP2 data, that predicts ranges over nine physicochemical ligand properties directly from pocket structure, chemistry, and evolutionary context. Using an intersection-over-union objective and evaluation metric (range-IoU), RangeFinder achieves a range-IoU of $0.464 \\pm 0.002$, outperforming all deployable baselines while requiring only $12.2$ ms per pocket. We also quantify our method's ability to reduce the ligand search space while retaining compatible binders; in this regard, RangeFinder achieves a Reduction-Recall F-Score of $0.543 \\pm 0.011$ --- once again outperforming all deployable baselines. Ablation experiments indicate that RangeFinder's performance depends more strongly on the density and quality of ligand supervision than on any individual input modality or specialized training strategy. Together, these results position RangeFinder as an inexpensive and effective molecular filtering prior, with demonstrated potential in narrowing the ligand search space of target pockets before docking, generation, or synthesis. The code for this project can be found at: https://github.com/alannadels/RangeFinder.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03379v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "Accepted at the AI for Drug Discovery workshop --- NeurIPS 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00824v1",
+      "title": "Canonic hemoglobin-oxygen equilibrium: Reassessing the role of cooperativity",
+      "authors": [
+        "A. E. Allahverdyan",
+        "S. G. Gevorkian",
+        "A. Harutyunyan",
+        "Y. Sh. Mamasakhlisov",
+        "V. Stepanyan"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-31T11:09:28Z",
+      "summary": "Hemoglobin-oxygen equilibrium is normally studied within the grand canonical ensemble, which assumes that each hemoglobin is immersed in a reservoir of unbound oxygen molecules of the plasma. We show that this assumption is incorrect inside the RBC (red blood cell or erythrocyte), where the hemoglobin concentration is larger than the concentration of unbound oxygen in plasma. We suggest a better model, where a single hemoglobin and a few oxygen molecules around it reach a canonical equilibrium at a fixed volume (determined from the RBC structure) and a fixed temperature. The basic models of hemoglobin-oxygen equilibrium -- Pauling's model and Monod-Wyman-Changeux model -- can be reformulated for this canonical situation. They predict cooperative interaction energies, which are significantly lower than predictions of the same models in the grand canonical ensemble. Larger cooperative energies, in particular those predicted by the grand canonical ensemble, lead to instabilities (cascade processes) in oxygen release within the canonical approach. Oxygen-binding fluctuations within this approach are sizably smaller than those in the grand canonical situation. These results suggest that the hopping diffusion of oxygen from one hemoglobin to another may play a role in oxygen diffusion within the RBC.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00824v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.bio-ph",
+      "categories": [
+        "physics.bio-ph",
+        "cond-mat.soft",
+        "cond-mat.stat-mech",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "physics.bio-ph (生物物理)",
+        "cond-mat.soft (软凝聚态物理)",
+        "cond-mat.stat-mech (统计力学)",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "18 pages, 5 figures",
+      "journal_ref": "Journal of Chemical Physics, 164, 034109 (2026)",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00749v1",
+      "title": "PeptSol: A Translational Benchmark for Protected-Peptide Solubility in Drug Manufacturing",
+      "authors": [
+        "Alexander Arjun Lobo",
+        "Marc Saouda",
+        "Urvi Awasthi",
+        "Leonid Zhukov"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-31T08:56:07Z",
+      "summary": "Liquid-phase peptide synthesis (LPPS) offers a scalable route to peptide manufacturing, but route development still depends on empirical solvent screens because each protected intermediate must be soluble for reaction and recoverable for purification. The protecting groups, terminal modifications, and noncanonical residues that govern this behaviour are poorly represented in existing peptide property benchmarks, limiting the ability to develop and rigorously evaluate molecular representation models for LPPS-relevant prediction tasks. We introduce PeptSol, an open benchmark of 1388 hand-curated protected-peptide solubility measurements with chemistry-aware splits. The measurements span only 84 parent sequences and 101 protected structures, and 92.5% come from a single historical programme. Across seven frozen molecular encoders, the best macro-F1 is 0.843 on binary solubility for the historical subset under a peptide-held-out split; the harder three-class ordinal task reaches 0.614 in that cell. No foundation model consistently outperforms a baseline combining chemical fingerprints with explicit molecular descriptors, and model rankings vary across prediction tasks and data splits. The dataset, evaluation protocol, and baselines establish a standard for measuring progress on molecular representations for synthesis-aware peptide developability.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00749v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "physics.chem-ph",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "physics.chem-ph (化学物理)",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "15 pages, 1 figure, 19 tables. Accepted at the AI for Drug Discovery workshop, NeurIPS 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.41070v1",
+      "title": "D2ML: Models for Direct-to-Biology Small Molecule Screening",
+      "authors": [
+        "AkshatKumar Nigam",
+        "Neri Amara",
+        "Hillary Dequina",
+        "Dyana Kenanova",
+        "Seth Malmersjo"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-29T23:33:05Z",
+      "summary": "Direct-to-biology (D2B) screening enables rapid testing of newly synthesized molecules without purification. However, uncertain concentrations in crude mixtures and limited purified-compound measurements complicate the use of these data in machine learning. Here we show that models tailored to the structure of D2B data can improve prediction and guide the discovery of more potent and selective compounds. Our assay-aware models predict activity from single-point screens, relative potency across targets from crude dose-response assays, and absolute potency from purified-compound measurements. For crude assays, potency ratios between targets tested from the same well can retain selectivity information despite uncertain concentrations. A joint model that shares information across stages and balances their contributions to training improved predictions over separate neural networks. The largest gain was in crude dose-response selectivity prediction, where rank correlation increased from 0.27 to 0.40. In a separate experiment, independently trained models guided the selection of 84 new compounds to improve ROS1 potency while limiting activity against the anti-target TRKB. Synthesis and testing identified compounds that extended the measured Pareto front, achieving better combinations of potency and selectivity than those in the training data. The most selective new compound achieved a ROS1 IC50 of 14.7 nM and 233-fold selectivity over TRKB. By comparison, the most selective training compound had a ROS1 IC50 of 20.3 nM and 79-fold selectivity. ATLAS provides the experimental setting for this approach, supporting synthesis and screening of 1,000-10,000 model-selected compounds in two- to three-week cycles. Together, these results show how assay-aware learning can use the full D2B assay sequence to guide multi-objective molecular optimization.",
+      "pdf_url": "https://arxiv.org/pdf/2610.41070v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "NeurIPS 2026 Workshop on AI for Drug Discovery (AI4DD)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.41029v1",
+      "title": "Contribution of chromosome-naïve transposon-seeded network of DNA templates to intracellular pools of protein dimers of liquid-liquid phase-separated condensate-forming proteins",
+      "authors": [
+        "Gennadi Glinsky"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-29T22:15:59Z",
+      "summary": "Molecular mechanisms governing protein-protein interactions (PPI) contributing to the biogenesis of membraneless condensates remain poorly understood. Observations reported in this contribution demonstrate that liquid-liquid phase-separated (LLPS) condensate-forming proteins and their variants harboring condensate-disrupting human pathogenic mutations are significantly enriched among PPI cascade constituents of the Hybrid Assembly Pathway (HAP) of endogenous multiprotein complexes (EMC). In contrast, no structured or disordered proteins defined as condensate-negative molecules were detected among PPI cascade constituents. Cumulative evidence derived from different lines of analytical inquiries support the concept of the significant contributions of PPI cascade constituents of HAP to the biogenesis of intracellular pools of cell type-specific protein heterodimers assembled with the engagement of at least one protein monomer selected from condensate-forming protein molecules. Analytical evidence documented in this study support the concept that genome-wide chromosome-naïve networks of transposon-seeded DNA-templates nucleate the initiation of PPI cascade chain reactions with the capacity to facilitate the concurrent iterative assembly in human cells of both the membraneless biomolecular condensates and the structured multiprotein complexes. AlphaFold 3D modelling of mutation patterns and analysis of partner-bound experimental structures identified variants located at a measured protein dimerization interface. This contribution nominates numerous protein heterodimers of potential relevance to human pathophysiology for follow-up mechanistic studies of potential fundamental and translational impacts.",
+      "pdf_url": "https://arxiv.org/pdf/2610.41029v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "q-bio.SC"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "q-bio.SC (亚细胞过程与动力学)"
+      ],
+      "comment": "36 pages, 7 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2610.39662v1",
       "title": "AI-driven structural informatics reveals diverse glycosylation machinery across double-stranded DNA viruses",
@@ -322,353 +684,6 @@
       "comment": "9 pages, 3 figures, 2 tables",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.30039v1",
-      "title": "Unlocking the Full Potential of Taylor Dispersion Analysis Through Advanced Detection",
-      "authors": [
-        "Rami Laoufi",
-        "Agnès Hagège"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-21T17:00:46Z",
-      "summary": "Today, pharmaceutical sciences rely on a wide range of innovative therapeutics of varying sizes: nanoparticles, proteins, antibodies, and nanocarriers for drug delivery. Measuring their size is one of the crucial parameters in their characterization, to ensure drug safety, stability, and effectiveness. Over the past two decades, Taylor Dispersion Analysis has emerged as an important sizing method. Its scope of application is perfectly suited to the sizes of these therapeutics. By design, it can be coupled with a wide range of detectors, and extensive research has been conducted in this field. In this review, we will present an overview of the studies conducted, and discuss how the application drives the choice of one detector or another (size measurement, aggregation studies, interaction studies, and other analyses, performed in both simple biological buffers and in more complex media, particularly serum) and makes Taylor Dispersion Analysis a highly versatile tool.",
-      "pdf_url": "https://arxiv.org/pdf/2610.30039v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": "Pharmaceuticals, 2026, 19 (10), pp.1543",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.30215v1",
-      "title": "AI Mindmeld: A Latent Interconnect Protocol",
-      "authors": [
-        "Siavash Golkar",
-        "Jake Kovalic",
-        "Shirley Ho"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-21T15:47:56Z",
-      "summary": "LLMs can act as scientific agents using tools to consult specialists and run experiments. Yet specialist information must enter their context, generally as text, images, audio or video: a bottleneck between models with rich, high-dimensional representations. We advocate direct representation exchange: a mindmeld conveying many properties, including information an LLM would not think to request. It should be extensible to new specialists, flexible across questions and tasks, and compositional across independently connected specialists without joint training. The Latent Interconnect Protocol (LIP) learns connectors mapping specialist representations into LLM internal states. Training only connectors keeps this practical as LLMs grow and evolve. We connect three protein and three small molecule specialists to Gemma 3 (4B and 12B parameters) and Kimi K2.6 (1T total, 32B active), freezing all pretrained models. Independently trained connectors provide useful information without changing the LLM or existing connectors, supporting familiar and new question types about unseen objects. We demonstrate zero-shot transfer to cross-domain tasks without joint training. Task performance and compositionality generally improve with LLM capability, with especially strong gains in zero-shot task transfer. Limitations remain: current LLMs were not trained for specialist representations as native inputs; access does not ensure reliable interpretation, integration or use in reasoning. We call on specialist developers to provide consistent representation interfaces and, especially, on LLM developers to train models to receive, combine and reason with these inputs. These efforts could expand scientific agents' information while preserving conventional tools' flexibility. Data, pretrained connectors, and code for training, evaluation and interactive inference: https://github.com/PolymathicAI/AI-Mindmeld",
-      "pdf_url": "https://arxiv.org/pdf/2610.30215v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.BM",
-        "stat.ML"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.BM (生物分子结构与动力学)",
-        "stat.ML (机器学习统计基础)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.29058v1",
-      "title": "QUBO-Based Conformer Selection with Quantum-Classical Hybrid Optimization for Multiconformer Ligand Modeling",
-      "authors": [
-        "Jiyun Lee",
-        "Haeseong Kim",
-        "Junho Lee",
-        "Joonsuk Huh"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-21T01:39:37Z",
-      "summary": "A ligand can adopt multiple conformations within the same binding site, and these conformations can interact differently with the surrounding protein. Multiconformer modeling must therefore determine which candidate conformations to retain and what occupancies to assign to them. An established automated approach uses mixed-integer quadratic programming (MIQP) with hard occupancy and conformer-count limits for this selection. Here, we reformulated conformer selection as a quadratic unconstrained binary optimization (QUBO) problem with finite penalties and discrete occupancies. We solved the QUBO using a quantum-classical hybrid solver. We compared this workflow with the MIQP-based qFit-ligand workflow across 83 paired X-ray ligand entries using the same experimental inputs and the same qFit-ligand processing protocol. For each entry, both final models were evaluated against the same composite-omit map generated from the common input structure before the two workflows diverged. Quantum-qFit produced higher ligand-region real-space correlation coefficients (RSCC) in 62 entries 74.7% and lower occupancy-weighted torsional strain in 66 entries 79.5%. Similar directional trends remained in the 28 entries with matched final conformer counts. The molecular Electron Density for Individual Atoms score (EDIAm) decreased in most entries. This result shows that higher regional map agreement did not necessarily correspond to stronger atom-level density support. Overall, the results show that the conformer-selection formulation can change which ligand states are represented from the same experimental data and provide a QUBO framework for studying multiconformer ligand selection.",
-      "pdf_url": "https://arxiv.org/pdf/2610.29058v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "14p, figures 8",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.27230v1",
-      "title": "Magnolia: A Persistent-Memory Agent Framework for Computational Chemistry",
-      "authors": [
-        "Tao Jiang",
-        "Benjamin Navet",
-        "Yousouf Taghzouti",
-        "Fabien Gandon",
-        "Louis-Félix Nothias"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T19:59:12Z",
-      "summary": "Chemistry has recently entered a high-data regime as molecular databases from high-throughput platforms or computational studies have become available. Increasing automation within the chemical sciences leads to a more digital and precision chemistry. Dedicated scientific agents are becoming central to guiding the chemist through an ever-increasing amount of data and findings, including negative ones. Here, we introduce Magnolia, a persistent-memory artificial intelligence agent framework that integrates computational protocols, from docking to quantum chemistry, lab notebooks and chat logs relying on large language models (LLMs). It relies on a three-tier memory system: session-level observations are automatically captured and distilled into structured learnings, confirmed and elevated to project-tier entries and, when human-validated, promoted to cross-project rules that actively guide subsequent work and provide direct chemical feedback. We illustrate Magnolia on four case studies: quantum-chemical evaluation of aromatic systems (COMPAS database), molecular dynamics of butane and of modified DNA, and a protein-peptide docking campaign. Across these projects, Magnolia tracked 317 runs and accumulated 116 project-tier entries, from which four cross-project rules were promoted; in controlled replays of four tasks, runs with memory passed the checks that runs without it failed (for example, ten of ten docking-configuration checks, against one to four of ten). By combining automation, reproducibility, and human-in-the-loop control, our Magnolia framework streamlines docking, molecular dynamics and quantum chemistry calculations with direct analysis and LLM-augmented feedback, offering accelerated access to computational (bio)chemistry.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27230v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "https://github.com/HolobiomicsLab/Magnolia-AI",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.26829v1",
-      "title": "ProteinGeoBench: Frontier Structural-Biology Agents Are Fluent at Lookup but Lost in Geometry",
-      "authors": [
-        "Matt Turk",
-        "Brandon L. Neel",
-        "Diana M. Lopez",
-        "Zachary D. Smith",
-        "Grace N. Johnecheck"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T17:55:38Z",
-      "summary": "Frontier agents retrieve structural metadata well and compute geometry from coordinates less reliably. We ask how much of a benchmark score reflects that gap and how much reflects the evaluation configuration around the model. We study ProteinGeoBench, a suite of 131 protein-structure tasks, using 4,249 rollouts from four frontier models and 4,486 further trials across 26 models. Three of the four frontier models fall within 0.031 of one another (0.785 to 0.816) with no difference between them resolved, while the fourth scores 0.707 and all three gaps to it exclude zero. Three of the four do better on metadata lookup than on numeric calculation. The fourth is slightly better on numeric. Numeric tasks are 28 of the 131 but half of the twelve tasks that all four models fail. The ranking also depends on the evaluation budget: with one run per task, 23.9% of bootstrap replicates put a different model first. On a selected 15-task slice, removing network access lowers scores more than blocking eight structural-database domains, but the two contrasts were graded in different passes and cannot be cleanly decomposed. Swapping in each model's own command-line agent changes scores by -0.071 to +0.086, a comparison too small to rule out moderate harness effects. Across 26 models, numeric performance rises with non-numeric performance rather than staying flat. The experiments use different task subsets, so they cannot rank model, harness, access and task composition against one another. Evaluations should report results by task family, along with the number of runs, the harness and the access conditions.",
-      "pdf_url": "https://arxiv.org/pdf/2610.26829v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "24 pages, 2 figures, 10 tables. Benchmark and tasks: https://github.com/Protege-AI/ProteinGeoBench",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.26017v1",
-      "title": "Accurate quantification of protein concentrations and state populations by 2D 1H-N Q-BEST NMR",
-      "authors": [
-        "Yacine Ouali",
-        "Beate Bersch",
-        "Bernhard Brutscher"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T08:40:00Z",
-      "summary": "We introduce 2D Q-BEST NMR as a quantitative approach for determining protein concentrations and relative state populations from a set of three 1 H-15 N correlation spectra. The BEST methodology ensures short overall experimental times and highest sensitivity. The method was validated using ubiquitin as a model system, where a precision of approximately 15-20% was achieved at the level of individual cross-peaks. This precision can be further improved by averaging corrected intensities of well-resolved resonances corresponding to the same protein state. The approach was subsequently applied to the quantification of protein concentrations across multiple samples and to the determination of conformational state populations in proteins exhibiting intrinsic or ligand-induced heterogeneity. In both cases, 2D Q-BEST NMR provides accurate and robust quantification of NMR-visible species, demonstrating its utility as a general spectroscopic tool for quantitative biomolecular NMR analysis.",
-      "pdf_url": "https://arxiv.org/pdf/2610.26017v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": "Journal of Biomolecular NMR, 2026, 80 (1), pp.20",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.24806v1",
-      "title": "Aptamers as a sandbox for lab-in-the-loop agentic molecular discovery",
-      "authors": [
-        "Zachary Cutts",
-        "John Coller",
-        "Rachel Chen",
-        "Hua Tang",
-        "Mathias Bellaiche"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-17T18:21:50Z",
-      "summary": "Despite breakthroughs in AI-driven molecular generation, existing discovery pipelines operate largely in silico, with wet-lab feedback reserved for validation rather than iterative improvement. Whether large language model (LLM)-based reasoning agents can accelerate de novo discovery by iterating with lab data remains unproven. Here we use protein-binding aptamer design as a sandbox (1-2 week cycles, \\$1-\\$3 per candidate) to demonstrate a wet lab in a closed loop with AI systems. We tasked agentic pipelines with developing aptamer binders against $α$-thrombin and myoglobin across three design-test-improve cycles ($\\sim$1,000 candidates per round; $\\sim$4,400 constructs). Statistically significant, bead-corrected on-target hit rates among new candidates rose across rounds from 0.0% in Round 1 to 26.0% in Round 2 and 42.1% in Round 3 on $α$-thrombin (37.1% excluding literature motif descendants), and from 10.2% in Round 1 to 3.7% in Round 2 and 33.5% in Round 3 on myoglobin. Single-clone bead-binding titrations of eight full-length $α$-thrombin candidates confirmed concordance with pooled sequencing enrichment (Pearson $r = 0.90$). In these assays, literature-derived motifs engineered by the agents to reduce off-target reactivity in the pooled screen reached apparent affinities of $K_D = 24.6$--$133$ nM, whereas de novo scaffolds showed low-micromolar binding ($K_D > 1\\ μ$M). We also report how our pipelines used myoglobin binding data to exploit the G-quadruplex binder space, diagnose cross-reactivity as on-target specificity dropped from 75.0% to 19.1%, and recover by developing strategies that restored specificity to 72.4%. We demonstrate that empirical lab data is more valuable than existing computational proxies, showing how iterative experimental feedback enables AI agents to diagnose assay artifacts and refine molecular designs across rounds.",
-      "pdf_url": "https://arxiv.org/pdf/2610.24806v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM",
-        "cs.AI",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)",
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "Equal leadership (co-senior authors): Pooja Rao and Annalisa Pawlosky. 34 pages, 4 main figures, 1 main table, 3 supplementary figures, 4 supplementary tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.24144v1",
-      "title": "LiveCoMS Roundtable: Discussing Markov state models after two decades of development v1.0",
-      "authors": [
-        "Daniel M. Zuckerman",
-        "Gregory R. Bowman",
-        "Amedeo Caflisch",
-        "Aaron R. Dinner",
-        "Ahmed Fadhluddin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T19:12:20Z",
-      "summary": "Markov state models (MSMs) play a central role in the analysis of molecular dynamics (MD) simulations for biomolecules, and MSM methodologies have been under continual development since their introduction to the field in the early 2000s. MSMs take MD trajectory data as input and produce a more compact, i.e., coarse-grained, and interpretable representation of the system in terms of conformational states and quantitative observables such as the equilibrium populations of states and the timescales of interconverting between states. Numerous strategies and considerable mathematical formalism have been developed to improve coarse-graining in both time and space to enable the most reliable representation of the underlying biomolecular dynamics. Nevertheless, there remains considerable discussion in the literature regarding best practices and MSM limitations, as well as proposals to abandon or extend the first-order Markovian framework in common use. This Roundtable article gathers together diverse opinions from $> 10$ authors active in MSM development, and by design, each author or author group offers a separate contribution. No consensus view is provided. Instead, the article is meant to be a guide for readers wishing to be exposed to a wide set of expert perspectives.",
-      "pdf_url": "https://arxiv.org/pdf/2610.24144v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "25 pages, 5 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.23108v1",
-      "title": "Multiscale Quantum-Classical Simulation of Protein Autoproteolysis in a Million-Atom Membrane Environment",
-      "authors": [
-        "Alexander Orlov",
-        "Alexis Ralli",
-        "Tim Weaving",
-        "Michael Williams de la Bastida",
-        "Reuben Martin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T08:19:05Z",
-      "summary": "Predicting chemical reactions in biomolecules is challenging because reactive centers are embedded within complex environments that strongly influence their energetics and mechanisms. Here, we present a hybrid quantum-classical workflow that combines molecular dynamics, density functional theory, and correlated wavefunction methods, tightly integrating CPUs, GPUs, and quantum processing units (QPUs) to enable simulations across multiple length and accuracy scales. We apply this approach to ADGRG1 autoproteolysis, a maturation reaction in an adhesion G protein-coupled receptor that has not previously been studied using correlated electronic-structure methods. Our simulations treat a biologically realistic system containing more than one million atoms, including the full-length uncleaved receptor embedded in an endoplasmic-reticulum membrane, while incorporating a 54-qubit IQM quantum processor and up to 1,200 NVIDIA H100 GPUs. These results demonstrate how quantum computers can serve as accelerators within scalable scientific workflows, extending correlated electronic-structure methods to biologically relevant systems.",
-      "pdf_url": "https://arxiv.org/pdf/2610.23108v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM",
-        "quant-ph"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)",
-        "quant-ph (量子力学、量子通信与量子计算)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.22562v1",
-      "title": "Evolutionary Informed Translation from Protein to Nucleic Acid Sequence",
-      "authors": [
-        "Anna Hart",
-        "Mohammed El-Kebir",
-        "Huimin Zhao",
-        "Heng Ji"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T19:02:57Z",
-      "summary": "The choice of nucleic acid sequence for a given protein strongly impacts function and is species-specific. Current protein-to-nucleic-acid translation models treat sequences in isolation, often over-favoring frequently used codons. To generate more natural nucleic acid sequences, we introduce PINATA (Phylogenetically Informed protein to Nucleic Acid Translation with sequence Alignment), a model that leverages sequences from related species encoded in multiple sequence alignments (MSAs) to guide prediction. Our architecture leverages evolutionary context and learns species-and protein specific context to make biologically-informed predictions. Evaluated across 61,934 gene trees and 882 species, PINATA generates sequences that mirror the naturally-occurring sequence substantially better than existing language models. PINATA leverages MSA data to improve exact native codon recovery by 17.95 percentage points over existing language models, effectively preserves natural rare-codon nuances, and more closely matches native sequence properties. PINATA maintains strong predictive performance even with limited evolutionary data. While previous methods largely treated sequences from different species in isolation, our method leverages the evolutionary relationships between nucleic acids and proteins across species to create a more biologically-informed translation. We demonstrate that leveraging rich evolutionary data through an biologically-designed method strongly aids in translating protein sequences to nucleic acid sequences across species. We will make data and code publicly available upon publication.",
-      "pdf_url": "https://arxiv.org/pdf/2610.22562v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.17108v1",
-      "title": "Calibrating AlphaFold confidence scores for interface quality",
-      "authors": [
-        "Sagyndyk Sagadinov",
-        "Vsevolod Viliuga",
-        "Arne Elofsson"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-12T17:02:05Z",
-      "summary": "AlphaFold confidence scores are widely used to rank protein complex predictions and to select subsets of models for downstream applications. Although these scores provide strong discriminatory power for distinguishing prediction quality, their numerical values were never intended to represent the probability that a prediction satisfies a given structural quality criterion. In this work, we calibrate commonly used confidence scores to estimate the probability that a predicted complex exceeds a chosen threshold of DockQ, an established measure of interface quality. On antibody-antigen and general multimer datasets, post-hoc isotonic calibration consistently improves agreement between predicted probabilities and observed DockQ success rates while preserving the underlying score ordering. The calibrated probabilities also provide more accurate estimates of the fraction of selected models expected to pass a given structural quality threshold. Although the mapping is fitted within a given prediction distribution and therefore transfers imperfectly across prediction domains, we show that reliable estimates are recovered from a small number of labeled target-domain samples. Because the calibration is entirely post hoc and requires no underlying AlphaFold model fine-tuning, it provides a straightforward and customizable way to convert existing model quality rankings into calibrated probabilities of passing a chosen structural quality threshold.",
-      "pdf_url": "https://arxiv.org/pdf/2610.17108v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.13917v2",
-      "title": "Designing Protein Structures from Natural Language",
-      "authors": [
-        "Joseph Lee",
-        "Yanjing Li",
-        "Bo Qiang",
-        "Gregory Lau",
-        "Allyson Ettinger"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-09T17:51:55Z",
-      "summary": "A central challenge in de novo protein design is generating proteins with desired structural and functional properties. Existing design models typically require a dedicated input representation for each property, limiting the design objectives they support. We develop Prompteina, the first all-atom structure generation model that supports new and broader design objectives specified in natural language, analogous to text-to-image generation. To train Prompteina, we construct Prompteina-Data, a paired text--protein structure dataset of 1.8M structures and 50M+ captions describing global and residue-specific structural and functional properties. We adapt Proteina-Complexa, a pretrained structure generation model, through text-conditioned pretraining and finetuning that aligns residues with their corresponding text. Prompteina outperforms baselines on 15 of 18 structural properties and generates proteins that more closely match descriptions of their intended functions. In binder design, it leads baselines on at least 13 of 20 targets and improves interface confidence by 14% over the strongest baseline. With iterative in silico feedback, Prompteina's gain over non-iterative generation is 57% larger than the next-best baseline on the hardest targets. Finally, we experimentally validate Prompteina designs against GM2A, a target with no reported de novo binders. We identify nine binders, with the strongest at an apparent $K_{\\mathrm{D}}$ of 107 nM. These results establish natural language as an effective and powerful conditioning interface for protein structure generation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.13917v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "54 pages, 9 figures. Code, data, and model weights: https://github.com/jleechung/prompteina",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.13305v1",
-      "title": "MORAD: Reinforcement Learning with Multi-Objective Rewards for RNA Inverse Design",
-      "authors": [
-        "Jixin Tang",
-        "Ji Guo",
-        "Jun Zhao"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-09T09:50:55Z",
-      "summary": "We introduce MORAD, an online reinforcement learning framework for backbone-conditioned RNA diffusion models that trains a single shared policy across diverse target backbones. Structure-conditioned RNA inverse design seeks nucleotide sequences compatible with a target three-dimensional backbone, yet existing reinforcement learning approaches either optimize a separate policy for each target backbone or rely on offline preference optimization, leaving online post-training of a reusable backbone-conditioned model largely unexplored. MORAD combines backbone-conditioned group sampling, group-relative reward normalization, and a forward-process diffusion objective. Beyond existing RL rewards that primarily target tertiary structural quality, MORAD jointly optimizes six measurements spanning tertiary geometry, base pairing, ensemble behavior, and sequence composition. To aggregate these heterogeneous objectives despite differences in scale and optimization direction, MORAD maps each measurement to a bounded desirability score and combines them with a weighted geometric mean. Compared with a tertiary-structure-only reward, this multi-objective formulation improves 10 of the 11 evaluation metrics that have a preferred direction. Applied to pretrained RIDE, MORAD improves GDT-TS by 16.0% (from 0.3300 to 0.3827) and pairing MCC by 19.4% (from 0.6110 to 0.7295), while reducing normalized ensemble defect by 27.5% (from 0.3906 to 0.2830). On the test set, MORAD outperforms RiboDiffusion, gRNAde, and RDesign across tertiary structural accuracy, secondary-structure pairing, and thermodynamic quality, establishing a new state of the art in structure-conditioned RNA inverse design.",
-      "pdf_url": "https://arxiv.org/pdf/2610.13305v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "18 pages, 5 figures. Jixin Tang and Ji Guo contributed equally. Project page: https://gabrile166.github.io/MORAD/",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -680,7 +695,12 @@
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 9
+      "count": 11
+    },
+    {
+      "code": "physics.bio-ph",
+      "name_zh": "生物物理",
+      "count": 4
     },
     {
       "code": "cs.AI",
@@ -688,23 +708,38 @@
       "count": 4
     },
     {
-      "code": "q-bio.QM",
-      "name_zh": "生物医学定量方法",
-      "count": 2
+      "code": "cond-mat.soft",
+      "name_zh": "软凝聚态物理",
+      "count": 3
     },
     {
-      "code": "physics.bio-ph",
-      "name_zh": "生物物理",
-      "count": 2
-    },
-    {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
+      "code": "physics.chem-ph",
+      "name_zh": "化学物理",
       "count": 2
     },
     {
       "code": "cs.CE",
       "name_zh": "计算工程、金融与科学计算",
+      "count": 2
+    },
+    {
+      "code": "math-ph",
+      "name_zh": "数学物理与严格推演",
+      "count": 1
+    },
+    {
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 1
+    },
+    {
+      "code": "cond-mat.stat-mech",
+      "name_zh": "统计力学",
+      "count": 1
+    },
+    {
+      "code": "q-bio.SC",
+      "name_zh": "亚细胞过程与动力学",
       "count": 1
     },
     {
@@ -713,15 +748,10 @@
       "count": 1
     },
     {
-      "code": "cond-mat.soft",
-      "name_zh": "软凝聚态物理",
-      "count": 1
-    },
-    {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
+      "code": "q-bio.QM",
+      "name_zh": "生物医学定量方法",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:51:34.163645"
+  "snapshot_synced_at": "2026-11-05T20:30:47.201069"
 }

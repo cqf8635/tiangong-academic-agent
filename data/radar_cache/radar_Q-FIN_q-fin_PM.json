@@ -1,8 +1,225 @@
 {
   "query_expression": "cat:q-fin.PM",
   "total_fetched": 25,
-  "total_results": 2517,
+  "total_results": 2525,
   "papers": [
+    {
+      "paper_id": "2611.06495v1",
+      "title": "Constrained defined-contribution pension management: A reparameterized neural network approach",
+      "authors": [
+        "Yueman Feng",
+        "Wenyuan Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T13:30:05Z",
+      "summary": "This paper studies constrained defined contribution (DC) pension management under a two-factor financial market model. The pension participant is allowed to invest in cash, two nominal bonds, an inflation-linked bond, and a stock index. Moreover, they can also purchase term life insurance to manage pre-retirement death risk. Unlike traditional literature, we consider a pension member restricted to a general non-empty, closed, and convex trading constraint set that includes no short-selling, no borrowing, and portfolio-mix constraints as special cases. Such restrictions reflect common limits on pension-account trading. To solve the problem, we construct a family of unconstrained artificial markets, in which the original trading constraints are satisfied by adjusting the drift terms of the risky assets. Using a duality transformation, we derive the Lagrangian dual problem and propose a reparameterized neural network method to compute lower and upper bounds on the primal value function. We calibrate our model with U.S. data using a Kalman filter method, and find that our method produces a smaller duality gap than the benchmark methods. We also compare the constrained results with the unconstrained explicit solution and find that trading constraints substantially change wealth accumulation, portfolio strategies, and insurance demand. This highlights that unconstrained solutions may provide misleading guidance for pension management in practice.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06495v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05310v1",
+      "title": "Mitigating Return Drag and Regime Whipsaws in Sector Rotation: An Asymmetric Downside-Aware Nested Clustered Optimization Framework",
+      "authors": [
+        "Supriadi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T18:19:23Z",
+      "summary": "Hierarchical clustering and Nested Clustered Optimization (NCO) mitigate the mathematical ill-conditioning of classical Markowitz covariance matrices. However, two structural vulnerabilities persist in equity markets: (1) symmetric variance penalizes upside and downside return dispersion identically, inducing acute return drag against soaring momentum sectors; and (2) unconstrained Hidden Markov Models (HMM) exhibit hyper-active regime switching (whipsaw instability), incurring excessive turnover and transaction drag. We propose Asymmetric Downside-Risk Nested Clustered Optimization with Sticky Regime Dynamics (Asym-Sticky-NCO) for tactical sector rotation across all 11 S&P 500 GICS sectors. The framework substitutes symmetric covariance with the Bawa-Lindenberg downside semi-covariance matrix across both hierarchical tree clustering and two-stage allocation. Furthermore, we introduce a Sticky Gaussian HMM incorporating a diagonal self-transition persistence prior (\\k{appa}) and confidence-adaptive boundaries (δ) to enforce macroeconomic persistence. Strictly non-anticipative walk-forward backtesting across 65 out-of-sample months (August 2020 to December 2025) demonstrates that the architecture elevates CAGR from 10.65% (Plain NCO) to 13.41% (+276 bps/year), delivers a 97.74% total return versus 72.99%, suppresses maximum drawdown to 14.22% (versus 23.93% for the S&P 500), and achieves a Calmar ratio of 0.94 (+38.2% over S&P 500; +84.3% over Baseline Regime-NCO). Crucially, sticky dynamics cut regime whipsaws by 75.0% (from 16 to 4 switches) and reduce monthly turnover from 60.78% to 30.48%, addressing core limitations of machine learning asset allocation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05310v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "7 pages, 6 figures, 4 tables. Code available at: https://github.com/obo-cloud/sp500-asymmetric-nco",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.04826v1",
+      "title": "Safe Portfolio Learning from Untrusted Predictions: Signed Trust, Abstention, and Cross-Universe Polarity Failure",
+      "authors": [
+        "Amirhossein MohammadpourAzari",
+        "Mohammad Zarei",
+        "MohammadAmin Fazli"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T12:55:15Z",
+      "summary": "Portfolio use of machine predictions must often proceed while the predictions' economic direction, reliability, and timing remain untrusted, and while feedback from overlapping multi-period positions arrives with delay. A controller chooses among Safe, Follow, and Reverse portfolio actions, so signal orientation is learned rather than assumed. A share-adaptive master updates action probabilities from matured Safe-relative rewards, an evidence gate can abstain by transferring unsupported directional probability to Safe, a delayed collateral budget reserves worst-case loss capacity before exposure is funded, and a protected split account caps the capital adaptive decisions may touch. The architecture carries a dual certificate, tracking regret against switching action sequences under delay and one-sided intervention, together with a pathwise collateral safety bound that holds when predictions fail. On a 24-stock development universe a conservative prediction-assisted overlay stays near equal-weight performance at a fraction of the turnover. On a frozen 82-stock holdout, the pre-specified Reverse orientation fails to outperform Equal Weight; a separately labeled post-holdout diagnostic shows that permanently flipping the sign to Follow also does not recover a return edge. Under the post-holdout controller, protected wealth remains within 15.9 basis points of the Safe benchmark throughout. The contribution is safe adaptive use of untrusted predictions, not demonstrated alpha.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04826v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.MF",
+      "categories": [
+        "q-fin.MF",
+        "cs.CE",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.MF (数理金融学)",
+        "cs.CE (计算工程、金融与科学计算)",
+        "q-fin.CP (计算金融与量化模拟)",
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "39 pages including the online supplement, 6 figures. Result tables behind every reported number are attached as ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03453v1",
+      "title": "Penalize the Common Trade: A Collision-Aware Layer for Learned Portfolios",
+      "authors": [
+        "Eric Benhamou",
+        "Jean-Jacques Ohana",
+        "Beatrice Guez",
+        "Ethan Setrouk",
+        "Chamyl Saadi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:59:38Z",
+      "summary": "Different learning systems can make nearly the same trade when they share data, objectives, or representations. The market then sees decision concentration even if the models look diverse. We call exposure to this shared direction a signal collision. A linear-impact game shows the basic externality: each allocator chooses too much common exposure because it does not bear the full price effect imposed on others. An overlap-dependent toll recovers the social choice, and a feedback model gives the exact gain at which return-responsive allocation becomes unstable. We also state the restrictive spectral conditions under which a leading eigenportfolio can reveal the collision direction. These results motivate a simple post-model layer: subtract a penalty for loading on the recent common return mode before forming the portfolio. In a frozen panel of ten liquid cross-asset ETFs, 760 completed weeks from January 2012 through July 2026, and exact self-financing costs of 10 basis points per dollar traded, this layer changes maximum drawdown from 23.6% to 14.1%, volatility from 12.6% to 10.7%, and excess-return Sharpe from 0.664 to 0.667. A volatility-matched momentum diagnostic still draws down 19.9%. Paired stationary-bootstrap uncertainty is wide: the 95% interval for drawdown improvement is $[-3.3,18.4]$ percentage points and includes zero. The result establishes a reproducible risk-control association and specifies the holdings-and-flow validation needed to attribute the common direction to AI crowding. AI-use disclosure. Generative AI tools, including OpenAI Codex, assisted manuscript preparation. For this preprint version, Codex assisted with LaTeX editing, author and venue metadata, compilation, and layout checks.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03453v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": "9 pages, 1 figure. Author preprint",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03391v1",
+      "title": "Specification LASSO and a Flexible Characteristics-Based Asset Pricing Model",
+      "authors": [
+        "Chaohua Dong",
+        "Shuyi Ge",
+        "Shaoran Li",
+        "Wen Su"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:28:46Z",
+      "summary": "This paper studies a partially linear semiparametric additive model that allows for interactions among variables in high-dimensional settings. We propose the Specification LASSO (S-LASSO), a two-step method that integrates LASSO and Adaptive Group LASSO to simultaneously perform variable selection and model specification. Theoretically, we establish that S-LASSO possesses oracle properties in terms of selection consistency and asymptotic normality. Monte Carlo simulations confirm that S-LASSO outperforms existing alternatives across a variety of scenarios. Empirically, we apply S-LASSO to a characteristics-based asset pricing model, exploring the linear and nonlinear effects of asset-specific characteristics on cross-sectional returns, as well as their interactions with firm size.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03391v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.ST",
+      "categories": [
+        "math.ST",
+        "econ.EM",
+        "q-fin.PM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "math.ST (数理统计理论)",
+        "econ.EM (计量经济学)",
+        "q-fin.PM (资产组合管理)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03022v1",
+      "title": "Interpretable Allocation and Model-Predictive Rebalancing of Equity Portfolios, Tested on Real and Synthetic Markets",
+      "authors": [
+        "Jeffrey D. Varner"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T12:20:25Z",
+      "summary": "A live equity portfolio poses three problems: which stocks to hold, when to trade, and whether the strategy holds up beyond the observed market. We built one system for all three and tested it on 373 US equities, calibrated on 2014-2024 and traded from January 2025 to September 2026. A selection rule chose stocks by score, by a bandit, or at random, and one of seven weighting rules, four consumer-theory utilities, and three standard portfolios, set share counts under limits on budget, single-stock weight, portfolio volatility, and turnover, with each stock's preference weight a bounded score of its trend, market beta, and the market's recent direction. A model-predictive controller forecasts portfolio value with a multi-asset geometric Brownian motion and re-planned at its horizon, when the value left its forecast band, or at a drawdown stop. To probe deeper declines than the real window held, we also ran the system on simulated markets from per-asset hidden Markov generators with jumps, linked by market and sector factors. On real prices, the stocks chosen mattered more to terminal wealth than the weighting rule, and the early re-plans shrank the worst drawdown in most rule combinations against a fixed calendar without consistently raising wealth. In the deepest simulated declines, every combination, random picks included, ended above simulated SPY and the equal-weight universe in the median, even without early re-plans, so the margin came from shared parts of the system, not from stock selection or re-plan timing. A market hedge that tightened a beta cap as the market weakened cost wealth on real prices but paid off in the most sustained simulated declines, and the generator's persistent trends favored score-based selection more than the real market did, which suggests a synthetic test judges stock selection fairly only if its generator does not build in that persistence.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03022v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM",
+        "cs.CE",
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)",
+        "cs.CE (计算工程、金融与科学计算)",
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00700v1",
+      "title": "Optimal portfolio and consumption under no-shorting constraints: The exploratory formulation and reinforcement learning",
+      "authors": [
+        "Xun Li",
+        "Xiang Yu",
+        "Fengyi Yuan",
+        "Yijie Zeng"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-31T06:50:45Z",
+      "summary": "We develop a reinforcement-learning framework for the continuous-time optimal portfolio-consumption via utility maximization under no-shorting portfolio constraints. We adopt the exploratory formulation under entropy regularization and impose no-shorting constraint through a componentwise nonnegative conditional-mean constraint on the class of admissible randomized policies, while the sampled actions are allowed to be negative during the training. For CRRA utility, we derive the homothetic value function and the optimal Gaussian portfolio and Gibbs consumption policies under some model conditions and establish a verification theorem. These results allow compatible parameterizations in actor, critic, and $q$ functions for a constrained policy-iteration algorithm. Policy evaluation uses trajectory-based moment conditions, and policy improvement uses fitted coefficients to solve a convex quadratic program over the nonnegative orthant without requiring market coefficients as inputs. The mean constraint preserves tractable Gaussian exploration throughout parameter learning, while modal deployment converts the learned randomized policies into deterministic controls. In particular, the Gaussian mode coincides with its constrained mean and hence satisfies no-shorting constraint, and the Gibbs mode determines the deployed consumption rule.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00700v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00578v1",
+      "title": "Non-asymptotic analysis of SGLD with discontinuous stochastic gradients: a new route to portfolio CVaR minimization",
+      "authors": [
+        "Yan Ding",
+        "Sotirios Sabanis",
+        "Ying Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-31T03:09:23Z",
+      "summary": "Conditional-Value-at-Risk (CVaR) optimization is a fundamental tool in portfolio selection, yet its nonsmooth loss structure poses a challenge for the existing theory of stochastic gradient methods including associated Langevin algorithms. In particular, the positive-part loss and the softmax portfolio parametrization lead to stochastic gradients that need not be globally Lipschitz continuous, but rather discontinuous, where available non-convex stochastic gradient Langevin dynamics (SGLD) guarantees often exhibit an unfavorable exponential dependence on the problem dimension. In this article, we develop a non-asymptotic analysis of SGLD for a regularized CVaR portfolio optimization problem. We exploit the geometric structure of the CVaR objective to establish linear growth, convexity-at-infinity, and one-sided Lipschitz properties of the stochastic gradient without imposing density assumptions on the asset losses that are typical in previous works. Crucially, the constants appearing in the aforementioned structural conditions are shown to be independent of the number of assets. Moreover, we establish a convergence bound in Wasserstein-2 distance with rate $\\mathcal{O}(λ^{1/4})$ and a finite-time guarantee for the expected excess risk. Our analysis, together with the dimension-independent constants in the structural conditions, leads to an excess risk bound that depends linearly on the number of assets. Numerical experiments with simulated Gaussian portfolios exhibit the predicted dimension dependence. Computational comparisons with alternative stochastic optimization methods further illustrate the practical efficiency of SGLD for the optimization problem under consideration. Finally, we extend the framework to a broader class of non-convex stochastic optimization problems with discontinuous stochastic gradients.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00578v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PM",
+      "categories": [
+        "q-fin.PM",
+        "math.OC",
+        "math.PR",
+        "math.ST",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "q-fin.PM (资产组合管理)",
+        "math.OC (运筹学、优化与控制论)",
+        "math.PR (概率论与随机过程)",
+        "math.ST (数理统计理论)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2610.40129v1",
       "title": "The Generalised Kessler Syndrome and the Persian Gulf",
@@ -453,212 +670,6 @@
       "comment": "19 pages, 5 figures, 4 tables, including an appendix",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.22745v1",
-      "title": "Reading the News Without Hindsight: NoLBERT Topics and the Cross-Section of Stock Returns",
-      "authors": [
-        "Kevin Foley",
-        "Jonathan Hartadi",
-        "Shivesh Prakash",
-        "Charishma Takkallapalli",
-        "Swapnil Vatsal"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T23:27:49Z",
-      "summary": "Language models that read financial news are usually trained on text from the same years used to test them, so a backtest can reward hindsight. We build news topics from NoLBERT, an encoder pretrained only on text published between 1976 and 1995, adapted into a sentence encoder by contrastive fine-tuning on passages of the same article, with no labels or returns. We compare it with LDA, MiniLM and FinBERT readers on 1.26 million articles from 2012 to 2024, convert each reader's topics into attention shocks and stock exposures, and forecast the returns of the 1,000 largest US stocks with eight models at three rebalancing frequencies. Models are fitted on 2013-2019, choices are made on 2020-2021, and 2022-2024 is held out. The experiment with the best validation score loses money at every frequency. Measuring attention shocks against the past 63 trading days instead of 5 raises the test rank IC of every reader. NoLBERT gives the most stable topics and forecasts about as well as LDA. An equal-weight combination of all readers and models earns a monthly net Sharpe ratio of 1.12, significant against zero before adjusting for the search but not against a price-only benchmark.",
-      "pdf_url": "https://arxiv.org/pdf/2610.22745v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.ST",
-      "categories": [
-        "q-fin.ST",
-        "cs.CL",
-        "cs.LG",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.ST (统计金融学与高频数据)",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "cs.LG (机器学习 (ML))",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.21057v1",
-      "title": "Loss-versus-rebalancing with external proportional transaction costs",
-      "authors": [
-        "Masaaki Fukasawa"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T01:00:15Z",
-      "summary": "We study liquidity provision in automated market makers when trading in the external market incurs proportional transaction costs. We consider both separately collected fees and fees retained in reserves. The benchmark is a self-financing strategy holding the same total risky inventory and trading at the external bid and ask. Under continuous external prices and pure arbitrage, the pool and benchmark have identical liquidation wealth whenever the pool fee or the external spread is positive. Thus loss-versus-rebalancing relative to this transaction-cost benchmark is zero, even without a pool fee if the external spread is positive. We then construct retained-fee utility-indifference pools that implement admissible decreasing inventory schedules, and geometric mean pools that implement feasible constant no-trade boundaries for portfolio weights. These results offer an investment interpretation of liquidity provision: by choosing the pool design, a liquidity provider can specify a trading strategy whose rebalancing is carried out by arbitrageurs.",
-      "pdf_url": "https://arxiv.org/pdf/2610.21057v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.MF",
-      "categories": [
-        "q-fin.MF",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.MF (数理金融学)",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.20037v1",
-      "title": "Data-Driven Dynamic Portfolio Selection with Vine Copula Simulation and Reinforcement Learning",
-      "authors": [
-        "Gabriël M. J. Gelissen",
-        "Fengyi Yuan"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-14T11:45:17Z",
-      "summary": "We develop a data-driven approach to dynamic portfolio selection that combines vine-copula simulation with reinforcement learning. The investor has constant relative risk aversion and maximises expected terminal utility with a running penalty on the conditional value-at-risk (CVaR) of one-period losses. We estimate a conditional vine model from historical returns and use it to generate joint scenarios for CVaR evaluation and conditional paths for training a recurrent portfolio policy. Under uniform local derivative bounds, we propagate edgewise pair-copula parameter errors through the conditional transforms to obtain power-law stability bounds in Hellinger distance and total variation. In a finite-horizon investment model, we combine these estimates with a marginal and structural approximation budget to bound policy values, optimal values and the true-market loss of policies selected under a fitted model, with separate simulation and numerical optimisation terms. On a seven-asset panel comprising US and Chinese equities and gold, the selected ensemble of ten trained policies achieves a compound annual growth rate of 34.13% and a Sharpe ratio of 2.31 over 22 complete monthly holding periods, exceeding the corresponding values of six classical and vine-based benchmarks. Combining simulated and historical training data reduces monthly target-to-target turnover by 41.5% relative to training on historical data alone, while maintaining comparable growth.",
-      "pdf_url": "https://arxiv.org/pdf/2610.20037v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.18823v1",
-      "title": "The Missile and the Toll: Two-Way Flow Through the Strait of Hormuz",
-      "authors": [
-        "Bernhard K Meister"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T17:51:49Z",
-      "summary": "Tolls for safe passage and attacks on shipping are usually treated as mutually exclusive: either ships pay or attacks happen. We argue they are complementary. In a Stackelberg escalation game for the Strait of Hormuz, the enforcer chooses an attack intensity and a toll schedule; the response is to pay, cross exposed, wait, reroute, or exit. Attacks create the willingness to pay; tolls harvest it. The model predicts asymmetry across trade forms: a toll where the cargo owner can pay and the vessel owner will consent, and none where either fails. Any such payment is clandestine, but the model's implications are testable against freight rates, insurance premia, and incident reports.",
-      "pdf_url": "https://arxiv.org/pdf/2610.18823v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "11 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.18387v1",
-      "title": "Risk Measures for the Climate Transition Age: Why Symmetric Risk Budgets are unlikely to mitigate two-dimensionally asymmetric Climate Change risks",
-      "authors": [
-        "Lars Dijkstra",
-        "Andreas G. F. Hoepner",
-        "Fabiola I. Schneider",
-        "Agnieszka Słomka-Gołębiowska"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T13:36:55Z",
-      "summary": "The most widely used investment risk measures - variance, standard deviation, and tracking error - treat upside deviations as equally undesirable as downside losses. In stable markets with assumed symmetric return distributions, this simplification is potentially harmless. In the climate transition age, it is not. Climate risk is two-dimensionally asymmetric, across assets and over time. Both dimensions are negatively skewed against investors. Hence, climate transition investment strategies deliberately deviate from benchmarks that reflect an insufficiently decarbonising global economy. When fiduciaries enforce tracking error budgets that penalise outperformance just as heavily as underperformance, they inadvertently constrain exactly the portfolio return opportunities that climate-aware investing seeks. We argue that replacing symmetric deviation-based risk measures with their downside-only counterparts - semi-variance, standard risk and trailing error - resolves this conflict without sacrificing any fiduciary discipline. The distinction is not merely semantic: as the gap between climate transition trajectories and market benchmarks widens over the coming decades, symmetric risk budgets will become binding constraints on transition strategies well before actual investment risk warrants it. We propose specific changes to mandate design that would allow institutional investors to pursue climate transition opportunities within genuinely risk-aware (rather than deviation-averse) frameworks.",
-      "pdf_url": "https://arxiv.org/pdf/2610.18387v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.RM",
-      "categories": [
-        "q-fin.RM",
-        "econ.EM",
-        "q-fin.PM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "q-fin.RM (风险管理与控制)",
-        "econ.EM (计量经济学)",
-        "q-fin.PM (资产组合管理)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": "13 pages, 1 figure, 9 equations| Keywords: climate change mitigation, Climate Transition Benchmarks, deviation, fiduciary duty, Paris-Aligned Benchmarks, risk, standard risk,",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.18332v1",
-      "title": "Portfolio Decarbonization under Incomplete Carbon and Transition Information",
-      "authors": [
-        "Olivier Féron",
-        "Ruben Haalebos"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T13:08:25Z",
-      "summary": "We study dynamic portfolio decarbonization under incomplete information about firms' carbon intensities and the underlying transition state. The investor maximizes expected utility of terminal wealth net of a penalty on perceived cumulative financed emissions. Asset returns and carbon intensities depend on a stochastic transition factor, while the investor may need to infer the current transition state, its long-run mean and firms' carbon intensities from market observations and periodic noisy disclosures. The optimal strategy combines a Merton-type component with climate-dependent expected-return adjustments, a direct carbon intensity penalty and intertemporal hedging demands associated with stochastic carbon intensities and learning. In a numerical application, incomplete information has limited effects on welfare and target satisfaction when prior beliefs are well specified. By contrast, biased beliefs generate welfare losses in either direction but asymmetric environmental consequences: optimistic and pessimistic beliefs induce opposite portfolio tilts and therefore affect the probability of exceeding the cumulative emissions target differently.",
-      "pdf_url": "https://arxiv.org/pdf/2610.18332v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.MF",
-      "categories": [
-        "q-fin.MF",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.MF (数理金融学)",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.17915v1",
-      "title": "On integrability of local utility maximizing strategies",
-      "authors": [
-        "Aleš Černý",
-        "Johannes Ruf"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T08:07:02Z",
-      "summary": "In stochastic control problems involving optimal portfolio choice, one often seeks an optimizer of some local criterion (dynamic programming value function) generated by some global criterion (e.g., expected utility). The local optimizer then typically acts as a stochastic integrand with respect to some multivariate stochastic process (e.g., asset prices). This paper takes a closer look at local criteria in the form of ``local expected utility''. Since the existence of the local optimizer can be established under very mild conditions, it is crucial to understand under what circumstances the local optimizer has good integrability properties. It is shown that the reasonable asymptotic elasticity condition of Kramkov and Schachermayer (1999) applied to the local utility function plays a key role in this context.",
-      "pdf_url": "https://arxiv.org/pdf/2610.17915v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "28 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.16019v1",
-      "title": "A Mean Field Model of Consumption Inertia and Keeping Up with the Joneses",
-      "authors": [
-        "Junkee Jeon"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-12T00:41:37Z",
-      "summary": "Households compare their living standard with others' and dislike changing it. We study consumption and investment when felicity depends on consumption relative to a benchmark, the population's geometric average consumption, and cuts in felicity weigh more than increases. Asset returns are exogenous. For finitely many types and arbitrary initial wealth and inherited standards, a mean field equilibrium exists under a weak interaction condition, and for fixed budget multipliers the benchmark is the fixed point of a contraction. In a complete market with common risk, a mean field equilibrium at empirical type frequencies is an exact Nash equilibrium of the finite game, for any preferences over relative consumption. We bound the gain from deviating when plans computed at another composition are used. We compute equilibria in which groups with different wealth, inherited standards, and loss aversion revise spending at different dates. With identical households and common risk, the unique symmetric equilibrium is the policy of a single loss averse household with modified curvature. In a baseline example, ignoring the inherited standard costs up to 17% of wealth, while small errors about the composition of the reference group cost less than 0.5%.",
-      "pdf_url": "https://arxiv.org/pdf/2610.16019v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "82 pages, 10 figures, 4 tables",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -678,11 +689,6 @@
       "count": 5
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 4
-    },
-    {
       "code": "math.OC",
       "name_zh": "运筹学、优化与控制论",
       "count": 4
@@ -690,11 +696,21 @@
     {
       "code": "q-fin.CP",
       "name_zh": "计算金融与量化模拟",
+      "count": 4
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
       "count": 3
     },
     {
-      "code": "q-fin.ST",
-      "name_zh": "统计金融学与高频数据",
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
+      "count": 2
+    },
+    {
+      "code": "math.ST",
+      "name_zh": "数理统计理论",
       "count": 2
     },
     {
@@ -708,9 +724,29 @@
       "count": 2
     },
     {
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
+      "count": 1
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 1
+    },
+    {
+      "code": "math.PR",
+      "name_zh": "概率论与随机过程",
+      "count": 1
+    },
+    {
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
+      "count": 1
+    },
+    {
       "code": "cs.CL",
       "name_zh": "计算语言与大语言模型 (NLP)",
-      "count": 2
+      "count": 1
     },
     {
       "code": "cs.MA",
@@ -721,17 +757,7 @@
       "code": "physics.soc-ph",
       "name_zh": "物理与社会科学 (复杂系统)",
       "count": 1
-    },
-    {
-      "code": "econ.EM",
-      "name_zh": "计量经济学",
-      "count": 1
-    },
-    {
-      "code": "stat.ME",
-      "name_zh": "统计推断与方法学",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:51:56.751129"
+  "snapshot_synced_at": "2026-11-06T09:25:42.085082"
 }

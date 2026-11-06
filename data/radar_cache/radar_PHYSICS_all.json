@@ -1,96 +1,125 @@
 {
-  "query_expression": "(cat:gr-qc* OR cat:astro-ph* OR cat:nucl* OR cat:quant-ph* OR cat:nlin* OR cat:hep* OR cat:cond-mat* OR cat:physics* OR cat:math-ph*)",
+  "query_expression": "(cat:quant-ph* OR cat:astro-ph* OR cat:nucl* OR cat:math-ph* OR cat:cond-mat* OR cat:hep* OR cat:gr-qc* OR cat:nlin* OR cat:physics*)",
   "total_fetched": 25,
-  "total_results": 1626544,
+  "total_results": 1627469,
   "papers": [
     {
-      "paper_id": "2611.05378v1",
-      "title": "Boundary $c\\leq1$ Liouville CFT from the Bootstrap",
+      "paper_id": "2611.08489v1",
+      "title": "BeAR: The Bern Atmospheric Retrieval code - A GPU-accelerated framework for low-resolution, high-resolution, and joint retrievals of exoplanet atmospheres",
       "authors": [
-        "Panos Betzios",
-        "Paul Ghiringhelli",
-        "Olga Papadoulaki",
-        "Ioannis Tsiares"
+        "Esther Wang",
+        "Daniel Kitzmann",
+        "H. Jens Hoeijmakers",
+        "Joost P. Wardenier",
+        "Helena Lecoq-Molinos"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:59:58Z",
-      "summary": "We construct boundary Liouville conformal field theory at central charge $c\\leq1$ with FZZT-type boundary conditions and show that it satisfies the Cardy--Lewellen sewing constraints on the disk and the annulus. Using the analytic bootstrap we derive the so far missing boundary three-point and bulk-to-boundary structure constants and a consistent disk one-point function as explicit meromorphic functions of the Liouville momenta. In sharp contrast to $c\\geq25$, the open-string spectrum between two ``timelike'' FZZT boundaries is \\emph{discrete}, yet non-trivially consistent through open-closed duality with the \\emph{continuous} closed-string spectrum of Ribault and Santachiara.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05378v1.pdf",
+      "published_at": "2026-11-05T18:59:48Z",
+      "summary": "We present BeAR, the Bern Atmospheric Retrieval code and successor of Helios-r, and its new high-resolution cross-correlation framework for emission and transmission spectra. BeAR performs joint retrievals by adding the log-likelihoods of high- and low-resolution data computed from the same model atmosphere. The framework implements established cross-correlation log-likelihoods, with the line-depth scaling either fitted analytically or sampled as a free parameter, their per-pixel generalization, fast model filtering, and model re-injection adapted to this filtering. The forward model and likelihood run entirely on a graphics processing unit (GPU). One forward model takes about 1 ms on an NVIDIA GH200, allowing millions of models per minute on a GPU cluster. In separate retrievals of Gemini South/IGRINS and JWST/NIRSpec dayside spectra of the hot Jupiter WASP-77Ab, BeAR reproduces published abundances, C/O ratios, and metallicities to within 1.5 sigma, the preference for 13CO, and the thermal structure and line contrast to within 1 sigma. The joint retrieval confirms a sub-solar metallicity and a near-solar C/O ratio. A full IGRINS retrieval with 17 free parameters takes 27 to 42 minutes on a single NVIDIA GeForce RTX 5080 or about 14 minutes on eight RTX 4090 GPUs. Injection--recovery tests show that the posteriors underestimate the uncertainties of abundance ratios by about a factor of two.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08489v1.pdf",
       "source": "arxiv",
-      "primary_category": "hep-th",
+      "primary_category": "astro-ph.EP",
       "categories": [
-        "hep-th",
-        "math-ph"
+        "astro-ph.EP",
+        "astro-ph.IM"
       ],
       "category_names_zh": [
-        "hep-th (高能物理 - 理论 (场论/弦论))",
-        "math-ph (数学物理与严格推演)"
+        "astro-ph.EP (地球与行星天体物理)",
+        "astro-ph.IM (天文仪器与方法)"
       ],
-      "comment": "prl; 7 pgs supp material",
+      "comment": "Submitted to A&A",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05375v1",
-      "title": "Quantum Error Correction in Nearly Critical Toric Codes",
+      "paper_id": "2611.08488v1",
+      "title": "Provable circuit-level thresholds for non-abelian topological phases",
       "authors": [
-        "Zack Weinstein",
-        "Samuel J. Garratt"
+        "Yuanjie Ren",
+        "Margarita Davydova",
+        "Shankar Balasubramanian",
+        "Andreas Bauer"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:59:47Z",
-      "summary": "We investigate quantum error correction protocols for topological codes deformed away from their stabilizer limits, particularly as they are pushed towards quantum phase transitions into trivial phases. Our focus is primarily on quantum information stored within the ground-state manifold of the transverse-field toric code (TFTC), subjected to independent bit-flip and phase-flip decoherence. Although the transverse field induces strong quantum fluctuations of $m$ anyons in the ground states, we show that projective measurements of the \"bare\" toric code stabilizers can nevertheless be used to construct an efficient decoding algorithm which exhibits a finite threshold to both types of decoherence, even when the transverse field is tuned infinitesimally close to the quantum critical point. Our construction of the optimal postmeasurement decoders---that is, the optimal decoders assuming that the stabilizers are first measured---crucially relies on the stoquastic nature of the TFTC Hamiltonian, which affords a description of its ground states in terms of a classical lattice gauge theory. Using stoquasticity, we first prove that stabilizer measurements act unitarily on the undecohered TFTC ground states to excellent approximation, and that the optimal postmeasurement decoder can be efficiently implemented via Monte Carlo simulation of a constrained lattice gauge theory. We then construct the optimal postmeasurement decoder for the TFTC states under bit-flip and phase-flip decoherence, where we numerically demonstrate a finite threshold close to the quantum critical point. We provide theoretical evidence (without a rigorous proof) that stabilizer measurements constitute an optimal decoding strategy in this setting. For phase-flip decoherence, we further prove that the optimal postmeasurement decoding threshold is independent of the transverse field strength throughout the topological phase.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05375v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cond-mat.stat-mech",
-      "categories": [
-        "cond-mat.stat-mech",
-        "quant-ph"
-      ],
-      "category_names_zh": [
-        "cond-mat.stat-mech (统计力学)",
-        "quant-ph (量子力学、量子通信与量子计算)"
-      ],
-      "comment": "56 pages, 20 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05369v1",
-      "title": "Quantum Pointwise Dimension (QUPID): An algorithm for identifying classical chaos in quantum dynamics",
-      "authors": [
-        "Jonathan Berkheim",
-        "David J. Tannor"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:57:43Z",
-      "summary": "The Pointwise Dimension is a diagnostic that reveals the effective dimensionality of classical trajectories in a $2N$-dimensional phase space. The essence of this diagnostic is to find a scaling according to which density changes with radius $r$ around a point of interest in phase space. Particularly, regular trajectories are confined to an $N$-dimensional invariant torus, while chaotic trajectories explore a $(2N-1)$-dimensional energy surface. In classical mechanics, this trajectory density can be found by counting recurrences to within the sphere of radius $r$. In quantum mechanics, probability density is intrinsic, making the Pointwise Dimension compelling, but surprisingly this has not been studied in the quantum regime. In this work, we implement the Pointwise Dimension in the quantum regime using the Husimi representation of the quantum wavepacket. This implementation entails a long-time average of the time-dependent Husimi representation to obtain a stationary phase space density, and a radial spatial integration of this density over a sphere of radius $r$. The classical-quantum correspondence is excellent for both autonomous and non-autonomous systems, adding a new diagnostic to the study of quantum chaos. Finally, we explore the possibility, both classically and quantum mechanically, of obtaining the Pointwise Dimension from a time correlation function.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05369v1.pdf",
+      "published_at": "2026-11-05T18:59:44Z",
+      "summary": "We provide an explicit scheme to realize a quantum memory in any 2D non-chiral topological order. For this, we construct syndrome extraction circuits based on the Turaev-Viro path integral as well as a classical algorithm for decoding on the fly. We prove that our scheme has a threshold under a local stochastic circuit-level noise model and discuss how to generalize it to implement topological logical gates.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08488v1.pdf",
       "source": "arxiv",
       "primary_category": "quant-ph",
       "categories": [
-        "quant-ph"
+        "quant-ph",
+        "cond-mat.str-el",
+        "math-ph"
       ],
       "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)"
+        "quant-ph (量子力学、量子通信与量子计算)",
+        "cond-mat.str-el (强关联电子系统)",
+        "math-ph (数学物理与严格推演)"
+      ],
+      "comment": "37 pages, 6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08484v1",
+      "title": "Evolution of Dust In Protoplanetary Disks With Magnetized Winds",
+      "authors": [
+        "Olcay Goksu",
+        "Ralph Pudritz",
+        "Timmy Delage"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:59:31Z",
+      "summary": "Observations and theory increasingly indicate that protoplanetary disks are weakly turbulent, implying that magnetized disk winds may dominate their angular momentum transport and long-term evolution. Yet dust evolution in wind-dominated disks remains poorly understood, despite its importance for planet formation. In particular, whether wind-dominated disk evolution can create regions with enhanced dust-to-gas mass ratios that enable planetesimal formation via the streaming instability is unclear. We build a parametric hybrid disk evolution model that includes turbulent accretion, wind-driven accretion, and wind-driven mass loss to investigate dust evolution in magnetized protoplanetary disks. We employ this model to carry out a parameter study in which the initial total accretion rate, the wind-driven mass loss rate, and the turbulence strength are varied. We find that although wind-dominated disks are more favorable to dust growth and concentration than turbulence-dominated disks, conditions suitable for the streaming instability arise only within the inner few au and only under the most extreme conditions: very weak turbulence ($α_\\text{turb} = 10^{-5}$) where magnetized winds drive most of the accretion ($\\dot{M}_\\text{acc,tot} \\simeq \\dot{M}_\\text{wind,acc}$), and wind-driven mass loss comparable to the accretion rate ($\\dot{M}_\\text{wind,outflow} \\simeq \\dot{M}_\\text{acc,wind}$). Our results therefore imply that, beyond the inner few au, the parametric wind-driven evolution models considered in the literature do not by themselves produce conditions suitable for planetesimal formation via the streaming instability, motivating more physically complete models in which spontaneous, long-lived dust traps can arise.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08484v1.pdf",
+      "source": "arxiv",
+      "primary_category": "astro-ph.EP",
+      "categories": [
+        "astro-ph.EP"
+      ],
+      "category_names_zh": [
+        "astro-ph.EP (地球与行星天体物理)"
+      ],
+      "comment": "23 pages, 13 Figures. Accepted for publication in the Astrophysical Journal",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08482v1",
+      "title": "Hypersurface covariance in relativistic local equilibrium",
+      "authors": [
+        "You-yu Li",
+        "Shuai Y. F. Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:59:25Z",
+      "summary": "Defining equilibrium typically requires specifying a three-dimensional spacelike hypersurface. While global equilibrium is hypersurface covariant, calculations involving local equilibrium can exhibit hypersurface dependence. In this work, we use polarization in heavy-ion collisions within the Zubarev response approach as an example to show that the hypersurface dependence arising from the local-equilibrium part of the density operator is canceled by an overlooked nondissipative contribution from its so-called ``dissipative part\". We establish a hypersurface-covariant Zubarev framework for general geometries by consistently including both nondissipative and dissipative parts, eliminating dependence on the arbitrary hypersurface vector. The remaining frame dependence is physical: it arises from the medium rest frame entering the particle distribution and the time direction of the dissipative process, which usually coincide. This resolves, in principle, the longstanding and widely discussed conceptual disagreement over hypersurface dependence between two influential studies addressing the sign puzzles of $Λ$-hyperon polarization in heavy-ion collisions",
+      "pdf_url": "https://arxiv.org/pdf/2611.08482v1.pdf",
+      "source": "arxiv",
+      "primary_category": "nucl-th",
+      "categories": [
+        "nucl-th",
+        "hep-ph"
+      ],
+      "category_names_zh": [
+        "nucl-th (核理论)",
+        "hep-ph (高能物理 - 唯象学)"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05367v1",
-      "title": "SBi3PCF: cosmology with Dark Energy Survey Year 3 cosmic shear",
+      "paper_id": "2611.08481v1",
+      "title": "Joint analysis of the Macquart relation and the dispersion measure power spectrum: cross-covariance and redshift self-calibration",
       "authors": [
-        "David Gebauer",
-        "Anik Halder",
-        "Zhengyangguang Gong",
-        "Cora Uhlemann"
+        "Amy Wayland",
+        "Robert Reischke"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:56:57Z",
-      "summary": "We present the first cosmic shear data analysis of the integrated 3-point correlation function (i3PCF), a higher-order weak lensing statistic, and the first simulation-based inference (SBI) analysis of a three-point cosmic shear correlation function on survey data. Using SBi3PCF, our previously developed SBI framework for the i3PCF, we jointly constrain the $w$CDM parameter space with the cosmic shear 2-point correlation functions $ξ_\\pm$ (2PCFs) and the i3PCFs $ζ_\\pm$ from the Dark Energy Survey Year 3 (DES Y3) weak lensing shape catalogue, from which we detect $ζ_\\pm$ with a signal-to-noise ratio of 12.8. Our forward model is built on the CosmoGridV1 N-body simulations and includes the survey mask, shape noise, intrinsic alignment, baryonic feedback, photometric redshift uncertainty and shear calibration bias. The analysis was carried out blind, with all choices frozen, and only unblinded once coverage tests, tests of the accuracy of the learned likelihoods, and internal consistency tests had been passed. For the joint $ξ_\\pm$ + $ζ_\\pm$ analysis we obtain $Ω_m = 0.272^{+0.038}_{-0.033}$, $S_8 = 0.784^{+0.024}_{-0.021}$ and $w_0 = -1.04^{+0.25}_{-0.19}$. Adding $ζ_\\pm$ improves the figure of merit in the $Ω_m$-$S_8$-$w_0$ parameter space by a factor of $1.59$ over $ξ_\\pm$ alone, as predicted by simulated i3PCF analyses. This gain comes from third-order information on angular scales $\\geq 15'$ and aperture radii $\\geq 50'$, a regime where baryonic effects are subdominant. The constraints are consistent with the other DES Y3 analyses of the same catalogue and with independent lensing analyses, and differ by at most $2.4σ$ from CMB and BAO data (Planck 2018 + BAO, in $Ω_m$-$S_8$-$w_0$). This shows that $ζ_\\pm$ can be analysed on cosmological survey data with a fully simulation-based approach, an important step towards Stage-IV surveys.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05367v1.pdf",
+      "published_at": "2026-11-05T18:59:19Z",
+      "summary": "The dispersion measures (DMs) of fast radio bursts (FRBs) trace ionised baryons along the line of sight, probing baryonic feedback. Two complementary observables can be constructed from an FRB catalogue: the DM-redshift (Macquart) relation of host-identified FRBs, and the angular power spectrum of the DM field of the full catalogue. Their joint analysis requires their cross-covariance. We derive it within the halo model and show it is a super-sample effect: only the monopole of an individual DM correlates with the angular power spectrum, yielding an exact, model-independent bound on the correlation coefficient. We validate the calculation against log-normal forward simulations of $10^4$ FRBs. For individual DMs, the correlation with the bandpowers is at the per cent level. Neglecting the cross-covariance changes the width of the $χ^2$ distribution by only 0.8 per cent, so the two observables can be treated as effectively independent for wide-area surveys. In a joint forecast with an LSST-like weak lensing survey, adding the Macquart relation tightens constraints on the physical baryon density by 32 per cent and on the mean host contribution by a factor of 4.1, while improving baryonification parameters by only about 5 per cent, indirectly through the host contribution. Finally, we show that the redshift distribution of FRBs without identified hosts, which enters every DM power spectrum, can be reconstructed by inverting their DMs with the jointly fitted mean relation without biasing the inferred parameters, whereas a 20 per cent error in the mean relation biases the DM power spectrum by up to 2$σ$ per band for $5\\times 10^5$ FRBs.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08481v1.pdf",
       "source": "arxiv",
       "primary_category": "astro-ph.CO",
       "categories": [
@@ -99,135 +128,384 @@
       "category_names_zh": [
         "astro-ph.CO (宇宙学与河外天体物理)"
       ],
-      "comment": "20 pages (4 figures, 6 tables) + appendices. Comments are welcome!",
+      "comment": "36 pages, 9 figures, submitted to JCAP",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05362v1",
-      "title": "Deconfinement Confined to the Heaviest Neutron Stars: Strange Quark Matter from a Flavor-Dressed Contact Interaction",
+      "paper_id": "2611.08479v1",
+      "title": "Flat-band systems: A platform to realize the moments of Quantum Metric",
       "authors": [
-        "Aftab Ahmad",
-        "Noreen Akhter",
-        "Alfredo Raya"
+        "Rishi Gangadhar",
+        "Binayyak Roy",
+        "Vito Scarola",
+        "Sumanta Tewari"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:55:23Z",
-      "summary": "We study cold, electrically neutral, beta-equilibrated quark matter with u, d, and s quarks described by a symmetry-preserving contact interaction whose parameters are fixed in vacuum. The vector repulsion is varied as a fraction 0 < eta < 3/2 of the scalar coupling, and results are given with and without the flavor dressing of the effective coupling. Pure quark matter is not self-bound in this model, and no value of eta produces a star that reaches two solar masses while satisfying the tidal constraint from GW170817; the heaviest configurations owe their mass to an envelope of constituent quarks. We then construct hybrid stars with a relativistic mean-field hadronic phase fitted to GM1 saturation properties, using both Maxwell and Gibbs constructions and a deconfinement bag shift. Tying deconfinement to chiral restoration and requiring a continuous pressure yields an upper bound on this shift. Within that bound, quark matter appears inside stable stars only for eta < 1/2, never below about 4 n0, and only in stars between 2.2 and 2.35Msun, over a stable mass window of at most 0.02Msun. The vector strength that pure quark stars need to become massive prevents deconfinement in hybrid stars. Radii and tidal deformabilities of intermediate-mass stars are therefore set by the hadronic EoS alone; with the softer SLy4 EoS the transition moves to the maximum-mass configuration itself.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05362v1.pdf",
+      "published_at": "2026-11-05T18:59:11Z",
+      "summary": "The quantum metric is a fundamental geometric property of Bloch bands that governs a wide range of physical phenomena, yet experimentally accessing it remains challenging. We show that the momentum-space variation of the quantum metric can be probed through the real-space dynamics of a Gaussian wave packet prepared in an isolated flat band. Following the application of a weak constant force, we demonstrate analytically that the leading order change in the wave-packet variance is linear in time and contains a contribution proportional to the wave-packet averaged gradient of the quantum-metric trace. This geometric contribution remains finite despite the absence of band dispersion. We illustrate the effect using a gapped Lieb lattice with an exactly flat middle band and vanishing Berry curvature, allowing the quantum-metric contribution to the spreading to be isolated. The numerical results agree with the analytical prediction and confirm the quantum-metric contribution to the wave-packet spreading. The required lattice preparation, tunable hopping amplitudes, applied force, and density measurements are compatible with established ultracold-atom techniques, providing a possible platform for observing the predicted response. Our results establish wave-packet spreading as a dynamical probe of quantum geometry in flat-band systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08479v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.quant-gas",
+      "categories": [
+        "cond-mat.quant-gas"
+      ],
+      "category_names_zh": [
+        "cond-mat.quant-gas (量子气体)"
+      ],
+      "comment": "17 pages, 7 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08476v1",
+      "title": "Defect Anomalies at a Distance",
+      "authors": [
+        "Oleksandr Diatlyk",
+        "Zimo Sun",
+        "Yifan Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:57:59Z",
+      "summary": "Surface defects carry Weyl and gravitational anomalies that generalize the central charges of two-dimensional conformal field theories (CFTs) and characterize the anomalous response of gapless surface modes to background geometry. These anomalies usually appear as contact terms on the defect. We explain how they are encoded at a distance, in scheme-independent integrated bulk stress-tensor correlators. We derive sum rules for them in terms of defect operator data, establish a lower bound on the boundary Weyl anomaly in three-dimensional CFTs, and illustrate our results with explicit examples.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08476v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-th",
+      "categories": [
+        "hep-th",
+        "cond-mat.str-el"
+      ],
+      "category_names_zh": [
+        "hep-th (高能物理 - 理论 (场论/弦论))",
+        "cond-mat.str-el (强关联电子系统)"
+      ],
+      "comment": "12 pages, 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08475v1",
+      "title": "Direct transition from a fractional Chern insulator to a topological superconductor",
+      "authors": [
+        "Taige Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:56:50Z",
+      "summary": "We find numerical evidence for a direct continuous transition from a Laughlin fractional Chern insulator (FCI) to a $c_-=3/2$ topological superconductor (TSC), driven by increasing bandwidth at filling $ν=1/3$ in a repulsively interacting Chern band. At the critical point, the electron correlation length diverges at momentum away from the reference Fermi surface. We develop a generalized theory of superconducting-vortex proliferation for this transition. Magnetic translation organizes the vortices into six valleys, so translation-preserving proliferation requires additional gauge fields. The resulting theory reproduces the momentum structure of the critical spectrum and captures the divergent electron correlation. Upon doping away from commensurate filling, the theory gives rise to a superconducting dome. These results are consistent with an anyonic origin of the topological superconductivity in the absence of a weak-coupling Fermi-surface instability.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08475v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.str-el",
+      "categories": [
+        "cond-mat.str-el",
+        "cond-mat.supr-con"
+      ],
+      "category_names_zh": [
+        "cond-mat.str-el (强关联电子系统)",
+        "cond-mat.supr-con (超导电性)"
+      ],
+      "comment": "5 pages, 4 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08473v1",
+      "title": "Correlations and fluctuations of flow with event shape engineering in Pb-Pb and Xe-Xe collisions at the LHC",
+      "authors": [
+        "ALICE Collaboration"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:56:11Z",
+      "summary": "Measurements of anisotropic flow provide some of the strongest constraints on the collective expansion and transport properties of the quark-gluon plasma produced in ultra-relativistic heavy-ion collisions. In this paper, correlations and fluctuations of the anisotropic flow coefficients $v_{2}$, $v_{3}$, and $v_{4}$ are measured in Pb-Pb and Xe-Xe collisions at $\\sqrt{s_{\\rm{NN}}} = 5.02$ and $5.44$ TeV, respectively, with the ALICE detector. The Event Shape Engineering technique, based on the reduced flow vector $q_{n}$, is used to study flow correlations for different initial-state geometries. A strong anticorrelation between $v_2$ and $v_3$ and a positive correlation between $v_2$ and $v_4$ are observed. A small anticorrelation is seen between $v_3$ and $v_4$. From the $v_2$-$v_4$ correlation, the linear and nonlinear components of $v_4$ are extracted and compared to those extracted using multiparticle correlations. The linear and nonlinear components of $v_{4}$ are also measured directly as a function of $q_2$ for the first time in Pb-Pb and Xe-Xe, revealing a strong coupling of the nonlinear term to the initial-state ellipticity $\\varepsilon_2$, while the linear component shows little dependence on initial-state geometry. Additionally, the coupling coefficient $χ_{4,22}$, which measures the nonlinear contribution of $v_2^2$ to $v_4$, is extracted and shows little dependence on $q_2$, except in very central collisions. The effects of flow fluctuations for constrained initial-state geometries are studied for the first time using Event Shape Engineering with the ratio of $v_2\\{2\\}$ and $v_2\\{4\\}$; the results show that collisions with the lowest $q_2$ exhibit more significant $v_2$ fluctuations compared to the unbiased ratio.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08473v1.pdf",
+      "source": "arxiv",
+      "primary_category": "nucl-ex",
+      "categories": [
+        "nucl-ex"
+      ],
+      "category_names_zh": [
+        "nucl-ex (核实验)"
+      ],
+      "comment": "28 pages, 15 captioned figures, authors from page 23, submitted to PLB, figures at http://alice-publications.web.cern.ch/node/13698",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08471v1",
+      "title": "The three-dimensional Galilean black hole",
+      "authors": [
+        "Luis Avilés",
+        "Oscar Fuentealba",
+        "Diego Hidalgo",
+        "Pablo Rodríguez"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:55:51Z",
+      "summary": "We report a novel solution of three-dimensional Galilean Anti-de Sitter gravity. The theory can be formulated as a topological gauge theory invariant under the doubly extended Newton-Hooke group in three dimensions. The solution possesses four conserved charges: energy, angular momentum, spin and rest mass. Interestingly, the magnitude of the spin turns out to bounded from above by the rest mass. The solution exhibits the thermal properties that define a black hole configuration in terms of its gauge theoretical description. Temperature, angular velocity and other chemical potentials are obtained from suitable regularity conditions associated with the topology of the Euclidean continuation of the solution. At zero temperature, an extreme configuration is shown to emerge provided the bound between the spin and the rest mass saturates.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08471v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-th",
+      "categories": [
+        "hep-th",
+        "gr-qc"
+      ],
+      "category_names_zh": [
+        "hep-th (高能物理 - 理论 (场论/弦论))",
+        "gr-qc (引力、黑洞与时空物理)"
+      ],
+      "comment": "7 pages, no figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08463v1",
+      "title": "Joint Bayesian Inference for Extraction of Charmonium Long Distance Matrix Elements Using PYTHIA",
+      "authors": [
+        "Yubo Liu",
+        "Rongrong Ma"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:53:36Z",
+      "summary": "We present a joint Bayesian extraction of the nonrelativistic QCD long-distance matrix elements (LDMEs) for $J/ψ$, $ψ(2S)$, and $χ_c$ production, using short-distance coefficients and feed-down structure implemented in PYTHIA 8.317. Rather than fitting each charmonium state separately, we construct channel-resolved responses that link parent production to daughter feed-down and infer all LDMEs simultaneously from 286 prompt charmonium measurements in $pp$ collisions at $\\sqrt{s}=5.02$-13 TeV at the LHC. The extracted LDMEs provide a good description of the data, with an overall $χ^2/\\mathrm{ndf}=1.18$. We also provide a positivity-constrained set that can be used directly as PYTHIA input. Using the extracted LDMEs, we predict prompt $J/ψ$ and $ψ(2S)$ cross sections at high transverse momentum in $pp$ collisions at $\\sqrt{s}=200$ GeV, which can be tested with RHIC data.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08463v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-ph",
+      "categories": [
+        "hep-ph"
+      ],
+      "category_names_zh": [
+        "hep-ph (高能物理 - 唯象学)"
+      ],
+      "comment": "15 pages, 10 figures, 4 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08461v1",
+      "title": "Quantum Knowledge Distillation: State-of-the-art, Applications and Open Problems",
+      "authors": [
+        "Aldana Al-Sulaiti",
+        "Kuan-Cheng Chen",
+        "Muhammad Bilal Akram Dastagir",
+        "Ahmed Farouk",
+        "Saif Al-Kuwari"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:53:05Z",
+      "summary": "Knowledge distillation transfers predictions, representations, or other supervisory information between learning models and is increasingly investigated in quantum machine learning. Its applications extend beyond compression to cross-architecture transfer, circuit approximation, distributed learning, and classical deployment of models trained using quantum-derived supervision. This survey reviews these approaches using two complementary classification axes: teacher-student configuration and the role of quantum resources in the distillation process. Quantum-inspired methods are discussed separately from methods that simulate quantum computations classically or execute them on quantum hardware. We explain how measurement probabilities, expectation values, classical readouts, state overlaps, and circuit-level objectives support different transfer mechanisms. We then critically assess the presented results against baseline design, execution conditions, uncertainty, and resource costs. The evidence shows that distillation can improve selected quantum students, but benefits are task- and architecture-dependent, and several studies find negligible gains or even performance degradation. Evaluations on physical quantum hardware remain limited, with some testing individual quantum components rather than complete learning pipelines. Heterogeneous protocols and incomplete resource reporting prevent general conclusions about practical quantum advantage. We identify priorities for controlled benchmarking, noise-aware learning, reproducible evaluation, and efficient transfer between quantum and classical models.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08461v1.pdf",
+      "source": "arxiv",
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph"
+      ],
+      "category_names_zh": [
+        "quant-ph (量子力学、量子通信与量子计算)"
+      ],
+      "comment": "21 pages, 3 figures, 4 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08460v1",
+      "title": "Room-Temperature Quantum Emission from Boron Nitride Nanotubes",
+      "authors": [
+        "Ke-Sean J. M. Peter",
+        "Ryan A. Kowalski",
+        "David A. Curie",
+        "Dakota Braaten",
+        "Matthew W. Day"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:51:59Z",
+      "summary": "Quantum information systems such as quantum key distribution and quantum communications require bright, high-purity, stable sources of single photons to act as carriers of quantum information. As such, methods for obtaining single photon emitters (SPEs) in solid-state devices capable of articulating with quantum photonic circuits are a necessary obstacle that must be overcome. Hexagonal boron nitride (hBN) flakes have been extensively studied as a host material for SPEs, though working in two dimensions is accompanied by engineering complexity. However, dimensionality can be reduced through the implementation of boron nitride nanotubes (BNNTs). Here we investigate the potential of BNNTs as room-temperature SPEs using confocal photoluminescence microscopy and Hanbury Brown-Twiss interferometry. Quantum emitters were found in BNNTs spanning the entirety of the visible spectrum, including spectral regions where SPEs within hBN have not been reported. Furthermore, each tube was found to possess multiple SPEs at varying emission wavelengths along the length, exhibiting lifetimes as fast as 0.5 ns, which is about two-fold faster than the fastest hBN SPEs. Additionally, we demonstrate that surface passivation/coating mitigates blinking events, therefore increasing the emitter stability. Thus, BNNTs can function as a single structure supporting a variety of multiwavelength SPE sources, while maintaining a compact radius of ~25 nm, making them ideally suited for deterministic placement and integration within nanophotonic devices such as waveguides and interferometric filters.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08460v1.pdf",
+      "source": "arxiv",
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph",
+        "physics.optics"
+      ],
+      "category_names_zh": [
+        "quant-ph (量子力学、量子通信与量子计算)",
+        "physics.optics (光学与光子学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08459v1",
+      "title": "Testing the Spin of New Physics with Top Precision Measurements",
+      "authors": [
+        "André Lessa",
+        "Vinícius Rocca",
+        "Veronica Sanz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:50:17Z",
+      "summary": "Precision measurements can reveal not only the presence of new physics, but also information about the dynamics that generated it. We study this question in top-pair production by comparing three top-philic scenarios: a colored scalar top partner, a colored vector-like fermion, and a spin-one $Z^\\prime$ mediator. The first two contribute through loop corrections, while the $Z^\\prime$ contributes at tree level. We show that the scalar and vector-like fermion scenarios match onto the same effective operator structure at low energies,making their distinction unfeasible using the EFT approach. However, near or above threshold their full loop amplitudes develop distinct momentum-dependent interference patterns. Using the top transverse momentum spectrum we find that resonant and loop-induced effects are relatively easy to distinguish, whereas separating the scalar and vector-like hypotheses is substantially more challenging. Nevertheless, their different analytic structures leave measurable information in the shape of the distribution. These results illustrate how precision differential measurements can probe the spin and dynamics of virtual new states even when they are not directly reconstructed, and motivate more powerful multidimensional analyses.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08459v1.pdf",
       "source": "arxiv",
       "primary_category": "hep-ph",
       "categories": [
         "hep-ph",
-        "hep-th",
-        "nucl-th"
+        "hep-ex"
       ],
       "category_names_zh": [
         "hep-ph (高能物理 - 唯象学)",
-        "hep-th (高能物理 - 理论 (场论/弦论))",
-        "nucl-th (核理论)"
+        "hep-ex (高能物理 - 实验)"
       ],
-      "comment": "21,7",
+      "comment": "33 pages, 12 figures. The datasets and code used to obtain all the results presented here as well as additional details are available in https://github.com/andlessa/UnfoldingBSMttbar/releases",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05357v1",
-      "title": "On the one-arm probability for the metric graph Gaussian free field in high dimensions",
+      "paper_id": "2611.08447v1",
+      "title": "Dynamical effects induced by synthetic SU(1,1) gauge fields",
       "authors": [
-        "Pierre-François Rodriguez",
-        "Jialu Shi",
-        "Wen Zhang"
+        "Chenwei Lv"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:53:57Z",
-      "summary": "We consider the sign clusters of the Gaussian free field on the cable system of a transient weighted graph with volume growth exponent $α$ and Green function decay exponent $ν$. We prove that the probability that the cluster of a vertex reaches distance $R$ is of order $R^{-β}$ when $2α<3ν$, where $β=α-ν$ is the walk dimension, and that the same holds up to a logarithmic factor in the upper bound when $2α=3ν$. On $\\mathbb Z^d$ these conditions read $d>6$ and $d=6$. The upper bound combines a general entropic bound, which compares the law of the cluster under the critical loop soup and under a massive one, with a Simon-Lieb-type inequality for the massive field derived from its Markov property. The arguments are robust and require no transitivity. The lower bound follows from a competition between the capacity and the volume of the cluster. In both bounds, the key quantity is the expected exit time of the random walk from balls, which links the volume of the cluster to its radius.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05357v1.pdf",
+      "published_at": "2026-11-05T18:43:17Z",
+      "summary": "Compact gauge fields are powerful tools for controlling quantum dynamics and topological phases of matter. Non-compact gauge fields are particularly relevant for open systems, where particles or energy are exchanged with the environment. Here, we investigate the wavepacket and entanglement dynamics induced by an $\\mathrm{SU}(1,1)$ gauge field. The wavepacket undergoes non-Abelian non-compact Bloch oscillations, in which the spectrum of an auxiliary one-dimensional quantum problem determines the transition between stable oscillations and unstable amplification. In the unstable adiabatic regime, the wavepacket probes an $\\mathrm{SU}(1,1)$ topological defect, and its amplification is determined solely by a hyperbolic solid angle in Minkowski space. Threading an $\\mathrm{SU}(1,1)$ gauge field through a bosonic tight-binding model yields the bosonic Kitaev model, whose volume or super-volume entanglement scaling is governed by the stability of the gauge field. We further propose an experimental realization of an $\\mathrm{SU}(1,1)$ gauge field in a spinor condensate. Our results can be generalized to other non-compact groups and higher dimensions, providing a geometric framework for entanglement control, selective amplification, and engineering energy transfer.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08447v1.pdf",
       "source": "arxiv",
-      "primary_category": "math.PR",
+      "primary_category": "cond-mat.quant-gas",
       "categories": [
-        "math.PR",
-        "math-ph"
+        "cond-mat.quant-gas",
+        "cond-mat.str-el",
+        "physics.optics",
+        "quant-ph"
       ],
       "category_names_zh": [
-        "math.PR (概率论与随机过程)",
-        "math-ph (数学物理与严格推演)"
+        "cond-mat.quant-gas (量子气体)",
+        "cond-mat.str-el (强关联电子系统)",
+        "physics.optics (光学与光子学)",
+        "quant-ph (量子力学、量子通信与量子计算)"
       ],
-      "comment": "17 pages",
+      "comment": "13 pages, 5 figures",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05356v1",
-      "title": "Breaking the quantum barriers for Graph Collision",
+      "paper_id": "2611.08444v1",
+      "title": "Polynomial-time classical simulation of boson and fermion sampling under thermal loss",
       "authors": [
-        "Arjan Cornelissen",
-        "Amin Shiraz Gilani",
-        "Shiva Kintali",
-        "François Le Gall",
-        "Subhasree Patro"
+        "Armando Angrisani",
+        "Hela Mhiri"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:53:06Z",
-      "summary": "In the graph collision problem, the task is to decide whether a known graph on $n$ vertices contains an edge with both endpoints marked, given query access to the input bits specifying the marked vertices. We first refute the conjectured $Ω(n^{2/3})$ query lower bound with a bounded error quantum algorithm using $\\widetilde O(n^{92/139})$ queries. We then refine this approach to obtain a $\\widetilde O(n^{11/17})$ query algorithm. We also obtain a $\\widetilde O((nq)^{11/17})$ query bound for all (partial) Boolean output functions with positive certificate complexity at most 2 and alphabet size $q$, contrasting a known $Ω(n^{2/3})$ lower bound for such problems with large alphabet sizes. We complement these algorithms with an $Ω(\\sqrt{n\\log n})$ quantum query lower bound for graph collision, exceeding the $O(\\sqrt n)$ certificate complexity barrier for the positive adversary method.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05356v1.pdf",
+      "published_at": "2026-11-05T18:36:21Z",
+      "summary": "Sampling experiments are a leading approach to demonstrating quantum computational advantage, yet their robustness to experimental noise is not completely understood. We develop a common framework for classical simulation of boson and fermion sampling under thermal loss, including pure loss. For Fock-state boson sampling, Gaussian boson sampling with fixed uniform squeezing, and fermion sampling with magic inputs, we obtain polynomial-time sampling at inverse-polynomial total variation error, for any fixed nonzero overall loss rate, and with high probability over Haar-random interferometers. A milder flatness assumption on the ideal output distribution suffices for quasipolynomial-time simulation without Haar randomness. With constant thermal loss per layer, the same flatness assumption gives polynomial-time simulation at logarithmic depth. Our bounds for Fock-state boson sampling cover both dilute and saturated regimes and become stronger near full input filling: when only a bounded number of input modes are empty, the noisy output for Haar-random interferometers converges, as the number of modes grows, to a distribution independent of the interferometer.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08444v1.pdf",
       "source": "arxiv",
       "primary_category": "quant-ph",
       "categories": [
         "quant-ph",
         "cs.CC",
-        "cs.DS"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "cs.CC (计算复杂性理论)",
-        "cs.DS (数据结构与算法)"
-      ],
-      "comment": "49 pages, 3 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05355v1",
-      "title": "Reading Why: Born-Measured Attention with Exact Word Evidence on Light and Qubits",
-      "authors": [
-        "Teerawat Tongloy",
-        "Jiraporn Pongsopa",
-        "Rangsan Jomtarak"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:52:44Z",
-      "summary": "When a language model answers, we can usually only estimate why. We build a transformer in which every step is a Born measurement - attention $|\\langle q|k\\rangle|^4$ normalised over each row, a measured product in place of the feed-forward nonlinearity, and a Born readout. With its denominators held at their values for the input, each class probability is a polynomial in the word amplitudes, so its integrated-gradient evidence is computed by a finite quadrature with no quadrature error: the words' contributions sum to the class probability above its no-information share, to $10^{-11}$ or better. On e-SNLI natural language inference, with about 98k parameters outside the embedding, the model reaches $76.98 \\pm 0.17$% test accuracy, level with a softmax transformer of the same size ($76.62 \\pm 0.36$%). Deleting the word its evidence ranks first changes the answer in 45% of test pairs, out of the 53% any single deletion can change, against 32% for the softmax model explained the same way and 40% by its attention x gradient. Attention can look more like the words annotators highlighted, yet accounts for the answer less well: deleting the word it ranks first changes the Born Transformer's answer in 32% of pairs. The same weights compile exactly to optoelectronic optics and to qubits, and a coherent attention layer becomes one circuit equal to the model (852 CNOTs on 23 qubits). On IBM's ibm_kingston, reading only the attention overlaps by Hadamard tests, the device gave the model's answers on two short test pairs and kept or changed them under deletion as the model does; the evidence itself did not yet survive the device, and we work out the shots and calibration that measuring it on hardware would need.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05355v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "cs.CL",
-        "cs.LG",
+        "math-ph",
         "physics.optics"
       ],
       "category_names_zh": [
         "quant-ph (量子力学、量子通信与量子计算)",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "cs.LG (机器学习 (ML))",
+        "cs.CC (计算复杂性理论)",
+        "math-ph (数学物理与严格推演)",
         "physics.optics (光学与光子学)"
       ],
-      "comment": "24 pages, 7 figures, 11 tables. Code, trained models, notebooks and the record of every IBM job: https://github.com/stein-research/reading-why",
+      "comment": "83 pages, 2 figures",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05354v1",
-      "title": "Interpretable Quantum Photonic Generative Models",
+      "paper_id": "2611.08440v1",
+      "title": "Signatures of Neutrinophilic Pion Dark Matter",
       "authors": [
-        "Dat Chi Le",
-        "Oleksandr Kyriienko"
+        "Claire Chevallier",
+        "Ji-Heng Guo",
+        "Giacomo Landini"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:52:34Z",
-      "summary": "We propose a physical generative model for learning correlated multivariate data based on homodyne detection of photonic continuous-variable (CV) circuits. We use an $N$-mode photonic circuit in which two-mode squeezing provides correlations, local phase shifts tune the strength and sign of these correlations, and an adjustable interferometer redistributes them across modes. We train the circuit by matching its Pearson correlation matrix to the one obtained from data. We apply affine post-processing to adjust the marginals independently while keeping the relations intact. We test the model on the multivariate distribution of standardized log returns of financial assets, showing that the photonic model can represent rich correlation structures. We reproduce empirical correlations with residuals below $10^{-4}$ for five variables and recover the correct correlation signs for $94\\% \\pm 1\\%$ of 190 correlation pairs at twenty variables, with $86\\%$ of the residuals below $0.1$. As a separate technical contribution, we develop an approach for simulating Kerr gates with small nonlinearity via a Hubbard-Stratonovich expansion, making them suitable for CV-based simulators. Our results establish CV photonic circuits as a platform for interpretable generative learning, suitable for representing and fast sampling of distributions across different application domains.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05354v1.pdf",
+      "published_at": "2026-11-05T18:31:52Z",
+      "summary": "We study the phenomenology of pion dark matter coupled to neutrinos in a confining sector that dynamically generates both small neutrino masses and dark matter mass from gauge confinement. Dark matter semi-annihilation to active neutrinos or annihilation to light sterile neutrinos can reproduce the observed relic abundance through thermal freeze-out while satisfying constraints from self-interactions. In the first scenario, semi-annihilations of sub-GeV dark matter in the galactic halo produce a flux of antineutrinos which can provide a viable interpretation for the mild electron antineutrino excess reported by the Super-Kamiokande collaboration. We assess the potential of the JUNO detector to test this interpretation. In the second scenario, light sterile neutrinos can leave signatures through displaced vertex searches at accelerator facilities.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08440v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-ph",
+      "categories": [
+        "hep-ph"
+      ],
+      "category_names_zh": [
+        "hep-ph (高能物理 - 唯象学)"
+      ],
+      "comment": "28 pages, 6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08437v1",
+      "title": "Deep-learning surrogate model for rapid quantum-noise computation in dual-pump fiber-optic phase-sensitive amplifiers",
+      "authors": [
+        "Yousra Bouasria",
+        "Debanuj Chatterjee",
+        "Abdessamad Belfakir",
+        "Debabrota Basu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:30:14Z",
+      "summary": "Fiber-optic parametric amplifiers in a phase-sensitive amplifier (PSA) configuration are well known for their low noise properties. Quantum mechanics dictates that these amplifiers can have a 0 dB noise figure (NF) (ratio of signal-to-noise ratio at the input and output of the amplifier) under certain conditions. However, for a dual-pump configuration, when the system is highly nonlinear, fully quantum calculations of NF become non-trivial. In such cases, semi-quantum models of NF evaluation exists, however, they are often complicated and resource intensive. To simplify that, in this work, first we use a semi-quantum NF calculation framework for the generation of numerically simulated input-output dataset of NF over a large parameter spaces. Then we use the data to train an optimized deep neural network (DNN) for rapid NF prediction. Utilizing the DNN, we demonstrate about 400 times reduction in the computation time compared to the standard semi-quantum NF evaluation approach with a mean absolute error (MAE) of 0.0015 dB. Using clustering we demonstrate a rapid exploration of the parameter space with respect to high gain (20 dB) and low NF (0.3 dB) targets and retrieve associated design parameters. These results illustrate the efficacy of machine learning-based approaches for rapid search of high-dimensional parameter spaces especially in compute intensive photonic systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08437v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics"
+      ],
+      "category_names_zh": [
+        "physics.optics (光学与光子学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08435v1",
+      "title": "Trapping and Fracture of Particles in Three-Sphere Ball-Milling Collisions",
+      "authors": [
+        "Ziyi Cui",
+        "Qiong Zhang",
+        "Suwei Liu",
+        "Richard M. Lueptow"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:28:30Z",
+      "summary": "We numerically investigate the collision and fracture processes of ball milling based on a minimal model of a three-sphere geometry using discrete element method (DEM) simulations combined with Christensen-type and Weibull-type normalized fracture criteria. The outcome of the brittle target particle (ejected versus trapped, fractured versus intact) depends on the impact geometry and velocity. We develop a reduced three-sphere collision description in which trapping is governed by impact geometry and friction, while fracture inside the trapping regime is evaluated from DEM output using stress-based and contact-force-based normalized criteria. The trapping regime follows a closed-form geometric condition, while the critical conditions for fracture vary with impact angle, obliquity angle, impact velocity, and particle size ratio. Head-on collisions with larger size ratios require lower critical impact velocities for fracture.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08435v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.soft",
+      "categories": [
+        "cond-mat.soft",
+        "physics.app-ph"
+      ],
+      "category_names_zh": [
+        "cond-mat.soft (软凝聚态物理)",
+        "physics.app-ph (应用物理学)"
+      ],
+      "comment": "16 pages, including Supplementary Information; 7 main-text figures and 1 supplementary figure",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08434v1",
+      "title": "DiffSequence-Q: Diffusion Design with Quantum Assistance for Biologically Active Proteins",
+      "authors": [
+        "Ke-Xin Tang",
+        "Zhen-Qiang Weng",
+        "Kai Yan",
+        "Yao-Yao Lu",
+        "Yu-Ze Zhu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:28:09Z",
+      "summary": "Designing protein sequences that satisfy both secondary structure requirements and solubility targets remains challenging. We present DiffSequence-Q, a hybrid multinomial diffusion model conditioned on secondary structure at each residue and a continuous solubility target. To introduce quantum auxiliary supervision during training, we employ a quantum neural network (QNN) or quantum Kolmogorov-Arnold network (QKAN) as an auxiliary solubility prediction head over shared Transformer representations. The auxiliary prediction loss is jointly optimized with the diffusion objective, allowing quantum auxiliary supervision to influence the learned denoising model. Once trained, protein sequences are generated entirely through classical reverse diffusion. On the CATH benchmark, DiffSequence-Q achieved the highest secondary structure recovery among the four evaluated models for complete sequence generation. Evaluation with a separately trained solubility prediction model showed that the best QNN and QKAN configurations achieved mean predicted solubility scores 14.0% and 22.7% higher than the multilayer perceptron (MLP) baseline, respectively. Experimental characterization further demonstrated biological activity across three distinct protein families. Selected defensins exhibited pronounced inhibitory activity against Aspergillus niger, while xylanases and short-chain dehydrogenases exhibited substantial enzymatic activity. Together, these results support DiffSequence-Q as a framework for integrating structural requirements and solubility targets in protein generation, with experimentally demonstrated biological activity.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08434v1.pdf",
       "source": "arxiv",
       "primary_category": "quant-ph",
       "categories": [
@@ -241,410 +519,134 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05353v1",
-      "title": "Beyond just a torus? Re-contextualising the AGN type paradigm using data-driven host galaxy quenching histories",
+      "paper_id": "2611.08427v1",
+      "title": "Quantum enhanced beam displacement estimation: sensitivity limits, optimal probes, and measurement schemes",
       "authors": [
-        "Sahyadri D. Krishna",
-        "Vivienne Wild",
-        "Paul C. Hewett",
-        "Victoria A. Fawcett",
-        "Omar Almaini"
+        "Balázs Novák",
+        "Pau Colomer",
+        "Joseph Zhang",
+        "Emre Köse",
+        "Manuel Gessner"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:52:02Z",
-      "summary": "The orientation of a dusty torus within a unified model explains the presence (Type-1) or absence (Type-2) of broad emission lines in Active Galactic Nuclei (AGN) spectra. This orientation-based unified model, however, fails to explain differences in host galaxy properties, such as star formation rates, of Type-1 and Type-2 AGNs. Star-formation histories (SFHs) can shed light on the connection between AGN type and host galaxy properties, but are challenging to extract from Type-1 AGN that outshine their host galaxies. We use mean-field independent component analysis (MFICA) spectrum decomposition to extract the stellar populations of $\\sim$3000 optically selected Type-1 and Type-2 AGN host galaxies from the seventh data release (DR7) of the Sloan Digital Sky Survey (SDSS), matched in redshift ($0.16 \\leq z \\leq 0.4$) and AGN luminosity ($6.5<\\log_{10} [L_{[OIII]}/L_\\odot] <9.5$). Using MFICA, we find that only $\\sim$10 per cent of AGN host galaxies have recently ($\\lesssim1$\\,Gyr) and rapidly quenched star formation following a starburst, with Type-2 AGN host galaxies having done so at most 100\\,Myrs more recently than Type-1 AGN host galaxies. For most ($\\sim$90 per cent) AGN hosts with normal recent star formation histories, Type-2 AGNs are associated with slightly younger stellar populations than Type-1 AGNs. The younger stellar populations of Type-2 AGN hosts can be explained by a link between dusty torus covering factors and stellar populations, by host-galaxy obscuration of AGN, or by an evolution in AGN type without major bursts or rapid quenching of star formation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05353v1.pdf",
+      "published_at": "2026-11-05T18:22:09Z",
+      "summary": "We investigate the ultimate sensitivity limits for measuring small transverse beam displacements and identify optimal strategies that attain them, using the framework of mode parameter estimation. We contrast two families of states with different resource constraints, using Hermite-Gauss and Laguerre-Gauss mode pairs. First, for fixed total photon number states, the optimal state is identified and we show that it asymptotically approaches a rotated NOON state. The sensitivity bound is compared to that of an asymptotically optimal pure Gaussian state with fixed average photon number. Finally, we propose concrete measurement schemes using the method of moments and show that the twin-Fock state may provide a viable alternative to the rotated NOON state for this task. Our work provides a broader benchmark for developing practical strategies for spatial sensing at the quantum limit.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08427v1.pdf",
       "source": "arxiv",
-      "primary_category": "astro-ph.GA",
+      "primary_category": "quant-ph",
       "categories": [
-        "astro-ph.GA"
+        "quant-ph"
       ],
       "category_names_zh": [
-        "astro-ph.GA (星系天体物理)"
-      ],
-      "comment": "14 pages, 9 figures, 1 table in main text. Accepted for publication in MNRAS",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05351v1",
-      "title": "Mapping large-scale structure without galaxy formation - combining fast radio bursts with CMB lensing",
-      "authors": [
-        "James M. Sullivan",
-        "Kiyoshi Masui",
-        "Ryan Raikman",
-        "Shion Andrew",
-        "Haochen Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:51:19Z",
-      "summary": "Fast radio bursts (FRBs) are an emerging precision probe of cosmological fluctuations. The amount and quality of observed FRB data will grow enormously over the next decade. FRB dispersion data directly probe the free electron distribution up to intergalactic scales. Precision models of the free electron distribution are necessary to exploit this exciting new probe of large-scale structure. We show that the free electron distribution almost exactly follows the total matter distribution. We confirm this fact by estimating the electron field-level bias parameters for the first time from the FLAMINGO simulations. With simulation-based knowledge of a handful of electron free parameters, the electron distribution largely acts as a second realization of the matter distribution. Working on large scales, we can leverage this fact to combine FRB correlations with those of Cosmic Microwave Background (CMB) weak lensing to constrain cosmological parameters. Assuming access to localized FRBs with redshifts, we perform cosmological forecasts using these two large-scale matter probes, which have no strong dependence on baryonic feedback models nor on parameters that encode galaxy formation. We show that the parameters $σ_8$ and $Ω_m$ are constrained at a level similar to or better than that obtained by combining FRB dispersion with weak lensing of galaxy shapes under conservative assumptions. These results motivate the use of FRB data as a complementary probe of cosmic structure and will be especially compelling as redshifts become available for localized FRB host galaxies.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05351v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.CO",
-      "categories": [
-        "astro-ph.CO"
-      ],
-      "category_names_zh": [
-        "astro-ph.CO (宇宙学与河外天体物理)"
-      ],
-      "comment": "27 pages, 12 figures, 10 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05349v1",
-      "title": "UV spectra of little red dots: Broad-line N/C, gas recycling and black hole masses",
-      "authors": [
-        "Albert Sneppen",
-        "Darach Watson",
-        "Lucy R. Ivey",
-        "Kasper E. Heintz",
-        "Alex J. Cameron"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:49:19Z",
-      "summary": "Radiative-transfer models of supermassive black holes accreting inside dense gas cocoons reproduce the X-ray-to-near-infrared spectral energy distribution of \"little red dots\" (LRDs) using the code Sirocco. In the ultraviolet, these models also predict weak broad emission lines and a series of metal absorption lines, which deep spectroscopy from the JWST SPURS survey now detects in several LRDs. Here we use the models to interpret these features. We find that N and C ions of equal charge (3+ or 2+) occupy largely the same gas in the simulations, such that the combination of the broad N IV]/C IV and N III]/C III] flux ratios simultaneously constrains both the electron density and the N/C abundance ratio of the gas in the LRD proper. The nitrogen and carbon emission of SPURS-GN-2, an LRD at $z=7.19$, requires an order of magnitude nitrogen excess compared to the solar value, N/C $= 12^{+3}_{-2}$ (N/C)$_\\odot$, in the broad-line gas with electron density $\\log n_e = 9.7^{+0.3}_{-0.5}$ cm$^{-3}$. Thus, around half the broad-line CNO nuclei have passed through hydrogen burning. Because the ionised gas is replaced on a century timescale, sustaining this enrichment favours gas recycling. UV absorption lines test this independently. In two of the four LRDs, line blueshift velocities clearly increase with the photon energy required to ionise the absorber gas. In the models the absorption lines are spatially stratified, indicating that the gas is launched near the escape speed and slowed by gravity. In GN-2, where the measurement can be made, the inferred deceleration requires radiation pressure close to the Eddington limit of a $10^{6-7}$ M$_\\odot$ black hole. The lines are also typically strongly saturated, making inferences of direct abundance ratios misleading.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05349v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.GA",
-      "categories": [
-        "astro-ph.GA"
-      ],
-      "category_names_zh": [
-        "astro-ph.GA (星系天体物理)"
-      ],
-      "comment": "11 pages, 10 figures. Comments are welcome",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05341v1",
-      "title": "Weight-space programming for auditing clinical decision networks",
-      "authors": [
-        "Humza Nusrat",
-        "Omar Nusrat"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:41:15Z",
-      "summary": "Machine learning models in radiotherapy are commissioned by testing them on cases with known answers, which may not reveal a shortcut that the test cases share with the training data. Frontier language models have recently been reported to read and write the raw weights of small neural networks, an ability called weight-space programming. The purpose of this study was to determine whether such a model, given only a clinical protocol and a network's weights, can audit and repair the network. Networks with 433 to 4,801 parameters were trained to screen head-and-neck planning requests against four rules. Flaws were planted through the training data: confounds that hid each rule, a 3 Gy shift in the cord threshold, and a hidden trigger. Claude Opus 5.5 audited each network blind, without tools, data or code execution, and every claim and repair was tested on about 420,000 requests. The language model named the broken rule in 16 of 18 flawed networks (95% CI 67% to 97%), including all 15 with a confound or a threshold shift. It repaired each of the 16 by changing a median of 3 parameters. Fine-tuning on protocol-labeled requests also repaired every network, but changed nearly every parameter. Each confound and shift it found was visible in single units, and a simple statistic chosen for each flaw type found the same flaws. It cleared 2 of 5 healthy networks without being forced and found 1 of 3 triggers. Testing against the protocol detected every flaw, and black-box testing found the confounds and the shift faster. The results indicate that, in small networks, weight-space programming can locate and repair flaws that silence an input or shift a threshold, but cannot yet certify that a network is correct.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05341v1.pdf",
-      "source": "arxiv",
-      "primary_category": "physics.med-ph",
-      "categories": [
-        "physics.med-ph",
-        "cs.AI"
-      ],
-      "category_names_zh": [
-        "physics.med-ph (医学物理学)",
-        "cs.AI (通用人工智能 (AI))"
-      ],
-      "comment": "13 pages, 3 figures, 3 tables. Code, networks and every model answer: https://github.com/hnusrat1/weightspace-rt. A reading guide for language models (llms.txt), the paper in Markdown and the data behind each figure and table are in the ancillary files",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05340v1",
-      "title": "MedPhysBench: A Benchmark for Evaluating Language Models on Medical Physics Calculations and Error Detection",
-      "authors": [
-        "Omar Nusrat"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:40:35Z",
-      "summary": "Medical physicists turn a prescription into a delivered dose and check one another's calculations, because one error in a beam calibration or a monitor-unit (MU) calculation can affect every patient treated with it. MedPhysBench has ten seeded generators of calculation items in radiation therapy, diagnostic imaging, nuclear medicine and radiation protection, up to clinical tasks such as a TG-51 calibration worksheet. Reference answers come from code implementing the governing protocols, and a grader converts units and applies tolerance bands. From the same inputs, separate checking items test error detection, showing a colleague's worksheet or only the colleague's result, half correct and half with one planted error. On a held-out test split of 1,200 items (half for two models), 12 models scored 33.3 to 100.0% on calculation. Of the nine answers graded incorrect for the four best (99.3-100.0%), five contained model errors and four followed NCRP Report 151 on points our items misstate or leave open. Below them, most models did worst on level-3 clinical tasks, and Claude Sonnet 5.5 omitted the inverse-square correction in 19 of 20 isocentric MU items. Five models detected at least 96.7% of mostly large planted errors with at most 4% false alarms; for four of the other seven, checking only the result raised false alarms significantly. In an exploratory targeted test with 20 public cases of an omitted inverse-square correction, the three best models tested caught it in every worksheet, and three weaker models accepted 16 to 18 of 20 planted worksheets, one of them while applying the correction in most of its own calculations. Claude Opus 5.5 accepted 6 of 20 wrong results, although it applied the correction in all 20 of its own. We report the effect of two problems in our shielding items, found after the runs, and release the code, per-item outcomes and targeted-test responses.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05340v1.pdf",
-      "source": "arxiv",
-      "primary_category": "physics.med-ph",
-      "categories": [
-        "physics.med-ph",
-        "cs.AI",
-        "cs.CL"
-      ],
-      "category_names_zh": [
-        "physics.med-ph (医学物理学)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.CL (计算语言与大语言模型 (NLP))"
+        "quant-ph (量子力学、量子通信与量子计算)"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05339v1",
-      "title": "Bond-valence theory is a general electrostatic valence rule",
+      "paper_id": "2611.08424v1",
+      "title": "Disorder-blind Mpemba acceleration of quantum state preparation",
       "authors": [
-        "M. L. Whittaker"
+        "M Nishanth",
+        "Shreyas Sadugol",
+        "Payman Mahmoudi",
+        "Alexander Yosifov",
+        "Aditya Iyer"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:39:34Z",
-      "summary": "Pauling's electrostatic valence rule assigns to each bond of a cation of charge $z$ with $n$ anion neighbors the strength $z/n$. Bond-valence theory replaces the equal split of valence among bonds by $s=\\exp[(R_0-d)/B]$ in the bond length $d$ and takes the sum rule, that the valences at each atom add to its formal charge, as its first axiom. Here the bond valence is defined in the electron density. Atomic basins of a first-principles density are bounded by faces, one per bond critical point, and the electric flux of that density through a face is a charge associated with the bond. The fluxes leaving a cation sum to its basin charge by Gauss's law, so on this surface the sum rule is a theorem. Across 3680 oxides, halides, chalcogenides and pnictides the flux follows the bond-valence law site by site, with a median deviation of ten percent. The softness $B$ varies nearly an order of magnitude from stiff sulfides to softer arsenides. In all cases it is set by the electrostatic flux at atomic basin faces. $R_0$ then follows from the bond lengths and their differences. Anion valences equal those of bonded cations to within 5\\% for most of the oxide, fluoride, sulfide and nitride sites. Transferability of $(R_0,B)$ between compounds fails in 96 of 106 families, suggesting that the softness is a local site property defined by the basin charge rather than a transferable constant of a given cation--anion pair. Eliminating $B$ by the sum rule gives $s=(z/n)^{(R_0-d)/(R_0-d_B)}$, Pauling's strength raised to a distance exponent at the softness-weighted mean bond length $d_B$. Thus, bond-valence theory is Pauling's rule with a distance exponent, and the electron density supplies the surface on which the two are equivalent.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05339v1.pdf",
+      "published_at": "2026-11-05T18:20:53Z",
+      "summary": "Using the strong Mpemba effect to accelerate relaxation by initial-state design requires suppressing the slowest mode, which typically needs prior knowledge of the system. However, in disordered systems, this mode is sample-dependent, so a fixed preparation generally retains a slow-mode overlap. We show that a ``blind'' preparation, designed from the clean chain without knowledge of the disorder realisation or its distribution, can start farther from stationarity yet overtake a reference in typical samples of a dephased disordered XX chain. It requires only the chain geometry and the particle number. At strong dephasing, the density dynamics maps to a resistor chain, and an exact inverse-generator identity links the residual overlap to the spatial resistance profile. We find two distinct thresholds: a finite mean resistance suffices for diffusion, but the residual overlap decays as $L^{-1/2}$ with chain length $L$ only when the resistance variance is finite; rare weak links slow this decay. We predict the fraction of samples in which the blind preparation wins, which is an ensemble-level measure of its reliability. Finite-size calculations support both scaling regimes with interactions at strong dephasing. We give preparation circuits and a density readout for the residual overlap.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08424v1.pdf",
       "source": "arxiv",
-      "primary_category": "cond-mat.mtrl-sci",
+      "primary_category": "quant-ph",
       "categories": [
-        "cond-mat.mtrl-sci"
-      ],
-      "category_names_zh": [
-        "cond-mat.mtrl-sci (材料科学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05338v1",
-      "title": "Bright Siren Cosmology Beyond Fisher: DALI Forecasts for Third-Generation Gravitational Wave Observatories",
-      "authors": [
-        "Mayara H. Pacheco",
-        "Josiel M. S. de Souza",
-        "Odylio D. Aguiar",
-        "Márcio E. S. Alves"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:39:14Z",
-      "summary": "In this work we assess non-Gaussian extensions of Fisher forecasting based on the Derivative Approximation for Likelihoods (DALI). We simulate ensembles of bright siren catalogs for third-generation observatories, adopting a Cosmic Explorer (CE) and a triangular Einstein Telescope (ET) network, frequency-domain inspiral waveforms, and selection-motivated priors for counterpart detection. We reconstruct approximate likelihoods using Fisher and the first DALI correction (Doublet), and propagate the inferred distance information to cosmological inference in a w0waCDM model. We find that the Doublet approximation provides tighter cosmological constraints than the Fisher approximation, reducing the inferred uncertainties by approximately a factor of two in agreement with non-approximate likelihood (called Exact) results. For our GW network onfiguration, 300 bright-siren detections up to z=1 yield an H0 precision of ~2.7% with the Doublet approximation, compared with ~2.5% for the exact likelihood. The adopted non-Gaussian GW priors induce a systematic displacement of the inferred luminosity distances from the fiducial values, which is also present in the exact GW reconstruction and propagates into the cosmological parameters. Compared with the exact cosmological likelihood, the Doublet results differ by only ~10% on average in the parameter uncertainties, compared with ~195% for the traditional Fisher approximation. The Doublet approximation also substantially reduces the computational cost, by a factor of ~55 for the GW analysis and by ~12 for cosmological likelihood evaluations, yielding an estimated reduction of ~55 in the total computational cost of the combined analysis. Our results show the potential of DALI-based approximations to provide accurate and computationally efficient tools for forecasting in bright siren cosmology.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05338v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.CO",
-      "categories": [
-        "astro-ph.CO",
-        "gr-qc"
-      ],
-      "category_names_zh": [
-        "astro-ph.CO (宇宙学与河外天体物理)",
-        "gr-qc (引力、黑洞与时空物理)"
-      ],
-      "comment": "33 pages, 15 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05336v1",
-      "title": "Higher-order interactions renormalize the thermodynamic signature of neural population codes",
-      "authors": [
-        "Narendra N. Hegade"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:38:14Z",
-      "summary": "Maximum-entropy models of neural recordings can be treated as Boltzmann distributions at a fictitious temperature $T$, with the fitted model at $T=1$. Their specific-heat peak grows with population size and approaches that temperature, which has been read as a sign of criticality. The case rests on pairwise models, yet retinal codes require higher-order interactions. The thermodynamics of a model with such interactions fitted cell by cell has not been computed. Here I compute it exactly for pairwise and third-order models of the same populations of up to $20$ retinal ganglion cells, in salamander and marmoset. The triplet terms, required by the held-out likelihood, shift the peak by more than the finite-sample bias, with opposite sign in the two retinas. The peak is lower and grows more slowly in salamander, higher and grows faster in marmoset, and lies closer to $T=1$ in both. An exact decomposition traces most of the shift to the energy variance across population spike counts. A constraint on the spike-count distribution alone reproduces all of it in salamander and over half in marmoset. A second recording of each species, re-binning, and a common-input surrogate show that the sign is set by the spike-count structure of a recording at its temporal resolution, not by species. The thermodynamic signature of a neural code is therefore set not by the data alone but by the interaction order of the model used to read it.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05336v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cond-mat.stat-mech",
-      "categories": [
-        "cond-mat.stat-mech",
-        "cond-mat.dis-nn"
-      ],
-      "category_names_zh": [
-        "cond-mat.stat-mech (统计力学)",
-        "cond-mat.dis-nn (无序系统与神经网络)"
-      ],
-      "comment": "5 pages, 3 figures, 1 table",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05333v1",
-      "title": "Toric gravitational instantons with four fixed points",
-      "authors": [
-        "Lars Andersson",
-        "Mattias Dahl",
-        "Gustav Nilsson"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:35:19Z",
-      "summary": "We classify the simply connected toric gravitational instantons whose torus action has four fixed points. They are the hyperkähler multi-Eguchi--Hanson and multi-Taub--NUT metrics with four collinear centres, the asymptotically flat instantons on Li and Sun's manifold $X_3$, up to scale one for each twist at infinity in $(0,1)$ for a fixed orientation of the torus, and, up to scale, a single further instanton with an ALF end, which is not hyperkähler. The last two are Hermitian for neither orientation. In particular, the toric asymptotically flat instanton on $X_3$ with a given twist is unique up to scale, as conjectured by Li and Sun. The proof combines the solitonic form of Geroch's conjecture, which turns smoothness into polynomial equations for the soliton data, with a convexity principle adapted from Aksteiner. At a fixed asymptotic parameter, the cone errors of the conical metrics with a given rod structure are the gradient of a strictly convex function of the rod lengths, and the strict convexity gives uniqueness. Existence follows from an explicit solution for the ALF end and, for the AF ends, from Li and Sun's existence theorem. We also outline how a chart of Aksteiner identifies these AF instantons with those found by Teo.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05333v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.DG",
-      "categories": [
-        "math.DG",
-        "gr-qc"
-      ],
-      "category_names_zh": [
-        "math.DG (微分几何)",
-        "gr-qc (引力、黑洞与时空物理)"
-      ],
-      "comment": "47 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05330v1",
-      "title": "Uniform local smoothing for the derivative NLS and the soliton mass threshold",
-      "authors": [
-        "Mohamed Majdoub"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:33:31Z",
-      "summary": "Harrop-Griffiths, Killip, Ntekoume and Vişan proved that the derivative nonlinear Schrödinger equation (DNLS) is globally well-posed in $L^2(\\mathbb{R})$. A key ingredient of their proof is a local smoothing estimate. It holds on $L^2$-equicontinuous sets of initial data, but it cannot hold on $L^2$-balls, because rescaled stationary solitons, all of mass $2π$, violate it. This raises a natural question: for which masses $m$ does local smoothing hold uniformly on the ball $\\{M(q_0)\\le m\\}$? We prove three results. First, we give a quantitative version of the local smoothing estimate in which the data enter only through the mass and an explicit frequency scale $κ(q_0)$. On time intervals of length $2T$ the bound grows like $1+κ(q_0)^2T$, and the stationary soliton shows that the power of $κ$ cannot be lowered below one. Second, we prove uniform local smoothing on balls of small mass, together with a scale-invariant Morrey-type form and a localized $L^4_{t,x}$ bound. Third, we analyse the soliton family from both sides. The uniform constant must blow up at least like $(2π-m)^{-1}$ as $m\\uparrow 2π$, while every soliton of mass $m<2π$ satisfies local smoothing with a constant $O((2π-m)^{-1})$. These facts single out the stationary-soliton mass $2π$, which is also the Hayashi--Ozawa coercivity threshold, as the natural candidate for the sharp threshold. We formulate this as a conjecture, give a spectral reformulation in terms of the Kaup--Newell scattering data, and discuss the obstacles to a proof.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05330v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.AP",
-      "categories": [
-        "math.AP",
-        "math-ph"
-      ],
-      "category_names_zh": [
-        "math.AP (偏微分方程 (PDE))",
-        "math-ph (数学物理与严格推演)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05329v1",
-      "title": "An Exact QFT/Lattice Map for Fermions",
-      "authors": [
-        "Shu-Heng Shao",
-        "Nikita Sopenko"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:33:22Z",
-      "summary": "We construct an exact map between continuum fermion fields and lattice fields in 1+1 dimensions. This map rewrites a continuum Hamiltonian as a lattice Hamiltonian with nearest-neighbor couplings and an infinite-dimensional local Hilbert space. The resulting lattice model reproduces exactly the energy spectrum, global operator algebra, chiral symmetries, and anomalies of the continuum QFT on any finite lattice. Unlike domain wall fermions, truncating the local Hilbert space introduces no extra massless modes, and the entanglement entropy of an interval converges as the truncation is removed. The lattice local algebras are of type I and lie between the type III continuum algebras of nested spatial regions, in accordance with the split property. We demonstrate this construction explicitly for $N$ Majorana fermions, realizing the $\\mathrm{O}(N)_\\mathrm{L}\\times\\mathrm{O}(N)_\\mathrm{R}$ lattice chiral symmetry. We also construct an exact lattice model for the Schwinger model and numerically reproduce the mass gap $e/\\sqrtπ$.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05329v1.pdf",
-      "source": "arxiv",
-      "primary_category": "hep-th",
-      "categories": [
-        "hep-th",
-        "cond-mat.str-el",
-        "hep-lat",
-        "math-ph"
-      ],
-      "category_names_zh": [
-        "hep-th (高能物理 - 理论 (场论/弦论))",
-        "cond-mat.str-el (强关联电子系统)",
-        "hep-lat (高能物理 - 格点理论)",
-        "math-ph (数学物理与严格推演)"
-      ],
-      "comment": "13 pages, 7 figures, 1 table",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05328v1",
-      "title": "SN 2019qem: decades of extreme mass loss before the explosion of a luminous, long-lived Type IIn supernova",
-      "authors": [
-        "Joysankar Majumdar",
-        "Mariusz Gromadzki",
-        "Takashi J. Moriya",
-        "David A. H. Buckley",
-        "Priscila J. Pessi"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:33:01Z",
-      "summary": "We present the luminous, long-lived Type IIn SN 2019qem and use it to reconstruct how much mass its progenitor lost and when. We combine host-subtracted optical and mid-infrared photometry and 26 optical spectra from -22 to +699 d. We model the bolometric light curve with thin-shell CSM-interaction models in REDBACK, with the shock velocity constrained by the H$α$ line widths, and compare them with an analytic interaction model. SN 2019qem rose in $\\approx30$d to $M_I = -20.5$mag and a bolometric peak of $7.0\\times10^{43}$ erg s$^{-1}$, and radiated $6.9\\times10^{50}$ erg in the optical within 575 d, closely resembling luminous, strongly interacting SNe IIn such as SN 2010jl and SN 2015da. A Heii/Niii flash feature at -22 d and unresolved narrow Balmer lines reveal dense, slow CSM. From +78 to +445 d the H$α$ wings are shaped by electron scattering, and the line stays blueshifted by 400-700 km s$^{-1}$, which points to an optically thick, asymmetric interaction region rather than to newly formed dust. In the preferred model, $\\approx7 M_\\odot$ of ejecta run into $\\approx9 M_\\odot$ of gas ejected $\\approx2$ yr before explosion and then into a wind of $\\approx0.6 M_\\odot$ yr$^{-1}$ (for $v_w = 100$ km s$^{-1}$), sweeping up $\\approx32 M_\\odot$ by +544 d. The mid-infrared excess brightens for two years while the optical fades, tracing dust heated by the ongoing interaction. The host is a low-mass, star-forming galaxy, $\\log(M_*/M_\\odot) = 9.19$, with a sub-solar metallicity at the explosion site. In its final decades the progenitor of SN 2019qem lost mass far faster than any steady stellar wind, ending with an eruption of $\\approx9 M_\\odot$ two years before core collapse, consistent with luminous-blue-variable-like eruptive mass loss. Taken at face value, the mass budget implies an initial progenitor mass of $\\gtrsim40 M_\\odot$.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05328v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.HE",
-      "categories": [
-        "astro-ph.HE",
-        "astro-ph.SR"
-      ],
-      "category_names_zh": [
-        "astro-ph.HE (高能天体物理)",
-        "astro-ph.SR (太阳与恒星天体物理)"
-      ],
-      "comment": "Submitted to A&A with 20 pages, 15 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05327v1",
-      "title": "Remap for ALE Hydrodynamics via Direct Interpolation and Constraint Optimization",
-      "authors": [
-        "Brendan Keith",
-        "Dohyun Kim",
-        "Boyan Lazarov",
-        "Ketan Mittal",
-        "Cosmin G. Petra"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:30:22Z",
-      "summary": "This work presents an optimization-based remap approach for arbitrary Lagrangian-Eulerian (ALE) hydrodynamics that preserves sharp features and physical bounds while conserving global quantities such as volume, mass, momentum, and total energy. Achieving these properties is the main challenge in remap methods. The presented approach is well-suited for high-order finite element (FE) discretizations and ALE methods that allow for large, purely Lagrangian displacements between successive remeshing and remapping steps. Recent advances in parallel, GPU-capable interpolation routines enable the initial transfer of all fields via direct physical-space interpolation, avoiding computationally costly and diffusive pseudo-transient PDE-based advection. The interpolation produces bounded fields with minimal numerical diffusion. However, it may violate the desired conservation of global properties. Thus, a subsequent optimization step restores conservation while preserving physical bounds. The presented method provides minimally diffusive remapping of finite element fields of arbitrary order. Moreover, it directly remaps quantities defined at integration points, eliminating the need for projection onto finite element spaces. The approach also mitigates typical challenges associated with synchronizing primal variables and conserved quantities in advection-based remap methods. The proposed optimization-based remap method is evaluated using standard two- and three-dimensional remap benchmarks and full ALE hydrodynamics simulations.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05327v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.NA",
-      "categories": [
-        "math.NA",
-        "physics.comp-ph"
-      ],
-      "category_names_zh": [
-        "math.NA (数值分析与科学计算)",
-        "physics.comp-ph (计算物理学)"
-      ],
-      "comment": "13 pages, 7 figures, 4 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05326v1",
-      "title": "Exact Rokhsar-Kivelson points hosting first-order phase transitions in $S=1$ compass models",
-      "authors": [
-        "Jay Pandey"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:29:09Z",
-      "summary": "We study $S=1$ compass models on the square and kagome lattices with bond-dependent bilinear and biquadratic interactions parametrized by an angle $θ$. For compatible geometries, we determine the exact ground-state manifolds throughout the interval $π/4\\leqθ\\leq3π/4$. At each endpoint, a product of on-site unitaries maps the Hamiltonian to the Laplacian of a configuration graph $\\mathcal{G}$ in the $S=1$ Cartesian basis. These endpoints are exact Rokhsar-Kivelson (RK) points, with one ground state per dynamically connected component of $\\mathcal{G}$. Each such state is an equal-amplitude superposition in the transformed basis and acquires configuration-dependent phases upon transforming back to the original basis. Both models possess $m=O(L)$ independent and mutually commuting conserved $\\mathbb{Z}_2$ line charges, where $L$ is the linear system size, forcing a ground-state degeneracy of at least $2^m$ at the RK endpoints. Throughout the interior region, $π/4<θ<3π/4$, the ground-state manifold on each lattice is instead spanned by two product states, both annihilated by the Hamiltonian. On both lattices, each RK endpoint also hosts a first-order transition into this intervening interior phase spanned by the two product states with long-range order.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05326v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cond-mat.stat-mech",
-      "categories": [
-        "cond-mat.stat-mech",
+        "quant-ph",
+        "cond-mat.dis-nn",
         "cond-mat.str-el"
       ],
       "category_names_zh": [
-        "cond-mat.stat-mech (统计力学)",
+        "quant-ph (量子力学、量子通信与量子计算)",
+        "cond-mat.dis-nn (无序系统与神经网络)",
         "cond-mat.str-el (强关联电子系统)"
       ],
-      "comment": "9+2 pages, 4 figures. Comments are welcome!",
+      "comment": "21 pages, 10 figures",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05322v1",
-      "title": "Electromagnetic signatures of gradual magnetic dissipation in jets from supermassive black holes",
+      "paper_id": "2611.08422v1",
+      "title": "Torsion talks only to spin: the CMB temperature as a test of energy exchange in Einstein-Cartan cosmology",
       "authors": [
-        "Stavros Dimitrakoudis",
-        "Maria Petropoulou",
-        "Stamatios I. Stathopoulos",
-        "Dimitrios Giannios"
+        "Fernando Izaurieta",
+        "Samuel Lepe",
+        "Cristian Quinzacara"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:26:25Z",
-      "summary": "Context. Blazar jets -- collimated and relativistic plasma outflows viewed at small angles -- are prolific sources of non-thermal radiation. Aims. We develop a numerical framework for calculating the emission from an extended blazar jet where gradual energy dissipation, mediated through magnetic reconnection, takes place across a wide range of distances from the supermassive black hole. Methods. We adapt the open-source radiative transfer code LeHaMoC that self-consistently calculates photon spectra from relativistic charged particles that occupy a spherical blob to treat the emission from an extended jet. The jet is treated as a series of segments that interact with each other through radiative transfer. The effects of radiation spillage are calculated iteratively throughout the jet, accounting for relativistic effects arising from the relative motion between jet segments, until a steady state is reached. Results. We find that this approach produces some distinct differences in the total spectral energy distribution compared to the results obtained by adding the emission escaping from each constituent segment of the jet (optical thin regime), increasing the part of the spectrum affected by inverse Compton scattering by a factor of three. However, the latter is always far less luminous than the synchrotron component, even when enhanced by external radiation fields. Conclusions. Gradual magnetic dissipation in jets from supermassive black holes leads to nearly universal, synchrotron-dominated photon spectra. The numerical framework developed here is readily adaptable to a broad range of jet dissipation scenarios and applications to extended jet emission.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05322v1.pdf",
+      "published_at": "2026-11-05T18:19:36Z",
+      "summary": "The cosmic microwave background temperature at $z=0.886$ is known to $2\\%$ from molecular absorption towards PKS~1830$-$211; CO absorbers and Sunyaev-Zel'dovich clusters extend the measurement to $z\\simeq3$. We use them on a question that cosmologies with torsion leave open. When the geometry exchanges energy with several matter components, which of them receives it? In Einstein-Cartan theory the Noether identities of each sector fix the answer. A sector's energy-momentum fails to be conserved only in proportion to its own spin, so minimally coupled light, which has none, is conserved whatever the torsion does. A metric-affine cosmology fitted to DESI DR2 distributes the exchange ``universally'' among all fluids, radiation included; the photons then gain almost a third of their energy. If the photons stay a blackbody, as FIRAS requires of any source set by local conditions, the model predicts a background colder than $T_{0}(1+z)$ by $7\\%$ at $z\\simeq0.9$ and by $8.5\\%$ at $z\\gtrsim3$, with no free parameter. PKS~1830$-$211 gives $5.08\\pm0.10\\,\\mathrm{K}$ against a predicted $4.78\\,\\mathrm{K}$; with the CO absorbers it favours the standard scaling by $Δχ^{2}=13$, and 18 Planck cluster bins give $χ^{2}=50.8$ versus $15.5$. Under the same reading the primary anisotropies would change their spectral shape by amounts Planck excludes. If dark matter carries the spin instead, $H(z)$ moves by less than $10^{-4}$ below $z=3$ at the fitted parameters and $T(z)$ is standard again.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08422v1.pdf",
       "source": "arxiv",
-      "primary_category": "astro-ph.HE",
+      "primary_category": "gr-qc",
       "categories": [
-        "astro-ph.HE"
+        "gr-qc",
+        "astro-ph.CO"
       ],
       "category_names_zh": [
-        "astro-ph.HE (高能天体物理)"
+        "gr-qc (引力、黑洞与时空物理)",
+        "astro-ph.CO (宇宙学与河外天体物理)"
       ],
-      "comment": "15 pages, 16 figures, submitted to A&A",
+      "comment": "31 pages, 1 figure",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05317v1",
-      "title": "Simple proof of conditions requiring maximal entanglement for local state verification and discrimination",
+      "paper_id": "2611.08411v1",
+      "title": "Low-Rank Tensor Manifolds for Turbulent Field Reconstruction from Sparse Data",
       "authors": [
-        "Somshubhro Bandyopadhyay"
+        "Nazmus Sakib",
+        "Alexander G. Mychkovsky",
+        "Hessam Babaee"
       ],
       "year": 2026,
-      "published_at": "2026-11-03T18:23:48Z",
-      "summary": "For deterministic state verification by separable measurements, the Schmidt rank of an entangled resource must be at least that of the state being verified [N. Yu, R. Duan, and M. Ying, IEEE Trans. Inf. Theory 60, 2069 (2014)], and if the two are equal, the resource must be maximally entangled [S. Akibue, J. Miyazaki, and H. Osaka, Lett. Math. Phys. 116, 110 (2026)]. The latter was derived from a general theorem proved using algebraic geometry. In this paper, we give a simple, self-contained proof of both statements using only linear algebra. We then use these results to show that among pure entangled resources of local dimension at most $d$, a maximally entangled state of $\\mathbb{C}^d\\otimes\\mathbb{C}^d$ is necessary and sufficient for perfect local discrimination of a generic orthogonal basis of $\\mathbb{C}^d\\otimes\\mathbb{C}^d$, however weakly entangled. The same holds for local implementation of a generic orthogonal measurement.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05317v1.pdf",
+      "published_at": "2026-11-05T18:17:02Z",
+      "summary": "Reconstructing turbulent flow fields from sparse and irregular measurements remains challenging because the underlying inverse problem is severely underdetermined. Here we present MANTRA, a manifold-based tensor framework that represents each velocity component in a continuous tensor-product space while constraining its coefficient tensor to a low-rank Tucker manifold. This structure provides a compact, data-adaptive representation without requiring gridded observations or governing equations. Riemannian optimization and adaptive selection of rank and basis complexity enable the model to exploit coordinate-wise spatiotemporal correlations. In simulations of forced isotropic turbulence and flow over a cylinder, MANTRA recovers multiscale structures at sampling densities orders of magnitude below the underlying grids and remains accurate under Gaussian noise up to 20% of the peak velocity. It also recovers leading coordinate-wise correlation structures from sparse observations. Applied to experimental particle-tracking velocimetry of an oscillating impinging jet, MANTRA reveals time-evolving structures that are not apparent from the scattered measurements alone.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08411v1.pdf",
       "source": "arxiv",
-      "primary_category": "quant-ph",
+      "primary_category": "physics.flu-dyn",
       "categories": [
-        "quant-ph"
+        "physics.flu-dyn"
       ],
       "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)"
+        "physics.flu-dyn (流体动力学)"
       ],
-      "comment": "9 pages",
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08410v1",
+      "title": "Tensor Networks for Block Adaptive Thermal Radiation Transport",
+      "authors": [
+        "Alex A. Gorodetsky",
+        "Patrick D. Mullen",
+        "Aditya S. Deshpande",
+        "Joshua C. Dolence",
+        "Chad D. Meyer"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:16:16Z",
+      "summary": "Thermal radiation transport (TRT) is computationally challenging because the photon specific intensity depends simultaneously on space, angle, and frequency, producing a high-dimensional state space whose cost grows rapidly with resolution. Tensor-network methods, such as the tensor train (TT) decomposition, can mitigate this curse of dimensionality when the solution admits low-rank structure, but localized nonseparable structure can drive substantial rank growth. Adaptive mesh refinement (AMR) provides a complementary means of making high spatial resolution tractable by concentrating resolution on features of interest that would otherwise be prohibitively expensive to resolve. When tensor representations are constructed locally on AMR blocks, this decomposition offers an additional advantage: nonseparable structure can remain confined to the blocks in which it occurs rather than driving rank growth throughout the domain. This paper introduces a framework for combining block-adaptive mesh refinement with block-local tensor-train representations of the photon specific intensity. The approach couples spatial adaptivity with localized low-rank compression, allowing fine-scale features to be resolved while limiting the impact of locally complex structure on tensor ranks elsewhere in the domain. We develop conservative ghost-cell transfer, coarse-fine flux correction, and refinement criteria that balance spatial discretization and tensor-rounding errors. Numerical experiments demonstrate that the method preserves low-rank structure across much of the domain while resolving localized features with AMR, achieving compression factors exceeding $\\sim$10$^3$. The resulting framework provides a practical foundation for applying tensor-network methods to high-dimensional TRT on the multiscale, adaptively refined meshes encountered in radiation hydrodynamics simulations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08410v1.pdf",
+      "source": "arxiv",
+      "primary_category": "astro-ph.IM",
+      "categories": [
+        "astro-ph.IM"
+      ],
+      "category_names_zh": [
+        "astro-ph.IM (天文仪器与方法)"
+      ],
+      "comment": "34 pages, 15 figures, LA-UR-26-24582",
       "journal_ref": null,
       "ai_summary": null
     }
@@ -653,46 +655,51 @@
     {
       "code": "quant-ph",
       "name_zh": "量子力学、量子通信与量子计算",
-      "count": 6
+      "count": 8
+    },
+    {
+      "code": "cond-mat.str-el",
+      "name_zh": "强关联电子系统",
+      "count": 5
+    },
+    {
+      "code": "hep-ph",
+      "name_zh": "高能物理 - 唯象学",
+      "count": 4
+    },
+    {
+      "code": "physics.optics",
+      "name_zh": "光学与光子学",
+      "count": 4
+    },
+    {
+      "code": "astro-ph.EP",
+      "name_zh": "地球与行星天体物理",
+      "count": 2
+    },
+    {
+      "code": "astro-ph.IM",
+      "name_zh": "天文仪器与方法",
+      "count": 2
     },
     {
       "code": "math-ph",
       "name_zh": "数学物理与严格推演",
-      "count": 4
-    },
-    {
-      "code": "hep-th",
-      "name_zh": "高能物理 - 理论 (场论/弦论)",
-      "count": 3
-    },
-    {
-      "code": "cond-mat.stat-mech",
-      "name_zh": "统计力学",
-      "count": 3
+      "count": 2
     },
     {
       "code": "astro-ph.CO",
       "name_zh": "宇宙学与河外天体物理",
-      "count": 3
-    },
-    {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
       "count": 2
     },
     {
-      "code": "astro-ph.GA",
-      "name_zh": "星系天体物理",
+      "code": "cond-mat.quant-gas",
+      "name_zh": "量子气体",
       "count": 2
     },
     {
-      "code": "physics.med-ph",
-      "name_zh": "医学物理学",
-      "count": 2
-    },
-    {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
+      "code": "hep-th",
+      "name_zh": "高能物理 - 理论 (场论/弦论)",
       "count": 2
     },
     {
@@ -701,28 +708,23 @@
       "count": 2
     },
     {
-      "code": "cond-mat.str-el",
-      "name_zh": "强关联电子系统",
-      "count": 2
-    },
-    {
-      "code": "astro-ph.HE",
-      "name_zh": "高能天体物理",
-      "count": 2
-    },
-    {
-      "code": "hep-ph",
-      "name_zh": "高能物理 - 唯象学",
-      "count": 1
-    },
-    {
       "code": "nucl-th",
       "name_zh": "核理论",
       "count": 1
     },
     {
-      "code": "math.PR",
-      "name_zh": "概率论与随机过程",
+      "code": "cond-mat.supr-con",
+      "name_zh": "超导电性",
+      "count": 1
+    },
+    {
+      "code": "nucl-ex",
+      "name_zh": "核实验",
+      "count": 1
+    },
+    {
+      "code": "hep-ex",
+      "name_zh": "高能物理 - 实验",
       "count": 1
     },
     {
@@ -731,23 +733,13 @@
       "count": 1
     },
     {
-      "code": "cs.DS",
-      "name_zh": "数据结构与算法",
+      "code": "cond-mat.soft",
+      "name_zh": "软凝聚态物理",
       "count": 1
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 1
-    },
-    {
-      "code": "physics.optics",
-      "name_zh": "光学与光子学",
-      "count": 1
-    },
-    {
-      "code": "cond-mat.mtrl-sci",
-      "name_zh": "材料科学",
+      "code": "physics.app-ph",
+      "name_zh": "应用物理学",
       "count": 1
     },
     {
@@ -756,33 +748,8 @@
       "count": 1
     },
     {
-      "code": "math.DG",
-      "name_zh": "微分几何",
-      "count": 1
-    },
-    {
-      "code": "math.AP",
-      "name_zh": "偏微分方程 (PDE)",
-      "count": 1
-    },
-    {
-      "code": "hep-lat",
-      "name_zh": "高能物理 - 格点理论",
-      "count": 1
-    },
-    {
-      "code": "astro-ph.SR",
-      "name_zh": "太阳与恒星天体物理",
-      "count": 1
-    },
-    {
-      "code": "math.NA",
-      "name_zh": "数值分析与科学计算",
-      "count": 1
-    },
-    {
-      "code": "physics.comp-ph",
-      "name_zh": "计算物理学",
+      "code": "physics.flu-dyn",
+      "name_zh": "流体动力学",
       "count": 1
     }
   ]

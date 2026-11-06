@@ -1,98 +1,45 @@
 {
   "query_expression": "cat:eess.SY",
   "total_fetched": 25,
-  "total_results": 49683,
+  "total_results": 49892,
   "papers": [
     {
-      "paper_id": "2610.40644v1",
-      "title": "Adaptive Scenario Generation for KL-DRO Around a Learned Density Model",
+      "paper_id": "2611.06900v1",
+      "title": "Human Mobility Sensing Using Wall-Reflected Beamformed Millimeter-Wave Communication Signals",
       "authors": [
-        "Aron Brenner",
-        "Saurabh Amin"
+        "Tony DiMichele",
+        "Raees Matheen Mullah",
+        "Christian Lopez Garcia",
+        "Zahra Najafi",
+        "Mohammed E. Eltayeb"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T17:59:01Z",
-      "summary": "Distributionally robust optimization (DRO) hedges data-driven two-stage stochastic programs against error in the distribution estimated from a finite record, and standard ambiguity sets differ in how they treat realizations absent from that record. A divergence ball around the empirical distribution contains only reweightings of the record, whereas a transport ball also contains distributions supported off the record, including on realizations the data-generating process cannot produce, against which the decision is then hedged as well. We instead propose a Kullback-Leibler (KL) ball centered at a density model fitted to the record, the learned nominal, which lets the adversary up-weight costly unobserved realizations in proportion to the probability the model assigns them. Solving the resulting problem poses a second difficulty, because it can accommodate only a few scenarios, and an independent sample of that size is likely to omit the rare realizations on which the worst case concentrates. We therefore build the scenario set adaptively, alternating between solving the finite problem and drawing new realizations from the learned nominal, steered toward the worst case at the current decision, with importance weights that correct the draws back to the model. On a multi-item newsvendor problem and a capacity expansion problem on realistic grid data, centering the ball at the learned nominal rather than at the record lowers cost under distribution shift, at comparable in-distribution cost, when the record is scarce and the model class captures structure that lets it extrapolate beyond the record. The advantage fades as the record grows or as the shift departs from the structure the model has learned.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40644v1.pdf",
+      "published_at": "2026-11-04T18:49:15Z",
+      "summary": "Existing millimeter-wave (mmWave) communication beam patterns spatially weight human-scattered signals and shape the received-power signatures induced by human motion. We exploit these beam-shaped signatures for device-free walkingpace and walk-direction classification using a wall-reflected 60.8-GHz link with closely spaced phased arrays and fixed communication beamforming vectors. Human movement alters the interference between wall-reflected and scattered signals, producing power oscillations surrounding a central blockage fade. A beam-dependent interference model provides a physical interpretation of these signatures. Using received-power statistics from a continuous-tone experiment, we extract fade duration for walking-pace classification and pre/post-fade asymmetries for walk-direction classification. Measurements comprise 144 crossings from three participants along perpendicular and diagonal trajectories. Under leave-one-participant-out validation, logistic regression achieves 86.1% binary and 79.2% three-class walking pace accuracy, and 77.1% travel-direction accuracy. The results demonstrate mobility sensing using fixed communication beams without channel estimation, Doppler processing, or dedicated radar hardware",
+      "pdf_url": "https://arxiv.org/pdf/2611.06900v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
-        "eess.SY",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40597v1",
-      "title": "Analog Realization and Measurement of a Forced Aliev-Panfilov Excitable Oscillator",
-      "authors": [
-        "Zixuan Fu",
-        "Unnikrishna Pillai"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T17:50:11Z",
-      "summary": "A single resistor moves a discrete analog realization of the forced Aliev-Panfilov excitable oscillator from a chaotic operating point of the model to a regular one. In this model a rate parameter multiplies the complete right-hand side of the excitation equation, forcing term included. The input resistor of the excitation integrator sets that parameter, so no state, delay element, or controller is added. Sampled waveforms were recorded at two resistor values, with two independent runs each. The measured excitation excursion agrees with numerical integration to within three percent at the baseline setting and five percent at the rate-controlled setting. Between the two settings the excitation excursion contracts by a factor of thirteen. At the rate-controlled setting the recovery excursion exceeds prediction by a factor of eight. This excess traces to a displaced operating point on the state-dependent recovery rate. Thermal drift in the multiplier chain and leakage at the high-impedance recovery-rate divider could each produce it, and the present data do not separate them. A tested bipolar input stage strongly loads that divider, a constraint absent from the ideal equations. The divider, not the sub-hertz signal bandwidth, sets the amplifier input-stage requirement.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40597v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY",
-        "nlin.CD"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "nlin.CD (混沌动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40559v1",
-      "title": "A Tutorial on Shape Servoing of Deformable Objects-Part I: Fundamentals",
-      "authors": [
-        "Ignacio Cuiral-Zueco",
-        "Alessio Caporali",
-        "Miguel Aranda",
-        "Gianluca Palli",
-        "Gonzalo López-Nicolás"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T17:40:56Z",
-      "summary": "In robotics, shape control (or shape servoing) refers to the automatic manipulation of a deformable object to achieve a desired shape. It involves a feedback loop that exploits the relation between robot motion and changes in the measured shape. This relation, known as the interaction Jacobian or, in this context, the deformation Jacobian, depends on the object's mechanical properties, geometry, and boundary conditions (e.g., where the object is grasped). Because these factors are often difficult to model accurately, the deformation Jacobian can be estimated locally from observed shape changes produced by commanded robot motions, without requiring a fine-tuned mechanical model. This article is the first of a two-part tutorial on data-driven Jacobian-based shape control of deformable objects. It introduces the central elements of the approach: the formulation of the shape-control problem, shape representation, estimation and online update of the deformation Jacobian, and a standard control law from the literature. It then assembles these elements into a complete shape-servoing loop, derives a local stability condition for this loop, and illustrates why some target shapes cannot be reached. Part II covers more advanced topics. Throughout both parts, a simulated planar example in which two robot arms manipulate an elastic rod observed by a camera illustrates the concepts.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40559v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO",
         "eess.SY"
       ],
       "category_names_zh": [
-        "cs.RO (机器人学与具身智能)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "Part I of a two-part tutorial. 9 pages, 5 figures. Code: https://github.com/nachocz/tutorial_on_shape_servoing_of_deformable_objects. Interactive demos: https://nachocz.github.io/tutorial_on_shape_servoing_of_deformable_objects/",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40542v1",
-      "title": "A Behavioral approach to Constrained Linear Quadratic Control: Feasibility and Optimality",
+      "paper_id": "2611.06887v1",
+      "title": "Risk-Sensitive Stochastic Optimal Control on Positive Cones",
       "authors": [
-        "Soutrik Bandyopadhyay",
-        "Debasattam Pal",
-        "Shubhendu Bhasin"
+        "Mohamad Al Ahdab",
+        "John-Josef Leth"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T17:36:13Z",
-      "summary": "This paper develops a constrained linear-quadratic (LQ) optimal control framework within the behavioral approach. Unlike classical formulations that rely on state-input representations, our method treats both the system dynamics and the constraints as trajectory-level objects. The system is modeled through a kernel representation, while inequality constraints are captured using behavioral inequalities defined over infinite-dimensional convex cones. Using quadratic differential forms (QDFs) to encode performance indices, we formulate the constrained LQ problem as a convex variational optimization over trajectories. By employing Gateaux differentials, we derive the stationarity and complementarity conditions and show that they admit a representation as an augmented behavioral system whose unique decomposition into autonomous and controllable sub-behaviors yields a complete parameterization of all optimal constrained trajectories. The resulting conditions constitute a behavioral analogue of the Karush-Kuhn-Tucker (KKT) framework. A numerical example illustrates the effect of inequality constraints on the optimal behavior. The framework provides a general, trajectory-level representation for constrained optimal control and opens avenues for closed-loop and data-driven extensions.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40542v1.pdf",
+      "published_at": "2026-11-04T18:41:32Z",
+      "summary": "We consider stochastic optimal control problems in which the state is constrained to a proper cone. Specifically, we consider risk-neutral, risk-averse, and risk-seeking formulations within a single entropic-risk framework. We investigate classes of problems whose Bellman operator preserves affine functions and characterize their optimal value functions and feedback policies for both finite-horizon and time-average infinite-horizon problems. Additionally, we establish convergence and state-bound results under finite-step cost observability. Moreover, we demonstrate an exact connection between entropic-risk optimal control on proper cones and deterministic infsup control for systems whose dynamics and stage costs are affine in the disturbances. In addition, we provide examples of classes of systems for which explicit solutions can be obtained.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06887v1.pdf",
       "source": "arxiv",
       "primary_category": "math.OC",
       "categories": [
@@ -103,21 +50,131 @@
         "math.OC (运筹学、优化与控制论)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "Accepted for publication at IEEE Indian Control Conference 2027",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40502v1",
-      "title": "A Two-Wheeled Quadrotor with All-Clockwise Tilted Rotors for Level-Attitude Surface Locomotnion",
+      "paper_id": "2611.06850v1",
+      "title": "Extremal-Phase-Guided Sequential Convex Optimization: Model Order Reduction",
       "authors": [
-        "Takumi Ito",
-        "Satoshi Nakano"
+        "Mustafa Oğuz Yeğin",
+        "Hitay Özbay",
+        "Tomáš Vyhlídal"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T17:20:22Z",
-      "summary": "Conventional wheel-equipped quadrotor UAVs must tilt their bodies to generate lateral forces, limiting their ability to maintain a desired attitude during lateral motion. This paper proposes a wheeled quadrotor with all-clockwise tilted rotors that uses surface contact as a constraint to generate propulsion along the contact surface without tilting the vehicle. We analyze feasible forces and system controllability under surface contact and optimize the vehicle design considering different rotor-spin configurations. The optimization results show that a configuration in which all four rotors spin clockwise can generate a larger tangential force than the conventional alternating-spin configuration. This approach enables both aerial and contact-based locomotion without additional rotor-tilting actuators or mechanisms. Simulation results demonstrate both hovering in free space and horizontal locomotion on a floor while maintaining a level attitude.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40502v1.pdf",
+      "published_at": "2026-11-04T18:06:00Z",
+      "summary": "Fixed-order frequency-weighted H-infinity approximation is a nonconvex problem, and local optimization methods can be sensitive to initialization. We present extremal-phase-guided sequential convex optimization (EPGSCO) for stable fixed-order rational approximation. We introduce a novel phase-guidance technique motivated by the all-pass structure underlying optimal Hankel-norm approximation, with a phase template fitted to the error-magnitude derivative at dominant peaks. We integrate this guidance with dominant-peak selection, focused frequency grids, and adaptive pole-residue and polynomial-coefficient updates to address stagnation and improve approximation accuracy. CD-player examples and benchmarks with known optimal errors evaluate the algorithm against established methods. Comparisons with classical sequential convex optimization (SCO) under shared settings for the common components assess the combined contribution of phase guidance and adaptive frequency refinement. Results demonstrate improved accuracy in most of the tested cases and attainment of the known optimum from four tested initializations for a constructed order-42 benchmark, with additional computation in some cases.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06850v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "20 pages, 6 figures, 6 tables, submitted to International Journal of Control",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06822v1",
+      "title": "Excitability of High-Frequency Positive Feedback",
+      "authors": [
+        "Gustave Bainier",
+        "Arthur Fyon",
+        "Christian Fernandez Lorden",
+        "Alessio Franci"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T17:32:34Z",
+      "summary": "What is the threshold of an excitable system, i.e. the criterion that distinguishes rest from excitation? Previous research has shown that this question is far from trivial to answer. This paper studies the threshold of a simple excitable primitive in which excitability arises from the positive feedback interconnection of a first-order high-pass filter and a static, strictly monotone and strictly convex activation function. This threshold is a simple inequality on the difference between the instantaneous input and the motif's internal memory. While this result may help neuro-engineers characterize spiking in biological and artificial neurons, we argue that excitability is not always a desirable property, and that our threshold may also be relevant to safety considerations in fragile systems with rate-induced tipping points. We illustrate our framework with three examples: the FitzHugh-Nagumo model of neuronal dynamics, a model of stop-loss cascades in the stock market, and a social contagion model.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06822v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "6 pages, 7 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06807v1",
+      "title": "CMS ECAL Phase-2 upgrade: characterisation and stability analysis of a three-stage low-voltage power-conversion system",
+      "authors": [
+        "Liv Anke Richter",
+        "Günther Dissertori",
+        "Werner Lustermann",
+        "Krzysztof Stachon"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T17:23:36Z",
+      "summary": "As part of the High-Luminosity upgrade of the Large Hadron Collider, the front-end electronics of the Compact Muon Solenoid electromagnetic calorimeter barrel are being replaced. A three-stage low-voltage power-conversion system supplies the upgraded electronics. As the cascade dynamics require characterisation to ensure stable operation, interactions between the three converter stages are assessed at their two interfaces using the Nyquist criterion. A validated shunt-injection setup using a Bode 100 frequency-response analyser provides in-situ impedance measurements under load to assess the accuracy of the averaged converter models. Results show that both interfaces are stable over the evaluated configurations, with modelled minimum distances to the critical point of 0.76 and 0.79, respectively. A turn-on study identifies capacitor charging at Stage 3 as the main cause of inrush currents triggering Stage 2 overcurrent protection. Two Stage 3 board variants stagger converter enables within and between boards, keeping the measured two-tower current below 5 A, within the 8.0 A protection threshold.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06807v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.ins-det",
+      "categories": [
+        "physics.ins-det",
+        "eess.SY",
+        "hep-ex"
+      ],
+      "category_names_zh": [
+        "physics.ins-det (仪器与探测技术)",
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "hep-ex (高能物理 - 实验)"
+      ],
+      "comment": "7 pages, 6 figures. Proceedings of the Topical Workshop on Electronics for Particle Physics (TWEPP 2026), 28 September - 2 October 2026, Castelldefels, Spain. Submitted to JINST",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06802v1",
+      "title": "ConDR: Conservative Reachability through Neural Hamilton-Jacobi Subsolutions",
+      "authors": [
+        "Kendra Givens",
+        "Taylor T. Johnson",
+        "Bryan C. Ward",
+        "Thomas Beckers"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T17:18:50Z",
+      "summary": "Hamilton-Jacobi (HJ) Reachability identifies the unsafe states of a dynamical system from which it can be forced into failure under worst-case disturbance. However, classical grid-based solvers scale exponentially with state dimension. DeepReach improves scalability by replacing the grid with a neural value function trained on the HJ-Isaacs (HJI) variational inequality (VI), but penalizes both sides of the residual equally. This allows the learned value to lie above the true one and unsafe states to be misclassified as safe. We propose Conservative DeepReach (ConDR) which aims to learn a subsolution of the HJI VI such that the learned unsafe set contains the true one. ConDR enforces the obstacle branch and terminal condition by construction, pushes the HJI residual to a safety margin $ε$ below zero with a one-sided loss, and prevents the degenerate solution of classifying everything as unsafe. We prove that the exact solution of the margin-shifted VI that ConDR trains toward is a subsolution of the original VI so its unsafe set contains the true one and its value lies within $ετ$ of the true value function. We compare against DeepReach and MADR in the established systems of Air3D, Air6D, a 9D multi-vehicle system, and a 13D quadrotor. ConDR reports the lowest rate of unsafe state misclassified and the lowest closed-loop collision rates with at most a small increase in intervention. On Air3D and Air6D, ConDR tolerates model mismatch that scales with $ε$. At matched false-negative rates, ConDR's unsafe sets are smaller than the baselines showing the safety is not obtained by trivial over-approximation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06802v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.RO (机器人学与具身智能)",
+        "cs.LG (机器学习 (ML))",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "8 pages, 4 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06702v1",
+      "title": "When to Ask for Help: Uncertainty-Triggered Aerial Refinement for Off-Road Navigation",
+      "authors": [
+        "Pranay Samineni",
+        "Adam Thorpe",
+        "John Chubick",
+        "Anand Balakrishnan",
+        "Christian Ellis"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T16:02:59Z",
+      "summary": "Heterogeneous air-ground teams can use aerial sensing to address the limited range and viewpoint of ground-vehicle sensors, but deciding when the UGV needs assistance and what information the UAV should collect remains a challenge. This paper presents a planner-conditioned air-ground assistance method that evaluates how uncertain map information affects the UGV's current MPPI rollouts. When navigation remains degraded, we score the same rollouts under resolved map hypotheses, select the map layer with the largest useful improvement, request the corresponding aerial measurement, fuse the returned information, and replan. Unlike approaches driven by fixed support roles, task structure, or uncertainty alone, our method conditions assistance on whether resolving uncertainty improves predicted ground navigation. Across 180 simulation trials on three off-road routes, the method achieves 98.9% goal attainment while reducing mean UAV flight time by 87.7% relative to continuous greedy aerial mapping. Aggregated across the routes, each second of estimated UAV flight time saves 2.94 s of UGV navigation time. Field experiments spanning approximately 2 km of UGV operation demonstrate uncertainty resolution and successful navigation recovery.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06702v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.RO",
       "categories": [
@@ -128,158 +185,168 @@
         "cs.RO (机器人学与具身智能)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": null,
+      "comment": "Project page: https://anonymous.4open.science/w/when-to-ask-for-help/",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40473v1",
-      "title": "Fundamental Limits of Sampling-Based Reachability: Geometry and Flow Distortion",
+      "paper_id": "2611.06690v1",
+      "title": "System-Theoretic Analysis of Extended Cellular Potts Models for Tumor Invasion",
       "authors": [
-        "Jixian Liu",
-        "Ihab Tabbara",
-        "Hussein Sibai",
-        "Enrique Mallada"
+        "Andrea Tramaloni",
+        "Simone Baroncini",
+        "Sofia Avnet",
+        "Nicola Baldini",
+        "Giuseppe Notarstefano"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T17:08:36Z",
-      "summary": "Sampling-based reachability estimates reachable sets from finitely many simulated trajectory endpoints. Existing guarantees often control missed probability mass or approximation error relative to the convex hull of the reachable set, leaving the geometric error relative to the reachable set incompletely characterized. We study this error as a problem of support estimation under flow distortion. Our assumptions combine a uniform lower bound on the local volume density of the initial set, a lower bound on the sampling density, and a one-sided Lipschitz constant $μ$ for the vector field. These conditions admit initial sets with corners and dynamics that may expand or contract. In the fine-accuracy regime, $\\tilde{\\mathcal O}\\bigl(2^ne^{nμT}(R/r)^n/(ρκ)\\bigr)$ independent endpoint samples suffice for Hausdorff accuracy $r$ using the endpoint cloud. Here, $n$ is the state dimension, $T$ is the horizon, $R$ is the volume-equivalent radius, and $ρ$ and $κ$ quantify sampling density and local volume density. For $n\\ge2$ and sufficiently small $κ$, a minimax lower bound over all estimators based only on independent endpoints matches these dependencies up to a dimension-dependent factor $2\\cdot4^n$ and logarithmic factors, within the stated parameter range and when the state domain accommodates the construction. The exponential burden in dimension, and in the horizon for expanding systems, is therefore intrinsic to this observation model. Planar experiments illustrate the predicted effects of corners and contraction; robot-arm experiments show how empirical accuracy deteriorates with dimension.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40473v1.pdf",
+      "published_at": "2026-11-04T15:55:57Z",
+      "summary": "The Cellular Potts Model has emerged as a standard framework for modeling multicellular systems and metastatic progression. Yet, computational extensions incorporating cell movement within spatial gradients of Extracellular Matrix (ECM), an important element of the tissue microenvironment, lack theoretical foundations. This work provides a system-theoretic formulation and analysis of Extended Cellular Potts Models (ECPMs) that explicitly couple tumor dynamics with ECM degradation. We reformulate the ECPM as an interconnected dynamical system: a stochastic process describing a network of locally interacting tumor cells coupled to a jump-linear system describing ECM evolution. By exploiting the sparse energy structure of the model, we characterize asymptotic ECM behavior, transition probabilities with uniform bounds, and global system convergence. In one-dimensional settings, we derive closed-form expressions for invasion time probabilities, revealing how mean invasion time depends on local ECM gradients, number of cells and their tendency to maintain a target volume. Numerical simulations validate theoretical predictions, establishing a principled foundation for analyzing haptotaxis-driven invasion in Potts-based models.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06690v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
         "eess.SY",
-        "cs.RO"
+        "q-bio.CB"
       ],
       "category_names_zh": [
         "eess.SY (系统与控制理论 (Systems and Control))",
-        "cs.RO (机器人学与具身智能)"
-      ],
-      "comment": "16 pages, 9 figures, 3 tables. Extended version of the CoRL 2026 paper; submitted to IEEE Transactions on Automatic Control. Code: https://github.com/JeanLew01/reachapprox",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40427v1",
-      "title": "socx: GPU-Accelerated Chance-Constrained Stochastic Optimal Control using JAX",
-      "authors": [
-        "Tanmay Dokania",
-        "Yashwanth Kumar Nakka"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T16:50:11Z",
-      "summary": "In this article, we present socx, a GPU-accelerated solver for lifted convex reformulations of linear stochastic optimal control under chance constraints, implemented in JAX. We demonstrate that by exploiting the sparse and independent structure of the problem, distributed optimization can reduce it to simpler problems: independent linear-quadratic tracking (LQT) problems and Euclidean projections onto sets. These simpler problems can be solved in parallel and then coupled using the constraints. To validate our solver, we run it on a hover-linearized 3D quadrotor and show a speed-up of up to $98\\times$ over MOSEK and up to $2224\\times$ over SCS. socx also solves horizons up to $N=1120$, whereas MOSEK runs out of memory at $N=320$. We present ablations to isolate the key components that enable the speed-up.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40427v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY",
-        "cs.RO"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "cs.RO (机器人学与具身智能)"
+        "q-bio.CB (细胞行为学)"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40387v1",
-      "title": "Finite-Sample LTI System Identification from a Misspecified Finite Model Set",
+      "paper_id": "2611.06689v1",
+      "title": "Cognitive and Behavioural Effects of Haptic Feedback for ROV Teleoperation in Hazardous Environments",
       "authors": [
-        "Nicolas Chatzikiriakos",
-        "Andrea Iannelli"
+        "Joshua Brown",
+        "Ildar Farkhatdinov",
+        "Michael Jenkin"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T16:27:39Z",
-      "summary": "We consider the problem of finite-sample identification of an unknown LTI system from a finite hypothesis class. In contrast to existing results that assume the hypothesis class contains the true system, we consider the misspecified setting, where the true system does not belong to the hypothesis class. We first characterize the resulting estimation target and its dependence on the data-generation scheme. We then establish a finite-sample lower bound on the failure probability that any identification algorithm must incur. Finally, we analyze the robustness of an existing exponential weighting-based identification algorithm to the misspecification and derive a finite-sample upper bound on its failure probability. Our results illustrate when using a misspecified finite hypothesis class can provide an advantage over identification without prior knowledge of the candidate systems.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40387v1.pdf",
+      "published_at": "2026-11-04T15:55:47Z",
+      "summary": "Teleoperating a Remotely Operated Vehicle (ROV) in complex underwater environments presents unique challenges. Dynamic, three dimensional obstacles and unseen water currents pose real risks to expensive robotic hardware in environments in which recovery can be next to impossible. This paper explores the cognitive effects of haptic feedback to improve vehicle safety in such environments. An in-water study is analysed with a ROV exposed to controlled cross-currents, with environmental information presented via a soft and vibrating haptic touchpad. Results demonstrate that while encountering an unseen cross-current significantly increases an operator's physical and temporal demand, the introduction of haptic feedback mitigates these factors and improves self-assessed performance. Interestingly, the haptic condition also produced the highest levels of mental demand and operator frustration. Despite this increased mental workload, operators drove the ROV significantly faster when receiving haptic cues compared to the current-only condition, indicating a higher level of user confidence. Ultimately, these findings suggest that while haptic feedback may initially require more cognitive processing to interpret unseen hazards, it successfully enhances operator awareness and promotes more confident navigation in hazardous environments.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06689v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.HC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.RO (机器人学与具身智能)",
+        "cs.HC (人机交互 (HCI))",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Accepted for IEEE Telepresence 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06665v1",
+      "title": "To lift or not to lift: Operator inference for nonlinear PDEs with boundary control",
+      "authors": [
+        "Zhuoyuan Wang",
+        "Yorie Nakahira",
+        "Wael H. Ali",
+        "Saviz Mowlavi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T15:40:43Z",
+      "summary": "Operator inference (OpInf) provides a nonintrusive framework for learning projection-based reduced-order models directly from data, but its standard formulations do not explicitly account for the fact that boundary actuation changes the admissible solution space of a PDE. This paper develops and evaluates a boundary-consistent, lifting-based OpInf formulation for nonlinear PDEs with time-varying inhomogeneous boundary conditions. The proposed approach decomposes the state into a known lifting component that satisfies the prescribed boundary conditions and a homogeneous component represented in a POD basis. Substituting this decomposition into the governing dynamics reveals a boundary-consistent reduced model structure in which the learned dynamics includes bilinear state-input and quadratic input-input interactions for quadratically nonlinear PDEs. The resulting operators are inferred from data, preserving the nonintrusive character of OpInf while guaranteeing boundary condition satisfaction by construction. Numerical experiments on boundary-actuated heat, Burgers, and lid-driven cavity problems show that the lifted formulation improves boundary compliance and can enhance prediction accuracy, solver stability, and computational efficiency, although these gains vary across problems and reduced model dimensions. Overall, this study establishes lifting as a principled extension of OpInf for boundary-actuated PDEs, clarifies when and how this formulation improves performance, and indicates that standard OpInf can remain an effective alternative in certain regimes.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06665v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.NA",
+      "categories": [
+        "math.NA",
+        "cs.CE",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "math.NA (数值分析与科学计算)",
+        "cs.CE (计算工程、金融与科学计算)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06622v1",
+      "title": "Enhanced Imitation Learning of Model Predictive Control through Importance Weighting",
+      "authors": [
+        "Pere Izquierdo Gómez",
+        "Miguel E. López Gajardo",
+        "Nenad Mijatovic",
+        "Tomislav Dragicevic"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T15:08:27Z",
+      "summary": "The approximation of model predictive control (MPC) algorithms with neural network models has received significant attention in the power electronics research community, as a valuable tool to enable the real-time implementation of computationally expensive methods. Training machine learning models to imitate MPC algorithms typically follows a traditional supervised learning flow, with a static training data set generated through either uniform sampling or simulation. Training with uniformly distributed data allows models to maintain consistent performance throughout the entire operating space, but very small models may fail to achieve satisfactory results in the regions corresponding to expected operation. Conversely, simulation data can be used in training to obtain models that can accurately track certain trajectories but fail to achieve adequate performance in underrepresented regions. The present article proposes a method to combine the advantages of both methods, by training models on sampled data with importance weights obtained through the kernel density estimation of experimental data. This allows the training process to target specific regions of the operating space, and results in measurable performance improvements. The method is demonstrated through the imitation of a moving discretized control set MPC algorithm for a dual active bridge converter, and is validated through experimental results.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06622v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": "IEEE Transactions on Industrial Electronics, vol. 72, no. 4, pp. 4073-4083, April 2025",
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06466v1",
+      "title": "Phase Locking in Oscillator Networks with Uncertain and State-Dependent Couplings",
+      "authors": [
+        "Iva Bačić",
+        "Philipp C. Böttcher",
+        "Marc Hunkemöller",
+        "Carsten Hartmann",
+        "David Gross"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T13:03:20Z",
+      "summary": "Phase locking in oscillator networks depends critically on the interaction strengths between coupled units. In many applications, however, these couplings are uncertain, state dependent, or time varying. We derive rigorous conditions for phase locking in Kuramoto-type networks when each coupling strength is known only within prescribed bounds. Building on a convex formulation of the nonlinear fixed-point equations, we obtain edge-wise error bounds for arbitrary feasible approximations that hold uniformly over all admissible couplings. These bounds yield sufficient conditions for the existence of phase-locked states with prescribed phase-difference limits. We illustrate the framework for AC power grids with uncertain voltage magnitudes and adaptive oscillator networks with state-dependent couplings. For the latter, the bounds can be further tightened by exploiting the state dependence of the couplings.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06466v1.pdf",
+      "source": "arxiv",
+      "primary_category": "nlin.AO",
+      "categories": [
+        "nlin.AO",
         "eess.SY",
+        "math.DS",
         "math.OC",
-        "stat.ML"
+        "physics.soc-ph"
       ],
       "category_names_zh": [
+        "nlin.AO (自适应与涌现)",
         "eess.SY (系统与控制理论 (Systems and Control))",
+        "math.DS (动力系统)",
         "math.OC (运筹学、优化与控制论)",
-        "stat.ML (机器学习统计基础)"
+        "physics.soc-ph (物理与社会科学 (复杂系统))"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40257v1",
-      "title": "Learned Terminal Costs for Short-Horizon Model Predictive Control of Autonomous Trucks in Interactive Highway Traffic",
+      "paper_id": "2611.06429v1",
+      "title": "Neural Network-based Control Systems with Application to Flight Control, From Classical Neural Control to Reinforcement Learning",
       "authors": [
-        "Hooman Hamze",
-        "Benjamin Houshmand",
-        "Deepthi Pathare",
-        "Erik Börve",
-        "Morteza Haghir Chehreghani"
+        "Seyyed Ali Emami",
+        "Paolo Castaldi",
+        "Mohammad Narimani",
+        "Mahdi Shahrajabian",
+        "Mostafa Ezabadi"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T15:23:51Z",
-      "summary": "Autonomous highway driving for heavy-duty trucks is a challenging control problem. The greater mass, dimensions and intricate dynamics increase the requirements for cooperation from surrounding traffic in critical maneuvers, requiring a careful balance between safety constraints and efficient long-horizon decision making. Model Predictive Control (MPC) provides rigorous constraint satisfaction but relies on terminal cost which can limit its effectiveness at short, computationally affordable horizons. Reinforcement Learning (RL) captures long-term driving behavior but offers no constraint guarantees and tends toward overly conservative policies when trained under sparse collision penalties. In this paper, we propose a hybrid MPC and RL framework for highway driving in autonomous trucks, where a finite-horizon MPC, solved via dynamic programming, uses a pre-trained RL model for terminal cost estimation. We evaluate the framework in a simulation environment with reactive surrounding traffic and compare it against pure MPC with zero terminal cost, rollout with terminal cost estimation using a base policy, and pure RL. Results show that the hybrid approach achieves zero collisions with the lowest cost of any configuration.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40257v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.AI",
-        "cs.RO",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.RO (机器人学与具身智能)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "13 pages, 2 figures, 8 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40178v1",
-      "title": "Control of Seizure Dynamics in a Bistable System with Pulsatile Inputs",
-      "authors": [
-        "Xianlong Zhao",
-        "Yuzhen Qin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T14:42:37Z",
-      "summary": "Bistable neural population models describe transitions associated with epilepsy through the coexistence of a stable equilibrium representing normal neural activity and a stable limit cycle representing seizure-like oscillations. Perturbations that drive the system outside the equilibrium's basin of attraction can trigger transitions to seizure-like activity. Enlarging this basin enables the system to recover normal activity from a larger set of perturbed states, providing a model-based mechanism for reducing frequency of seizure initiation. Motivated by electrical brain stimulation, this paper investigates basin enlargement using pulsatile feedback control. Combining higher-order averaging with periodic near-identity transformations, we establish conditions under which nonzero-mean and zero-mean pulsatile feedback gains enlarge the basin of attraction and derive guidelines for pulse design. Numerical simulations validate the theoretical enlargement.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40178v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "7 pages, 2 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40116v1",
-      "title": "Dual-Agent Reinforcement Learning for Vehicle Scheduling and Multi-Energy Dispatch in Electric-Hydrogen-Transport Systems",
-      "authors": [
-        "Fulong Yao",
-        "Yiming Xu",
-        "Maurizio Albano",
-        "Liana Cipcigan",
-        "Naeima Hamed"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T14:14:21Z",
-      "summary": "Electric-hydrogen-transport systems (EHTSs) require coordinated scheduling of electric and hydrogen vehicles together with multi-energy dispatch. These operations form a sequential decision process: upstream vehicle scheduling (VS) determines service allocation and order, thereby endogenously shaping the electricity and hydrogen demands faced by downstream energy dispatch (ED). This paper develops a dual-agent reinforcement learning framework tailored to the heterogeneous decision structures. The vehicle-scheduling agent combines proximal policy optimisation (PPO) with a Plackett-Luce policy to learn vehicle-priority permutations, which are then mapped to feasible charger and refueller assignments through a greedy allocation. The energy-dispatch agent employs twin delayed deep deterministic policy gradient (TD3) for continuous storage and energy-flow control. The directional coupling between the two decision layers is analysed, revealing that updates to the upstream scheduling policy can shift the demand distribution experienced by the downstream dispatcher. A three-stage training mechanism is therefore introduced, combining layer-wise pretraining with concurrent fine-tuning to mitigate the effects of scheduling-induced distribution shifts on downstream ED learning. Year-long case studies show that the proposed framework achieves the lowest vehicle-service delay and energy cost among the 11 evaluated methods, demonstrating effective coordination between vehicle scheduling and multi-energy dispatch.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40116v1.pdf",
+      "published_at": "2026-11-04T12:32:00Z",
+      "summary": "This book provides a comprehensive and systematic exploration of neural network-based intelligent control systems for aerospace applications, bridging foundational theory with practical implementation. It is structured into two primary parts: Part I covers model-based control design, detailing Feedback Error Learning (FEL), pseudocontrol strategies, and neural backstepping for strict-feedback systems, along with practical refinements such as learning rule modifications, composite learning, and discrete-time formulations, all grounded in rigorous Lyapunov stability analysis. Part II introduces model-free control, laying the groundwork for Reinforcement Learning and Approximate Dynamic Programming. Throughout, theoretical concepts are solidified through detailed case studies on quadrotor UAVs, fixed-wing aircraft (GTM), satellites, and hypersonic flight vehicles, complete with performance metrics, parameter sensitivity analyses, and discussions of actuator faults, input constraints, and wind disturbances, making the book an invaluable resource for students and practicing engineers seeking to design, simulate, and analyze intelligent flight control systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06429v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
@@ -293,314 +360,55 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40078v1",
-      "title": "Readiness-Constrained Pre-Islanding Dispatch for Military Microgrids",
+      "paper_id": "2611.06418v1",
+      "title": "Mind Control of LLMs via Closed-Loop Stimulation: Out-of-Distribution Robustness",
       "authors": [
-        "Aidan Looney",
-        "Annie Weathers",
-        "Nicholas Judson"
+        "Kasra Fallah",
+        "Rudramani Singha",
+        "Hannah Ghanei",
+        "Paul Sajda",
+        "James Anderson"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T13:53:26Z",
-      "summary": "Military installation energy readiness depends on having sufficient resources to sustain mission-critical loads throughout a prolonged utility outage. This paper develops a method to help operators manage energy resources during normal grid-connected operation while preserving islanded readiness. A robust viability kernel identifies combinations of battery energy, fuel, and load-shifting capability sufficient to sustain critical load under uncertain demand and photovoltaic generation. A probability bound translates stochastic generator start failures and recovery into a deterministic generator count selected to meet a specified availability requirement at islanding. Case studies for a fourteen-day islanding requirement at 0.999 islanding-entry availability show that advance warning of an outage can be used to prepare resources to meet a higher readiness requirement before islanding begins. The case studies further demonstrate that economic-only operation and the evaluated fixed battery reserve policy can fail to sustain critical load for the required duration, whereas enforcing the resource-dependent requirement preserves readiness at a modest increase in modeled grid-connected operating cost. These results demonstrate how active resource management can preserve long-duration energy readiness. The framework also helps commanders understand how readiness changes with operating conditions, even when the available resources remain the same.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40078v1.pdf",
+      "published_at": "2026-11-04T12:20:00Z",
+      "summary": "Brains and large language models need not be considered equivalent systems to reveal an interpretable commonality: both exhibit high-dimensional, nonlinear dynamics whose behavior can only be modeled imperfectly. This creates a shared challenge whenever we seek to intervene in their dynamics. A controller may either rely on a model identified around a particular operating regime and risk failure as the system moves away from that regime, or explicitly account for uncertainty and a changing internal state. Neurostimulation has confronted an analogous problem for decades. The limitations of fixed, open-loop stimulation have motivated closed-loop and state-dependent approaches that condition intervention on the ongoing state of the neural system. Inspired by this principle, we formulate LLM steering as a feedback-control problem in which the network's internal state, rather than a fixed intervention alone, determines how the system is perturbed. We further account for the mismatch between tractable dynamical models and the nonlinear transformer they approximate through robust control. As one principled realization of this framework, we develop an $H_\\infty$-based steering controller that limits sensitivity to disturbances and linearization mismatches. Across multiple steering benchmarks, the controller improves performance over existing baselines, with particularly pronounced gains under out-of-distribution conditions and varying length complexities. Beyond controller performance, we introduce robust steerability, $S_{\\mathrm{rob}}$, a pre-deployment measure of tolerance to dynamics mismatch; across model-task pairs, it exhibits task-specific structure and varies systematically with model scale. Beyond robust LLM steering, our measure asks not merely whether control is possible, but how much uncertainty it can survive; a principle that may span artificial and biological neural systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06418v1.pdf",
       "source": "arxiv",
-      "primary_category": "eess.SY",
+      "primary_category": "q-bio.NC",
       "categories": [
-        "eess.SY",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "32 pages, 5 figures, 3 tables, submitted to Military Operations Research",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.40071v1",
-      "title": "Agentic process evidence",
-      "authors": [
-        "Yuval Kainan",
-        "Carmit Hershman"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T13:50:54Z",
-      "summary": "The way software gets built is changing dramatically. AI agents now create pull requests, select dependencies, refactor codebases, interpret test failures, and execute infrastructure changes across the entire Software Development Life Cycle (SDLC). AI agents are autonomous team members, but unlike human engineers, they are ephemeral - their reasoning, decisions, and tool calls vanish the moment the session ends. Modern Security incidents involving intent mismatch or injection are becoming increasingly common - forcing us to address AI Agents as an insider threat. No widely adopted standard yet enables agentic provenance and governance and its obvious that you can't hold an ephemeral process accountable. The git log was designed for human commits. It shows what changed. It does not show what an AI agent did, which model it used, which tools it called, or whether anyone was accountable for the outcome. Every governance framework, every audit trail, every compliance control in the SDLC was built around one assumption: a human made the decision. That assumption no longer holds. This shift introduces 3 main procedural problems (not addressing scale) - Supply-chain vector - The agentic coder is software, so it is a supply-chain security risk. Policy guardrails - How to ensure the agentic coder is compliant with the policies of the organization. Task-alignment - How to align the agentic coder on its tasks and goals. We introduce Agentic Process Evidence (APE), a signed, tamper-evident, machine-readable attestation of agentic processes, linking the sessions to their outcome (process-aware logging). APE enables Policy-as-Code control over the agentic processes, allowing for human in the loop only when it's needed. We support the in-toto style attestation framework, and the protocol is aligned with the relevant regulations",
-      "pdf_url": "https://arxiv.org/pdf/2610.40071v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.SE",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.SE (软件工程)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39964v1",
-      "title": "Safe Platooning under Input Constraints with Link-Wise Velocity String Stability",
-      "authors": [
-        "Panagiotis S. Trakas",
-        "Charalampos P. Bechlioulis",
-        "Thomas Berger"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T13:00:48Z",
-      "summary": "We propose a decentralized controller for vehicle platoons with different braking and propulsion limits. The method uses only local distance and velocity measurements and requires neither online optimization nor exact vehicle parameters. The design combines a braking-distance safety margin with an adaptive funnel that relaxes the spacing requirement during propulsion saturation. A standstill mechanism prevents backward motion and supports stop-and-go operation. Under explicit uniform conditions on the vehicle parameters, controller settings, and initial states, we prove that closed-loop solutions exist for all time, collisions are avoided, and input limits are satisfied. Moreover, each follower tracks its predecessor's velocity range with gain one, up to an explicit additive offset determined by the funnel width and the braking-distance term. This bound establishes link-wise velocity string stability. Both the offset and the bounds on speeds and spacing errors are independent of vehicle index and platoon length. Simulations with 2 to 100 followers illustrate safety and bounded velocity deviations under disturbances and actuator limits.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39964v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39951v1",
-      "title": "LC-Resonance Placement Limits and Damping Recovery in Virtual-Admittance-Based Grid-Forming Inverter Control",
-      "authors": [
-        "Stephen Arinze Obi",
-        "Jae-Jung Jung"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T12:50:18Z",
-      "summary": "Compact LC-filter design and inner-loop control must be coordinated for stable grid-forming operation. This paper quantifies how current-loop proportional gain constrains LC-resonance placement in virtual-admittance-based dual-loop control with unity voltage-feedback decoupling (VFD) and capacitor-voltage active damping. Equivalent-impedance analysis identifies gain-dependent contraction of the positive-resistance region. Delayed inverter-current feedback opposes VFD-assisted damping above one-sixth of the sampling frequency. Simple proportional-path frequency shaping recovers an admissible effective-gain window while retaining unity VFD and leaving the resonant path unchanged. Reduced-model criteria, checked against the complete model, link window closure to a nominal resonance-placement limit near one-third of the sampling frequency under single-sampled single-update operation over the studied gain range. A 3-kVA prototype demonstrates an 83.3% LC-product reduction at comparable voltage and nominal current crossovers. A separate comparison with the same high-resonance filter demonstrates stable operation at 2.68 times the unshaped nominal current crossover. Output-impedance analysis and grid-connected tests identify additional grid-dependent gain constraints.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39951v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "10 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39879v1",
-      "title": "Compressed Orientation Reachability Maps for Sub-Second Robotic Needle Entry Point Planning",
-      "authors": [
-        "Prabhu Nithin Gollapudi",
-        "Andreas Maier",
-        "Franziska Mathis-Ullrich",
-        "Water Zhao",
-        "Jia Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T11:57:41Z",
-      "summary": "In the context of multi-stage trajectory planning for robotic percutaneous liver interventions, identifying a kinematically feasible entry point remains a critical computational bottleneck. Existing methods rely on exhaustive inverse kinematics or randomized searches, incurring delays of 13 to 27 seconds per target and limiting real-time intraoperative adaptation. This paper introduces an Orientation-Based Reachability Map (ORM) that precomputes the kinematic feasibility of a 6 Degrees of Freedom (DoF) serial manipulator across 188,873 workspace positions and encodes orientation feasibility into a compact, indexed 83 MB map. A Just-In-Time (JIT) compiled runtime pipeline replaces live optimization with near-instantaneous array lookups. Experimental evaluation demonstrates a reduction in planning latency from 13.5-26.9 s to 0.289-0.349 s per target while maintaining high geometric fidelity, achieving a mean convex hull volume overlap ratio of 0.933 and a mean alpha-shape volume ratio of 0.976 relative to the baseline reachable point cloud. The proposed ORM framework enables sub-second entry point planning and provides an efficient computational framework for robotic needle insertion in percutaneous liver ablation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39879v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO",
-        "cs.CG",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.RO (机器人学与具身智能)",
-        "cs.CG (计算几何)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "6 pages, 4 figures, 2 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39859v1",
-      "title": "Which wind and solar modelling choices matter? Effects on capacity factors, energy droughts and European power system configuration",
-      "authors": [
-        "L. Karkossa",
-        "A. Grochowicz",
-        "M. J. Koivisto",
-        "A. Hahmann",
-        "M. VIctoria"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T11:37:23Z",
-      "summary": "Europe's future power system will rely heavily on wind and solar power and must remain resilient during prolonged periods of low wind and solar generation, known as variable renewable energy (VRE) droughts. To capture such rare events, adequacy assessments increasingly draw on decades of weather data, but the conversion of weather into power is largely treated as fixed. It remains unclear which modelling choices in this conversion matter for representing these droughts, and whether they matter as much as the weather itself. Here we systematically compare these choices side by side (bias correction, wind speed extrapolation, capacity layouts, turbine and photovoltaic configurations, and wake losses) and trace their effects through VRE droughts to the design of a net-zero European power system, using 85 years of reanalysis data. We find that modelling choices barely change how often VRE droughts occur or when the system is stressed. They do, however, determine how much capacity is needed to withstand that stress. By altering the electricity delivered during droughts, they shift required capacity by up to 480 GW, which is comparable to the spread across the most critical weather years. Modelling exercises should therefore use multiple weather years; bias-correct and regionally validate weather inputs; explicitly represent resource heterogeneity, forward-looking technologies, and wake losses; and judge these choices by their effect on the low-generation tail, not only on the mean.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39859v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39819v1",
-      "title": "Modeling and Parametrization of Large-scale Hydrogen Electrolyzers for Transient and Frequency Stability Analysis",
-      "authors": [
-        "Mahmoud K. Abdelhamid",
-        "Lukas Sigrist",
-        "Álvaro Ortega"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T11:02:39Z",
-      "summary": "Hydrogen Electrolyzers (HEs), particularly Proton Exchange Membrane (PEM)-based systems, are flexible loads capable of providing grid ancillary services and enhancing the stability of renewable-dominated power systems due to their fast electrical response. However, the literature often lacks clear guidance on the structure, modeling, and parametrization of large-scale HEs for transient and frequency stability analyses. This paper presents a detailed configuration for utility-scale HE plants, using the stack as the fundamental unit, supported by a realistic parametrization based on commercial components. Furthermore, this work extends the Generalized ESS Model (GEM), a linearized state-space model previously utilized with other converter-interfaced energy storage systems, to PEM HEs for the first time. To facilitate plant scalability, a robust method for scaling GEM matrices across different capacities is proposed. Finally, a measurement-based methodology is developed to estimate the GEM parameters and subsequently extract the equivalent electrical circuit parameters. Comprehensive simulations on the WSCC system under various disturbances validate the accuracy of the derived GEM, the effectiveness of the scaling approach, and the robustness of the parameter identification methodology.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39819v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39768v1",
-      "title": "Multi-output LSTM soft sensors for industrial anaerobic co-digestion using LSTM-beta-VAE generative data augmentation",
-      "authors": [
-        "Rohit Murali",
-        "Benaissa Dekhici",
-        "Tao Chen",
-        "Dongda Zhang",
-        "Michael Short"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T10:18:56Z",
-      "summary": "Anaerobic digestion (AD) requires close monitoring of key process variables, including pH, the ratio of volatile organic acids to alkaline buffer capacity and biogas production, to maintain biological stability and prevent process failure. While mechanistic frameworks such as the Anaerobic Digestion Model No. 1 are highly parameterised, computationally expensive, and difficult to calibrate for real-time applications, data-driven Long Short-Term Memory (LSTM) networks offer a potentially more adaptable alternative. However, current data-driven approaches in AD are predominantly limited to single-output architectures that focus solely on production yields, as opposed to simultaneous prediction of vital stability indicators. Furthermore, industrial AD datasets are typically sparse and skewed toward steady-state operations. Baseline evaluations demonstrated this scarcity prevents standard algorithms (Random Forest, XGBoost) and unaugmented LSTMs from recognising the transition to unstable operations, resulting in poor estimation of stability indicators. To overcome these challenges, this study proposes a novel generative data augmentation framework using an LSTM-beta-Variational Autoencoder coupled with a multi-output LSTM (MO-LSTM) soft sensor. By synthesising physically valid sequences of these transitions to unstable operations from one year of full-scale plant data, the method safely populates sparse regions of the feature space. Trained on this augmented dataset, the MO-LSTM achieved robust simultaneous estimation across all targets. This approach mitigates data sparsity, providing a basis for hybrid mechanistic-data-driven modelling and early-warning soft sensors in industrial bioprocesses.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39768v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
+        "q-bio.NC",
         "cs.AI",
         "eess.SY"
       ],
       "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
+        "q-bio.NC (神经科学与脑认知)",
         "cs.AI (通用人工智能 (AI))",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "33 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39762v1",
-      "title": "Neuromorphic design of a rhythmic network",
-      "authors": [
-        "Robin Wroblowski",
-        "Rodolphe Sepulchre"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T10:14:41Z",
-      "summary": "Central Pattern Generators (CPGs) have long inspired the design of rhythms that combine endogenous generation and exogenous interaction. In neurodynamics and engineering studies, CPGs have been primarily analysed and designed as networks of coupled oscillators. In contrast, the present article regards CPGs as networks that propagate events through excitable rather than oscillatory nodes. The proposed event-based perspective reduces the design of network-level rhythmic properties to the tuning of local nodal input-output characteristics. This reduction enables a distributed and robust design methodology: nodes can be tuned independently, they can be heterogeneous, and the global rhythm results from local event propagation rather than from a specific global tuning of the network parameters. The present article builds on previously introduced concepts that parallel existing characterizations of oscillators: the event describing function (eDF), which characterises the propagation delay of a node, and the event phase response curve (ePRC), which characterises the phase sensitivity of a node. Event-based CPGs made of excitable rather than oscillatory nodes emerge as a principled design framework for robust rhythm generation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39762v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "This is an author-created, un-copyedited version of an article submitted for publication in the Journal of Neuromorphic Computing and Engineering. IOP Publishing Ltd is not responsible for any errors or omissions in this version of the manuscript or any version derived from it",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39703v1",
-      "title": "Computing with Coupled Oscillator Networks: Optimization, Memory, and Modern AI Primitives",
-      "authors": [
-        "Ahmed Allibhoy",
-        "Fabio Pasqualetti"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T09:37:37Z",
-      "summary": "We explore how synchronization in coupled oscillator networks may be employed to perform a variety of computing tasks. These systems are becoming more attractive as an alternative to conventional digital computers due to the increasing energy demands of the latter, particularly for large-scale problems in machine learning and artificial intelligence. The ubiquity of coupled oscillator networks means that oscillator-based computing can be thought of as a universal computing paradigm encompassing systems with a diversity of physical realizations, e.g. as analog circuits, neurological systems, spintronic systems. The bridge between the dynamics of coupled oscillator networks and computational primitives they implement is the Ising model, which originates in statistical physics, and when applied to oscillator networks, explains the emergence of globally complex and disordered synchronization patterns from local interactions in the network. We discuss the application of coupled oscillator networks to three fundamental computing operations. First, oscillator networks as specialized hardware solvers of NP-hard combinatorial optimization problems, with the solution encoded in the synchrony patterns. Second, oscillator networks as associative memory systems, enabling storage and retrieval of data represented through phases of oscillations. Finally, oscillator networks as a dynamical implementation of attention, with synchronization providing the mechanism for the alignment of keys to queries. The ability of oscillator networks to implement these computational primitives paves the way for novel realizations of intelligent systems through a variety of physical substrates.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39703v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY",
-        "cond-mat.dis-nn",
-        "nlin.AO"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "cond-mat.dis-nn (无序系统与神经网络)",
-        "nlin.AO (自适应与涌现)"
-      ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.39675v1",
-      "title": "From Airspace Degradation to Deconfliction: Predicting Safety-Critical Traffic States through the Evolution of Multiscale Complexity Metrics",
+      "paper_id": "2611.06385v1",
+      "title": "Spatial Differences Analysis of Nodal Frequency Considering Frequency-Voltage Coupling",
       "authors": [
-        "Raúl López-Martín",
-        "Justus Renkhoff",
-        "Yash Guleria",
-        "Mohsan Jameel",
-        "Massimiliano Zanin"
+        "Xiaodan Li",
+        "Donghai Zhu",
+        "Zining Liu",
+        "Zhu Guo",
+        "Jiabing Hu"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T09:22:37Z",
-      "summary": "Growing air traffic demand is pushing airspace management towards the limits of its operational capacity, with steadily increasing workload for air traffic control officers, with direct consequences for safety. Understanding which traffic conditions give rise to safety-critical situations is therefore an essential open problem. Here we compare a large number of deconfliction events with equivalent conflict-free scenarios, extracted from thirteen weeks of air traffic control data over the Swedish Flight Information Region. We describe the traffic structure before each event through thirty sector-complexity metrics computed at multiple spatial and temporal scales, and use them as inputs of Machine Learning models. We find that the need of deconflictions can be predicted with an accuracy reaching $70\\%$, but only when the traffic is described at the sector spatial scale. Predictability increases monotonically in the minutes preceding the clearance, showing that situations requiring deconflicting actions are not sudden occurrences, but rather the endpoint of a progressive degradation process. Additionally, the information needed for such prediction mainly resides in specific characteristics of the overall traffic structure, and not only in the conflicting pair. These results numerically demonstrate that safety-critical airspace states can be anticipated from the collective behaviour of the traffic, paving the way for early-warning systems that flag degraded, safety-relevant conditions before an intervention is required.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39675v1.pdf",
+      "published_at": "2026-11-04T11:49:30Z",
+      "summary": "The rising penetration of inverter-based resources (IBRs) brings rich control dynamics that can amplify spatial differences in nodal frequency through frequency-voltage (F-V) coupling. Existing analyses often neglect voltage dynamics or only examine the aggregate frequency, leading to overoptimistic evaluation of frequency security. To address these drawbacks, this paper develops a unified model of synchronous generators (SGs), grid-following (GFL)-IBRs, and grid-forming (GFM)-IBRs based on the magnitude and phase dynamics of equivalent internal electromotive force (EMF). Integrating these source models with network equations yields a sparse implicit closed-loop model, which fully captures the device-network F-V coupling without transfer-matrix inversion. Then, the obtained nodal responses are decomposed into common and differential modes. Using this decomposition, coupling indices and pole-residue analysis reveal how F-V coupling can amplify spatial differences in nodal frequency and how source configuration and parameters modify this effect. Finally, case studies on the modified IEEE 39-bus and 118-bus test systems validate the proposed model and demonstrate its computational efficiency.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06385v1.pdf",
       "source": "arxiv",
-      "primary_category": "physics.soc-ph",
+      "primary_category": "eess.SY",
       "categories": [
-        "physics.soc-ph",
         "eess.SY"
       ],
       "category_names_zh": [
-        "physics.soc-ph (物理与社会科学 (复杂系统))",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "44 pages, 12 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39573v1",
-      "title": "Cybersecurity Practices in Industrial Automation and Control Systems: a Study of Croatian System Integrators",
-      "authors": [
-        "Filip Katulić",
-        "Damir Sumina",
-        "Stjepan Groš",
-        "Tena Velki"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T08:15:05Z",
-      "summary": "Given the increasing frequency of industrial cybersecurity incidents, governments, industry, and the research community are all working to find ways to protect industrial automation and control systems (IACSs). A key regulatory effort in the European context is the EU's Network and Information Security Directive 2 (NIS2), which aims to strengthen cybersecurity requirements and improve resilience across critical and important sectors. Nevertheless, translating cybersecurity requirements into practical engineering remains challenging within IACS environments. This paper explores how Croatian IACS system integrators perceive cybersecurity requirements, implementation challenges, and current practices in the industrial environments in which they operate. The findings are based on three focus groups with system integrators working with clients in the energy, chemical and pharmaceutical, and food and beverage sectors. Participants reported limited cybersecurity awareness among IACS owners, as well as perceived differences in practices between smaller and larger companies and between domestic and foreign firms. Participants were divided in their expectations regarding regulatory pressure: while some believed it could improve cybersecurity, others expected only minimal compliance focused on cost reduction. The results of this study provide a basis for developing more practical cybersecurity practices and offer a deeper understanding of the key challenges faced by IACS system integrators and owners when dealing with cybersecurity.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39573v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CR",
-      "categories": [
-        "cs.CR",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.CR (密码学与网络安全)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
       "comment": null,
@@ -608,47 +416,71 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.39549v1",
-      "title": "Non-Asymptotic Confidence Regions for Separable Nonlinear Models",
+      "paper_id": "2611.06365v1",
+      "title": "On the Optimality of Implicit Feedback in Markov Decision Processes over Imperfect Links",
       "authors": [
-        "Szabolcs Szentpéteri",
-        "Péter Kovács",
-        "Balázs Csanád Csáji"
+        "Romain Planchon",
+        "Federico Chiariotti",
+        "Federico Mason",
+        "Andrea Zanella",
+        "Deniz Gunduz"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T07:49:40Z",
-      "summary": "This paper studies robust uncertainty quantification for separable nonlinear least squares (SNLLS) problems. We propose two identification methods, (i) Residual-Perturbed Gradient (RPG) and (ii) Global-Fit-Gap (GFG), to construct joint distribution-free confidence regions for both the linear and nonlinear parameters. By exploiting assumed group invariance of the noise (such as symmetry or exchangeability), we apply random perturbations (such as sign-changes or permutations) to build the regions based on resampling and ranking. We prove that both methods guarantee non-asymptotically exact coverage (type I error). Finally, we illustrate the constructions through two numerical experiments: (i) identifying generalized finite impulse response (GFIR) systems using Laguerre polynomials with an adjustable decay rate and (ii) fitting Gaussian radial basis function (RBF) models with variable knots and widths.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39549v1.pdf",
+      "published_at": "2026-11-04T11:26:35Z",
+      "summary": "Goal-oriented communication protocols are explicitly designed to support the objectives of target applications, such as the monitoring and control of remote processes, while minimizing data traffic. This study considers a transmitter node that observes the environment state and sends it to a remote agent, which then performs control actions. This problem can be modeled as a remote Partially Observable Markov Decision Process (POMDP), a subclass of decentralized POMDPs. Existing studies limit transmissions through communication costs, but neglect the effect of channel impairments and non-ideal or delayed feedback. In this work, we study the optimal joint transmission and control policies over lossy forward channels without explicit acknowledgments. We introduce \\emph{revealing} policies, under which the receiver's action, observed directly by the transmitter, discloses the outcome of the forward transmission, keeping the two agents synchronized without a feedback channel. We derive sufficient conditions for the optimality of time-invariant policies in this implicit feedback regime for general POMDPs, along with strictly weaker sufficient conditions in the special case of contextual bandits. Our simulations over a family of remote POMDPs show that these conditions are conservative, and revealing policies are optimal over a substantially wider parameter range than the conditions warrant.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06365v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
-        "eess.SY",
-        "math.ST",
-        "stat.ML"
+        "eess.SY"
       ],
       "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "math.ST (数理统计理论)",
-        "stat.ML (机器学习统计基础)"
+        "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "Accepted for publication at the 65th IEEE Conference on Decision and Control (CDC 2026)",
+      "comment": "Submitted to IEEE INFOCOM 2027",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2610.39547v1",
-      "title": "Assuring Learning-Enabled Cyber-Physical Systems with Foundation Models: A Neuro-Symbolic Agenda for Testing, Verification, and Runtime Assurance",
+      "paper_id": "2611.06327v1",
+      "title": "Topology Identification of Directed Signed Networks via Repelling Laplacians",
       "authors": [
-        "Xi Zheng",
-        "Ivan Ruchkin",
-        "Hong Jin Kang",
-        "Tevfik Bultan",
-        "Vijay Ganesh"
+        "Muhammad Ahsan Razaq",
+        "Pelin Sekercioglu",
+        "Angela Fontan",
+        "Dimos V. Dimarogonas",
+        "Claudio Altafini"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T07:48:59Z",
-      "summary": "Learning-enabled cyber-physical systems (CPS), including autonomous vehicles and UAVs, increasingly incorporate foundation models, yet fragmented assurance practices provide insufficient support for system-level guarantees. We argue that restoring engineering control across stochastic neural, symbolic, and physical boundaries requires a shift from model-centric evaluation to system-level assurance. We introduce the Foundation Model Assurance Stack, connecting three directions: (i) neuro-symbolic architectures that constrain foundation models through explicit symbolic world models, reasoning layers, and interfaces; (ii) semantically grounded, conformance-based testing that combines formal specifications and symbolic world models with foundation-model-assisted specification mining, scenario generation, and test synthesis; and (iii) compositional verification and runtime assurance that target formally tractable components and interfaces through modular contracts, equivalence checking, verified synthesis, uncertainty-aware reasoning, and runtime monitoring and enforcement. Symbolic abstractions establish assurance boundaries between stochastic learning and formal reasoning, connecting testing, verification, and runtime evidence across the system lifecycle. Foundation models serve as constrained assistants whose outputs are independently checked wherever correctness can be formally specified. We identify research challenges in specification engineering, abstraction fidelity, evidence composition, and lifecycle certification, and outline a staged agenda toward trustworthy, deployable, and certifiable learning-enabled CPS.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39547v1.pdf",
+      "published_at": "2026-11-04T10:58:10Z",
+      "summary": "We address the problem of simultaneously identifying the interaction topology and synchronizing a network interconnected over a directed graph that exhibits both cooperative and antagonistic interactions, modeled via a repelling Laplacian matrix. We propose an adaptive control protocol built on a node-centric regressor formulation, in which the network is driven to track a persistently exciting auxiliary network. We then propose a time-varying adaptive gain to remove the need for global knowledge of the network. We establish uniform semiglobal practical asymptotic stability of the estimation errors when the excitation depends only on measurable errors. Numerical simulations validate the theoretical results.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06327v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06287v1",
+      "title": "Corridor-Based Monitoring and Emergency Braking Decision for Automated Vehicle Safety",
+      "authors": [
+        "Junnan Pan",
+        "Vladislav Nenchev",
+        "Mohak Mansharamani",
+        "Prodromos Sotiriadis",
+        "Ferdinand Englberger"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T10:24:36Z",
+      "summary": "This paper addresses emergency-braking decisions for a redundant safety channel in automated vehicles. The channel is responsible for identifying hazards from sensor data and determining whether braking is necessary, given the constrained computational resources of embedded hardware. We present an emergency-braking approach that uses a predicted motion corridor to filter \\ac{lidar} measurements and then decide whether the ego vehicle must brake. \\ac{pmcm} constructs a curvature-aware boundary from the planned path and vehicle geometry so that the monitored region contains the full swept body on both straight and curved paths. \\ac{gdeta} then decides whether the ego vehicle must command an emergency brake for objects inside this boundary, scoring geometric occupancy and temporal urgency independently. Hard gates permit braking when either source is conclusive; soft-OR arbitration combines partial evidence when neither gate is active. Consecutive-scan confirmation reduces sensitivity to transient measurement noise. Corridor coverage is evaluated in controlled collision simulations and recorded campus driving. Braking decisions are evaluated in Monte Carlo simulations of lead-vehicle braking and transverse-crossing encounters.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06287v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.RO",
       "categories": [
@@ -659,8 +491,184 @@
         "cs.RO (机器人学与具身智能)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
+      "comment": "Submitted to a Springer Nature journal for peer review as an extended version of a paper presented at VEHITS, for consideration in the Special Issue",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06251v1",
+      "title": "Transversal Passivity: Dissipation Relative to Input and Output Manifolds",
+      "authors": [
+        "Feng-Yu Yue",
+        "Daniel Zelazo"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T10:01:06Z",
+      "summary": "This paper introduces transversal passivity, a local dissipation property for regulating input and output signals to prescribed manifolds. Its supply rate is built from the transverse port errors induced by nearest-point projections, so that motion along the manifolds is not penalized. We give a necessary condition and a constructive sufficient condition for the property and relate it to existing passivity notions. For feedback interconnections through negative-adjoint linear channels, power conservation no longer cancels the transverse supply. The residual is governed by compatibility defects that depend only on the channels and the prescribed manifolds, so it can be assessed before any closed-loop analysis, and it falls into a hierarchy of exact compatibility, quadratic cancellation, and nonzero quadratic residuals. Since transversal storages are only positive semidefinite, port convergence is obtained by combining compact confinement, for instance by conserved quantities, with a dissipation margin, and we identify a geometric obstruction under which no quadratic margin is available near the feasible states. A federated learning case study with heterogeneous data shows that port convergence can be certified even though no server target is compatible with the interconnection, and that the obstruction arises for a natural choice of target.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06251v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "19 pages, 7 figures, 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06162v1",
+      "title": "A Layered View of LLM Support in Underwater Robotics",
+      "authors": [
+        "Federico Celi",
+        "Leonardo Zacchini",
+        "Gabriele Ferri"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T08:43:07Z",
+      "summary": "This extended abstract discusses a specific and, in our experience, practically relevant role for large language models (LLMs) in underwater robotics. Our main premise is that, in underwater fielding missions, the immediate difficulty is often not the synthesis of new low-level control laws, but the operation of complex robotic systems under limited communications, partial observability, and expensive field time. In particular, a significant fraction of the effort during sea trials is devoted to fault diagnosis, telemetry interpretation, mission adjustment, and coordination across heterogeneous assets and operators. We argue that LLMs may be useful at this higher operational level, especially when grounded in structured vehicle state, alarms, logs, mission context, and existing planning or validation tools. At the same time, current limitations in grounding, consistency, and causal reasoning make these systems lack the predictability required to guarantee direct control, especially in real-world critical applications, although we do not exclude a future evolution in this direction. This viewpoint suggests a layered architecture in which conventional autonomy remains responsible for control, perception, estimation, and validated mission execution, whereas LLM-based modules serve as an additional support layer for debugging, operator interaction, constrained replanning support, orchestration, and post-mission analysis.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06162v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.RO (机器人学与具身智能)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Presented at the I-RIM 3D 2026 - Workshop n.30 How would you like intelligence in your robots? Interdisciplinary perspectives on intelligent machines",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06155v1",
+      "title": "Eco-MP: Ecological Max-Pressure Traffic Signal Control with Ecological Driving",
+      "authors": [
+        "Haoran Wang",
+        "Shuoyuan Li",
+        "Chaopeng Tan",
+        "Hao Liu",
+        "Keshuang Tang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T08:37:23Z",
+      "summary": "Max-pressure (MP) traffic signal control provides a decentralized mechanism for urban networks, but conventional pressure states do not directly capture the propulsion burden generated by signal-induced stop-and-go traffic. Eco-driving, by contrast, typically relies on prespecified signal information and optimizes vehicle trajectories separately from the feedback among vehicle motion, traffic states, and signal decisions. This paper develops Ecological Max-Pressure (Eco-MP), a closed-loop framework that integrates ecological MP signal control with MP-adaptive ecological driving. At the signal layer, connected-vehicle observations are aggregated into a common movement state based on cumulative positive propulsion work, and the resulting upstream--downstream ecological pressure determines phase selection in mixed petrol and electric traffic. At the vehicle layer, a rolling signal interface translates the evolving Eco-MP process into near-term signal information, while each connected and automated vehicle solves a powertrain-independent finite-horizon trajectory problem subject to vehicle-dynamic, car-following, and signal-compliance constraints to reduce unnecessary stopping and acceleration effort. Under full-state information, a finite-storage Lyapunov analysis establishes strong stability for admissible demands satisfying a strict supportability condition and extends the result to the coupled signal--vehicle system. When ecological driving enlarges the admissible-flow sets, the coupled admissible demand region contains the signal-only region. Microscopic experiments on an Amsterdam arterial corridor show that, relative to queue-based MP, Eco-MP reduces mean positive propulsion work by 5.2%, vehicle delay by 20.8%, and stopping time by 39.0%. With only 15% of vehicles directly controlled, ecological driving further reduces positive propulsion work by 4.2% and stopping time by 19.6%......",
+      "pdf_url": "https://arxiv.org/pdf/2611.06155v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "27 pages, 11 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06146v1",
+      "title": "Multi-Period Bilevel Coordination of Primary and Secondary Frequency Regulation for Grid-Forming Battery Energy Storage",
+      "authors": [
+        "Wenju Shang",
+        "Liangliang Hao",
+        "Jiangliang Jin",
+        "Yunjian Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T08:30:35Z",
+      "summary": "We study the coordination of primary and secondary frequency regulation by grid-forming battery energy storage systems in islanded microgrids. We formulate the coordination as a multi-period bilevel program, in which the upper level schedules secondary regulation setpoints and each lower level computes primary regulation decisions. Using the lower-level Karush-Kuhn-Tucker conditions, we obtain an exact single-level reformulation with complementarity constraints. To address the numerical difficulties introduced by these constraints, we develop a continuation method that couples the complementarity relaxation parameter with the interior-point barrier parameter and warm-starts successive stages. Under the stated boundedness assumptions and with vanishing subproblem residuals, we prove that every accumulation point is feasible and satisfies a first-order stationarity condition for the reformulated problem (C-stationarity). Numerical results for an islanded microgrid show that the proposed method reduces solution time by 89.3% and peak frequency deviation by 0.53% relative to conventional Scholtes relaxation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06146v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
       "comment": null,
       "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06145v1",
+      "title": "Analyzing Simultaneous Charging Factors of Electric Vehicles Using Monte Carlo Simulation: A Case Study in Phu Quoc City, Vietnam",
+      "authors": [
+        "Tien Khai Nguyen",
+        "Trong Nghia Le"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T08:30:15Z",
+      "summary": "This study estimates the simultaneous charging factor (SCF) of electric vehicles (EVs) in Phu Quoc City, Vietnam, using a Monte Carlo simulation. Three planning scenarios (2030, 2035, and 2040) are developed from population-based EV uptake assumptions and vehicle-specific charging probability profiles over 24 hours, reflecting distinct operating patterns of motorbikes, cars, taxis, and buses. For each vehicle class and scenario, 1,000 simulation runs are performed to compute SCF and its uncertainty, reported via 95% confidence intervals. Results indicate that SCF decreases as EV penetration increases, implying more temporally dispersed charging demand and a reduced likelihood of extreme coincidence. For electric buses, SCF declines from 0.76 (2030) to 0.59 (2040), and other vehicle groups show similarly decreasing trends across the horizon. These SCF estimates provide practical inputs for grid-aware charging infrastructure planning, including diversity factors for sizing distribution transformers and feeders, identifying peak-hour stress, and informing demand management measures such as time of use tariffs and basic smart charging controls.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06145v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "11 pages, 17 figures. Accepted for publication in GMSARN International Journal (expected in Issue 3, 2027). Author-prepared accepted manuscript",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06053v1",
+      "title": "Millimeter-Wave Gaussian-to-Flat-Top Beam Shaping Using a Single-Curvature Lens: A Novel Approach",
+      "authors": [
+        "Ehsan Imanbeygi",
+        "Mohammad Hossein Koohi Ghamsari",
+        "Mehdi Ahmadi-Boroujeni"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T06:58:32Z",
+      "summary": "This paper presents a novel method for converting the divergent Gaussian intensity distribution of a millimeter-wave source into a uniform (flat-top) distribution using a single curved surface. The proposed method combines the surface profile of a collimator with that of a beam shaper. To validate the method, the profile of a single-sided (plano-convex) lens is derived and placed 52 mm in front of a conical horn antenna operating at 100 GHz. The lens transforms the Gaussian radiation of the horn, with an incident beam radius of 11.9 mm, into a uniform beam with a radius of 400 mm at a distance of 3 m. The lens surface profile is optimized using a full-wave-simulation-based procedure, and the resulting output beam is compared with that of a previously designed double-sided (concave-convex) lens. Simulation results show that, within the desired field of view, the optimized single-sided lens produces a flat-top intensity distribution with satisfactory ripple and roll-off. Finally, the sensitivity of the optimized lens to frequency variation is investigated. The proposed lens is suitable for generating uniform illumination in active stand-off millimeter-wave imaging systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06053v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "physics.optics (光学与光子学)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06050v1",
+      "title": "Single-sided lens terahertz flat-top beam shaping in the Fresnel region",
+      "authors": [
+        "Ehsan Imanbeygi",
+        "Mohammad Hossein Koohi Ghamsari",
+        "Mehdi Ahmadi-Boroujeni",
+        "Babak Honarbakhsh"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T06:56:45Z",
+      "summary": "In this paper, a novel, to our knowledge, analytical approach is introduced for the design of a single-sided plano-convex lens (PCL) capable of terahertz (THz) flat-top beam shaping in the Fresnel region. The lens profile, derived from geometrical optics principles, integrates collimating and beam-shaping functions into a single optical surface, thereby simplifying fabrication. The efficiency of the method is demonstrated by designing two PCLs that convert a divergent Gaussian beam from a monochromatic THz source (at 100 and 200 GHz) into flat-top beams with target radii of 400 and 500 mm at distances of 3 and 4 m, respectively. The resulting fields, evaluated through analytical, integral equation, and finite element techniques, are shown to be comparable to those produced by a conventional double-sided concave-convex lens. Furthermore, the sensitivity of the design to frequency and alignment variations is investigated, confirming the robustness of this single-curvature approach for integration into practical THz imaging systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06050v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "physics.optics (光学与光子学)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": "Appl. Opt. 65, 551-557 (2026)",
       "ai_summary": null
     }
   ],
@@ -673,46 +681,51 @@
     {
       "code": "cs.RO",
       "name_zh": "机器人学与具身智能",
-      "count": 7
-    },
-    {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 3
+      "count": 5
     },
     {
       "code": "math.OC",
       "name_zh": "运筹学、优化与控制论",
-      "count": 3
-    },
-    {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 3
-    },
-    {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
       "count": 2
     },
     {
-      "code": "nlin.CD",
-      "name_zh": "混沌动力学",
+      "code": "physics.optics",
+      "name_zh": "光学与光子学",
+      "count": 2
+    },
+    {
+      "code": "physics.ins-det",
+      "name_zh": "仪器与探测技术",
       "count": 1
     },
     {
-      "code": "cs.SE",
-      "name_zh": "软件工程",
+      "code": "hep-ex",
+      "name_zh": "高能物理 - 实验",
       "count": 1
     },
     {
-      "code": "cs.CG",
-      "name_zh": "计算几何",
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
       "count": 1
     },
     {
-      "code": "cond-mat.dis-nn",
-      "name_zh": "无序系统与神经网络",
+      "code": "q-bio.CB",
+      "name_zh": "细胞行为学",
+      "count": 1
+    },
+    {
+      "code": "cs.HC",
+      "name_zh": "人机交互 (HCI)",
+      "count": 1
+    },
+    {
+      "code": "math.NA",
+      "name_zh": "数值分析与科学计算",
+      "count": 1
+    },
+    {
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
       "count": 1
     },
     {
@@ -721,20 +734,25 @@
       "count": 1
     },
     {
+      "code": "math.DS",
+      "name_zh": "动力系统",
+      "count": 1
+    },
+    {
       "code": "physics.soc-ph",
       "name_zh": "物理与社会科学 (复杂系统)",
       "count": 1
     },
     {
-      "code": "cs.CR",
-      "name_zh": "密码学与网络安全",
+      "code": "q-bio.NC",
+      "name_zh": "神经科学与脑认知",
       "count": 1
     },
     {
-      "code": "math.ST",
-      "name_zh": "数理统计理论",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:53:01.827973"
+  "snapshot_synced_at": "2026-11-06T09:26:40.842339"
 }

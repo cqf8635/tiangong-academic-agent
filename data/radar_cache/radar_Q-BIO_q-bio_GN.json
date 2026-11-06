@@ -1,8 +1,281 @@
 {
   "query_expression": "cat:q-bio.GN",
   "total_fetched": 25,
-  "total_results": 4010,
+  "total_results": 4025,
   "papers": [
+    {
+      "paper_id": "2611.04037v1",
+      "title": "Visualization and Characterization of Gene Group Distribution Patterns Across Genomes",
+      "authors": [
+        "Yanying Wu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T22:33:01Z",
+      "summary": "Genes of the same family often lie close together on a chromosome, yet how far apart family members sit, and whether their spacing follows any pattern, has rarely been measured consistently across genomes. We built an interactive web application that places the members of any of the 1,396 FlyBase gene groups on the banded ideogram of the fruit fly (Drosophila melanogaster) and lists each member's neighbours. While browsing it, we found strikingly symmetric gene sets in which consecutive members are almost evenly spaced. In the RAB GTPases, two 5.08 Mb spacings differ by only 634 bp. We also found that distances between neighbouring members fall into two populations: short-range (median 1.8 kb) and long-range (median 2.4 Mb). Although an arm-matched random control suggests that the even spacing (without a minimum-distance filter) as well as the long-range population arise largely by chance, the short-range population turns out to be a genuine clustering signal. We then extended the analysis to human and six other model organisms (mouse, zebrafish, Caenorhabditis elegans, Saccharomyces cerevisiae, Arabidopsis thaliana and maize), and every genome showed the same two populations. The mixture curve of the two is nearly constant across chromosomes in some genomes (Type I: fly, maize, Arabidopsis, C. elegans) but varies across chromosomes in others (Type II: human, mouse, zebrafish, yeast). Thus, across eight eukaryotes, family members lie in two distance populations. The scale of the short-range population follows the spacing of genes in each genome, and the long-range population matches random placement in fly and is consistent with it in the other genomes. Our results also show that visual patterns such as even spacing must be tested against chance before they are interpreted. Our tool and approach give a simple way to explore and compare gene clustering across species.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04037v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "33 pages, 15 figures, 6 tables, 4 supplementary figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03806v1",
+      "title": "BEND 2.0: Benchmarking the Capabilities Needed to Design DNA",
+      "authors": [
+        "Andreas Bjerregaard",
+        "Rachael DeVries",
+        "Dionysia Danai Brilli",
+        "Panagiotis Antoniadis",
+        "Yan Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T19:00:07Z",
+      "summary": "Genomic foundation models are increasingly used to propose DNA sequences and edits. But successful design requires capabilities that current benchmarks do not measure. Here we introduce BEND 2.0 (BENchmark for DNA language models), which tests how well models predict the effects of DNA changes and whether these predictions can guide sequence design. Across eight tasks built on five experimental datasets, we find that model choice and how representations are accessed both affect performance. Linear readouts fitted to frozen representations can match or exceed models' native outputs, and functional post-training substantially improves the models' capabilities. Linear readouts transfer well across experimental assays and genes, suggesting that models capture functional patterns beyond the data used to fit individual predictors. At the same time, strong prediction of average effects can conceal weaker prediction of context-specific effects, and accurate prediction of combined mutation effects does not imply accurate prediction of their interactions. In design tasks, model predictions can reduce the number of candidates needed to find a desired response, but still leave substantial room for better design choices, particularly for context-specific and multi-cell objectives. Our benchmark reveals that genomic models now display signs of general utility but have yet to saturate on performance in even simple tasks.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03806v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.LG",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.LG (机器学习 (ML))",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "Leaderboard on https://machinelearninglifescience.github.io/BEND2 and code on https://github.com/machinelearninglifescience/BEND2",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03400v1",
+      "title": "In-depth data movement characterization of DNA read mapping algorithms",
+      "authors": [
+        "Berkan Şahin",
+        "Ecem İlgün",
+        "Klea Zambaku",
+        "Can Alkan"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:31:32Z",
+      "summary": "Read mapping algorithms represent a critical bottleneck in genomic analysis pipelines due to the resources required; a problem that is becoming more pronounced as sequencing technologies advance and datasets expand. We present an extensive workload characterization of leading read mapping algorithms across diverse sequencing technologies to identify hardware acceleration and optimization opportunities. We analyzed the following implementations: MashMap, wfmash, and Minimap2 for whole-genome alignment (WGA); NGMLR, Minimap2, and LRA for long reads; and Bowtie2, BWA-MEM, StrobeAlign, and minibwa for short reads. We used the Intel VTune Profiler for detailed memory analysis to identify memory- bound functions, cache usage patterns, and data transfer bottlenecks. We further analyzed a selected subset of alignment tools using the DAMOV-SIM simulator to obtain a more granular view of data movement characteristics for two different cache structures. Based on our results, Minimap2 emerges as the fastest alignment tool for long read scenarios, but falls behind in whole-genome alignment due to poor multithreading. Across all three categories, some programs (e.g., LRA, BWA-MEM) are highly memory-bound. More in-depth analysis via DAMOV-SIM revealed that some memory-bound tools, in particular, do not fully utilize the multi-level cache hierarchy in modern multi-core CPU architectures. Our results show that while some tools require algorithmic redesign for performance gains, some others can benefit from running on PIM architectures.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03400v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AR",
+      "categories": [
+        "cs.AR",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.AR (硬件与体系结构)",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02681v1",
+      "title": "HistoTx: Early fusion of H&E images and spatial transcriptomics at varying spatial transcriptomics resolution with self-supervised learning",
+      "authors": [
+        "Alice Driessen",
+        "Emil Malmsten",
+        "Steffen Wolf",
+        "Bernd Illing",
+        "Isinsu Katircioglu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T07:36:09Z",
+      "summary": "Spatial transcriptomics maps gene expression across tissue sections and, when integrated with whole slide images, jointly captures both morphological architecture and molecular activity to provide a rich, multimodal view of tissue biology. ML approaches combining spatial transcriptomics and WSIs typically learn a mapping from morphological features to molecular profiles via contrastive alignment or supervised fine-tuning of pathology foundation models. In both cases, transcriptomics serves as a training signal rather than a true input modality, leaving inference fundamentally image-driven. We propose an early-fusion vision transformer architecture in which transcript tokens are constructed at arbitrary spatial resolution, merged with image patch tokens, and jointly processed through a shared transformer stack for deep cross-modal interaction. Starting from a pretrained vision-only pathology foundation model, we train HistoTx by continuing self-supervised pretraining on paired image and spatial transcriptomics data and demonstrate that: 1) at inference with image only, performance remains on par with the baseline on most tasks while improving on tasks that inherently benefit from molecular knowledge, such as gene expression prediction; 2) when both modalities are available at inference, jointly providing image and transcript inputs outperforms either modality alone.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02681v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "Presented at 3rd Workshop on Multi-modal Foundation Models and Large Language Models for Life Sciences (ICML 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02182v1",
+      "title": "Pin and Replay, or Refuse: Conditional Exactness and Probabilistic Validation Across Reference Releases",
+      "authors": [
+        "Joshua Terranova",
+        "Jiapeng Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T20:30:29Z",
+      "summary": "Biologists annotate genomes by searching proteins against reference databases such as Pfam, which publish new releases every few weeks to months. Each release forces a full re-search, though most of the database is unchanged: 86.6% of Pfam entries matched between releases 38.1 and 38.2 after excluding build metadata and comments. Reusing old results is hard because search programs are fixed binaries whose printed statistics depend on whole-database size. We present TARE (Tool Annotation Replay with Evidence), a wrapper that reruns an unmodified program only on entries that can matter, pinning the program's database-size setting to the new release so it prints the numbers a full run would print. TARE then tests the replay by adding back omitted entries and refuses with a failure status if any line changes, dumping a full stock body when the tool still runs. Two claims stay separate: conditional exactness under a stated contract (tested each update, not proved), and runtime assurance as probabilistic validation at a stated prevalence---not a guarantee against shipping incorrect output. In the all-record timing, TARE audits 299 records from all queries, so a hidden dependency affecting at least 1% of that population ships with probability at most 5% (valid oracle); rarer faults are outside that bound. On Pfam 38.1->38.2, TARE is 3.47x faster than a full rerun under that audit (median over 8 genomes after excluding 1 flagged genome; 95% CI 3.30-3.81). Historical candidate-population timings on the same nine genomes were 4.24x (Bernoulli; 95% CI 4.17-4.68) and 3.49x (bounded s=299; 95% CI 3.32-4.10). Cost of checking versus unchecked replay is 1.58x (C/B). Across 715,704 HMMER and Infernal output lines, none differed from a full run. TARE refused DIAMOND, whose first filter reads neighboring database bytes, and BLAST+, whose unpinned probe rows fit none of TARE's column rules.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02182v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "15 pages. Named system: TARE (not the anonymous OSDI name). Artifact: https://github.com/thatrandomasiandev/tare/releases/tag/artifact-20261101 Code and protocols; exclusive-node walls are committed results. Expert isolation closed inconclusive (3/5)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01897v1",
+      "title": "Evolutionary characterization of whole-genome doubling across human cancers",
+      "authors": [
+        "Yangyang Zhang",
+        "Haiming Li",
+        "Xiaoyu Zhao",
+        "Zilong Wang",
+        "Yongqi Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T13:39:58Z",
+      "summary": "Whole-genome doubling (WGD) is common across human cancers and is associated with tumour progression and adverse clinical outcomes. However, how genome-doubled tumours evolve across diverse cancer types remains poorly understood. Here we characterize WGD-associated tumour evolution by integrating genomic analyses of 41,332 tumours from 12 cancer types with evolutionary timing and multi-omic data. Several canonical driver mutations generally preceded WGD when both occurred, as did the onset of homologous recombination deficiency-associated mutagenesis. Notably, post-WGD chromosome-arm losses showed substantially weaker cancer-type dependence than pre-WGD losses, with 61-75% less variance explained by cancer type. Beyond chromosomal evolution, WGD+ tumours showed reduced interferon-response and HLA antigen-presentation programmes linked to epigenetic remodelling, without disproportionate enrichment of genetic immune-escape alterations. Our findings highlight WGD as a recurrent evolutionary transition associated with altered chromosomal evolution and epigenetically linked immune adaptation across cancers.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01897v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "q-bio.PE"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.PE (种群与生态进化)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01461v1",
+      "title": "An auditable agentic pipeline for variant-to-gene prioritisation, validated against orthogonal functional evidence",
+      "authors": [
+        "Shakuntala Baichoo",
+        "Sohail",
+        "Sarkar",
+        "Bo Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T02:48:40Z",
+      "summary": "Assigning GWAS variants to causal genes requires evidence from multiple resources. We present V2G, an agentic pipeline that records evidence retrieval and returns ranked genes alongside the retrieved evidence. We evaluate whether language-model reranking improves gene prioritisation and whether its gains depend on the retrieved evidence or recall of known associations. On 135 held-out loci where candidate retrieval succeeded and Open Targets L2G predicts, reranking by a language model improves Precision@1 over the evidence ordering it receives, 0.793 against 0.711 (+0.081, 95% CI +0.038 to +0.129), and over nearest-gene assignment (+0.178); no difference from Open Targets L2G or from training-membership baselines was detected. Given only the trait and the candidate gene symbols, in shuffled order, the same model scores 0.864 on these loci (three seeds, 0.859 - 0.867) and names the reference gene at 0.594 of the loci where the pipeline never retrieved it; with each gene's symbol moved to another gene's evidence row it follows the top-scored row and scores 0.284. The gain over the evidence ordering is recall of known genes, and the evidence as presented anchors the model to the ordering rather than informing it. Across the 296 held-out loci (five seeds each) the model keeps the given top candidate at 86% of decisions; at naturally retrieved loci its departures select a reference gene in 85% of departure decisions (31 of 37 loci), and none displaced one. Its calls carry trait-matched mouse mutant or Mendelian phenotype annotations more often than other candidates at the same locus. Train-test overlap is reported throughout. The study includes a frozen benchmark, cached predictions and reproduction code.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01461v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "21 pages of main manuscript including References, 4 figures, 11 supplementary tables, 2 main tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05418v1",
+      "title": "BIOTRAM: Biochemistry-informed Transformer for Relative Abundance via Metabarcoding",
+      "authors": [
+        "Emma Boehly",
+        "Scott C. Lowe",
+        "Ken A. Thompson",
+        "Anthony Fuller",
+        "Will Armstrong"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T00:02:46Z",
+      "summary": "Arthropod monitoring at scale begins with metabarcoding of bulk samples: trap collections of hundreds to thousands of specimens processed as one unit, extraction of DNA from the bulked specimens, then sequencing of the DNA from all specimens together. Metabarcoding reveals which taxa such a sample contains, but due to factors such as differing DNA amplification rates and body sizes, its read counts do not neatly correspond to how abundant the different taxa are relative to one another. This lack of relative abundance limits the data's utility for the multitude of ecological analyses that depend on it. We propose BIOTRAM: a neural network that estimates per-taxon specimen counts by dividing the observed read counts by a learned read yield per specimen, which it factors into the DNA each specimen contributes and how efficiently that DNA is amplified. On a paired dataset of 1,188 bottles (800 k specimens) processed both by metabarcoding and by comprehensive individual barcoding for ground-truthing, BIOTRAM reduces the Jensen-Shannon divergence between the estimated and the true composition from 0.3586 for raw read proportions (the usual proxy for abundance) to 0.1200. Trained on the same objective and inputs as four generic deep architectures, all with tuned loss weights, it reaches a count error 3.2% below that of the strongest of them and the lowest composition divergence. It also generalizes to out-of-domain data better, beating all baselines on bottles from unseen regions, later collection dates and unseen sequencing batches, and transferring to data from an unseen laboratory. Structuring the mapping from reads to counts around the steps of the experimental pipeline thus yields more accurate abundance estimates than leaving that mapping unconstrained.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05418v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.41736v1",
+      "title": "Locality-Controlled Out-of-Distribution Guidance for Robust Regulatory DNA Sequence Design",
+      "authors": [
+        "Dabin Jeong",
+        "Marwane Bourdim",
+        "Mo Lotfollahi"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-30T13:44:07Z",
+      "summary": "Designing regulatory DNA sequences for targeted gene-expression control is an important challenge. Recent approaches frame this task as property-conditioned generation, where diffusion models trained on natural sequences are guided toward high predicted activity through reward-based fine-tuning or sampling-time guidance. We show that single-reward evaluation can obscure reward-hacking behavior. By decomposing evaluation into property, novelty, and plausibility, we identify an empirically underexplored region of the evaluation space in which all three objectives are satisfied, but no existing baseline succeeds. We postulate that this gap arises because prior methods treat guidance primarily as a matter of magnitude. In regulatory DNA, however, sequence grammar is spatially nonuniform: motif positions are sensitive to perturbation, while background regions allow more exploration. We therefore propose LOCOGEN by reformulating guidance as a problem of locality. LOCOGEN learns an invariant motif mask through sequence-level invariance learning to protect motif positions, while applying OOD damping only to background positions. It operates at sampling time on a frozen diffusion backbone, without retraining the backbone. Across HepG2, K562, and SK-N-SH, LOCOGEN reaches this previously underexplored region of the property-novelty-plausibility space. Code is available at https://github.com/Lotfollahi-lab/LocoGen.",
+      "pdf_url": "https://arxiv.org/pdf/2610.41736v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "Accepted to NeurIPS 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2610.41046v1",
+      "title": "Localizing predictive concepts encoded in neural representations via hierarchical testing",
+      "authors": [
+        "Viktoriia Huryn",
+        "Marco Simnacher",
+        "Jim Berend",
+        "Wojciech Samek",
+        "Christoph Lippert"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-29T22:34:52Z",
+      "summary": "Understanding which regulatory sequence motifs a genomic deep learning model has learned, with statistical error guarantees, is essential for trusting its use in downstream tasks such as variant effect prediction. Existing approaches to identifying which units in a trained network encode human- understandable concepts fall into two groups. Exploratory methods rank and visualize units but offer no statistical guarantee that the selected units are associated with the prediction target across the population of inputs. Testing-based methods test only single units or one pre-defined set of them, and do not control the error across the many sets of units. We introduce CUTTIE (Cluster-tree Unit Top-down Testing of Independence with Error control), which clusters the units of each layer into a tree and tests the clusters top-down with conditional independence tests, localizing information about the target while controlling the family-wise error rate. Thereby, we identify clusters that carry information about the target beyond the rest of the layer. For the units in the identified clusters, conditional attribution maps then reveal what motifs they encode. In a controlled simulation, the procedure identifies the clusters whose concepts affect the target. We apply the procedure to a convolutional model predicting cell-type-specific chromatin accessibility from DNA sequence, where the concepts encoded in the identified clusters map onto known regulatory motifs.",
+      "pdf_url": "https://arxiv.org/pdf/2610.41046v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2610.40556v1",
       "title": "Advancing Clinical Genomic Analysis with a Skill-Centred Agent",
@@ -242,6 +515,32 @@
       "ai_summary": null
     },
     {
+      "paper_id": "2611.05410v1",
+      "title": "Rethinking One Gene, One Token: Transcriptome-Aware Tokenization for Single-Cell Foundation Models",
+      "authors": [
+        "Jiaqi Xiong",
+        "Jiaying Li",
+        "Yu Zheng",
+        "Xiang Zhou",
+        "Ziteng Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-21T08:29:29Z",
+      "summary": "Single-cell foundation models typically treat each gene as a token, which is both costly and wasteful. A cell can express thousands of genes, so one token per gene makes self-attention expensive, yet many of these genes are detected at low levels and carry too little signal to deserve a token of their own. Genes that are expressed together could instead share a token, leaving separate tokens for genes that stand out. We introduce scTAT (Transcriptome-Aware Tokenization), which pairs a gene-set vocabulary with a per-cell tokenizer. The vocabulary holds overlapping gene sets that recur with stable relative expression across the pretraining corpus. Using these sets raises two difficulties. First, which genes should share a token depends on the cell, whereas existing multi-gene tokens fix the grouping in advance. Second, gene sets of different sizes must be compared with single genes on a common scale. The tokenizer therefore decides per cell, letting gene sets and single genes compete for token positions under an expression score normalized by the square root of set size. Training still reconstructs individual genes, so predictions stay at gene resolution. In frozen-embedding cell-type annotation, scTAT matches the strongest one-gene-per-token model with half the token budget. Its advantage over one-gene-per-token models at the same budget grows as the budget shrinks and the tokenizer assigns more positions to gene sets. Encoding the same genes with gene-set tokens also nearly halves the Transformer's matrix-multiplication cost. These results show that a token need not hold exactly one gene: when the tokenizer decides per cell which genes share a token, a fixed budget covers more of each transcriptome at no cost in annotation accuracy.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05410v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
       "paper_id": "2610.28853v1",
       "title": "An autoencoder outperforms two transformers on prediction of gene expression from chromatin accessibility",
       "authors": [
@@ -258,6 +557,36 @@
       ],
       "category_names_zh": [
         "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05405v1",
+      "title": "VenusGenome: Genome-Aware Masked Autoencoding for Microbial Genome Representation Learning",
+      "authors": [
+        "Zhang Liang",
+        "Zhang Yukun",
+        "Tan Yang",
+        "Jiang Fan",
+        "Zhong Bozitao"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-20T09:40:01Z",
+      "summary": "Genomic-context models have shown that contextualizing protein embeddings can improve predictions of microbial function. We observe that a gene's protein embedding is partially predictable from the embeddings of neighboring genes in the genome, motivating high-ratio masking that requires reconstruction from sparser genomic context. Genomic modeling must also distinguish biological relationships from assembly conventions, since the ordering of separate contigs does not imply adjacency and strand labels depend on the reference orientation. We therefore introduce VenusGenome, a gene-resolution masked autoencoder that combines visible-only encoding with genome-aware attention incorporating contig boundaries, relative strand orientations, and gene positions. We pretrain this model on a curated corpus of over 1.7 million microbial genome assemblies from isolate and metagenomic sources, using frozen protein embeddings as gene-level inputs. Across genome-level phenotype prediction and gene-level tasks, the resulting frozen representations achieve the highest mean performance among the evaluated models on nine of eleven primary metrics. An exploratory gene-input perturbation analysis further links representation sensitivity to experimentally measured fitness defects. Ablations support the contribution of genome-aware attention and show the benefits of masked autoencoding over BERT-style masked modeling, with further gains from higher masking ratios.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05405v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))"
       ],
       "comment": null,
       "journal_ref": null,
@@ -293,7 +622,7 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.27331v2",
+      "paper_id": "2610.27331v3",
       "title": "Reading Between the Reads: A Decade On, Revisiting Sequencing Protocol Annotation in the Sequence Read Archive",
       "authors": [
         "Jamie J. Alnasir"
@@ -301,7 +630,7 @@
       "year": 2026,
       "published_at": "2026-10-19T21:49:36Z",
       "summary": "Background: Experimental metadata are essential for interpreting archived sequencing data. In 2015, Alnasir and Shanahan examined the annotation of fragmentation, adapter ligation and enrichment in the Sequence Read Archive (SRA). This study revisits those measurements using the original SQL keyword definitions on a September 2026 NCBI metadata snapshot reconstructed in the historical SRAdb schema. Results: The contemporary database contained 41,593,302 experiments, compared with 419,620 in 2013. In library_construction_protocol, the proportion matching all three historical keyword groups declined from 4.06% to 1.42%. The protocol field was NULL in 67.65% of contemporary experiments. Searching design_description alongside the protocol field increased combined three-step keyword detection to 1,197,367 experiments (2.88%), with most additional matches occurring where the protocol field was NULL. Coverage varied across sequencing library strategies, ranging from 0.26% for AMPLICON to 7.69% for RNA-Seq. Independent comparison of 150 sampled experiment records against source XML confirmed agreement in all historical keyword classifications. Conclusions: The original criteria identify a smaller proportion of experiments in the designated protocol field than a decade earlier. Additional preparation-related terminology is detectable in general experiment descriptions, exposing the limitations of searches restricted to one metadata field. Differences among sequencing strategies complicate historical comparisons as preparation methods evolve. The findings support more consistent protocol annotation and the need to distinguish keyword occurrence from the adequacy of experimental documentation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27331v2.pdf",
+      "pdf_url": "https://arxiv.org/pdf/2610.27331v3.pdf",
       "source": "arxiv",
       "primary_category": "q-bio.GN",
       "categories": [
@@ -312,7 +641,7 @@
         "q-bio.GN (基因组学与生物信息)",
         "q-bio.QM (生物医学定量方法)"
       ],
-      "comment": "15 pages, 2 figures, 8 tables. Clarified the practical implications of the experiment-level cross-field analysis, explicitly quantifying the 50.60% of historical three-step keyword detections missed by protocol-field-only searches. Refined methodological definitions and validation qualifications. The underlying experimental results remain unchanged",
+      "comment": "17 pages, 3 figures, 8 tables. Added a new two-panel figure illustrating the distribution of historical protocol-step keyword matches across SRA metadata fields and the effect of field selection across sequencing library strategies. Clarified the 50.60% missed-detection finding. The underlying experimental results remain unchanged",
       "journal_ref": null,
       "ai_summary": null
     },
@@ -343,330 +672,6 @@
       "comment": "Accepted to BIBM 2026",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.25149v1",
-      "title": "panvram: GPU-resident random access to a human pangenome cohort",
-      "authors": [
-        "Yakiv Shavidze"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-18T10:06:53Z",
-      "summary": "Repeatedly sampling short sequence windows from a human pangenome requires an access representation as well as compression. panvram stores each assembly as a reference-relative block archive and pools these archives on a GPU. For 558 haplotype assemblies, the default q4k representation occupies 16.642 GB of persistent pools including the decoded reference; a packed-reference, compact-directory representation occupies 11.634 GB. These quantities are not peak application memory. In the C1 experiment, default and fully compact forms delivered 743,271 and 736,762 windows/s; a separate public Colab run delivered 741,931 and 680,760 windows/s. All are batch API measurements and must not be pooled as repeated trials of an identical environment. Full-decoding checks compared reconstructed FASTA checksums with the manifest. On the CPU, the M6 shuffled-window workload at the same cohort cardinality reported 26 requests/s for AGC and 145,222 requests/s for refrel3 q4k. This comparison concerns one-thread requests of 4 KiB on the recorded warm-cache workload, not all genome-access patterns. AGC provides the smaller incremental archive: 5.40 MB/assembly versus 13.04 MB/assembly for refrel3 q16k, with different exclusions; the size pair is not the same refrel3 configuration as the q4k timing pair. We derive an expected-work expression for fixed independent granules and distinguish it from an empirical median-latency predictor. Cohort-scale counter and DRAM measurements motivate a locality hypothesis, but do not establish a causal per-miss latency or independently reproduce a model-failure verdict. The window-cost verdict at N=558 is published with its harness and raw timings.",
-      "pdf_url": "https://arxiv.org/pdf/2610.25149v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.DC",
-      "categories": [
-        "cs.DC",
-        "cs.PF",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.DC (分布式计算与云计算)",
-        "cs.PF (系统性能与评估)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "7 pages. Code, harnesses and logs: https://github.com/yasha1971-coder/panvram (commit 8f8e9e1); evidence archive DOI 10.5281/zenodo.23449044",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.24130v1",
-      "title": "Reducing double-dipping in single-cell topic models with three-way count splitting",
-      "authors": [
-        "Zheng Qu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T19:02:33Z",
-      "summary": "Topic models learn gene programs from single-cell RNA sequencing (scRNA-seq) data, and the same counts are then used to test which genes and donors are associated with those programs. Count splitting is the standard remedy for this reuse, but it has not been tested when an encoder reads each cell's counts. On a 104,400-cell lupus cohort with 300 permuted null genes per run, naive tests rejected 36% of null gene-topic pairs at a nominal 5% level, and the usual two-way split rejected 38%, because the encoder sees the tested gene's own held-out count. Encoding topic usage on a separate third of the counts, with beta-binomial thinning, lowered this to 7.7% (6.7% for genes outside the model); for two other models, LDVAE and scETM, the rate was 7.0-7.3% (naive 51-59%). A label-free interferon program shifts in held-out counts in the lupus cohort and in a pre-specified COVID-19 cohort, and donor-level topic usage predicts disease (AUROC 0.96) beyond cell-type proportions (0.86 and 0.58 in the two cohorts). Calibration and prediction did not depend on the model. We do not claim better clustering, prediction or topic stability. Code, figures and result tables are public (MIT license; DOI 10.5281/zenodo.23307193).",
-      "pdf_url": "https://arxiv.org/pdf/2610.24130v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "16 pages, 4 figures. Code: https://github.com/quz2004/topic-model-count-splitting",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.22617v1",
-      "title": "Harness-Driven Agentic Operation of Optical Pooled Screen Analysis",
-      "authors": [
-        "Matteo Di Bernardo",
-        "Claire Peterson",
-        "Ege Topkoc",
-        "Matt Might",
-        "Iain M. Cheeseman"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T20:19:09Z",
-      "summary": "Optical pooled screens connect genetic perturbations to changes in cell morphology and behavior, but turning the microscopy data into interpretable results takes complex, multi-day analyses. Established pipelines process this data, yet researchers still select parameters, inspect outputs, and resolve failures for each experiment. Here, we present Brieflow-auto, a pipeline-specific harness implemented as a Claude Code plugin that lets a coding large language model (LLM) operate Brieflow, an open-source end-to-end pipeline for optical pooled screening data. A researcher supplies experimental facts and approves the launch. An agent tunes parameters in an interactive notebook, and the harness validates the configuration, monitors execution, recovers from common failures, and checks output quality. For pipeline defects, the agent opens upstream issues proposing backward-compatible fixes for the broader community. In five previously analyzed screens, harness runs yielded more cells with a confident single-gene assignment than the original hand analyses. On a screen the pipeline was not designed for, the harness turned each failure into a reviewed upstream fix. More broadly, we propose that wrapping an established pipeline in a harness can substantially accelerate its use and the long-term reliability of its codebase.",
-      "pdf_url": "https://arxiv.org/pdf/2610.22617v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.HC",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.HC (人机交互 (HCI))",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "Accepted at the NeurIPS 2026 Workshop on Agentic Life Sciences",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.21943v1",
-      "title": "Panoramic modelling of single-cell transcriptomes at scale with CellNet",
-      "authors": [
-        "Xiaoqing Lian",
-        "Pei Liu",
-        "Jiahui Tan",
-        "Luoda Tan",
-        "Chaoyi Li"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T14:17:14Z",
-      "summary": "Comprehensively characterizing cellular diversity is critical for understanding tissue development, identifying disease-associated populations and investigating gene programmes linked to specialized functions. Advances in single-cell profiling reveal additional cell-specific transcripts and molecular associations, yet many foundation models represent only a restricted portion of this increasingly rich molecular information. Here we present CellNet, which enables panoramic modelling of single-cell transcriptomes by integrating DNA-derived gene identities and measured RNA expression in a shared image representation. Pretrained on 231 million cell profiles spanning 40 species, CellNet improves rare-population and condition-associated state recognition in evaluated cohorts while retaining competitive general cell representations. It predicts withheld coding-gene expression and selected non-coding targets in total-RNA data, and recovers lineage-specific expression patterns in spatial measurements. Prediction also extends across species, including to targets without expression-pretraining exposure. Its gene representations retrieve known non-coding modules and developmental or neural programmes, including from sparsely detected RNA queries. Together, these results establish CellNet as a scalable framework for interpreting cellular diversity through increasingly comprehensive transcriptomic measurements.",
-      "pdf_url": "https://arxiv.org/pdf/2610.21943v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.21074v1",
-      "title": "OmicsBench: a long-horizon multi-turn benchmark of AI agents on research-study-scale bioinformatics",
-      "authors": [
-        "Gideon Shaked",
-        "Siddharth Nagisetty"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-15T01:23:57Z",
-      "summary": "Computational biologists increasingly delegate substantial analyses to AI agents in long-horizon, multi-turn sessions, yet most benchmarks of agents' bioinformatics capabilities pose a single short task with a single-shot prompt. We present OmicsBench, a long-horizon, multi-turn bioinformatics benchmark for AI agents. Each of its 97 tasks links dependent subtasks into a directed acyclic graph, for 662 underlying subtasks in all. Each subtask is posed as one user turn and graded deterministically against an answer key, with optional in-context feedback on incorrect answers. Across 12 models on three harnesses, the slowest agent averages 3.6 hours per task, and no combination comes near saturating the benchmark, with mean scores of 0.43 to 0.57 out of a possible 1 without in-context feedback and 0.54 to 0.67 with it. Multi-turn evaluation also uncovers behavior that single-shot prompts cannot, as agents score lower on subtasks that depend on earlier subtasks, and in-context feedback helps agents recover some of that loss. Because deterministic scoring gives no qualitative account of how an agent failed, we also introduce an unsupervised failure mode discovery pipeline that describes, embeds, and clusters agents' failed attempts to surface emergent failure modes. Applied to OmicsBench, this pipeline exposes qualitative shortcomings in how agents carry out bioinformatics analyses, ranging from agents applying their own statistical filters in place of the specified ones to agents writing whole answers from memory.",
-      "pdf_url": "https://arxiv.org/pdf/2610.21074v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-bio.GN",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "32 pages, 12 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.19029v1",
-      "title": "Deep learning-based virtual perturbation reveals increasing heterogeneity of gene regulatory responses with aging",
-      "authors": [
-        "Yongjian He",
-        "Julia Hanna Haddad Guez",
-        "Xu-Wen Wang",
-        "Orr Levy"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T18:21:03Z",
-      "summary": "A central hypothesis in aging biology proposes that the gradual accumulation of stochastic molecular damage drives transcriptional deregulation (TD), ultimately leading to functional decline. However, existing single-cell analyses largely rely on static expression measurements and provide limited resolution of how regulatory responses change at the level of individual cells. Here, we leverage DKO, a deep learning framework that predicts cell-specific virtual gene perturbation effects from unperturbed transcriptomes, capturing cell-to-cell differences in regulatory context without requiring a reconstructed gene regulatory network or matched perturbation data. Applying DKO to single-cell transcriptomic datasets from humans, mice, Drosophila, and C. elegans revealed that the transcriptional consequences of perturbing the same gene became increasingly heterogeneous across cells with age, indicating that gene regulatory responses become less consistent and more dependent on cellular context. Furthermore, we find that cells with higher somatic mutation burdens have greater knockout-response variability, linking accumulated molecular damage to regulatory inconsistency. Within the same cellular populations, higher impact variability was also associated with higher senescence scores, linking transcriptional dysregulation to senescence-associated states. Our findings identify a progressive loss of regulatory robustness at both the gene and cell levels as a conserved feature of aging, linking stochastic molecular damage to increasing heterogeneity in cellular regulatory responses.",
-      "pdf_url": "https://arxiv.org/pdf/2610.19029v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.MN",
-      "categories": [
-        "q-bio.MN",
-        "q-bio.GN",
-        "q-bio.TO"
-      ],
-      "category_names_zh": [
-        "q-bio.MN (分子与细胞调控网络)",
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.TO (组织与器官建模)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.17830v1",
-      "title": "Spatial Kernel Restricted Canonical Correlation Analysis: Population Targets, Identifiability, and Stability",
-      "authors": [
-        "Zhen Miao",
-        "Yilong Qu",
-        "Nancy R. Zhang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T06:49:39Z",
-      "summary": "Relating observations of different categories across space requires methods that accommodate distinct sampling locations and spatial dependence. Spatial kernel restricted canonical correlation analysis (skrCCA) uses spatial weights to identify associated feature combinations across data categories. Here, we develop a statistical theory of its covariance form after feature reduction. Conditional on the observed locations and under a mean-zero model, the pairwise association matrices target kernel-weighted averages of cross-covariances. For prespecified directions, we derive the exact null variance under independence between blocks. We establish recovery and stability bounds in two- and multiblock settings under explicit population models, and show that exact cyclic updates have convergent objective values. The variance characterization shows how spatial weighting and within-block dependence jointly determine the effective information available for estimating association. The recovery bounds separate statistical and optimization error, relating stability to population separation and the strength of connections between blocks. These results clarify what fitted spatial association axes estimate and provide conditions under which they can be recovered reliably.",
-      "pdf_url": "https://arxiv.org/pdf/2610.17830v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ME",
-      "categories": [
-        "stat.ME",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "stat.ME (统计推断与方法学)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "26 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.17699v1",
-      "title": "Understanding Gene Expression-to-Image Learning: Spatial Structure and Information Fidelity",
-      "authors": [
-        "Xiaoqing Lian",
-        "Pei Liu",
-        "Jiahui Tan",
-        "Quan Zou",
-        "Chen Lin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-13T04:26:16Z",
-      "summary": "Single-cell RNA sequencing (scRNA-seq) enables cell-level analysis of biological heterogeneity, but learning effective representations from high-dimensional, unordered gene expression profiles remains challenging. Gene Expression-to-Image (GE2I) offers an effective learning strategy by arranging gene values on pixel grids for convolutional neural networks, but its underlying mechanisms remain unclear. We study GE2I on full-transcriptome data while keeping the network and training procedure fixed. Our results reveal a trade-off between spatial smoothness and gene-level fidelity. Structured mappings produce smooth, low-frequency patterns that support faster early optimization, whereas assigning multiple genes to the same pixel obscures expression differences and can reduce predictive performance. This trade-off explains why random mappings can compete with structured layouts when many genes are represented. One-to-one gene-to-pixel assignment improves prediction across the tested visual backbones even when image smoothness decreases. We further find that the benefits of pretraining and augmentation depend on the backbone and mapping. These findings provide practical guidance for pixel allocation and the transfer of vision priors to gene expression data.",
-      "pdf_url": "https://arxiv.org/pdf/2610.17699v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.16346v1",
-      "title": "CellChain: Benchmarking Cross-Scale Evidence Use for Perturbation Reasoning",
-      "authors": [
-        "Xue Xia",
-        "Yue Wang",
-        "Shuizhou Chen",
-        "Lang Yu",
-        "Hao Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-12T08:04:27Z",
-      "summary": "Recent advances in foundation models and large-scale cellular perturbation datasets have driven growing interest in using LLMs to predict and reason about cellular responses. Biological reasoning in this setting involves relating molecular mechanisms, cellular responses, and functional outcomes across scales. Evaluating foundation models therefore requires assessing not only whether their predictions are correct, but also how those predictions depend on the biological evidence provided. We introduce CellChain, an experimentally grounded benchmark comprising 590 biological cases and 2,360 matched evidence-condition instances across gene-dependency prediction, cytokine-axis identification, and drug-sensitivity ranking. CellChain links perturbation experiments and external biological resources through a provenance-aware evidence graph spanning molecular, pathway, transcriptional, and phenotypic information. Task-specific conditions vary evidence coverage, composition, or assignment while preserving questions, candidate answers, reference targets, and scoring rules. Across 18 foundation models, the highest accuracies under prespecified target-evidence conditions are 57.5%, 75.5%, and 70.8%, respectively, and broader evidence coverage does not consistently improve accuracy. On the drug-sensitivity benchmark cohort, matched reference histories outperform swapped histories by an average of 13.0 percentage points in cluster-weighted accuracy. Decision-transition analysis separates corrections, newly introduced errors, and wrong-answer switches, revealing substantial answer changes hidden by small net accuracy differences. CellChain provides controlled comparisons for attributing changes in model predictions to prespecified expansions of biological context, including changes in evidence coverage, composition, and biological assignment.",
-      "pdf_url": "https://arxiv.org/pdf/2610.16346v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.DB",
-      "categories": [
-        "cs.DB",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.DB (数据库与数据管理)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "21 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.16093v1",
-      "title": "CloneOT: predicting clone-specific perturbation responses with lineage-supervised neural inverse optimal transport",
-      "authors": [
-        "Yanshuo Chen",
-        "Wei Chen",
-        "Heng Huang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-12T03:02:54Z",
-      "summary": "Predicting single-cell perturbation responses requires mapping between two unpaired populations of cells measured before and after the perturbation. Optimal transport (OT) provides a principled framework for constructing such mappings by minimizing the transport cost, and neural OT methods (\\textit{e.g.}, CellOT) have been employed for this prediction task. However, these methods rely on a fixed transport cost, typically the squared Euclidean distance. This cost may connect cells with the wrong responses. Lineage tracing provides the information needed to learn the cost, as heritable barcodes link the cells of the same clone before and after the perturbation. Here, we propose \\CloneOT, a neural inverse OT method that learns both the transport cost and the transport map from partially lineage-traced single-cell datasets. \\CloneOT\\ represents the cost as a neural network. It learns the cost by minimizing the extra cost that the lineage adds to the optimal transport, so that the cheapest transport keeps the cells of each clone together. Our experiments demonstrate that \\CloneOT\\ recovers the correct transport on 2D datasets, while the squared Euclidean cost fails. Moreover, \\CloneOT\\ outperforms five baselines on 14 lineage-tracing perturbation scenarios of cancer cells, for both seen and unseen clones. Furthermore, we show that \\CloneOT\\ reveals the clone-specific transcriptional programs of drug-tolerant persister cells and forecasts the fate of each clone from its cells before treatment. Our implementation is available at https://github.com/poseidonchan/CloneOT.",
-      "pdf_url": "https://arxiv.org/pdf/2610.16093v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.15396v1",
-      "title": "Training-Data Extraction from Genomic Language Models",
-      "authors": [
-        "Tianhao Mao",
-        "Zihao Wang",
-        "Dongfang Zhao",
-        "Rui Zhu",
-        "Xiaofeng Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-11T06:50:22Z",
-      "summary": "Genomic language models generate long nucleotide continuations from short prefixes, exposing a direct route for studying training-sequence extraction through the generation interface. We present an output-only black-box attack on Evo 2 that selects convergent groups of repeated generations without gradients, token likelihoods, or training-corpus access during candidate selection. Recovered content is then scored by an evaluator combining aligned length, nucleotide identity, match multiplicity, and sequence complexity. Across 304 runs on Evo 2 7B with bacteriophage and plasmid prefixes, the attack yields 888 candidate clusters, of which 85 match training segments of at least 500 bp, giving a cluster-level attack success rate of 9.57%. Final filtering retains 22 uniquely matched extraction events at the 500-bp threshold and 15 at 1,000 bp, covering 14 and 7 distinct training-sequence regions, respectively. Within-category source-homology screening retains 11 of the 22 events at a 99% exclusion threshold and four at 98%, with the latter mapping to two reference regions. The results establish convergence among repeated nucleotide generations as a practical output-only signal for recovering long training-sequence segments and characterize how recovery depends on prefix length, cluster size, perplexity, early stopping, and sequence domains.",
-      "pdf_url": "https://arxiv.org/pdf/2610.15396v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CR",
-      "categories": [
-        "cs.CR",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.CR (密码学与网络安全)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.15182v1",
-      "title": "Homogeneity and heterogeneity of functional element composition of genome units across human and seven model organisms",
-      "authors": [
-        "Yanying Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-10T21:03:16Z",
-      "summary": "Is a chromosome a miniature of its genome, with the same mix of functional elements as the whole? We ask this of eight annotated genomes: human, mouse, zebrafish, Caenorhabditis elegans, Drosophila melanogaster, Saccharomyces cerevisiae, Arabidopsis thaliana and maize. Elements are classified in a four-level hierarchy, from five major classes (protein-coding genes, ncRNA genes, transposable elements (TEs), pseudogenes, IG/TR gene segments) down to finer classes. Units are chromosomes or arms, cytogenetic bands, equal cuts of each chromosome, and random segments of matching size. We compare each unit with the genome and with other units, call compositions homogeneous when they differ by less than 5%, and score each against a random sample of the same size. The first finding is a surprising homogeneity. The level-1 compositions of the major chromosomes match each other and the genome in maize, zebrafish, yeast and C. elegans, and in fly down to the major arms. Finer classes can be homogeneous too: protein function in Arabidopsis, and the Wicker TE orders in maize. Enzyme reaction classes are interchangeable between chromosomes in all eight genomes. The second finding is a structured heterogeneity. Where a unit departs from its genome, it does so in one of three ways: clusters of named elements, such as rRNA genes or immune receptor loci; megabase-scale compartments, such as TE-rich pericentromeric heterochromatin; and lineage-specific gene families, visible only at the finest levels. Corrected for chance, the genomes fall into groups. For protein function and gene families, composition is more uniform in plants and fly than in vertebrates, and least uniform in C. elegans. For the major classes and TE orders, uniformity follows where each genome places its repeats, along the arms (maize, zebrafish) or around the centromeres (Arabidopsis, fly), not its lineage.",
-      "pdf_url": "https://arxiv.org/pdf/2610.15182v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "55 pages, 39 figures, 10 tables",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -676,9 +681,14 @@
       "count": 25
     },
     {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 8
+    },
+    {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
-      "count": 6
+      "count": 7
     },
     {
       "code": "q-bio.QM",
@@ -686,18 +696,23 @@
       "count": 6
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 5
+      "code": "cs.AR",
+      "name_zh": "硬件与体系结构",
+      "count": 1
     },
     {
-      "code": "stat.ME",
-      "name_zh": "统计推断与方法学",
-      "count": 2
+      "code": "q-bio.PE",
+      "name_zh": "种群与生态进化",
+      "count": 1
     },
     {
       "code": "cs.IR",
       "name_zh": "信息检索与推荐系统",
+      "count": 1
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
       "count": 1
     },
     {
@@ -709,42 +724,7 @@
       "code": "stat.ML",
       "name_zh": "机器学习统计基础",
       "count": 1
-    },
-    {
-      "code": "cs.DC",
-      "name_zh": "分布式计算与云计算",
-      "count": 1
-    },
-    {
-      "code": "cs.PF",
-      "name_zh": "系统性能与评估",
-      "count": 1
-    },
-    {
-      "code": "cs.HC",
-      "name_zh": "人机交互 (HCI)",
-      "count": 1
-    },
-    {
-      "code": "q-bio.MN",
-      "name_zh": "分子与细胞调控网络",
-      "count": 1
-    },
-    {
-      "code": "q-bio.TO",
-      "name_zh": "组织与器官建模",
-      "count": 1
-    },
-    {
-      "code": "cs.DB",
-      "name_zh": "数据库与数据管理",
-      "count": 1
-    },
-    {
-      "code": "cs.CR",
-      "name_zh": "密码学与网络安全",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:51:45.641166"
+  "snapshot_synced_at": "2026-11-06T09:25:31.398301"
 }

@@ -1,20 +1,145 @@
 {
   "query_expression": "cat:econ.EM",
   "total_fetched": 25,
-  "total_results": 6061,
+  "total_results": 6101,
   "papers": [
     {
-      "paper_id": "2610.40582v1",
-      "title": "Optimal Policy With Noisy Sufficient Statistics",
+      "paper_id": "2611.06855v1",
+      "title": "Regression with Many Generated Controls",
       "authors": [
-        "José Luis Montiel Olea",
-        "Mikkel Plagborg-Møller",
-        "Christian K. Wolf"
+        "Timothy Christensen",
+        "Daniel Vebman"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T17:45:46Z",
-      "summary": "We study how policy-makers should set $k$ policy instruments so as to best hit $m$ (perhaps dynamic) targets, in a linear-quadratic model where there is statistical uncertainty about the causal effects of the policies. Plugging the estimated effects into \"sufficient statistics\" optimal policy formulas, as commonly done in the literature, can result in infinite risk. In fact, maintaining the status quo regardless of the data is uniquely minimax-optimal when $m>1$, and uniquely minimax-regret-optimal when $m,k>1$. Nevertheless, we recommend that policy-makers adopt a simple, dampened version of the popular plug-in rule, as in Fisher (1962) and Brainard (1967). Not only does this cautious rule outperform doing nothing over most of the parameter space, its worst-case risk is also close to the minimax value in empirically relevant models. Policy-makers should use causal effect estimates from an unbiased but dispersed estimator (such as a local projection) rather than from a moderately biased but precise estimator (such as a vector autoregression).",
-      "pdf_url": "https://arxiv.org/pdf/2610.40582v1.pdf",
+      "published_at": "2026-11-04T18:10:56Z",
+      "summary": "We consider linear regression when some covariates are endogenous, a variable sufficient to control for endogeneity exists but is latent, and the practitioner can generate many proxies for the latent control. For instance, one could cheaply but imperfectly impute the latent control using different AI/ML methods, each generating a different proxy. There are several options the practitioner might consider in this scenario: including all proxies or factors computed from the proxies as controls, instrumental variables estimation, and some nonlinear variants thereof. We use a transparent model to derive the implicit estimand each approach targets, determine when these estimands recover the parameter of interest, and provide some practical recommendations. We show that with a sufficiently rich set of generated controls, practitioners can consistently estimate the parameter of interest without relying on validation data.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06855v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06557v1",
+      "title": "Approximate minimax regret for conditionally similar tests",
+      "authors": [
+        "Andrés Aradillas Fernández"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T14:21:28Z",
+      "summary": "We construct approximately minimax regret optimal tests in a scalar Gaussian instrumental variables experiment. This example shows how conditionally similar tests allow a novel approximation approach, allowing us to optimize weights over alternatives to minimize worst-case power regret. Stochastic mirror descent and averaging yield finite-iteration guarantees with exact conditional similarity. We establish bounds for exact and simulated powers and illustrate the procedure numerically. This initial algorithm shows how existing nearly-optimal test computation methods can be extended to include composite alternative hypothesis sets without the computational cost associated with maintaining size control.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06557v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "7 pages, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06266v1",
+      "title": "Online Bayesian Inference for a Dirichlet Process Mixture of Binary Logit Models",
+      "authors": [
+        "Hajime Watanabe",
+        "Charisma F. Choudhury",
+        "Stephane Hess"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T10:14:56Z",
+      "summary": "Flexible travel behaviour models for preference heterogeneity have largely remained within the batch-estimation paradigm. The growing availability of continuously collected behavioural data, for example from smartphone applications, highlights the need for methods that update posterior inference on such heterogeneity as new observations arrive. This study proposes an online Bayesian inference method for a Dirichlet process mixture of binary logit models. The main challenge is to update the posterior as observations arrive while allowing the latent cluster structure to expand and historical cluster assignments to be revised. We develop a sequential Monte Carlo sampler using a sequence of Pólya--Gamma-augmented partial-data posteriors, local particle-weight corrections, and recursively maintained sufficient statistics. Each observation's contribution can be added, removed, or replaced in these summaries, supporting both sequential coefficient updating and rejuvenation that revisits historical cluster assignments. The simulation study shows that observation-by-observation sequential updating yields final posterior summaries close to those obtained by batch Markov chain Monte Carlo. Sensitivity analyses further demonstrate trade-offs between posterior approximation accuracy and computational cost as the number of particles and rejuvenation settings are varied. An illustrative empirical application shows how the method tracks posterior evolution and produces observation-specific provisional posterior summaries with low latency as real-world trip records are processed sequentially. The proposed approach provides a methodological foundation for online inference in travel behaviour models with parameter heterogeneity and for future extensions to richer choice structures, low-latency decision support, and online anomaly screening.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06266v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "70 pages, 28 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06067v1",
+      "title": "Offline Learning of Reserve Prices from Censored Bids",
+      "authors": [
+        "Lavanya Marla",
+        "Yunzong Xu",
+        "Boxuan Zhou"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T07:13:27Z",
+      "summary": "We study how a seller can learn a reserve price for a second-price auction from censored historical bid data. Because values below past reserves are unobserved, even unlimited data may not reveal which reserve earns the most revenue. Under a monotone hazard rate (MHR) assumption, we characterize exactly when an optimal reserve is identified, even though the value distribution may not be: either revenue has not yet begun to fall at the lowest historical reserve, so the best reserve lies among the observed bids, or the censored fraction is as large as MHR allows, which pins down the entire distribution. When identification fails, we derive the reserve that minimizes worst-case revenue regret over distributions consistent with the data, and prove that this unique minimax reserve and its regret depend on just two observable quantities: the censored fraction and the hazard just above the lowest historical reserve. With $N$ historical bidders, the optimal reserve is learned with expected worst-case regret $O(N^{-1/2})$ when it lies among the observed bids, and $O(N^{-1})$ from the censored count alone when the censored fraction is as large as MHR allows and the optimum lies at or below the lowest reserve. In the nonidentifiable regime, plugging estimates of the two quantities into the minimax reserve gives expected worst-case regret within $O(N^{-2/5})$ of the population minimum under local density smoothness, with a matching minimax lower bound on a smooth class. Beyond MHR, we solve the minimax problem for regular and unrestricted distributions and prove an $O(N^{-2/5})$ learning bound in the regular nonidentifiable regime, given known bounds on the boundary parameters. Experiments on synthetic and eBay data show gains from exploiting MHR and the benefits of the robust rule when parametric models are misspecified.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06067v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.GT",
+      "categories": [
+        "cs.GT",
+        "cs.LG",
+        "econ.EM",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.GT (计算机博弈论与算法经济)",
+        "cs.LG (机器学习 (ML))",
+        "econ.EM (计量经济学)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "87 pages, 12 figures, 25 tables. Authors listed alphabetically",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05778v1",
+      "title": "Neural Score-Driven Volatility and Risk Forecasting",
+      "authors": [
+        "Qianli Zhao",
+        "Chao Wang",
+        "Minh-Ngoc Tran",
+        "Richard Gerlach"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T00:31:23Z",
+      "summary": "We develop a score-driven volatility model in which no particular parametric innovation distribution needs to be specified. The proposed method relies on a lightweight neural network to represent the negative score of the innovation density. By integrating and normalizing the learned score and imposing location-scale identification, we recover a flexible innovation density that can accommodate asymmetry, including negative skewness commonly observed in financial returns. Two estimation procedures are considered. A two-step procedure estimates the neural score by score matching and subsequently fits the volatility recursion with the identified density held fixed. A one-step procedure jointly refines the neural and volatility parameters under the conditional likelihood. We illustrate the practical relevance of the proposed method using eight international equity indices, with a separate evaluation of the high-volatility first half of 2020. The results show that the neural score-driven models are competitive with Gaussian and Student-$t$ GAS benchmarks that require a prespecified parametric innovation distribution, with particularly strong performance during the COVID-19 period.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05778v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "3 figures, 6 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05644v1",
+      "title": "On the Theory of Multidimensional Stationary Random Processes (1941): Translation and Commentary",
+      "authors": [
+        "Bulat Gafarov",
+        "Madina Karamysheva"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T21:28:06Z",
+      "summary": "This edition provides an English translation and commentary on V. N. Zasukhin's 1941 note \"On the Theory of Multidimensional Stationary Random Processes,\" originally published in Doklady Akademii Nauk SSSR, 33(7-8), 435-437. The note states a multivariate extension of Wold's decomposition: an orthogonal decomposition into singular and regular components, a one-sided moving-average representation of the regular component in terms of orthonormal innovation sequences, and a spectral criterion for regularity of full rank. The latter combines absolute continuity of the spectral functions with positivity and logarithmic integrability of the determinant of the spectral density matrix. Whittle (1953) explicitly credited Zasukhin with the multivariate generalization. The original results are presented without detailed proofs. A separate editorial note discusses their historical reception and explains the terminology. A retypeset Russian transcription is included for comparison.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05644v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
@@ -28,16 +153,17 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.40047v1",
-      "title": "Smooth Threshold GARCH: Quasi Maximum Likelihood Estimation and Empirical Evidence",
+      "paper_id": "2611.05608v1",
+      "title": "Debiased Conditional Independence Tests for Causal Effects",
       "authors": [
-        "Jonas Fiedler Frederiksen",
-        "Frederik Vilandt"
+        "Susan Athey",
+        "Maria Nareklishvili",
+        "Jann Spiess"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T13:43:20Z",
-      "summary": "It is well established that the volatility of daily stock returns responds asymmetrically to news, as described by the news impact curve (NIC), which relates volatility to the previous return. Empirical studies suggest that (i) volatility reacts more strongly to negative returns than to positive returns of the same magnitude, (ii) the point of asymmetry, where the NIC attains its minimum, is positive, and (iii) returns above this point often do not increase volatility at all. The popular GJR and A-GARCH models each rule out one of these features. We study the Smooth Threshold GARCH (STGARCH) model, which nests both and allows for (i)-(iii) by combining an estimated threshold, the point of asymmetry, with separate slopes on either side of it. Although the likelihood is not twice continuously differentiable in the threshold, we show that the quasi maximum likelihood estimator is consistent and converges at the usual $\\sqrt{n}$-rate, whether or not (iii) holds. If (iii) does not hold, the estimator is asymptotically normal, while if it holds, the slope above the threshold is zero, a value on the boundary of the parameter space, and the limit is non-Gaussian. In that case, the $t$-statistic for (iii) converges to the positive part of a standard normal variable, and the $t$-test of the GJR model remains valid. These results allow us to test the GJR and A-GARCH models, as well as (i)-(iii), within the STGARCH using standard normal critical values. For daily returns on five major stock indices, we reject the GJR model for all five and the A-GARCH model for three, suggesting that the STGARCH improves upon both. Volatility is lowest after returns 0.3-0.6 percentage points above their conditional mean, in line with (i) and (ii). Finally, the hypothesis in (iii) is rejected for two of the five indices.",
-      "pdf_url": "https://arxiv.org/pdf/2610.40047v1.pdf",
+      "published_at": "2026-11-03T20:53:20Z",
+      "summary": "We propose robust tests for causal effects on potentially high-dimensional outcomes where there may be selection into treatment. These tests measure conditional independence of outcomes from treatment assignment by asking whether treatment can be predicted from outcomes more accurately than from covariates alone. We design three such tests of conditional independence. First, we propose a conditional randomization test based on an inverse propensity weighted mean squared error test statistic. If the propensity score is known, the test controls size in finite samples. Second, we propose a double-residualization approach, where we partial out covariate effects from both treatment and outcome-based treatment predictions, and test whether the correlation between the residuals is zero. Third, we propose a test based on an augmented inverse propensity weighted estimator built around doubly robust, Neyman-orthogonal population moments that are necessary and sufficient for conditional independence. Simulations show that all three tests improve power over a joint Wald test based on a seemingly unrelated regression across many non-linear settings, particularly under heavy tails, outliers, mixtures, heterogeneous effects, and effects with opposite signs.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05608v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
@@ -51,38 +177,15 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.39995v1",
-      "title": "How Different are Different Differences-in-Differences? A Large-Scale Meta-Analysis",
+      "paper_id": "2611.05584v1",
+      "title": "Sensitivity Analysis in Population Shares",
       "authors": [
-        "Peter Hull"
+        "Filippo Palomba"
       ],
       "year": 2026,
-      "published_at": "2026-10-29T13:16:00Z",
-      "summary": "I use AI-assisted replication to assess the empirical importance of negative weights in two-way fixed effects (TWFE) estimation, drawing on 1,346 staggered-adoption specifications from 108 economics papers. TWFE estimates are highly correlated with estimates from modern difference-in-differences methods, with observed sign reversals in 10.8-14.5% of comparisons and greater precision for TWFE. Hierarchical models that account for estimation noise imply a 91-98% correlation between estimands and a 0.6-2.1% probability of obtaining a statistically significant TWFE estimate with the opposite sign from the modern estimand. These findings suggest negative weights may be a less serious problem in practice, and illustrate how AI can support large-scale empirical assessments of new econometric methods.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39995v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": "35 pages, 8 figures, 4 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39871v1",
-      "title": "Threshold Regression with a Nearly Integrated Threshold Variable",
-      "authors": [
-        "Chaoyi Chen",
-        "Thanasis Stengos"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T11:46:26Z",
-      "summary": "This paper considers threshold regression with an integrated or local-to-unity threshold variable and a threshold fixed in levels. We study the least squares threshold estimator and establish its asymptotic theory under both fixed and diminishing threshold effects. Under a fixed effect, the threshold estimator has a compound Cox argmin limit, whereas under a diminishing effect, its limiting distribution is characterized by a two-sided Brownian argmax with a random scale. We also develop likelihood ratio inference, which is asymptotically pivotal under a diminishing effect and conservative under Gaussian errors for a fixed effect, and show that conventional $t$-ratios for the slope coefficients remain asymptotically standard normal. A sup-Wald test is proposed to detect threshold effects that may be too small for consistent threshold localization. We further extend the framework to allow for integrated slope regressors and for contemporaneous endogeneity of the threshold variable, showing that the leading endogenous contribution cancels over shrinking threshold windows. Monte Carlo simulations examine the finite-sample performance of the proposed methods. An illustration using public debt and economic growth highlights the relevance of allowing for a persistent threshold variable.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39871v1.pdf",
+      "published_at": "2026-11-03T20:15:54Z",
+      "summary": "Empirical work often relies on assumptions on the distribution of random variables, such as potential outcomes or latent variables, to identify some parameter of interest. We introduce a unified framework for assessing the sensitivity of a target estimand to relaxing these distributional assumptions for a given share of the population. We derive bounds on the values the estimand can take as this share varies between 0 and 1, and compute the bounds using tractable finite-dimensional programs. We propose plug-in estimators for the bounds and characterize their large sample properties. We also show that our bounds recover exact nonparametric sharp bounds at no additional computational cost, and introduce summary measures that separate misspecification uncertainty from sampling uncertainty and rank studies by their robustness. We apply our framework to assess the robustness of (i) average treatment effects in randomized experiments with attrition, (ii) counterfactual predictions in structural models, and (iii) formula instruments. We provide R and Python packages implementing all our methods.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05584v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
@@ -96,530 +199,425 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.38965v1",
-      "title": "Orthogonal Inference for Conditional Z-Estimation without Cross-Fitting: A Distributional Nearest-Neighbor Approach",
+      "paper_id": "2611.05456v1",
+      "title": "Aggregating treatment effects across multiple outcomes",
       "authors": [
-        "Jakob R. Juergens"
+        "Chun Pong Lau"
       ],
       "year": 2026,
-      "published_at": "2026-10-28T21:50:38Z",
-      "summary": "Estimating conditional parameters, such as heterogeneous treatment effects, often requires rich covariate adjustment, even when the parameters are reported along only a few dimensions. Fitting nuisance functions on the full sample makes all observations available for adjustment, but creates dependence between fitted scores and the observations at which they are evaluated, which is typically avoided by cross-fitting. We develop pointwise inference with full-sample nuisance predictions for exactly identified conditional moment equations, recovering conditional average treatment effects as a special case. We localize the estimating equations around the reporting point using distributional nearest neighbors (DNN), a U-statistic-based averaging procedure. Under sufficient conditions on the local design, orthogonality, prediction accuracy and quantitative deletion stability, the estimator is asymptotically normal, and a frozen-score jackknife consistently estimates its limiting covariance with nuisance predictions held fixed. In simulations, full-sample and cross-fitted inference perform similarly, with coverage shortfalls from nuisance approximation error, spatial bias and heavy studentized tails. An application to 401(k) eligibility using Survey of Income and Program Participation data finds similar estimates across nuisance prediction methods, with wide normal-reference intervals.",
-      "pdf_url": "https://arxiv.org/pdf/2610.38965v1.pdf",
+      "published_at": "2026-11-03T18:45:57Z",
+      "summary": "Researchers often aggregate outcomes to estimate treatment effects on abstract concepts, such as \"crime\" or \"wealth.\" First, I document that principal component analysis (PCA), inverse variance matrix (IVM) weighting, and standardized averaging (SA) are commonly used but have unexpected shortcomings. PCA can assign negative weights, need not maximize precision, depends on an arbitrary sign normalization, and can have nonstandard asymptotics. Unlike SA, IVM can assign negative weights, but neither necessarily maximizes precision. Second, I develop a statistical decision-theoretic approach that uses mean-squared error to choose nonnegative weights while accounting for outcome quality. I revisit a study on social distancing.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05456v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05227v1",
+      "title": "Regret-based Characterization, Information Limits, and the Sample Complexity of Auditing Adaptive Policies",
+      "authors": [
+        "Irene Aldridge"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T17:13:24Z",
+      "summary": "A policy can earn its performance by where it locates on average or by reacting to information. For any Markov policy $π$ in a finite-horizon MDP, let $ν$ be its open-loop marginal, which plays $π$'s average action distribution at each step. We show that $J(π)-J(ν)$ equals $\\sum_t tr Cov(Q^ν_t,π_t)$ under endogenous dynamics. Audits based on immediate costs alone can have the wrong sign. Writing the covariance as a joint-versus-product gap gives the bound $|J(π)-J(ν)|\\le\\sum_t span_t\\sqrt{I(s_t;a_t)/2}$, with a sharp constant. Hence, an MDP's adaptivity gap is bounded by the information that its optimal policy uses. Estimating $J(π)-J(ν)$ from $π$'s own bandit-feedback logs takes $Θ(\\barχ^2 \\log(1/η)/δ^2)$ rounds, where $\\barχ^2$ is an average $χ^2$-divergence. At the same time, deterministic non-constant policies cannot be audited at all. We also provide an importance-sampling auditor for episodic MDPs.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05227v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "cs.IT",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "cs.IT (信息论)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "13 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.04366v1",
+      "title": "When Listwise Deletion Works: Causal Diagrams and Complete-Case Regression",
+      "authors": [
+        "Wenxin Lin",
+        "Shiyao Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T05:52:58Z",
+      "summary": "Listwise deletion (LWD) appears more common than imputation: our review of leading journals finds that about 50% of articles state or imply LWD, versus 7% describing an imputation model. Assuming oracle regression with all required values observed consistently estimates the population average treatment effect, we ask when complete-case regression remains consistent. With constant effects, we offer two checks: whether covariates and the missing indicator satisfy the adjustment criterion in an augmented causal diagram (DAG), and whether the estimator pools valid within-covariate comparisons appropriately, potentially using inverse treatment-propensity weighting (IPW). For heterogeneous effects, assuming conditional effects carry over to the population, we reweight comparisons to the population covariate distribution. Simulations and empirical illustrations from American politics, comparative politics, and international relations demonstrate the framework's use and show why a missing-at-random (MAR) classification, although useful for assessing imputation, does not by itself establish whether complete-case regression consistently estimates the target population ATE. Thus, we recommend adding the missing indicator and its causes to causal models, then checking adjustment and weighting for LWD.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04366v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "econ.EM",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "econ.EM (计量经济学)",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.04040v1",
+      "title": "PanelGP: A Probabilistic Factor Model for Asset-Return Panels",
+      "authors": [
+        "Andrea Ruglioni",
+        "Damir Filipovic"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T22:35:34Z",
+      "summary": "We develop PanelGP, a conditional factor model for large panels of stock returns in which firm characteristics determine the factor loadings and economic conditions determine the expected factors. Both relations are estimated nonparametrically with Gaussian-process priors. The kernel choice nests instrumented principal component analysis (IPCA) as well as smooth nonlinear maps. Asset-specific loading innovations and common factor innovations separate idiosyncratic from systematic risk, so one estimated model forecasts both expected returns and their covariance matrix. Estimation uses sparse variational inference with a joint posterior over loadings and factors. Because each predicted return is bilinear in a Gaussian state, the predictive covariance matrix and the cumulants of any portfolio have closed forms. In simulations, the estimator recovers the nonlinear maps and the variance parameters. For S&P 500 constituents over 1995-2024, nonlinear loadings rank stocks better than affine loadings and improve the Gaussian log score. Relative to IPCA, the resulting portfolios have higher Sharpe ratios, also net of trading costs, and the minimum-variance portfolio has lower volatility. The predicted variances rank stocks and months by risk but are too compressed.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04040v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.ST",
+      "categories": [
+        "q-fin.ST",
+        "econ.EM",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "q-fin.ST (统计金融学与高频数据)",
+        "econ.EM (计量经济学)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.04000v1",
+      "title": "Revisiting Elliptic++ for Bitcoin Forensics: Feature Reconstruction and Leakage-Resistant Evaluation",
+      "authors": [
+        "Runlin Liang",
+        "Simon Trimborn",
+        "Noud van Giersbergen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T21:40:06Z",
+      "summary": "Elliptic and its address-level extension Elliptic++ are widely used benchmark datasets in Bitcoin forensics, cited by more than 1300 academic studies according to Google Scholar. We identify future information leakage in Elliptic++. Its positional data split does not respect temporal order, and the exact definitions of its address-level features remain undocumented. We revisit how the 55 Elliptic++ address-level features are computed and propose a leakage-resistant pipeline. First, the exact feature definitions are recovered by linking Elliptic transactions to public ledger data. Second, we compute the features with a temporal split based on each address's first appearance, using only information available at the time of prediction. Once temporal ordering is enforced, the random forest (RF)'s strong predictive performance largely disappears: its F1 score on the illicit class falls from $0.846$ under the original leaky evaluation to just $0.291$ under our leakage-resistant pipeline. Furthermore, RF no longer outperforms a simple logistic regression baseline. We provide the exact feature definitions and executable code to reproduce the leakage-resistant features, so that future Bitcoin forensic models can be evaluated based on genuine predictive capability rather than temporal data leakage.",
+      "pdf_url": "https://arxiv.org/pdf/2611.04000v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "cs.CR (密码学与网络安全)",
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03550v1",
+      "title": "Unconfoundedness as an Information Constraint",
+      "authors": [
+        "Christoph Breunig"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T18:13:04Z",
+      "summary": "This paper provides an information-theoretic characterization of unconfoundedness within a general class of models allowing for endogenous selection. We impose a conditional mutual information (CMI) restriction requiring that the information about treatment contained in a potential outcome, conditional on covariates, does not exceed that contained in its latent heterogeneity. Under the maintained model conditions, this restriction is equivalent to a multiplicative factorization of treatment probabilities into separate functions of latent heterogeneity and covariates. Although the CMI restriction permits endogenous selection, sufficiently rich variation in treatment probabilities across covariate values makes it equivalent to unconfoundedness for the corresponding potential outcome. For binary treatments, any nonconstant propensity score suffices; for multiple treatments, a full-rank condition on the second-moment matrix of the propensity-score vector is sufficient. State-specific restrictions bound residual selection and imply exogeneity for individual treatment states under boundary-support conditions. Extensions cover continuous treatments and instrument exogeneity.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03550v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03391v1",
+      "title": "Specification LASSO and a Flexible Characteristics-Based Asset Pricing Model",
+      "authors": [
+        "Chaohua Dong",
+        "Shuyi Ge",
+        "Shaoran Li",
+        "Wen Su"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:28:46Z",
+      "summary": "This paper studies a partially linear semiparametric additive model that allows for interactions among variables in high-dimensional settings. We propose the Specification LASSO (S-LASSO), a two-step method that integrates LASSO and Adaptive Group LASSO to simultaneously perform variable selection and model specification. Theoretically, we establish that S-LASSO possesses oracle properties in terms of selection consistency and asymptotic normality. Monte Carlo simulations confirm that S-LASSO outperforms existing alternatives across a variety of scenarios. Empirically, we apply S-LASSO to a characteristics-based asset pricing model, exploring the linear and nonlinear effects of asset-specific characteristics on cross-sectional returns, as well as their interactions with firm size.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03391v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.ST",
+      "categories": [
+        "math.ST",
+        "econ.EM",
+        "q-fin.PM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "math.ST (数理统计理论)",
+        "econ.EM (计量经济学)",
+        "q-fin.PM (资产组合管理)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03345v2",
+      "title": "Sharp Identification for Regressions with Interval-Observed and Missing Covariates",
+      "authors": [
+        "Martin Fankhauser",
+        "Gil Jan Peled"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T16:00:17Z",
+      "summary": "Researchers frequently estimate regressions when key variables are missing or observed only through intervals. Imputation or assumptions about the observation process can yield seemingly precise but misleading conclusions. We develop methods for identification and inference that remain robust to such incomplete data. For a broad class of conditional moment models, we characterize the sharp identified set, the set of all parameter values consistent with the observed data and maintained regression model, without restricting how incomplete observations arise. We establish Hausdorff-consistent estimation and uniformly valid confidence regions, and develop computationally tractable implementations for common regression models. In an application relating interval-elicited discount rates to on-time high-school graduation, conventional inference excludes zero, whereas our interval-data-robust confidence regions include it. Exploiting sharp identification nevertheless yields substantially tighter confidence regions than non-sharp alternatives.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03345v2.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "corrected typo in title",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03079v1",
+      "title": "When Covariates Mask Pre-Trends",
+      "authors": [
+        "Parush Arora"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T13:06:09Z",
+      "summary": "Honest difference-in-differences methods judge how far parallel trends may fail after treatment by how far it failed before treatment, as shown by placebo estimates. When the design adjusts for covariates, the placebo estimates are adjusted too. We show that this benchmark is valid only if the covariates are measured before the earliest placebo window. A covariate measured later already reflects shocks to the outcome during the placebo period, so adjusting for it hides part of the pre-trend. The placebos then look flatter than the true trend and the resulting confidence sets are too narrow. When the covariate is also observed at an early date, the distortion can be estimated and tested. Of 90 recent published studies that adjust for time-varying covariates, 77 measure at least one covariate too late.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03079v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "26 pages, 2 figures, 5 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.03075v1",
+      "title": "Sharp Fréchet--Hoeffding Bounds under Selectively Incomplete Observation",
+      "authors": [
+        "Rami V. Tabri"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T13:02:59Z",
+      "summary": "Incomplete records can sharpen bounds on joint outcome probabilities even when no pair of outcomes is jointly observed. I derive sharp pointwise Fréchet--Hoeffding bounds combining known population marginals with selectively observed records, without restricting the observation mechanism. I establish an exact reduction of the identification problem to finite-dimensional optimization, yielding computable characterizations of both bounds. Illustrations involving income mobility, potential outcomes, and split questionnaires demonstrate how incomplete records can improve identification relative to the classical bounds.",
+      "pdf_url": "https://arxiv.org/pdf/2611.03075v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02716v1",
+      "title": "Conditional expectile-based value-at-risk: Semiparametric estimation and inference",
+      "authors": [
+        "Yuhan Ma",
+        "Heng Peng",
+        "Feipeng Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T08:10:09Z",
+      "summary": "Conditional expectile-based value-at-risk (EVaR) has attracted increasing attention in financial risk management owing to its desirable theoretical properties. However, existing estimation methods for conditional EVaR either rely on potentially misspecified parametric models or suffer from the curse of dimensionality in nonparametric approaches. To this end, we study semiparametric estimation and inference for conditional EVaR in nonlinear time series models with unspecified error distribution. Specifically, we propose a two-step conditional EVaR estimator that achieves the parametric convergence rate. Furthermore, we derive a functional central limit theorem for conditional EVaR process, and then extend to investigate estimating both conditional expectile-based expected shortfall and conditional distribution. A residual bootstrap procedure is proposed for non-expert practitioners to conduct statistical inference. The asymptotic results and their applications are illustrated by numerical studies and an empirical application to S\\&P 500 returns.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02716v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02443v1",
+      "title": "Selective Randomization Inference for Interference",
+      "authors": [
+        "Takahide Yanagi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-02T03:08:25Z",
+      "summary": "Empirical researchers often use tests for interference as pretests or robustness checks. However, when the results guide the choice of models, parameters, or hypotheses, the resulting data-dependent selection can compromise the validity of subsequent inference. This paper develops a two-stage selective randomization inference framework for interference that explicitly conditions on the selection event to account for data-dependent selection. We first test the null hypothesis of no treatment spillover using a conditional randomization method. If this null is rejected, we test the null hypothesis of zero exposure contrast under a pre-specified exposure mapping that allows for spillover effects; otherwise, we test the null hypothesis of no direct effects under the assumption of no spillover. We prove that each second-stage test controls the selective Type I error rate in finite samples and evaluate the size and power of the proposed tests through Monte Carlo experiments.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02443v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02061v1",
+      "title": "Looking Forward to Constructing Better Causal Comparisons",
+      "authors": [
+        "Augusto Cerqua"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T17:06:43Z",
+      "summary": "Constructing credible comparison groups is a central challenge in observational causal inference. Conventional approaches assess comparability through observed characteristics or pre-treatment outcome trajectories, although causal identification depends on unobserved untreated potential outcomes after treatment. We propose a forward-looking framework that selects or weights controls using prognostic scores: predictions, based on pre-treatment information, of the outcomes units would experience without treatment. These scores target either untreated outcome levels or changes, depending on the comparability condition underlying the causal design. They can be estimated using post-treatment outcomes observed for untreated units or exclusively from historical data. To construct these scores, we leverage tabular foundation models, whose extensive pretraining enables them to capture complex relationships among predictors and effectively extract their predictive information, even when application-specific samples are limited. Crucially, predictions guide comparison-group construction, whereas observed outcomes determine treatment effect estimates. We derive an exact decomposition of estimation error into prognostic-score imbalance and differences in forecast errors, clarifying why neither predictive accuracy nor score balance alone guarantees causal identification. The National Supported Work application reveals that stronger pre-treatment covariate balance does not necessarily yield estimates closer to experimental benchmarks, highlighting the practical relevance of prognostic-score comparisons.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02061v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02048v1",
+      "title": "Minimax-Optimal Static Estimators Under Interference",
+      "authors": [
+        "Arthur Delarue",
+        "Ilan Lobel"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T16:53:45Z",
+      "summary": "We study the problem of estimating the global treatment effect in randomized experiments under interference, where a unit's outcome may depend on the treatment assignments of other units. We adopt a minimax framework, allowing an adversary to select an outcome function from a class of functions that satisfy bounded outcomes and bounded interference. We derive minimax-optimal static estimators that are robust to a wide range of interference structures, parameterized by a scalar $δ$ controlling the maximum influence of one unit's treatment on another's outcome. Under large interference, we observe two regimes. When the treatment and control groups are equally sized, the minimax-optimal static estimator is the zero estimator. When one of the two groups is larger, the minimax-optimal static estimator is a \"half-zero\" estimator, in which the outcomes of the smaller group are ignored, and the estimator only considers the outcomes of the larger group.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02048v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.02029v1",
+      "title": "Does Calibration Pick the Right Model? Likelihood Evidence from Income Risk",
+      "authors": [
+        "Jiuyi Cheng",
+        "Alexis Akira Toda"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T16:21:43Z",
+      "summary": "Quantitative macroeconomics typically disciplines models by matching selected moments. We show how finite-state hidden Markov approximations make likelihood estimation and model selection feasible for nonlinear, non-Gaussian latent processes on short panels, without simulation. We illustrate the method with PSID earnings data. The calibrations that best match moments of earnings dynamics fit complete histories worse than a likelihood-estimated process with a Gaussian persistent component. In a standard saving model, calibrations of one process that fit the targets about equally well imply mean assets that differ by a factor of three. Close agreement with selected moments can leave economic predictions largely undetermined.",
+      "pdf_url": "https://arxiv.org/pdf/2611.02029v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01857v1",
+      "title": "Inference for conditional Fréchet means via Riemannian Robust Bias Correction",
+      "authors": [
+        "Ryunosuke Miyazaki",
+        "Chang Jun Im"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T12:48:47Z",
+      "summary": "We develop an intrinsic framework for inference on conditional Fréchet means with predictors and responses taking values in finite-dimensional Riemannian manifolds. We derive a second-order expansion of the smoothing bias, represented in the tangent space via the logarithm map, and show that this bias can affect first-order inference. We propose Riemannian robust bias correction (RRBC), which estimates the leading smoothing bias using a local quadratic regression in the response tangent space and corrects the estimator through the exponential map. Our leave-one-out (LOO) covariance estimator uses intrinsic displacements between the full-sample and LOO RRBC estimates, accounting for the variability of the estimated bias correction and its covariance with the local linear estimator. We establish asymptotically valid pointwise confidence sets and simultaneous confidence tubes without undersmoothing. Simulations on spheres and symmetric positive-definite matrices show that RRBC can improve coverage when smoothing bias is nonnegligible. Cardiovascular and ocean-current applications illustrate simultaneous hypothesis testing and inference for smooth functionals.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01857v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "econ.EM",
+        "math.ST"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "econ.EM (计量经济学)",
+        "math.ST (数理统计理论)"
+      ],
+      "comment": "103 pages, 16 figures, 4 tables. Includes supplementary material",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01854v1",
+      "title": "Exploiting Locally Exogeneous Variation in Spatial Data: Linear Regression with Many Small Units",
+      "authors": [
+        "Christopher W. Engh"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T12:45:52Z",
+      "summary": "This article shows how researchers can exploit \\textit{locally exogeneous variation} even in the presence of endogeneity, autocorrelation, or spurious correlation. It describes the infill asymptotic properties of generalized least squares estimation with county-level data, Census tract-level data, and similar regional averages, including sufficient conditions for consistency, asymptotic normality, and valid inference.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01854v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
         "econ.EM",
         "math.ST",
-        "stat.ML"
+        "stat.ME",
+        "stat.OT"
       ],
       "category_names_zh": [
         "econ.EM (计量经济学)",
         "math.ST (数理统计理论)",
-        "stat.ML (机器学习统计基础)"
-      ],
-      "comment": "36 pages (including appendices and references), 4 figures, 5 tables; supplementary material: 12 pages, 2 figures, 17 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.38896v1",
-      "title": "The Hidden Value of Soft Infrastructure for Urban Flood Adaptation",
-      "authors": [
-        "Lidia Cano Pecharroman",
-        "ChangHoon Hahn"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-28T20:54:01Z",
-      "summary": "As sea level rises and flooding events become more frequent, cities are tapping into a range of engineering and planning solutions to reduce flood losses. Beyond traditional ``hard'' infrastructure (e.g., sewage, seawalls), ``soft'' infrastructure that supports and empowers the role of citizens in preparedness has been hailed as a promising avenue for improving adaptation. Despite its promise, there have been very limited attempts to quantify its effectiveness in reducing losses relative to hard infrastructure, particularly in urban environments. This study fills this knowledge gap using generative AI to quantify the effectiveness of a range of hard and soft infrastructure in urban areas. We demonstrate, for the first time, that soft infrastructure can significantly reduce flood losses, with an impact on par with hard infrastructure. Our results open the door to novel ways of confronting adaptation challenges in cities. Soft infrastructure is a viable alternative, especially when budgetary or time constraints make hard infrastructure unattainable. Policymakers should also couple soft and hard infrastructure to maximize resilience.",
-      "pdf_url": "https://arxiv.org/pdf/2610.38896v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.AP"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.AP (应用统计学)"
-      ],
-      "comment": "23 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.38665v1",
-      "title": "Quantile Methods in Large Panels with Fixed Effects",
-      "authors": [
-        "Manuel Arellano",
-        "Ayden Higgins",
-        "Martin Weidner"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-28T18:49:49Z",
-      "summary": "We study quantile regression (QR) and instrumental variable quantile regression (QIV) in static panel data models with additive individual fixed effects. We derive the asymptotic distribution of the fixed effects estimator as both panel dimensions grow large, showing that it has an asymptotic bias of order 1/T, where T is the number of observations per individual. The bias analysis relies on a novel characterization of the profiled score as a weighted sum of induced order statistics (concomitants), which yields an exact finite-T expression for the score bias. We propose Jackknife bias corrections and uncover a bias-variance tradeoff that is specific to the non-smooth quantile objective functions. The standard delete-one Jackknife fails to eliminate the leading bias and, even when modified to achieve bias correction, inflates the variance so that only $\\sqrt{N}$-consistency is attained, where N is the number of individuals. We propose a modified Jackknife bias correction for general subsample sizes, derive the asymptotic distribution of the resulting estimator, and show that $\\sqrt{NT}$-consistency and valid inference are achieved for suitable choices of the subsample size. As an empirical application, we study the effect of age on school children's test scores using school fixed effects.",
-      "pdf_url": "https://arxiv.org/pdf/2610.38665v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.38529v1",
-      "title": "Debiasing Functionals of Conditional Distributions",
-      "authors": [
-        "Juan Carlos Escanciano",
-        "Gabriele Gazzei"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-28T09:38:00Z",
-      "summary": "Many economic parameters depend on estimated conditional distributions. We construct locally robust moments for these parameters by representing their first-step derivative and centering the representer conditionally on the covariates. We develop complementary conditional-measure and CDF linearizations, and derive corrections for control functions, counterfactual functionals, conditional rank-rank regression, and transformations of conditional $L$-functionals. Under the CDF linearization, a Riesz-regression criterion estimates the correction automatically; its analysis distinguishes representer estimation from integration against the estimated conditional law. We establish asymptotic oracle equivalence, asymptotic normality, and consistent variance estimation for cross-fitted estimators under continuity and remainder conditions, without requiring functional weak convergence of the first-step estimators. An exact linear representation yields double robustness; for rank-rank regression this property is componentwise. Simulations report reductions in bias and RMSE relative to plug-in estimation, with double cross-fitting improving the finite-sample performance.",
-      "pdf_url": "https://arxiv.org/pdf/2610.38529v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37883v1",
-      "title": "fastC-GC and fastC-GC*: Efficient RCCP-Guided Graph Estimation for Time Series",
-      "authors": [
-        "S. A. Adedayo"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T19:23:32Z",
-      "summary": "We introduce fastC-GC and fastC-GC$^*$, computationally efficient methods for time-series graph estimation using the two-test rule motivated by Reichenbach's common cause principle (RCCP) and the conditioning sets of causalised Granger causality (c-GC and c-GC$^*$). The methods use standardized data, ridge-residual correlation, and complete circular shift enumeration evaluated by Fourier transforms. Shared precision calculations and Schur downdates avoid repeated regression fits. On a single-threaded benchmark, fastC-GC was 68-277 times faster than the compared c-GC implementation, and fastC-GC$^*$ was 192-886 times faster than c-GC$^*$. Across four suites with reference graphs, aggregate mean area under the precision-recall curve (AUPRC) differed from the corresponding baseline by at most 0.019, but F1 was lower at the selected thresholds in every suite. The computational gains therefore accompany a change in estimator and selected graphs. Among eight methods, Bagged PCMCI+ had the highest mean AUPRC on sparse VAR, an autocorrelated structural process, and DREAM3; CUTS+ led on Lorenz-96. Wind-tunnel and river-discharge applications illustrate differences between inferred graphs without establishing causal accuracy. We prove the computational identities and a restricted population adjacency result for fastC-GC$^*$. Causal interpretation requires the stated graphical assumptions; validity of the implemented tests additionally requires a suitable shift-invariant null law. Empirical null rejection rates informed the conditional threshold $β= 0.005$, without establishing general test validity or graph-wide error control.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37883v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.CO",
-      "categories": [
-        "stat.CO",
-        "cs.SI",
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "stat.CO (计算统计与马尔可夫链)",
-        "cs.SI (社交网络与信息网络)",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37487v1",
-      "title": "Contemporaneous Transmission Networks and Systemic Risk in European Banking",
-      "authors": [
-        "Minh Duc Duong",
-        "Alessio Moneta",
-        "Fabrizio Lillo",
-        "Caterina Giannetti",
-        "Tu Anh Doan Nguyen"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T16:14:07Z",
-      "summary": "We study how contemporaneous equity-return transmission shapes systemic exposure among 51 listed European banks. Using a recursive non-Gaussian network model on volatility-standardized returns, we construct two market-capitalization-weighted measures based on direct and indirect transmission effects: the Systemic Impact Score (SIS), capturing a bank's potential influence on other institutions, and the Systemic Vulnerability Score (SVS), capturing its exposure to disturbances originating elsewhere. The fitted network reveals distinct transmitting and receiving roles, highlighting differences between institutions with substantial outward influence and those with high incoming sensitivity. Receiving roles are generally more reproducible than transmitting roles across repeated network discovery, and selected connections remain informative about lower-tail dependence in subsequent observations. Volatility standardization substantially reduces detected dependence among recovered shocks, although the full-sample model does not satisfy the designated criterion for supporting shock independence. Alternative recursive orderings also yield comparable directional tail asymmetries, limiting the extent to which these patterns validate a particular ordering. The results provide complementary measures of model-implied systemic transmission and vulnerability, with explicit attention to uncertainty and identification limits",
-      "pdf_url": "https://arxiv.org/pdf/2610.37487v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.ST",
-      "categories": [
-        "q-fin.ST",
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "q-fin.ST (统计金融学与高频数据)",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": "54 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37269v1",
-      "title": "Personal preference or system role? Battery swapping among UK electric vehicle users",
-      "authors": [
-        "Janak Parmar",
-        "Huseyin Ayan",
-        "Dilum Dissanayake",
-        "Margaret Bell"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T14:02:09Z",
-      "summary": "Battery swapping replaces a depleted EV battery with a charged one, reducing waiting time and enabling off-peak charging. Evidence on acceptance, however, remains concentrated in Asian markets, and most studies examine individual adoption intentions. This study asks whether current UK EV users judge swapping differently as a purchase option and as a technology for the transport system. Using Behavioural Reasoning Theory, an integrated choice and latent variable model, and latent class analysis, we analyse perceived usefulness, energy-system concerns, practical barriers, and satisfaction with current charging. Usefulness and energy-system concerns relate more strongly to expectations about the system. Battery compatibility and station coverage relate more strongly to personal preference, while spare battery costs relate to expectations about network viability. User groups differ in how they balance benefits, barriers, and satisfaction with existing charging. Policy should address driver barriers and network viability as distinct but connected priorities.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37269v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.AP"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.AP (应用统计学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37049v2",
-      "title": "Identifying and disentangling direct and spillover effects using multiple pre-treatment periods",
-      "authors": [
-        "Martin Huber"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T11:19:26Z",
-      "summary": "Under interference, the treatment of some units affects the outcomes of others, so that the effect on a treated unit consists of a direct and a spillover component. A non-treated comparison group then generally identifies neither component, but the difference between the total effect on the treated and the spillover effect on the comparison units. Under certain identifying assumptions, both components may be identified separately when multiple pre-treatment periods are available, even in the absence of an uncontaminated comparison group. Under a no-anticipation assumption, pre-treatment outcomes are free of both components for every unit. Extrapolating the pre-treatment trend within a group, as in interrupted time-series approaches, therefore identifies the counterfactual outcome in the absence of any treatment, provided that the model used for the extrapolation is correctly specified. Applied to the treated it gives the total effect on them, applied to the non-treated at a given level of exposure the spillover effect on them. Disentangling the two components in addition requires effect homogeneity across treated and non-treated units with the same exposure and covariates, as well as common support in exposure. We derive doubly robust and Neyman-orthogonal expressions for the effects of interest, which permits controlling for possibly high-dimensional covariates by machine learning. A simulation study confirms the root-$n$ consistent behaviour of the estimators and the reliability of the standard errors under specific regularity conditions. We apply the framework to the compulsory licensing of enemy-owned patents in the United States in 1919. Licensing raised patenting in the licensed subclasses and in technologically close ones alike, so that a comparison-group design understates the total effect.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37049v2.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36739v1",
-      "title": "A Semiparametric Real-Time GARCH Model with Nonstationary Variance",
-      "authors": [
-        "Muyi Li",
-        "Yajia Chen",
-        "Yuqing Xu",
-        "Feiyu Jiang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T06:55:10Z",
-      "summary": "We propose a semiparametric real-time GARCH (SRT-GARCH) model that combines a smooth deterministic long-run volatility component with a stationary short-run process driven by contemporaneous return innovations. The model accommodates gradual changes in unconditional variance while allowing short-run volatility to respond directly to current information rather than relying solely on lagged observations. We derive the variance normalization, conditional moments, and closed-form conditional density of the model. For estimation, we develop a two-step procedure that combines kernel smoothing with conditional Gaussian maximum likelihood. Under Gaussian innovations and mild regularity conditions, we establish consistency and asymptotic normality of the short-run parameter estimator. The analysis exploits geometric moment contraction to control serial dependence and shows that estimating the long-run component adds a positive semidefinite rank-one adjustment to the oracle covariance matrix obtained when the long-run component is known. The resulting asymptotic covariance matrix admits a plug-in estimator that requires neither lag truncation nor additional tuning parameters. Monte Carlo simulations show good finite-sample performance of the estimator and the associated inference procedure. Applications to FTSE~100 returns and U.S. natural gas futures show that allowing for a time-varying long-run component improves forecasting relative to the parametric RT-GARCH benchmark, while the additional real-time feedback mechanism provides more pronounced gains in the natural gas application than in the FTSE application. The proposed model also delivers competitive one-step-ahead Value-at-Risk forecasts.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36739v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36634v1",
-      "title": "Time-Varying Quantile VAR Models: Estimation and Inference",
-      "authors": [
-        "Jiti Gao",
-        "Fei Liu",
-        "Bin Peng"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T04:47:10Z",
-      "summary": "We study time-varying quantile VAR models in which the conditional quantile does not propagate linearly through the recursion, and develop a toolkit for impulse response analysis, which to the best of our knowledge has not been established elsewhere. For example, we establish Bahadur representation for quantile VAR regression, infer model parameters via smoothed check function, and define and investigate the best linear projection of the time-varying tau-quantile impulse response via local projections. An application to U.S. industrial production growth and credit spreads from 1919-2025 uncovers structural shifts in tail relationships, demonstrating downside asymmetry diminishes at longer forecast horizons.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36634v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36443v1",
-      "title": "Bias Correction and Inference for Panel Quantile Regression",
-      "authors": [
-        "Harold D Chiang",
-        "Wei Biao Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T00:45:12Z",
-      "summary": "We develop a large-$n$, large-$T$ theory for the unsmoothed fixed-effects quantile regression estimator, paralleling Hahn and Newey (2004) for smooth nonlinear panel models. An exact rank-score identity for the profiled criterion, with a convexity argument, delivers the leading incidental parameter bias of the slope estimator, of order $T^{-1}$, in closed form. When $n$ and $T$ grow at the same rate, the estimator is asymptotically normal but in general not centred, and conventional intervals are invalid. Admissible growth of $n$ relative to $T$, up to $n=o(T^3)$, depends on the regularity of the conditional error densities. A split-panel jackknife removes the leading bias throughout this range and yields valid inference. In serially dependent panels whose dependence decays geometrically or polynomially, the bias acquires a term from the dependence between regressors and errors of different periods, the jackknife remains valid with contiguous but not with interleaved half-panels, and clustered standard errors are valid.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36443v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "math.ST"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "math.ST (数理统计理论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36352v1",
-      "title": "Many Hands Make Light Work: Long-Term Effect Inference for the Experiment Reservoir",
-      "authors": [
-        "Will Hartog",
-        "Lihua Lei",
-        "Mandar Rahurkar",
-        "Navdeep Sahni",
-        "Yixin Tang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T22:18:00Z",
-      "summary": "The surrogate index method is the modern standard for estimation of long-term effects in a designed experiment using only short-term outcomes. This method relies on the surrogacy and comparability assumptions which may be violated in practice leading to estimation bias. We propose a new method called Experiment Reservoir Surrogate (ERS) which leverages a reservoir of historical long-term experiments that is common in large-scale experimentation platforms. ERS avoids the surrogacy assumption by predicting the long-term average treatment effect directly, and relaxes the comparability assumption by matching to similar historical experiments, without requiring every experiment in the reservoir to be comparable to the target experiment. Moreover, ERS is memory-efficient, as it only requires aggregate data for each time period, instead of raw individual-level data. We theoretically justify the improved efficiency of ERS and demonstrate the improvement empirically on a reservoir of experiments from the online platform DoorDash.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36352v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": "42 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36206v1",
-      "title": "Indirect inference in incomplete and partially identified econometric models",
-      "authors": [
-        "Lixiong Li",
-        "Marc Henry"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T19:42:05Z",
-      "summary": "We extend the indirect inference principle to structural econometric models that are incomplete, in the sense that a single value of the structural parameter may be compatible with multiple distributions of the observed endogenous variables, so that the structural parameter is typically only partially identified. We define the binding function as the smallest norm of the auxiliary estimating equations over the set of data generating processes compatible with the structural model. Hence, we obtain a confidence region by inverting a test of the hypothesis that the binding function vanishes at the pseudo-true value. A dual characterization based on random set theory makes the binding function computationally tractable. We define the auxiliary model conditionally on the covariates to remove its dependence on the unknown covariate distribution and we show that the binding function is Lipschitz and Hadamard directionally differentiable, so that the numerical delta method delivers valid critical values. We show that the method provides significant computational advantages without relinquishing informativeness in a simulation experiment based on an entry game with 100 potential entrants.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36206v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36176v1",
-      "title": "Probabilistic Causal Panel Analysis",
-      "authors": [
-        "Carl Bonander",
-        "Qinyun Lin",
-        "Ulf Strömberg",
-        "Marta Blangiardo"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T19:11:10Z",
-      "summary": "Many causal panel estimators construct counterfactuals using weights or latent structure estimated directly from observed outcomes, making treatment-effect estimates sensitive to observation noise. Bayesian hierarchical models can account for this noise and borrow information across related observations, but existing Bayesian approaches to causal panel analysis generally combine outcome modeling and counterfactual imputation in estimator-specific formulations that can require bespoke sampling algorithms. We develop a framework that learns the latent untreated panel with a probabilistic model and applies established causal estimators to its posterior draws. The model accommodates non-Gaussian observations and structured pooling, while re-estimation across draws propagates uncertainty through counterfactual imputation. We establish conditions for posterior consistency of counterfactual imputation, characterize how pooling affects imputation risk, and develop fast cross-validation for model selection and calibration of predictive uncertainty for treatment effects. Our results show that probabilistic modeling can improve counterfactual imputation, particularly when observation noise is substantial and the pooling structure is informative.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36176v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ME",
-      "categories": [
-        "stat.ME",
-        "econ.EM"
-      ],
-      "category_names_zh": [
         "stat.ME (统计推断与方法学)",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36093v1",
-      "title": "Testing strong exogeneity in proxy SVARs with internal synthetic proxies",
-      "authors": [
-        "Sascha A. Keweloh",
-        "Shu Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T18:15:06Z",
-      "summary": "Proxy SVARs often rely on a single credible proxy, leaving proxy exogeneity untestable. Narrative arguments used to justify proxy validity imply a stronger form of exogeneity. We formalize the strong exogeneity assumption and propose a corresponding test based on internal synthetic proxies. The approach uses the external proxy to locate the target-shock direction in the reduced-form innovations and synthesize the candidate shock into an additional internal synthetic proxies, which allows to test the joint exogeneity of the original and internal synthetic proxy. We derive the large-sample theory for the ISP test and show that the identification strength is governed by a direct measure of the target shock's non-Gaussianity. We study weak identification under asymptotic Gaussianity and develop an identification-robust version of the test. Monte Carlo experiments demonstrate the favorable power of the test when the proxy has a low signal-to-noise ratio. Applications to monetary policy and oil supply news shocks find no evidence against the exogeneity of the benchmark proxies.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36093v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35853v1",
-      "title": "Adequacy radii for stepped-wedge trials with time-varying effects",
-      "authors": [
-        "Stanisław M. S. Halkiewicz",
-        "Sergey Alexeev"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T17:57:46Z",
-      "summary": "Complete stepped-wedge designs guarantee eventual intervention delivery, but their final periods contain no concurrent controls. Under exposure-time heterogeneity this creates a design-analysis tension: a constant-effect analysis can be precise while targeting a design-dependent contrast, whereas an exposure-time indicator (ETI) analysis targets a prespecified time-averaged effect but may be much less precise. We develop an adequacy radius that quantifies the size of exposure-time heterogeneity compatible with a prespecified tolerance for estimand mismatch, and combine it with precision calculations to compare complete wedges with rollout-constrained hybrid designs that retain a wait-list arm. For a balanced wedge with a wait-list under the Hussey-Hughes model, the wait-list share and the correlation act on the constant-effect GLS estimand through a single scalar; we prove that the radius increases strictly with the wait-list share and decreases strictly with the within-cluster correlation, but remains bounded. Numerical optimisation and a model-based redesign of a weekend allied-health trial show that intermediate hybrids make estimand-aligned ETI analysis materially more affordable, giving a robustness-precision frontier rather than a binary choice between a complete wedge and a parallel trial. A second trial, of digital adherence support for tuberculosis treatment, has the same radius but no detectable heterogeneity; its test of a constant effect would detect heterogeneity large enough to halve the coverage of the nominal interval only 37% of the time. The contribution is a diagnostic and design principle: when exposure-time heterogeneity is plausible, retaining concurrent controls reduces the price of analysing the estimand one intends to report.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35853v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ME",
-      "categories": [
-        "stat.ME",
-        "econ.EM",
-        "stat.AP"
-      ],
-      "category_names_zh": [
-        "stat.ME (统计推断与方法学)",
-        "econ.EM (计量经济学)",
-        "stat.AP (应用统计学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35831v1",
-      "title": "AI in Econometric Theory: An Example",
-      "authors": [
-        "Isaiah Andrews",
-        "Anna Mikusheva"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T17:50:47Z",
-      "summary": "This note contains a story and a paper. The paper is about the admissibility of two-stage least squares with weak instruments, a topic we have worked on together since 2019. The story is about how we (or, rather, our LLMs) wrote the paper, and some thoughts on what this may mean for our field.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35831v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35748v1",
-      "title": "Model Selection for Off-Policy Evaluation via Pairwise Bellman Validation",
-      "authors": [
-        "Lars van der Laan",
-        "Vasilis Syrgkanis",
-        "Nathan Kallus"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T16:59:29Z",
-      "summary": "Model selection and hyperparameter tuning pose a central challenge in off-policy evaluation (OPE) because errors of fitted Q-functions and occupancy-ratio estimates cannot be directly evaluated from held-out transitions. Bellman-residual and minimax validation methods often require auxiliary regressions or optimization over separate critic classes, adding computational and tuning costs. We introduce pairwise Bellman validation (PBV), a tuning-free minimax procedure for selecting among finite classes of fitted Q-functions and occupancy-ratio estimators using held-out transitions. PBV constructs critics from pairwise candidate differences, requiring only finitely many empirical moment calculations without auxiliary validation models or separate critic optimization. We establish finite-sample oracle inequalities relative to the best available candidate, even under candidate-class misspecification. Our key insight is that Q-function errors and log ratios between candidate and true occupancy ratios provide oracle critics whose Bellman and adjoint Bellman moments control estimation error. Pairwise candidate differences approximate these unknown critics, while penalties account for comparator approximation error. For Q-function selection, we first develop unweighted PBV, which evaluates pairwise Bellman moments under the offline distribution and admits oracle guarantees under a pairwise coercivity condition relating the offline distribution to the target-policy dynamics. We then develop target-aligned PBV (TA-PBV), which uses marginalized importance weighting to provide error control without pairwise coercivity. For occupancy-ratio selection, we develop adjoint PBV (A-PBV), which evaluates adjoint Bellman moments against log-ratio critics. On Hopper and Deep OPE, unweighted PBV performs competitively, while target-occupancy weighting can improve performance in settings with controlled overlap.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35748v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ML",
-      "categories": [
-        "stat.ML",
-        "cs.LG",
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "stat.ML (机器学习统计基础)",
-        "cs.LG (机器学习 (ML))",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": "48 pages, including appendices",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35738v1",
-      "title": "Fuji: The Shape, Composition, and Spread of Demand Bursts on Robinhood Chain",
-      "authors": [
-        "Pranay Anchuri"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T16:55:17Z",
-      "summary": "Demand on blockchain-based marketplaces arrives in bursts and at a high rate. On these platforms the data are completely visible, which makes it feasible to compare the bursty demand against the usual load. The congestion manifests as an increased demand for gas, the primary resource a blockchain sells. Existing studies consider how to price the gas. The demand itself, and what it is made of during bursts, has not been measured. We measure it on Robinhood Chain, a layer-2 blockchain that quickly became a venue for trading tokenized equities and memecoins. We collected the data from every block of its first three active months and more than 50 million Uniswap swaps that occurred during bursty periods. We find that a burst trades about as many pools as a quiet period, mostly different ones, and trades them harder, on top of elevated demand that accumulated for hours. With the bursts aligned on their peaks, the median peak is 2.5 times the usual load. Both the rise and the fall of the demand are described by the sum of two exponential functions with different timescales, a slow one of hours and a fast one of minutes. Against a matched quiet period, a burst has 1.05 times the pools, 1.40 times the trades, and 1.21 times the senders. We use two models to explain the arrival of bursts: externally triggered cascades and self-excitation. The former fits the data relatively better. Inside a burst, the entry of each trader into a pool is followed for about 24 seconds by more entries than the existing traders predict. Whether this is because of imitation or because of a shared signal is left open.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35738v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "cs.SI",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "cs.SI (社交网络与信息网络)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "25 pages, 8 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35666v1",
-      "title": "Regression Adjustment for Ratios of Treatment Effects in Randomized Experiments",
-      "authors": [
-        "Haruo Kakehi"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T16:10:44Z",
-      "summary": "We study regression adjustment for ratios of treatment effects in completely randomized experiments. The existing literature adjusts the numerator and denominator separately, but this approach misses the efficiency target, loss of which matters more when richer or high-dimensional covariate information and flexible or regularized prediction methods are used to pursue further efficiency gains. We propose a two-step estimator that directly predicts the relevant transformed outcome. Using cross-fitting, our method accommodates high-dimensional first-stage prediction while keeping the final adjustment fixed-dimensional, thereby avoiding instability from a growing number of adjustment covariates. We further develop persistence-based LASSO theory that does not require sparsity, permits more covariates than observations, and allows cross-validated penalty selection under prediction-level conditions. For additional efficiency gains, our augmented two-step estimator nests the benchmark adjustment spaces and is therefore asymptotically no less efficient than the benchmark estimators, while its feasible conservative variance estimator satisfies the same efficiency ordering. Simulation studies and a real-data analysis demonstrate that our proposed estimator performs better than existing methods.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35666v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.34818v1",
-      "title": "Cordon Tolls and Urban Traffic Volumes: Evidence from NYC's 2025 Congestion Relief Zone",
-      "authors": [
-        "Yash Prajapati"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T04:02:59Z",
-      "summary": "On January 5, 2025, New York City became the first U.S. city to operate a permanent cordon-based congestion toll, charging vehicles entering Manhattan's Central Business District (the Congestion Relief Zone, or CRZ). This study estimates the short-run causal effect of the toll on hourly traffic volumes using a two-way fixed-effects difference in-differences (TWFE-DiD) strategy that compares treated CRZ street segments to untreated Manhattan segments north of 60th Street. The empirical analysis exploits hourly entry counts from the MTA's toll-meter system (4.86 million ten-minute-block records) as the primary descriptive panel and high-frequency NYC DOT Automated Traffic Recorder (ATR) data as the within-segment identification panel. The headline TWFE-DiD point estimate indicates a 40 to 45 percent reduction in log hourly volume at treated CRZ locations, with the effect direction consistent across nine pre-registered alternative specifications and concentrated in peak hours. East River bridges in the balanced panel exhibit a statistically significant 25 percent post-period increase in volume, consistent with route substitution.",
-      "pdf_url": "https://arxiv.org/pdf/2610.34818v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
+        "stat.OT (其他综合统计学)"
       ],
       "comment": null,
       "journal_ref": null,
@@ -635,31 +633,36 @@
     {
       "code": "stat.ME",
       "name_zh": "统计推断与方法学",
-      "count": 6
+      "count": 7
     },
     {
-      "code": "stat.AP",
-      "name_zh": "应用统计学",
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
       "count": 3
     },
     {
       "code": "math.ST",
       "name_zh": "数理统计理论",
+      "count": 3
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
       "count": 2
     },
     {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
-      "count": 2
+      "code": "cs.GT",
+      "name_zh": "计算机博弈论与算法经济",
+      "count": 1
     },
     {
-      "code": "cs.SI",
-      "name_zh": "社交网络与信息网络",
-      "count": 2
+      "code": "cs.IT",
+      "name_zh": "信息论",
+      "count": 1
     },
     {
-      "code": "stat.CO",
-      "name_zh": "计算统计与马尔可夫链",
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
       "count": 1
     },
     {
@@ -668,15 +671,25 @@
       "count": 1
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
+      "code": "cs.CR",
+      "name_zh": "密码学与网络安全",
       "count": 1
     },
     {
-      "code": "q-fin.TR",
-      "name_zh": "交易策略与市场微观结构",
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
+      "count": 1
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 1
+    },
+    {
+      "code": "stat.OT",
+      "name_zh": "其他综合统计学",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:53:12.925326"
+  "snapshot_synced_at": "2026-11-06T09:26:58.342373"
 }

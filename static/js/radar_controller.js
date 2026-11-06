@@ -579,7 +579,7 @@ class TianGongRadarController {
         const summaryParsed = summaryStr ? JSON.parse(summaryStr) : null;
         const fullParsed = fullStr ? JSON.parse(fullStr) : null;
         if (summaryParsed && summaryParsed.title_zh && !summaryParsed.full_text_zh) cachedSummary = summaryParsed;
-        if (fullParsed && fullParsed.version >= 3 && fullParsed.full_text_zh) cachedFull = fullParsed;
+        if (fullParsed && fullParsed.version >= 4 && fullParsed.full_text_zh) cachedFull = fullParsed;
       } catch (e) {}
 
       card.innerHTML = `
@@ -681,13 +681,55 @@ class TianGongRadarController {
       const btnFullTrans = document.getElementById(`btn-full-trans-${paper.paper_id}`);
       const fullTransBox = document.getElementById(`full-trans-box-${paper.paper_id}`);
       const renderFullData = (data) => {
-        const fullTextZh = escapeHtml((data.full_text_zh || "").replace(/\\\\/g, "\\"));
-        fullTransBox.innerHTML = `<div class="trans-full-paper-header">📚 【中文全文】</div><div class="trans-full-paper-body">${fullTextZh}</div>`;
+        let rawZh = (data.full_text_zh || "").replace(/\\\\/g, "\\").trim();
+
+        // 1. 智能预处理：美化页码标记，使其成为明显的学术分页隔断徽章
+        rawZh = rawZh.replace(/(?:^|\n+)【第\s*(\d+)\s*页】/g, "\n\n---\n**📜 【第 $1 页】**\n\n");
+
+        // 2. 接入问答窗口统一的 formatMarkdown 渲染管线 (标准 Markdown + LaTeX 规范)
+        let renderedHtml = "";
+        if (typeof window.formatMarkdown === "function") {
+          renderedHtml = window.formatMarkdown(rawZh);
+        } else if (typeof marked !== "undefined" && typeof marked.parse === "function") {
+          renderedHtml = marked.parse(rawZh);
+        } else {
+          // 兜底基础分段
+          const escaped = escapeHtml(rawZh);
+          renderedHtml = escaped.replace(/\n\n+/g, "</p><p>").replace(/\n/g, "<br/>");
+          renderedHtml = `<p>${renderedHtml}</p>`;
+        }
+
+        fullTransBox.innerHTML = `
+          <div class="trans-full-paper-header">
+            <span>📚 【中文学术全文研读画卷】</span>
+            <button class="btn-refresh-full-trans" id="btn-retrans-${paper.paper_id}" title="清除旧缓存并重新翻译本篇论文">🔄 重新排版翻译</button>
+          </div>
+          <div class="trans-full-paper-body markdown-body">${renderedHtml}</div>
+        `;
         fullTransBox.style.display = "block";
         fullTransBox.dataset.loaded = "true";
         btnFullTrans.textContent = "📜 收起中文全文";
         btnFullTrans.classList.add("cached");
+
+        // 3. 触发数学公式高精度渲染引擎
         this.renderMathEquations(fullTransBox);
+        if (typeof rehydrateMathFallbacks === "function") {
+          rehydrateMathFallbacks();
+        }
+
+        // 4. 绑定重新翻译按钮事件
+        const btnRetrans = document.getElementById(`btn-retrans-${paper.paper_id}`);
+        if (btnRetrans) {
+          btnRetrans.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            if (confirm("确定要重新对这篇论文进行全文翻译与公式重构吗？")) {
+              localStorage.removeItem(`radar_trans_full_${paper.paper_id}`);
+              cachedFull = null;
+              fullTransBox.dataset.loaded = "false";
+              btnFullTrans.click();
+            }
+          });
+        }
       };
       if (btnFullTrans && fullTransBox) {
         btnFullTrans.addEventListener("click", async () => {

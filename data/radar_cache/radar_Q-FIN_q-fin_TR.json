@@ -1,8 +1,157 @@
 {
   "query_expression": "cat:q-fin.TR",
   "total_fetched": 25,
-  "total_results": 2449,
+  "total_results": 2456,
   "papers": [
+    {
+      "paper_id": "2611.06607v1",
+      "title": "Hard to Fool: A Bounded LLM Research Loop for Quantitative Finance, and What Two Dozen Campaigns Found",
+      "authors": [
+        "Henry Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T14:57:39Z",
+      "summary": "Agentic research loops that let a language model propose a change, run a fixed experiment and keep whatever improves the metric work well in machine learning. In trading research the same loop is a machine for producing false discoveries: a backtest that \"improves the metric\" is, by default, overfit, look-ahead, a multiple-comparisons artifact, cost-free, or market drift wearing a strategy. We describe Autonomous Quant Researcher, an open-source loop built on the opposite premise: the model proposes, and only trusted code decides. Proposals are strict declarative JSON over a fixed vocabulary, so there is no model-written code to sandbox. Evaluation runs on immutable chronological stores split into discovery, validation and a final holdout that can be opened exactly once, after a durable receipt is written. Acceptance is a conjunction of absolute gates (positive edge and net P&L after costs, a positive weekly-cluster bootstrap lower bound, survival at elevated costs, per-year stability and sample floors), never a single score. Duplicates are refused before they spend a trial, and every formulation, refusal, crash and result is kept in a hash-chained, append-only ledger. We report every campaign run to date, across 0DTE options priced from traded option bars, overnight SPX verticals, daily ETF rules, technical-analysis premises, Kalshi crypto binaries, earnings options, off-exchange volume and a pre-registered alternative-data campaign. Most hypotheses fail, and we report them. Two results survive their pre-registered bars. The clearest example of the loop working is a failure: a language-model survivor that passed discovery and validation with Sharpe ratios near 3 and fell to 0.26 on its single holdout use. The value of such a loop lies less in what it finds than in how hard it is to make it report something that is not there.",
+      "pdf_url": "https://arxiv.org/pdf/2611.06607v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.CP",
+      "categories": [
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.CP (计算金融与量化模拟)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "10 pages, 2 tables. Code: https://github.com/henryzhangpku/autonomous-quant-researcher",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.05218v1",
+      "title": "Beyond Anonymous Order Flow: Wallet Identity as a Feature for Short-Horizon Return Prediction",
+      "authors": [
+        "Jingqiu Ding",
+        "Daojing Zhai"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-03T17:03:36Z",
+      "summary": "Conventional public order-book data summarize trading without identifying the accounts behind it. Hyperliquid's Level-4 record also exposes persistent pseudonymous wallet addresses. We reconstruct full-depth books from consensus-ordered messages and evaluate wallet identity as a feature for short-horizon return prediction. The July 1-27, 2026 record covers 17.1 billion messages, 14.3 million aggressive orders by 147,113 wallets, and $84.3 billion in taker notional across ten markets. In the three model markets, notional-weighted ten-second markout rankings persist across adjacent ten-day windows (Spearman rho = 0.52); covariate-adjusted validation markouts reach 3.11 basis points in the top ventile. On a 100-millisecond grid, eleven features describing previously scored top-decile wallets raise one-second out-of-sample R2 from 10.88% to 12.",
+      "pdf_url": "https://arxiv.org/pdf/2611.05218v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "8 pages, 5 figures, 3 tables. Accepted at ACM ICAIF '26",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01799v1",
+      "title": "Learning AI Agents, Market Makers, and Stress in Automated Markets",
+      "authors": [
+        "Irene Aldridge"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T11:08:08Z",
+      "summary": "Automated markets increasingly route order flow from learning trading agents through automated market makers (AMMs). We model trader archetypes as AI agents defined by their reward functions and analyze the feedback they create on a constant-product AMM. Herd-dominated and arbitrage-dominated markets of equal size have identical return distributions and turnover, so no rule based on volatility, value-at-risk, stress frequency, or volume can tell them apart; yet their stress episodes differ in length by a factor unbounded in the feedback-to-noise ratio $β/s$. Serial statistics identify the feedback sign from $Θ((s/β)^2\\log(1/δ))$ observations, and this rate is tight. When agents trade together, profit-seeking agents ride herds rather than lean against them, leading to all-or-nothing participation. Spread-earning market makers restore stability but make liquidity fragile, with discontinuous collapse and hysteresis; maker--taker pricing, not a uniform fee, is the effective instrument.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01799v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM",
+        "cs.LG",
+        "econ.TH",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)",
+        "cs.LG (机器学习 (ML))",
+        "econ.TH (微观经济与理论经济)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "15 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.01656v2",
+      "title": "AIDA: An AI Outage Registry with Evidence from On-Chain MEV",
+      "authors": [
+        "Wenbin Wu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-01T07:05:25Z",
+      "summary": "Generative AI coding tools have lowered the cost of writing trading software, but no systematic dataset records when these services fail. We introduce the AI Incident and Disruption Archive (AIDA), a multi-vendor registry of 5,868 deduplicated outage incidents across 30 providers from 2025 to 2026, with foundation-model incidents verified against primary status-page or postmortem URLs. Pairing AIDA with 5,041,034 verified maximal extractable value (MEV) transactions by 8,516 Ethereum addresses, their contract creations, and a 22-month Base Layer-2 panel of 1,099,593,191 swaps and 29,120 private executors, we establish two findings. First, entry into MEV expanded where code and public state suffice, as active arbitrage addresses quadrupled from late 2024 to late 2026 and liquidators grew by a third, while sandwich attackers, who need private order flow and builder access, declined. Execution nonetheless remained concentrated, with the top fifty addresses executing two thirds of verified trades. Second, AI outages stall new trading code while deployed bots keep trading. On Ethereum, addresses releasing a private executor fall to 0.67 on the day of an eight-hour disruption (0.68 for executor creations during OpenAI outage hours) and to 0.66 at lag two before rebounding on day three; on Base, operator top-level creations fall to 0.76 during OpenAI hours and executor-deploying operators to 0.88 at lag two. Non-trading creations, automated factory clones, and live arbitrage and sandwich execution across both chains remain unchanged. Cheaper code thus lowers the barrier to building MEV contracts, while private order flow, latency and capital still determine who wins execution.",
+      "pdf_url": "https://arxiv.org/pdf/2611.01656v2.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "cs.CE"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "cs.CE (计算工程、金融与科学计算)"
+      ],
+      "comment": "27 pages, 7 figures, 5 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00502v1",
+      "title": "Non-Convex Market Makers: Coherence without Convexity, Friction, and Parallel Composition",
+      "authors": [
+        "Peter Cotton"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-31T00:48:35Z",
+      "summary": "Cost-function market makers are always assumed convex, and convexity is not what makes them coherent. For a path-independent maker the exact no-arbitrage condition is a chord condition, that every chord slope of the cost lie in the convex hull of payoffs; convexity enters the standard axiomatics through a separate requirement, monotone information incorporation, and dropping it leaves coherent non-convex makers. Rational flow against such a maker trades the convex envelope, so non-convexity costs expressiveness rather than soundness, and a proportional fee of at least the arbitrage depth restores no-arbitrage, which by conjugation is a bid-ask spread with an exact no-trade interval for any cost whatever. Combining fee-bearing makers is an infimal convolution solved by one monotone clearing-price root-find, with sparse participation and a consolidated limit order book as the aggregate, and a deep quadratic co-quoter is Moreau smoothing, which preserves coherence at every depth. Any quoted configuration outside the coherent hull admits a portfolio priced below its worst payoff, so arbitrageurs act as decentralized separation oracles, and coherence is relative to friction and to the cost of finding certificates.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00502v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.MF",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.MF (数理金融学)",
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": "17 pages. Code and numerical theorem tests: https://github.com/microprediction/mechanisms",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.00338v1",
+      "title": "Reading the Count: Prediction Markets and Brazil's 2026 Presidential Election",
+      "authors": [
+        "Raphael Coelho"
+      ],
+      "year": 2026,
+      "published_at": "2026-10-30T20:13:18Z",
+      "summary": "We rebuild the public count of Brazil's 2026 presidential runoff minute by minute from the electoral court's section-level records and compare it with every trade on Kalshi and Polymarket. A projection published live on the night gave the eventual winner, Lula, a probability of 0.998 from 19:15, with 1.6% of sections counted. The markets reached 0.9 at 20:24, with 46% counted. Read as the projection's central estimate with a wider uncertainty, their prices imply a standard deviation of the final margin about four times the live projection's, and about twice that of a section-level projection calibrated on the 2018 runoff, the earlier night with the largest errors. Valued at these projections, takers' purchases of Lula after the count resumed had an expected profit of 4 to 18 cents per Kalshi contract after fees; valued at a state-level extrapolation of the count, it was zero. During a two-hour suspension of the count the markets gave Lula 0.25 to 0.44, below every reading we compute afterwards from the sections then public, none of which was available live. On the first-round night, when the headline count showed the eventual leader ahead from its first file, the same markets were faster than our projection.",
+      "pdf_url": "https://arxiv.org/pdf/2611.00338v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "14 pages, 2 figures, 3 tables. Code and results in the ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2610.39458v1",
       "title": "Early-Buyer Groups and Fast-Wallet Teams on a Bonding-Curve Launchpad: A Prospective Measurement Study of pump.fun on Solana",
@@ -244,7 +393,7 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2610.33400v1",
+      "paper_id": "2610.33400v2",
       "title": "Tracking High-Frequency Trading Activity in China and Its Effects on Market Quality",
       "authors": [
         "Li Guo",
@@ -255,7 +404,7 @@
       "year": 2026,
       "published_at": "2026-10-24T02:22:20Z",
       "summary": "We develop a new order-level proxy for high-frequency trading (HFT) activity based on precise order placement and study its effects on market quality. With quotes updating multiple times per second, millisecond-level order-book access makes high-frequency traders more likely to submit active exact-match orders, defined as limit orders priced exactly at the prevailing best opposite-side quote. Using Shenzhen Stock Exchange data, we validate the proxy: active exact-match orders respond faster to quote updates, cancel more rapidly, concentrate when depth imbalance is favorable and spreads are narrow, and predict mid-quote returns from 100 milliseconds through ten minutes. A difference-in-differences design exploiting cross-channel variation in order dissemination latency at the market open shows that lower latency increases active exact-match shares. This variation yields plausibly causal evidence that latency-induced HFT raises short-horizon price variation, wide-spread incidence, and adverse-selection exposure, while realized spreads decline and pricing error falls modestly. Unlike developed markets, China's T+1 constraint, absence of maker-taker rebates, and limits on rapid quote revision tilt speed advantages toward directional liquidity taking, highlighting how market design shapes the channel through which speed affects market quality.",
-      "pdf_url": "https://arxiv.org/pdf/2610.33400v1.pdf",
+      "pdf_url": "https://arxiv.org/pdf/2610.33400v2.pdf",
       "source": "arxiv",
       "primary_category": "q-fin.TR",
       "categories": [
@@ -523,165 +672,6 @@
       "comment": "47 pages, 0 figures, 16 numbered tables. Includes a trading-agent evaluation toolkit and checklist. V2 Updated boilerplate and added Hygentra product information to section 2.1",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.25756v1",
-      "title": "Topological Compression of Prediction Market Belief States for Event Forecasting",
-      "authors": [
-        "Aadit Jerfy"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T04:12:55Z",
-      "summary": "Topological Data Analysis (TDA) and Persistent Homology (PH) have been utilized in numerous fields$-$from protein modeling to financial analysis$-$to understand the underlying structure of data. In this paper, we incorporate TDA and PH into forecasting models over a prediction market universe to determine whether the belief state of such markets forms an underlying structure whose shape can provide predictive insight. We conclude that single-parameter PH is able to improve predictive ability and calibrated accuracy of linear forecasting models, while two-parameter multipersistence produces similar benefits for nonlinear models.",
-      "pdf_url": "https://arxiv.org/pdf/2610.25756v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "41 pages, 19 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.25495v1",
-      "title": "Probabilistic Limit Order Book Forecasting with Conditional Diffusion Models",
-      "authors": [
-        "Junyu Chen",
-        "Franklin Liu",
-        "Moshu Xu",
-        "Lijian Yang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-18T19:34:17Z",
-      "summary": "Modeling limit order book (LOB) dynamics is central to market forecasting and execution-strategy evaluation. While diffusion models achieve strong empirical performance, existing LOB snapshot models typically lack a learned recurrent encoder and formal statistical guarantees. We introduce LOBGrad, a conditional DDPM framework for probabilistic LOB forecasting that combines an autoregressive RNN encoder with a diffusion-based generator. In particular, we establish an excess-risk oracle inequality for the one-step DDPM noise-prediction objective under exponential mixing and regularity assumptions. We further show that, under contractive dynamics, the dependence on the conditioning-window length can be reduced to a dependence on the latent-state dimension. Experiments on BTC/USDT, GOOGL, and META show that LOBGrad improves on its encoder-free diffusion ablation across all reported queue metrics and obtains competitive results against other baselines. It also reproduces the key stylized facts of LOB microstructure, and yields reasonably calibrated queue-based predictive intervals. A stylized downstream task illustrates the potential value of the generated forecasts.",
-      "pdf_url": "https://arxiv.org/pdf/2610.25495v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "econ.EM",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "econ.EM (计量经济学)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.23749v1",
-      "title": "From Alpha to Execution: Trading Horizons, Regimes, and Schedules under Concave Impact and Hurst Scaling",
-      "authors": [
-        "Dnyanesh Kulkarni",
-        "Revant Nayar"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T16:55:06Z",
-      "summary": "Classical execution models assume linear impact, diffusive prices, and an exogenous horizon. We study execution under concave power-law impact and Hurst-scaled price fluctuations, and make two contributions. First, we choose the execution horizon by maximizing the Sharpe ratio of the trade's realized P&L. Price moves during the execution window are part of that P&L, so executing more slowly reduces its variance, and because impact is concave it can also lower cost per share. Urgency comes only from alpha realized while the order is being worked. The problem is governed by the signs of two quantities: (i) the duration elasticity of impact $a$, which under a structural prior equals the impact-persistence gap $β- H$ and can take either sign; and (ii) the net urgency $ν$, the rate of alpha realization net of exposure relief. When $ν$ keeps its sign over the window, an interior optimum exists, to leading order in $T/t_f$, only when both are positive; otherwise the order should be worked at the fastest or slowest admissible pace. In the interior regime the first-order condition involves no impact coefficient, order size or volume, and the objective is flat: for a large-cap example, the window within 1% of maximal Sharpe spans more than an order of magnitude. Second, given the window, we derive the schedule shape by convex programming under an envelope cost. For any increasing per-share cost of delay $w(t)$, the KKT solution is $φ\\propto (λ- w(t))_+^{1/β}$. For a Hurst-scaled envelope $w \\propto t^H$, the normalized schedule depends only on $(β, H)$, has a closed form via the incomplete beta function, is front-loaded, and tapers smoothly to zero, saving 10-17% of envelope cost relative to a constant-rate (TWAP) schedule of equal duration. Whether it uses the whole window depends on a single dimensionless robustness level, for which we give a calibration.",
-      "pdf_url": "https://arxiv.org/pdf/2610.23749v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR",
-        "math.OC",
-        "q-fin.MF",
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)",
-        "math.OC (运筹学、优化与控制论)",
-        "q-fin.MF (数理金融学)",
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "19 pages, 5 figures, 4 tables, including an appendix",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.23619v1",
-      "title": "Cross-product Modelling in Continuous Intraday Electricity Markets via Hawkes Processes",
-      "authors": [
-        "Ayoub Jhabli",
-        "Tarek Alskaif",
-        "Kwabena E. Bennin",
-        "Bedir Tekinerdogan",
-        "Joost M. E. Pennings"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T15:30:01Z",
-      "summary": "As renewable energy integration accelerates, intraday continuous (IDC) electricity markets have become essential for short-term balancing. However, the simultaneous trading of overlapping contracts with varying granularities creates complex, hidden liquidity dependencies that are critical to market stability but remain poorly understood. This paper proposes a multivariate State-Dependent Hawkes Process (SDHP) to model cross-product liquidity dynamics between Quarter-Hourly and Hourly IDC contracts. To determine how cross-product effects vary under different market conditions, we classify the trading sessions into two distinct regimes: 'Normal' and 'Stressed', based on a composite metric of the bid-ask spread, mid-price volatility and queue imbalance. The model is calibrated on the first month of each quarter of 2024 using level 3 limit order book (LOB) data from the Dutch EPEX SPOT IDC market. We find that order flow is overwhelmingly self-driven, with roughly 95\\% of orders arriving in reaction to earlier orders in both regimes. Cross-excitation runs mainly from the Quarter-Hourly to the Hourly contract, but this leadership weakens under stress: the ratio of cumulative cross-excitation falls from 2.8 to 1.5, so the two contracts influence each other almost equally. Stress also makes the Quarter-Hourly to Hourly channel much faster, cutting its mean lag from 6.05 to 0.93 seconds. The strong seasonal variation found in calm periods largely disappears under stress, where all four months converge to the same structure.",
-      "pdf_url": "https://arxiv.org/pdf/2610.23619v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.23517v4",
-      "title": "Combinatorial Arbitrage in Prediction Markets",
-      "authors": [
-        "Hongjian Shi",
-        "Daojing Zhai"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T14:22:23Z",
-      "summary": "We develop a framework to identify and quantify arbitrage across logically related prediction-market contracts. We prove that prices outside the convex hull of admissible payoff vectors admit arbitrage and identify optimal arbitrage portfolios through integer programming. Using venue metadata and semantic analysis of resolution criteria, we recover 1.9 million logical relations and compile them into constraint systems covering more than 255,000 contracts. We replay full-depth Polymarket order books to simulate an arbitrageur executing these portfolios against resting orders. Among settled portfolios, an ideal arbitrageur that takes the full displayed depth of every opportunity and reuses its capital at resolution earns a risk-free return of 3.5% a week after spreads and fees. We find that arbitrage opportunities persist longer and attract less observed participation where relation discovery and execution are more costly.",
-      "pdf_url": "https://arxiv.org/pdf/2610.23517v4.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR",
-        "q-fin.CP"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)",
-        "q-fin.CP (计算金融与量化模拟)"
-      ],
-      "comment": "47 pages, 10 figures, 10 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.22839v1",
-      "title": "Basis-Only Funding Is Not Dividend Fair: Settlement Design in Crypto Equity Perpetuals",
-      "authors": [
-        "Donghwa Seo",
-        "Doohwi Cha",
-        "Seunghan Son",
-        "Juyeong Lee",
-        "Minsuk Sung"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-16T02:30:09Z",
-      "summary": "Crypto venues increasingly list perpetual futures on equities and other real-world assets (RWAs), which trade continuously yet reference dividend-paying stocks: a long equity perpetual marked to the ex-dividend cash price bears the ex-dividend drop without receiving the dividend. We ask whether the premium-index funding architecture these venues run -- funding set from the contemporaneous basis $e_t=P_t-S_t$ rather than a carry target -- can replicate shareholder cash flows for traders entering and exiting at arbitrary times. It cannot. Funding serves two roles that coincide for non-dividend crypto assets but split apart for equities: basis control and settlement. We give the fair-funding identity, cast timing fairness as an optimal-stopping condition, and characterize when the basis is a sufficient statistic for the fair target. The decisive obstruction is measure-theoretic: a predictable dividend is an atom, and no absolutely continuous funding path can replicate an atom over holding intervals even in the weak limit, so fairness must match the atom with an atom -- an event credit. Exchange-native data confirm this: at each covered ex-date one venue posts a discrete funding atom equal to $-D/(\\mathrm{Mark}-D)$ while a standard premium-index venue posts none, transferring the dividend across venues -- from native funding alone, with no external spot.",
-      "pdf_url": "https://arxiv.org/pdf/2610.22839v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR",
-        "q-fin.PR"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)",
-        "q-fin.PR (衍生品与资产定价)"
-      ],
-      "comment": "16 pages, 4 figures. Submitted manuscript of a paper accepted at MARBLE 2026 (7th International Conference on Mathematical Research for Blockchain Economy)",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -696,19 +686,24 @@
       "count": 7
     },
     {
-      "code": "q-fin.MF",
-      "name_zh": "数理金融学",
-      "count": 5
-    },
-    {
       "code": "q-fin.ST",
       "name_zh": "统计金融学与高频数据",
+      "count": 6
+    },
+    {
+      "code": "q-fin.MF",
+      "name_zh": "数理金融学",
       "count": 5
     },
     {
       "code": "q-fin.CP",
       "name_zh": "计算金融与量化模拟",
       "count": 4
+    },
+    {
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
+      "count": 3
     },
     {
       "code": "cs.SI",
@@ -726,23 +721,28 @@
       "count": 2
     },
     {
-      "code": "q-fin.PM",
-      "name_zh": "资产组合管理",
-      "count": 2
-    },
-    {
-      "code": "econ.EM",
-      "name_zh": "计量经济学",
-      "count": 2
-    },
-    {
       "code": "cs.MA",
       "name_zh": "多智能体系统 (Multiagent)",
       "count": 2
     },
     {
+      "code": "econ.TH",
+      "name_zh": "微观经济与理论经济",
+      "count": 1
+    },
+    {
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
+      "count": 1
+    },
+    {
       "code": "physics.soc-ph",
       "name_zh": "物理与社会科学 (复杂系统)",
+      "count": 1
+    },
+    {
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
       "count": 1
     },
     {
@@ -779,17 +779,7 @@
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
       "count": 1
-    },
-    {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
-      "count": 1
-    },
-    {
-      "code": "q-fin.PR",
-      "name_zh": "衍生品与资产定价",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-01T18:52:09.333783"
+  "snapshot_synced_at": "2026-11-06T09:25:52.618077"
 }

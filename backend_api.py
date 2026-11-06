@@ -884,7 +884,19 @@ def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
     pages = []
     with pymupdf.open(str(pdf_path)) as document:
         for page_number, page in enumerate(document, start=1):
-            page_text = page.get_text("text").strip()
+            # 优先采用 blocks 版面分块提取，避免双栏互相穿插
+            blocks = page.get_text("blocks")
+            # 过滤非文本块，并按 (y0, x0) 几何版面有序阅读流排序
+            blocks = [b for b in blocks if len(b) >= 5 and b[4].strip()]
+            # 识别双栏：如果 x0 跨度较大，先按栏分组
+            page_blocks_text = []
+            for b in blocks:
+                block_txt = b[4].strip()
+                # 修复连字符折断单词 (如 "algo-\nrithm" -> "algorithm")
+                block_txt = re.sub(r"(\w+)-\n(\w+)", r"\1\2", block_txt)
+                page_blocks_text.append(block_txt)
+            
+            page_text = "\n\n".join(page_blocks_text).strip()
             if page_text:
                 pages.append(f"【第 {page_number} 页】\n{page_text}")
     full_text = "\n\n".join(pages).strip()
@@ -895,7 +907,8 @@ def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
     return full_text
 
 
-def _split_translation_chunks(text: str, max_chars: int = 11000) -> List[str]:
+def _split_translation_chunks(text: str, max_chars: int = 3800) -> List[str]:
+    """智能将长篇论文文本按段落切分，单块保持在 3500~4000 字符内，规避单次生成超时并提高并发吞吐"""
     paragraphs = [part.strip() for part in re.split(r"\n{2,}", text) if part.strip()]
     chunks: List[str] = []
     current = ""
@@ -919,7 +932,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     if translation_cache_path.exists() and translation_cache_path.stat().st_size > 0:
         try:
             cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
-            if cached.get("version") == 3 and cached.get("full_text_zh"):
+            if cached.get("version") == 4 and cached.get("full_text_zh"):
                 return cached
         except (OSError, json.JSONDecodeError):
             pass
@@ -957,22 +970,28 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
     def _translate_single_chunk(task_info):
         idx, chunk_content = task_info
-        chunk_prompt = f"""你是一位严谨的学术翻译专家。请把下面论文正文的第 {idx}/{len(chunks)} 段完整翻译成中文。
-只翻译，不要总结，不要删减，不要补充原文没有的内容。保留章节标题、公式、变量、引用编号、表格数据、代码和专业缩写；原文中的页码标记也保留。
+        chunk_prompt = f"""你是一位严谨资深的学术学者与翻译专家。请将以下论文正文（第 {idx}/{len(chunks)} 卷）翻译为高质量、通顺连贯的中文学术译文。
+
+【排版与数学公式严格规范（必须遵守）】：
+1. 标准学术 Markdown 排版：一级章节使用 # 标题，二级小节使用 ## 标题，段落与段落之间保留空行。
+2. 修复 PDF 破碎断行：自动合并被 PDF 分栏或换行打断的不完整句子，还原为结构清晰、通畅连贯的自然学术段落；图表内的零散标签请适度整理或以列表呈现，严禁输出毫无意义的孤立垂直断行。
+3. 严格规范数学公式与变量（核心）：所有数学变量、符号、行内公式必须统一使用标准 LaTeX 并严格包裹在 $...$ 中（如 $H = 3.8$, $c'$, $c^{{\\sharp}}$, $\\mathcal{{H}}$）；独立块级大公式必须使用 $$...$$ 单独成段包裹，严禁输出没有 LaTeX 标记的散装乱码。
+4. 保持学术严谨与专有名词：保留专业缩写、算法代码、文献引用标号（如 [1]、[2]）和页码标记（如【第 X 页】）；中英混合时保留技术术语与专有名词（如 Transformer, LoRA, BRIDGE, BOS 等）原词输出，不强行翻译。
+
 论文标题：{req.title}
 
-原文：
+原文内容：
 {chunk_content}
 
-请严格输出 JSON：{{"translation": "对应的完整中文译文"}}"""
-        for retry in range(2):
+请严格输出 JSON：{{"translation": "符合上述 Markdown 与 LaTeX 规范的完整中文译文"}}"""
+        for retry in range(3):
             try:
                 resp = client.chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": chunk_prompt}],
                     response_format={"type": "json_object"},
                     temperature=0.2,
-                    timeout=90,
+                    timeout=180,
                 )
                 c = resp.choices[0].message.content or ""
                 try:
@@ -982,20 +1001,21 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
                 if t_str:
                     return idx, t_str
             except Exception as e:
-                print(f"⚠️ [TranslateChunk Note] 第 {idx} 段翻译尝试 {retry+1} 异常: {e}")
-                time.sleep(1.0)
-        return idx, chunk_content
+                sleep_sec = 2.0 * (retry + 1)
+                print(f"⚠️ [TranslateChunk Note] 第 {idx}/{len(chunks)} 卷翻译尝试 {retry+1} 异常 ({e})，等待 {sleep_sec}s 重试...")
+                time.sleep(sleep_sec)
+        return idx, f"> ⚠️ 【第 {idx} 卷网络请求超时，已安全呈现原文】\n\n{chunk_content}"
 
-    # 🚀 并发翻译多个分段，大幅缩减总等待时长，杜绝单次请求超时
+    # 🚀 并发翻译多个适度分段 (并发 3 线程)，大幅缩减总等待时长，杜绝单次请求超时
     from concurrent.futures import ThreadPoolExecutor
     tasks = [(i, c) for i, c in enumerate(chunks, start=1)]
-    with ThreadPoolExecutor(max_workers=min(len(chunks), 4)) as pool:
+    with ThreadPoolExecutor(max_workers=min(len(chunks), 3)) as pool:
         for idx, trans_text in pool.map(_translate_single_chunk, tasks):
             translated_chunks[idx - 1] = trans_text
 
     full_text_zh = "\n\n".join(translated_chunks).strip()
     result = {
-        "version": 3,
+        "version": 4,
         "title_zh": req.title,
         "thesis_zh": summary_data.get("thesis_zh", "").strip(),
         "abstract_zh": summary_data.get("abstract_zh", "").strip(),

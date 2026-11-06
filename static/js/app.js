@@ -3238,6 +3238,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return result;
   }
 
+  // 暴露问答窗口成熟的 Markdown 与数学公式渲染引擎供全局组件 (如天工雷达论文全文翻译) 统一调用
+  window.formatMarkdown = formatMarkdown;
+  window.renderMathSource = renderMathSource;
+  window.formatInlineText = formatInlineText;
+
   const ACADEMIC_PALETTE = {
     backgrounds: [
       'rgba(24, 76, 67, 0.78)',    // 松柏墨绿

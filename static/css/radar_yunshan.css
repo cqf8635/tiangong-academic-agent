@@ -774,11 +774,31 @@
 }
 
 .summary-zh-box .trans-full-paper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-weight: 700;
   color: #0f766e;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px dashed rgba(217, 119, 6, 0.24);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(217, 119, 6, 0.28);
+}
+
+.btn-refresh-full-trans {
+  background: transparent;
+  border: 1px solid rgba(15, 118, 110, 0.35);
+  color: #0f766e;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 0.72rem;
+  font-family: var(--font-serif);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh-full-trans:hover {
+  background: rgba(15, 118, 110, 0.08);
+  border-color: #0f766e;
 }
 
 .summary-zh-box .trans-overview {
@@ -802,11 +822,84 @@
   margin-right: 5px;
 }
 
+/* 全文翻译学术排版画卷样式规范 (对齐问答窗口标准 Markdown 与 KaTeX 公式规范) */
 .summary-zh-box .trans-full-paper-body {
-  color: #334155;
-  line-height: 1.8;
-  white-space: pre-wrap;
+  color: #1e293b;
+  font-size: 0.86rem;
+  line-height: 1.78;
   word-break: break-word;
+  max-height: 650px;
+  overflow-y: auto;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.summary-zh-box .trans-full-paper-body p {
+  margin-top: 0;
+  margin-bottom: 0.85em;
+  text-align: justify;
+}
+
+.summary-zh-box .trans-full-paper-body h1,
+.summary-zh-box .trans-full-paper-body h2,
+.summary-zh-box .trans-full-paper-body h3,
+.summary-zh-box .trans-full-paper-body h4 {
+  color: #184c43;
+  font-family: var(--font-serif);
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.summary-zh-box .trans-full-paper-body h1 {
+  font-size: 1.12rem;
+  border-bottom: 1px solid rgba(24, 76, 67, 0.2);
+  padding-bottom: 4px;
+}
+
+.summary-zh-box .trans-full-paper-body h2 {
+  font-size: 1.02rem;
+}
+
+.summary-zh-box .trans-full-paper-body h3 {
+  font-size: 0.94rem;
+}
+
+.summary-zh-box .trans-full-paper-body ul,
+.summary-zh-box .trans-full-paper-body ol {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+  padding-left: 20px;
+}
+
+.summary-zh-box .trans-full-paper-body li {
+  margin-bottom: 0.35em;
+}
+
+/* 数学公式块美化 (与问答窗口规范对齐) */
+.summary-zh-box .trans-full-paper-body .math-display-wrap {
+  display: block;
+  margin: 1em 0;
+  padding: 8px 12px;
+  background: rgba(248, 250, 252, 0.85);
+  border-radius: 4px;
+  border-left: 3px solid var(--color-pine-jade);
+  overflow-x: auto;
+  text-align: center;
+}
+
+.summary-zh-box .trans-full-paper-body .katex {
+  font-size: 1.05em;
+}
+
+.summary-zh-box .trans-full-paper-body hr.academic-hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(180, 83, 9, 0.3), transparent);
+  margin: 1.4em 0;
 }
 
 .radar-paper-abstract {
