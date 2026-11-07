@@ -1,8 +1,34 @@
 {
   "query_expression": "cat:q-fin.RM",
   "total_fetched": 25,
-  "total_results": 3145,
+  "total_results": 3146,
   "papers": [
+    {
+      "paper_id": "2611.07110v1",
+      "title": "Credibility Clustering for Experience Rating: An Automated Approach to Risk Group Allocation in Group Life Insurance",
+      "authors": [
+        "Thom van Rijn",
+        "Frank Weber",
+        "Michael Merz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T20:24:47Z",
+      "summary": "In insurance, experience rating plays a crucial role in mitigating adverse selection by adjusting premiums according to historical claims experience. A key step in this process is the classification of insured collectives into homogeneous risk groups. Within group life insurance, this classification traditionally relies on manual decisions and arbitrary thresholds, which may lead to inefficiencies and inconsistent outcomes. This paper proposes a data-driven methodology for automating risk group allocation based on a combination of the multidimensional Bühlmann-Straub model and k-means clustering -- referred to as credibility clustering. By incorporating credibility weights, the method accounts for the varying statistical significance of experience data and ensuresthat risk classifications are both actuarially sound and practically implementable. Empirical results based on real-world group life insurance data from a major European insurer demonstrate that the proposed framework outperforms the two k-means benchmark variants considered in the empirical application in terms of viability, temporal stability and accounting for statistical reliability.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07110v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.06126v1",
       "title": "Exponential Seniority Weighting Chain-Ladder Reserving",
@@ -154,7 +180,7 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.00958v1",
+      "paper_id": "2611.00958v2",
       "title": "Quantifying Repair Risk in Crypto Option Surfaces",
       "authors": [
         "Tenghan Zhong"
@@ -162,7 +188,7 @@
       "year": 2026,
       "published_at": "2026-10-31T14:00:39Z",
       "summary": "Option desks adjust crypto option quotes into price surfaces that remain within bid-ask intervals and satisfy standard no-arbitrage restrictions across strikes before computing Greeks, hedge quantities, or risk measures. For the same quote panel, however, these constraints may admit multiple such surfaces, which we call admissible repairs, with different downstream outputs. We define the resulting variation as repair risk and propose repair-risk validation, a matched framework for quantifying dispersion in Greeks, hedge quantities, and risk measures. The mechanism is finite-difference amplification: two admissible repairs within price distance $\\varepsilon$ can differ in local normalized-strike curvature by $4\\varepsilon/h^2$, where $h$ is local normalized-strike spacing. We evaluate repair risk on Deribit BTC and ETH option chains, using $L_1$ and $L_2$ projections of midpoint prices onto the same admissible set as matched controls. Across 108 matched evaluations spanning 18 sampled calendar months, the median 90th percentile of the scaled spot-gamma gap for $L_2$ versus the $ρ=10$ smoothness-penalized repair is nearly twenty times the matched $L_1$--$L_2$ control. We also instantiate NN-Proj, a neural-projection repair, to test whether learned repairs exhibit repair risk. Despite good held-out fit, its downstream outputs remain distinct from those of classical repairs. Across five seeds with the same training window and architecture, its curvature dispersion exceeds the matched $L_1$--$L_2$ control in 17 of 18 months ($p=1.45\\times10^{-4}$). For a USD 1 million risk reversal, switching from $L_2$ to the $ρ=10$ repair shifts the median 90th-percentile hedge notional by 18.62 basis points of gross spot notional. VaR-style estimates also exhibit greater dispersion across repairs. The repair rule is therefore part of the risk model, not merely a feasibility check.",
-      "pdf_url": "https://arxiv.org/pdf/2611.00958v1.pdf",
+      "pdf_url": "https://arxiv.org/pdf/2611.00958v2.pdf",
       "source": "arxiv",
       "primary_category": "q-fin.PR",
       "categories": [
@@ -173,7 +199,7 @@
         "q-fin.PR (衍生品与资产定价)",
         "q-fin.RM (风险管理与控制)"
       ],
-      "comment": "9 pages, 6 figures. Accepted for oral presentation at ACM ICAIF 2026. Quantifies uncertainty in option surfaces by establishing a locally sharp upper bound on curvature differences between nearby admissible price vectors and computing the full feasible local curvature range via linear programming",
+      "comment": "9 pages, 6 figures. Accepted for oral presentation at ACM ICAIF 2026. Contributions: quantifies uncertainty from choosing among admissible option price curves, provides approaches for identifying option chains with potentially large curvature differences, and evaluates the effects on Greeks, hedges, and risk estimates using Deribit BTC and ETH option data",
       "journal_ref": null,
       "ai_summary": null
     },
@@ -634,32 +660,6 @@
       "comment": "47 pages, 0 figures, 16 numbered tables. Includes a trading-agent evaluation toolkit and checklist. V2 Updated boilerplate and added Hygentra product information to section 2.1",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.25802v2",
-      "title": "Amortized Neural Filtering for Calibrated Posteriors in Statistical Arbitrage",
-      "authors": [
-        "Minkey Chang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T05:15:23Z",
-      "summary": "Statistical arbitrage trades on an estimate of the state of a residual spread, and conventional practice discards the uncertainty of that estimate. We keep the uncertainty and use it in the trading decision. A Neural Filter Estimator (NFE) is trained on simulated paths of a mean-reverting process whose innovation law is selected by testing candidates against real residuals; once trained, it returns the posterior over the latent state of every spread in a cross-section in one forward pass. Three results follow. On simulated paths with known truth, every practical estimator, ours included, falls in one narrow band of accuracy well below an estimator given full information, so the posterior gains no accuracy over a point estimate; its contribution is a correct account of its own uncertainty. On Korean equities, net of costs, the conventional point estimate forecasts about a thousand basis points per holding period more than it realizes, and the amortized methods cut that gap by a factor of roughly two to eight. Sizing positions from the posterior on the same learned factors as the end-to-end Attention Factor Model matches the Sharpe ratio of those factors under the base rule within the period's noise, at no more risk.",
-      "pdf_url": "https://arxiv.org/pdf/2610.25802v2.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.GN",
-      "categories": [
-        "q-fin.GN",
-        "q-fin.RM",
-        "q-fin.ST"
-      ],
-      "category_names_zh": [
-        "q-fin.GN (普通宏观金融与经济)",
-        "q-fin.RM (风险管理与控制)",
-        "q-fin.ST (统计金融学与高频数据)"
-      ],
-      "comment": "Accepted at the 7th ACM International Conference on AI in Finance (ICAIF '26), oral presentation. 9 pages, 3 figures, 5 tables. Code: https://github.com/minkeymouse/nfe , v2: fixes Figure 1 in the HTML version",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -674,13 +674,13 @@
       "count": 6
     },
     {
-      "code": "q-fin.PM",
-      "name_zh": "资产组合管理",
-      "count": 4
-    },
-    {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
+      "count": 5
+    },
+    {
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
       "count": 4
     },
     {
@@ -706,11 +706,6 @@
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
-      "count": 2
-    },
-    {
-      "code": "q-fin.ST",
-      "name_zh": "统计金融学与高频数据",
       "count": 2
     },
     {
@@ -749,15 +744,15 @@
       "count": 1
     },
     {
-      "code": "cs.MA",
-      "name_zh": "多智能体系统 (Multiagent)",
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
       "count": 1
     },
     {
-      "code": "q-fin.GN",
-      "name_zh": "普通宏观金融与经济",
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-06T09:25:47.226128"
+  "snapshot_synced_at": "2026-11-07T08:34:53.227293"
 }

@@ -107,19 +107,9 @@ def extract_audio_from_file(media_file: Path, output_file: Path = DEFAULT_OUTPUT
 
 
 def load_whisper_pipeline(model_dir: Path = MODEL_DIR):
-    """Load local Whisper large-v3 model using OpenAI official whisper library."""
-    import torch
-    import whisper
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    download_root = str(model_dir.parent) if model_dir.parent.exists() else None
-
-    print(f"🧠 加载本地 Whisper 模型: {model_dir.name} (计算设备: {device.upper()})...")
-    model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
-    if device == "cuda":
-        model = model.to("cuda")
-        torch.cuda.empty_cache()
-    return model
+    """Load local Whisper large-v3 model using OpenAI official whisper library with memory safety."""
+    from whisper_loader import load_whisper_safely
+    return load_whisper_safely(model_dir)
 
 
 def transcribe(model, wav_file: Path = DEFAULT_OUTPUT_WAV, lang: str = "auto") -> str:

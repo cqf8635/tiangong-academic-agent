@@ -14,6 +14,7 @@ import base64
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -39,10 +40,10 @@ ENV_PATH = BASE_DIR / ".env"
 load_dotenv(ENV_PATH)
 
 DEFAULT_EMBEDDING_PATH = resolve_model_path(
-    "PAPER_EMBEDDING_MODEL", "embedding", "BAAI/bge-m3", BASE_DIR
+    "PAPER_EMBEDDING_MODEL", "embedding", BASE_DIR
 )
 DEFAULT_RERANKER_PATH = resolve_model_path(
-    "PAPER_RERANKER_MODEL", "reranker", "BAAI/bge-reranker-large", BASE_DIR
+    "PAPER_RERANKER_MODEL", "reranker", BASE_DIR
 )
 DEFAULT_DB_DIR = BASE_DIR / "knowledge_db"
 EXTRACTED_TEXTS_DIR = BASE_DIR / "static" / "extracted_texts"
@@ -107,7 +108,7 @@ class UniversalDocumentParser:
     def _extract_page_vlm(cls, image_path: Path, doc_id: str, page_num: int) -> str:
         """调用多模态 VLM API 提取扫描页的 Markdown 标题、正文与 LaTeX 公式，支持持久化缓存"""
         if not image_path.exists():
-            return ""
+            raise FileNotFoundError(image_path)
 
         cache_dir = EXTRACTED_TEXTS_DIR
         cache_dir.mkdir(parents=True, exist_ok=True)
@@ -118,15 +119,15 @@ class UniversalDocumentParser:
                 cached_text = cache_file.read_text(encoding="utf-8").strip()
                 if cached_text:
                     return cached_text
-            except Exception:
-                pass
+            except Exception as e:
+                raise RuntimeError(f"扫描页识别缓存读取失败: {e}") from e
 
         api_key = os.getenv("OPENAI_API_KEY")
         base_url = os.getenv("OPENAI_BASE_URL")
         model = get_default_llm_model()
 
         if not api_key or not base_url:
-            return ""
+            raise ValueError("扫描页识别缺少 API 配置")
 
         try:
             with open(image_path, "rb") as f:
@@ -155,14 +156,16 @@ class UniversalDocumentParser:
                 timeout=llm_timeout,
             )
 
+            if getattr(resp.choices[0], "finish_reason", None) != "stop":
+                raise ValueError("模型响应未完整结束，本阶段未完成")
             extracted = resp.choices[0].message.content.strip()
             if extracted:
                 cache_file.write_text(extracted, encoding="utf-8")
                 return extracted
         except Exception as e:
-            print(f"⚠️ [VLM Parse Page {page_num} Error]: {e}")
+            raise RuntimeError(f"第 {page_num} 页识别失败: {e}") from e
 
-        return ""
+        raise RuntimeError(f"第 {page_num} 页未识别出文字")
 
     @staticmethod
     def _is_heading_or_topic_boundary(line: str) -> Optional[str]:
@@ -272,6 +275,8 @@ class UniversalDocumentParser:
             page = doc[page_idx]
             page_num = page_idx + 1
             page_text = cls._clean_text(page.get_text("text"))
+            if not page_text and not page.get_images() and not page.get_drawings():
+                continue
 
             snapshot_filename = f"{doc_id}_p{page_num}.png"
             snapshot_path = img_dir / snapshot_filename
@@ -279,8 +284,8 @@ class UniversalDocumentParser:
                 try:
                     pix = page.get_pixmap(dpi=130)
                     pix.save(str(snapshot_path))
-                except Exception:
-                    snapshot_filename = ""
+                except Exception as e:
+                    raise RuntimeError(f"第 {page_num} 页图像提取失败: {e}") from e
 
             image_url = f"/extracted_images/{snapshot_filename}" if snapshot_filename else ""
             pages_data.append({
@@ -309,8 +314,8 @@ class UniversalDocumentParser:
                     if c_text:
                         vlm_results[p_num] = c_text
                         continue
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise RuntimeError(f"第 {p_num} 页缓存读取失败: {e}") from e
             uncached_scanned_tasks.append((p_num, snp))
 
         if uncached_scanned_tasks:
@@ -329,9 +334,9 @@ class UniversalDocumentParser:
                             if res_text:
                                 vlm_results[p_num] = res_text
                         except Exception as e:
-                            print(f"⚠️ [VLM Extraction Exception (Page {p_num})]: {e}")
+                            raise RuntimeError(f"第 {p_num} 页识别失败: {e}") from e
             else:
-                print(f"ℹ️ [DocumentParser] 发现 {len(uncached_scanned_tasks)} 个扫描页面 (ENABLE_VLM_OCR=0 未启用在线多模态识别，使用原图视觉快照入库)")
+                raise ValueError("文档包含扫描页但未启用 VLM 识别，解析停止")
 
         # 第三阶段：组装结构化语义切片 (学术标题层级感知 + 自然段原子保护 + 滑动上下文缓冲，零硬编码)
         active_section = ""
@@ -346,21 +351,7 @@ class UniversalDocumentParser:
                 is_vlm_extracted = True
 
             if not raw_text:
-                # 兜底：纯空白图或未识别出的扫描页
-                chunk_id = f"{file_path.stem}_p{page_num}_img"
-                chunks.append(
-                    DocumentChunk(
-                        doc_id=doc_id,
-                        doc_name=file_path.name,
-                        doc_type="pdf",
-                        page_or_slide=page_num,
-                        section=f"Page {page_num} (Figure/Visual)",
-                        chunk_id=chunk_id,
-                        text=f"【页面视觉图表/扫描快照】 《{file_path.name}》 第 {page_num} 页包含复杂架构图、实验曲线或表格。",
-                        image_url=image_url,
-                    )
-                )
-                continue
+                raise ValueError(f"第 {page_num} 页无可用文本，未生成占位描述；扫描页需启用 VLM 识别")
 
             # 检测该页首发标题
             page_section = f"Page {page_num}"
@@ -676,7 +667,7 @@ class UniversalDocumentParser:
                         )
                         chapter_idx += 1
         except Exception as e:
-            print(f"⚠️ [DocumentParser] EPUB 解析异常: {e}")
+            raise ValueError(f"EPUB 解析失败，未返回部分内容: {e}") from e
         return chunks
 
     @classmethod
@@ -694,11 +685,7 @@ class UniversalDocumentParser:
         elif ext in [".md", ".markdown", ".txt", ".tex", ".latex", ".rst", ".html", ".htm", ".json", ".jsonl", ".csv"]:
             return cls.parse_text_or_md(file_path)
         else:
-            # 最大宽容度兜底：尝试以纯文本流智能切块，杜绝格式壁垒
-            try:
-                return cls.parse_text_or_md(file_path)
-            except Exception as e:
-                raise ValueError(f"文件格式解析失败 ({ext}): {e}")
+            raise ValueError(f"不支持的文件格式: {ext}")
 
 
 DocumentParser = UniversalDocumentParser
@@ -742,21 +729,24 @@ def extract_document_ontology_with_llm(doc_name: str, sample_text: str, client: 
             max_tokens=600,
             timeout=get_llm_timeout(60.0),
         )
+        if getattr(resp.choices[0], "finish_reason", None) != "stop":
+            raise ValueError("模型响应未完整结束，本阶段未完成")
         return DocumentAcademicOntology.model_validate_json(resp.choices[0].message.content)
     except Exception as e:
-        print(f"⚠️ [OntologyExtraction Note]: {e}")
-        return DocumentAcademicOntology(
-            primary_discipline="学术文献",
-            sub_fields=[doc_name],
-            interdisciplinary_tags=[],
-            core_methodologies=[],
-        )
+        raise RuntimeError(f"文献本体提取失败: {e}") from e
 
 
 # ==========================================
 # 3. 知识库管理与混合检索重排引擎
 # ==========================================
 class UniversalDocumentRAGEngine:
+    _shared_embedding_model: Optional[SentenceTransformer] = None
+    _shared_embedding_path: Optional[str] = None
+    _shared_reranker: Optional[CrossEncoder] = None
+    _shared_reranker_path: Optional[str] = None
+    _shared_chroma_client: Optional[Any] = None
+    _shared_collection: Optional[Any] = None
+
     def __init__(
         self,
         db_dir: Path = DEFAULT_DB_DIR,
@@ -767,41 +757,58 @@ class UniversalDocumentRAGEngine:
         self.db_dir = Path(db_dir)
         self.db_dir.mkdir(parents=True, exist_ok=True)
 
-        print("⚡ [RAGEngine] 初始化 ChromaDB 嵌入数据库...")
-        self.chroma_client = chromadb.PersistentClient(
-            path=str(self.db_dir),
-            settings=Settings(anonymized_telemetry=False, allow_reset=True),
-        )
-        self.collection = self.chroma_client.get_or_create_collection(
-            name="academic_knowledge_base",
-            metadata={"hnsw:space": "cosine"},
-        )
+        if UniversalDocumentRAGEngine._shared_chroma_client is None:
+            print("⚡ [RAGEngine] 初始化 ChromaDB 嵌入数据库...")
+            UniversalDocumentRAGEngine._shared_chroma_client = chromadb.PersistentClient(
+                path=str(self.db_dir),
+                settings=Settings(anonymized_telemetry=False, allow_reset=True),
+            )
+            UniversalDocumentRAGEngine._shared_collection = UniversalDocumentRAGEngine._shared_chroma_client.get_or_create_collection(
+                name="academic_knowledge_base",
+                metadata={"hnsw:space": "cosine"},
+            )
+        self.chroma_client = UniversalDocumentRAGEngine._shared_chroma_client
+        self.collection = UniversalDocumentRAGEngine._shared_collection
 
         api_key = os.getenv("OPENAI_API_KEY")
         base_url = os.getenv("OPENAI_BASE_URL")
         self.llm_client = OpenAI(api_key=api_key, base_url=base_url)
 
         self.device = "cuda" if (use_cuda_for_models and torch.cuda.is_available()) else "cpu"
-        print(f"🧠 [RAGEngine] 加载本地 BGE-M3 向量嵌入模型 (设备: {self.device})...")
         model_kwargs = {"torch_dtype": torch.float16} if self.device == "cuda" else {}
-        self.embedding_model = SentenceTransformer(
-            embedding_model_path,
-            device=self.device,
-            model_kwargs=model_kwargs,
-        )
+
+        if (
+            UniversalDocumentRAGEngine._shared_embedding_model is None
+            or UniversalDocumentRAGEngine._shared_embedding_path != embedding_model_path
+        ):
+            print(f"🧠 [RAGEngine] 加载本地 BGE-M3 向量嵌入模型 (设备: {self.device})...")
+            UniversalDocumentRAGEngine._shared_embedding_model = SentenceTransformer(
+                embedding_model_path,
+                device=self.device,
+                local_files_only=True,
+                model_kwargs=model_kwargs,
+            )
+            UniversalDocumentRAGEngine._shared_embedding_path = embedding_model_path
+        self.embedding_model = UniversalDocumentRAGEngine._shared_embedding_model
 
         use_reranker = os.getenv("PAPER_USE_RERANKER", "0") in ["1", "true", "True"]
         if use_reranker:
-            try:
-                print(f"⚖️  [RAGEngine] 加载本地 BGE-Reranker 重排模型 (设备: {self.device}, 半精度 FP16)...")
-                self.reranker = CrossEncoder(
-                    reranker_model_path,
-                    device=self.device,
-                    model_kwargs=model_kwargs,
-                )
-            except Exception as e:
-                print(f"⚠️ [RAGEngine] 重排模型加载受阻 ({e})，切换为 BGE-M3 纯净向量余弦度量")
-                self.reranker = None
+            if (
+                UniversalDocumentRAGEngine._shared_reranker is None
+                or UniversalDocumentRAGEngine._shared_reranker_path != reranker_model_path
+            ):
+                try:
+                    print(f"⚖️  [RAGEngine] 加载本地 BGE-Reranker 重排模型 (设备: {self.device}, 半精度 FP16)...")
+                    UniversalDocumentRAGEngine._shared_reranker = CrossEncoder(
+                        reranker_model_path,
+                        device=self.device,
+                        local_files_only=True,
+                        model_kwargs=model_kwargs,
+                    )
+                    UniversalDocumentRAGEngine._shared_reranker_path = reranker_model_path
+                except Exception as e:
+                    raise RuntimeError(f"重排模型加载失败: {e}") from e
+            self.reranker = UniversalDocumentRAGEngine._shared_reranker
         else:
             print("🚀 [RAGEngine] 重排器已由环境配置精简跳过 (PAPER_USE_RERANKER=0)，采用 BGE-M3 全维余弦度量以获得极致速度与精准度")
             self.reranker = None
@@ -816,8 +823,7 @@ class UniversalDocumentRAGEngine:
         chunks = UniversalDocumentParser.parse_file(path)
 
         if not chunks:
-            print(f"[警告] 文件未解析出有效文本: {path.name}")
-            return 0
+            raise ValueError(f"文件未解析出有效文本，未完成入库: {path.name}")
 
         # 大模型世界知识智能提取多级学术本体 (0 关键词硬编码)
         sample_intro = " ".join([c.text for c in chunks[:4]])
@@ -893,15 +899,24 @@ class UniversalDocumentRAGEngine:
             return []
 
         # 2. 计算 BGE-M3 全维余弦相似度 (Cosine Space: similarity = 1.0 - distance)
-        cosine_sims = [
-            max(0.0, 1.0 - float(distances[i])) if (distances and i < len(distances)) else 0.5
-            for i in range(len(docs))
-        ]
+        cosine_sims = []
+        cosine_methods = ["embedding_cosine"] * len(docs)
+        for index in range(len(docs)):
+            try:
+                distance = float(distances[index])
+                if not math.isfinite(distance):
+                    raise ValueError("non-finite distance")
+                cosine_sims.append(max(0.0, 1.0 - distance))
+            except (IndexError, TypeError, ValueError) as e:
+                raise RuntimeError("本地检索未返回有效向量距离") from e
 
         # 3. 检查是否启用与有效运行 BGE-Reranker 交叉精排
         scores = cosine_sims
+        score_method = "embedding_cosine"
         use_reranker = os.getenv("PAPER_USE_RERANKER", "0") in ["1", "true", "True"]
-        if use_reranker and getattr(self, "reranker", None) is not None:
+        if use_reranker and getattr(self, "reranker", None) is None:
+            raise RuntimeError("已启用本地重排，但重排模型不可用")
+        if use_reranker:
             try:
                 rerank_pairs = []
                 for doc_text, meta in zip(docs, metas):
@@ -910,18 +925,22 @@ class UniversalDocumentRAGEngine:
                     ctx_prefix = f"《{doc_n}》 {sec_n}\n" if (doc_n or sec_n) else ""
                     rerank_pairs.append([query, f"{ctx_prefix}{doc_text}"])
                 raw_preds = self.reranker.predict(rerank_pairs)
+                if hasattr(raw_preds, "tolist"):
+                    raw_preds = raw_preds.tolist()
+                if isinstance(raw_preds, (int, float)):
+                    raw_preds = [raw_preds]
                 pred_list = [float(p) for p in raw_preds]
-                # 智能保护：若重排输出方差极小 (<0.02) 说明模型未训练或词表错乱产生退化常数输出，自动回退
-                if len(pred_list) > 1 and (max(pred_list) - min(pred_list) < 0.02):
-                    scores = cosine_sims
-                else:
-                    scores = pred_list
+                if len(pred_list) != len(docs) or not all(math.isfinite(p) for p in pred_list):
+                    raise ValueError("invalid reranker scores")
+                # Similar scores alone do not establish a model failure.
+                scores = pred_list
+                score_method = "reranker"
             except Exception as e:
-                scores = cosine_sims
+                raise RuntimeError(f"本地证据重排失败: {e}") from e
 
         # 组合排序、学科亲和度调整与负向词抑制
         ranked_items = []
-        for doc_text, meta, score in zip(docs, metas, scores):
+        for index, (doc_text, meta, score) in enumerate(zip(docs, metas, scores)):
             page_label = f"第 {meta.get('page_or_slide')} 页" if meta.get("doc_type") == "pdf" else f"第 {meta.get('page_or_slide')} 张幻灯片" if meta.get("doc_type") == "pptx" else f"段落 #{meta.get('page_or_slide')}"
 
             final_score = float(score)
@@ -953,7 +972,12 @@ class UniversalDocumentRAGEngine:
 
             ranked_items.append(
                 {
-                    "score": final_score,
+                    "score": float(score),
+                    "ranking_score": final_score,
+                    "score_adjustment": final_score - float(score),
+                    "score_method": score_method if score_method == "reranker" else cosine_methods[index],
+                    "doc_id": meta.get("doc_id"),
+                    "chunk_id": (results.get("ids") or [[]])[0][index] if results.get("ids") else None,
                     "doc_name": meta.get("doc_name"),
                     "doc_type": meta.get("doc_type"),
                     "primary_discipline": doc_primary,
@@ -967,9 +991,9 @@ class UniversalDocumentRAGEngine:
                 }
             )
 
-        # 按重排分数从高到低排序，严格执行相关性硬截断 (低于 0.35 分一律丢弃，坚决杜绝把无关学科硬凑为证据)
-        ranked_items.sort(key=lambda x: x["score"], reverse=True)
-        valid_items = [it for it in ranked_items if it["score"] >= 0.35]
+        # 保留原有学科/负向词排序与筛选规则，单独记录调整值，避免冒充模型相关性。
+        ranked_items.sort(key=lambda x: x["ranking_score"], reverse=True)
+        valid_items = [it for it in ranked_items if it["ranking_score"] >= 0.35]
         return valid_items[:top_k]
 
     def delete_document(self, doc_name: str) -> bool:
@@ -979,8 +1003,7 @@ class UniversalDocumentRAGEngine:
             self.collection.delete(where={"doc_name": doc_name})
             print(f"🗑️ [RAGEngine] 已成功从 ChromaDB 向量库删除文献 《{doc_name}》 的全部切片与向量")
         except Exception as e:
-            print(f"⚠️ [RAGEngine] 从 ChromaDB 删除文献失败: {e}")
-            success = False
+            raise RuntimeError(f"知识库文献删除失败: {e}") from e
 
         # 同步清理静态图片快照与提取文本缓存
         try:
@@ -1001,7 +1024,7 @@ class UniversalDocumentRAGEngine:
             if cleaned_imgs > 0 or cleaned_txts > 0:
                 print(f"🧹 [RAGEngine] 同步清理关联缓存: {cleaned_imgs} 张页面原图, {cleaned_txts} 份解析文本")
         except Exception as e:
-            print(f"⚠️ [RAGEngine] 清理静态缓存异常: {e}")
+            raise RuntimeError(f"文献缓存清理失败: {e}") from e
 
         return success
 
@@ -1016,14 +1039,7 @@ class UniversalDocumentRAGEngine:
                 break
 
         if not target_file:
-            # 模糊匹配
-            for f in list(uploads_dir.glob("*")) + list(test_dir.glob("*")):
-                if doc_name in f.name or f.name in doc_name:
-                    target_file = f
-                    break
-
-        if not target_file:
-            return f"# 📚 《{doc_name}》 经卷脉络\n- 暂未找到该文献源文件"
+            raise FileNotFoundError(f"未找到指定文献: {doc_name}")
 
         stem = target_file.stem
         lines = [f"# 📚 《{stem}》 经卷全景导图"]
@@ -1040,24 +1056,9 @@ class UniversalDocumentRAGEngine:
                         lines.append(f"- 📍 考据定位: 第 {page} 页")
                     return "\n".join(lines)
                 else:
-                    # 无原生大纲，扫描文本中的章节和小节
-                    lines.append("## 📖 核心章节与专题提炼")
-                    for page_idx in range(len(doc)):
-                        page_text = doc[page_idx].get_text("text")
-                        for line in page_text.split("\n"):
-                            line = line.strip()
-                            # 匹配中英文学术论文核心标题 (如 1 Introduction, II. Method, 第X章 等)
-                            is_heading = (
-                                re.match(r"^(第[一二三四五六七八九十\d]+[章节部分问]|问题\s*\d+|\d+(\.\d+)*\s+[^\d]|[\d一二三四]、|(?:[IVXLCDM]+|[A-Z])[\.\s]+[A-Za-z]|(?:abstract|introduction|background|preliminaries|related\s+work|method(?:ology)?|proposed\s+method|architecture|experiments?|evaluation|results|ablation|discussion|conclusions?|references)\b)", line, re.IGNORECASE)
-                                and 3 < len(line) < 65
-                                and not line.endswith((".", "。", ";", "；"))
-                            )
-                            if is_heading:
-                                lines.append(f"### {line}")
-                                lines.append(f"- 📍 考据定位: 第 {page_idx + 1} 页")
-                    return "\n".join(lines)
+                    raise ValueError("PDF 未提供可用的原生目录")
             except Exception as e:
-                return f"# 📚 《{stem}》\n- 导图生成异常: {e}"
+                raise RuntimeError(f"文档导图提取失败: {e}") from e
 
         elif target_file.suffix.lower() == ".pptx":
             try:
@@ -1071,7 +1072,7 @@ class UniversalDocumentRAGEngine:
                     lines.append(f"- 📍 课件定位: 第 {idx} 张幻灯片")
                 return "\n".join(lines)
             except Exception as e:
-                return f"# 📚 《{stem}》\n- 幻灯片解析异常: {e}"
+                raise RuntimeError(f"文档导图提取失败: {e}") from e
 
         elif target_file.suffix.lower() == ".docx":
             try:
@@ -1083,9 +1084,9 @@ class UniversalDocumentRAGEngine:
                         lines.append(f"### {text}")
                 return "\n".join(lines)
             except Exception as e:
-                return f"# 📚 《{stem}》\n- 文档解析异常: {e}"
+                raise RuntimeError(f"文档导图提取失败: {e}") from e
 
-        return f"# 📚 《{stem}》\n- 暂不支持该格式大纲提取"
+        raise ValueError(f"不支持该格式的文档大纲提取: {target_file.suffix}")
 
 
 def sanitize_topic_title(raw_title: str) -> str:
@@ -1118,7 +1119,7 @@ def sanitize_topic_title(raw_title: str) -> str:
             return f"{book_prefix}{cleaned} 知识架构导图"
         return f"{cleaned} 知识架构导图"
 
-    # 仅当用户未提具体问题、纯粹查询书籍时才降级为书籍概览精要
+    # 书籍概览请求使用书名作为导图标题。
     if book_prefix:
         return f"{book_prefix}知识架构精要"
 

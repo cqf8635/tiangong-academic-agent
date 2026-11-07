@@ -45,7 +45,6 @@ ENV_PATH = BASE_DIR / ".env"
 load_dotenv(ENV_PATH)
 
 MODEL_DIR = resolve_whisper_path(BASE_DIR)
-DEFAULT_MONITOR = get_default_monitor_source()
 
 
 # ==========================================
@@ -86,11 +85,12 @@ class WhisperEngine:
             print(f"🧠 [WhisperEngine] 加载本地模型: {model_dir.name} (GPU CUDA: {use_cuda}, dtype: {cls._dtype})...")
             cls._model = AutoModelForSpeechSeq2Seq.from_pretrained(
                 model_dir,
+                local_files_only=True,
                 dtype=cls._dtype,
                 low_cpu_mem_usage=True,
                 use_safetensors=True,
             ).to(cls._device)
-            cls._processor = AutoProcessor.from_pretrained(model_dir)
+            cls._processor = AutoProcessor.from_pretrained(model_dir, local_files_only=True)
         return cls._model, cls._processor, cls._device, cls._dtype
 
     _whisper_native_model = None
@@ -98,49 +98,15 @@ class WhisperEngine:
     @classmethod
     def get_whisper_native_model(cls, model_dir: Path = MODEL_DIR):
         if cls._whisper_native_model is None:
-            try:
-                import gc
-                import os
-                import torch
-                import whisper
-
-                os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-                gc.collect()
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-
-                download_root = str(model_dir.parent) if model_dir.parent.exists() else None
-                use_cuda = torch.cuda.is_available()
-
-                print("🧠 [WhisperEngine] 安全加载 OpenAI 官方原生 large-v3 模型 (CPU 反序列化中转，杜绝显存双倍复制)...")
-                # 1. 先在 CPU 完成反序列化与字典赋值，避免在 GPU 显存内同时存在 checkpoint + model 两份 3GB 副本
-                m = whisper.load_model("large-v3", device="cpu", download_root=download_root)
-                gc.collect()
-
-                # 2. 若 GPU 显存充裕 (>= 3.2GB)，迁移至 GPU；若已被 RAG 占用则安全留在 CPU，彻底消除 OOM 与进程被杀隐患
-                if use_cuda:
-                    torch.cuda.empty_cache()
-                    free_bytes, total_bytes = torch.cuda.mem_get_info()
-                    free_gb = free_bytes / (1024 ** 3)
-                    if free_gb >= 3.2:
-                        m = m.to("cuda")
-                        torch.cuda.empty_cache()
-                        print(f"🧠 [WhisperEngine] 成功移入 GPU FP16 通道 (仅占 2.88GB，剩余显存: {free_gb - 2.88:.2f}GB)")
-                    else:
-                        print(f"🧠 [WhisperEngine] GPU 剩余显存 ({free_gb:.2f}GB < 3.2GB)，模型安全驻留 CPU 多核通道，确保系统绝对稳定")
-                else:
-                    print("🧠 [WhisperEngine] 当前运行于 CPU 多核推理模式")
-
-                cls._whisper_native_model = m
-            except Exception as e:
-                print(f"🧠 [WhisperEngine] 官方库加载提示: {e}")
+            from whisper_loader import load_whisper_safely
+            cls._whisper_native_model = load_whisper_safely(model_dir)
         return cls._whisper_native_model
 
     @classmethod
     def transcribe(cls, samples: np.ndarray, sampling_rate: int = 16000, language: str = "chinese") -> str:
-        # 优先使用 OpenAI 官方原生引擎
-        native_model = cls.get_whisper_native_model()
-        if native_model is not None:
+        # 按配置文件格式选择引擎，不在调用失败后换用其他引擎。
+        if MODEL_DIR.suffix == ".pt":
+            native_model = cls.get_whisper_native_model()
             import gc
             import torch
             import whisper
@@ -163,36 +129,19 @@ class WhisperEngine:
                 "Python, PyTorch, LoRA, Prompt, English, China 等），中英文混合原词输出，不要将英文翻译成中文。"
             )
 
-            try:
-                res = native_model.transcribe(
-                    audio,
-                    language=lang_code,
-                    task="transcribe",
-                    initial_prompt=academic_prompt,
-                    fp16=is_cuda,
-                    beam_size=1,       # 方案 A: 贪婪单分支解码，降低 500MB+ 动态显存开销
-                    best_of=1,
-                    temperature=0.0,
-                )
-                return res.get("text", "").strip()
-            except torch.OutOfMemoryError:
-                print("⚠️ [WhisperEngine] GPU 显存突发不足，自动无缝切换至 CPU 极速转录...")
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-                cls._whisper_native_model = native_model.to("cpu")
-                res = cls._whisper_native_model.transcribe(
-                    audio,
-                    language=lang_code,
-                    task="transcribe",
-                    initial_prompt=academic_prompt,
-                    fp16=False,
-                    beam_size=1,
-                    best_of=1,
-                    temperature=0.0,
-                )
-                return res.get("text", "").strip()
+            res = native_model.transcribe(
+                audio,
+                language=lang_code,
+                task="transcribe",
+                initial_prompt=academic_prompt,
+                fp16=is_cuda,
+                beam_size=1,       # 方案 A: 贪婪单分支解码，降低 500MB+ 动态显存开销
+                best_of=1,
+                temperature=0.0,
+            )
+            return res.get("text", "").strip()
 
-        # 备用 Hugging Face pipeline
+        # 配置为 Transformers 本地模型目录时使用该引擎。
         pipe = cls.get_pipeline()
         generate_kwargs = {"task": "transcribe"}
         if language in ("chinese", "zh"):
@@ -228,37 +177,10 @@ class WhisperEngine:
 # ==========================================
 def get_audio_source(mode: str) -> str:
     if mode == "system":
-        # 1. 优先获取当前系统正在使用的 Default Sink，其 .monitor 即为真实发声通道（自动兼容扬声器/耳机/蓝牙）
-        try:
-            sink_res = subprocess.run(
-                ["pactl", "get-default-sink"],
-                capture_output=True,
-                text=True,
-                check=True,
-                timeout=1.0,
-            )
-            def_sink = sink_res.stdout.strip()
-            if def_sink:
-                return f"{def_sink}.monitor"
-        except Exception:
-            pass
-
-        # 2. 备选：从 pactl sources 中自动探测带有 monitor 的可用声卡通道
-        try:
-            res = subprocess.run(["pactl", "list", "short", "sources"], capture_output=True, text=True, check=True, timeout=1.0)
-            lines = res.stdout.strip().splitlines()
-            for line in lines:
-                parts = line.split("\t")
-                if len(parts) >= 2 and "monitor" in parts[1] and ("Speaker" in parts[1] or "RUNNING" in line):
-                    return parts[1]
-            for line in lines:
-                parts = line.split("\t")
-                if len(parts) >= 2 and "monitor" in parts[1]:
-                    return parts[1]
-        except Exception:
-            pass
-        return DEFAULT_MONITOR
-    return "default"
+        return get_default_monitor_source()
+    if mode == "mic":
+        return "default"
+    raise ValueError(f"未知音源模式: {mode}")
 
 
 def calc_rms(chunk_bytes: bytes) -> float:
@@ -407,8 +329,10 @@ def transcribe_node(state: VoiceAgentState) -> Dict[str, Any]:
 def clean_and_format_node(state: VoiceAgentState) -> Dict[str, Any]:
     """节点 3: 语义清洗、去幻觉与语音控制指令识别"""
     raw_text = state.get("raw_transcription", "").strip()
+    if state.get("status") == "error":
+        return {"final_text": "", "status": "error", "error_message": state.get("error_message", "语音处理失败")}
     if not raw_text:
-        return {"final_text": "", "status": "completed"}
+        return {"final_text": "", "status": "skipped"}
 
     # 1. 过滤 Whisper 常见的静音/杂音幻觉模式（仅针对孤立短串过滤，避免误杀正常英文句式如包含 thank you 的学术发言）
     lower_text = raw_text.lower().strip(". !?,，。？！")
@@ -429,8 +353,8 @@ def clean_and_format_node(state: VoiceAgentState) -> Dict[str, Any]:
                 "final_text": cleaned,
                 "status": "shutdown",
             }
-    except Exception:
-        pass
+    except Exception as e:
+        return {"final_text": "", "status": "error", "error_message": f"语音意图解析失败: {e}"}
 
     return {
         "final_text": cleaned,
@@ -484,6 +408,8 @@ class LangGraphVoiceAgent:
         silence_timeout: float = 2.5,
         records_dir: Path = Path(__file__).resolve().parent / "records",
     ):
+        if mode not in {"mic", "system"}:
+            raise ValueError(f"不支持的音源模式: {mode}")
         self.mode = mode
         self.threshold = threshold
         self.silence_timeout = silence_timeout
@@ -607,6 +533,8 @@ class VoicePerceptionAgent(LangGraphVoiceAgent):
         silence_timeout: float = 2.5,
         records_dir: Optional[Path] = None,
     ):
+        if mode not in {"mic", "system"}:
+            raise ValueError(f"不支持的音源模式: {mode}")
         effective_mode = "system" if ("monitor" in str(source) or mode == "system") else "mic"
         super().__init__(
             mode=effective_mode,
@@ -626,6 +554,8 @@ class VoicePerceptionAgent(LangGraphVoiceAgent):
         """清洗转录文本并原地更新 state，以触发 backend_api 的 WebSocket 广播钩子"""
         raw_text = (state.get("latest_raw_text") or state.get("raw_transcription") or "").strip()
         sub_res = clean_and_format_node({"raw_transcription": raw_text})
+        if sub_res.get("status") == "error":
+            raise RuntimeError(sub_res["error_message"])
         cleaned = (sub_res.get("final_text") or "").strip()
         state["cleaned_text"] = cleaned
         if cleaned:
@@ -691,11 +621,8 @@ class VoicePerceptionAgent(LangGraphVoiceAgent):
                     if silence_counter >= silence_chunks_needed:
                         break
         finally:
-            try:
-                proc.terminate()
-                proc.wait(timeout=1.0)
-            except Exception:
-                pass
+            proc.terminate()
+            proc.wait(timeout=1.0)
 
         min_len = rate * 2 * (0.5 if self.mode == "system" else 0.8)
         min_chunks = 2 if self.mode == "system" else 3
@@ -728,6 +655,8 @@ class VoicePerceptionAgent(LangGraphVoiceAgent):
                 continue
 
             t_res = transcribe_node({"status": "speech_detected", "audio_bytes": audio_bytes})
+            if t_res.get("status") == "error":
+                raise RuntimeError(t_res["error_message"])
             raw_text = (t_res.get("raw_transcription") or "").strip()
             if not raw_text:
                 continue

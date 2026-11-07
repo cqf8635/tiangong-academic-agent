@@ -76,7 +76,7 @@ class ArxivScheduler:
     def trigger_cooldown(self, duration: float, reason: str = ""):
         """开启全局静默保护"""
         self._cooldown_until = max(self._cooldown_until, time.monotonic() + duration)
-        print(f"⚠️ [ArxivScheduler] 开启全局静默保护 {duration:.0f}s ({reason})，学术请求由本地快照与全球备选库平滑接管。")
+        print(f"⚠️ [ArxivScheduler] 开启全局静默保护 {duration:.0f}s ({reason})，本次请求明确暂停。")
 
     def reset_cooldown(self):
         """重置冷却与熔断状态 (用于测试及手动恢复)"""
@@ -100,53 +100,6 @@ class ArxivScheduler:
         self._consecutive_timeouts += 1
         if self._consecutive_timeouts >= 2:
             self.trigger_cooldown(60.0, reason=f"连续超时 {self._consecutive_timeouts} 次，防雪崩自动熔断")
-
-    def _fetch_http2_fast(self, req: urllib.request.Request, timeout: float) -> Optional[bytes]:
-        """优先使用系统级 HTTP/2 极速传输通道 (~0.87s 秒级直达)，彻底避免 HTTP/1.1 慢速队列与超时"""
-        import subprocess
-        from email.message import Message
-
-        # 检查是否处于单测 Mock 环境 (如 urllib.request.urlopen 被 patch，优先兼容单元测试)
-        if hasattr(urllib.request, "urlopen") and getattr(urllib.request.urlopen, "__module__", "") != "urllib.request":
-            return None
-
-        try:
-            url = req.full_url
-            ua = req.headers.get("User-agent") or req.headers.get("User-Agent") or ARXIV_USER_AGENT
-            accept_hdr = req.headers.get("Accept") or "application/atom+xml, application/xml"
-            cmd = [
-                "curl",
-                "-s",
-                "--http2",
-                "--max-time", str(max(5, int(timeout))),
-                "-H", f"User-Agent: {ua}",
-                "-H", f"Accept: {accept_hdr}",
-                "-w", "\n__HTTP_STATUS__:%{http_code}",
-                url,
-            ]
-            proc = subprocess.run(cmd, capture_output=True, timeout=timeout + 2)
-            stdout = proc.stdout
-            marker = b"\n__HTTP_STATUS__:"
-            if marker in stdout:
-                body, code_str = stdout.rsplit(marker, 1)
-                status_code = int(code_str.strip() or 0)
-            else:
-                body = stdout
-                status_code = 200 if proc.returncode == 0 else 0
-
-            if status_code == 200 and b"<feed" in body:
-                return body
-            elif status_code == 429:
-                hdrs = Message()
-                hdrs["Retry-After"] = "5"
-                raise urllib.error.HTTPError(url, 429, "Too Many Requests", hdrs, None)
-            elif proc.returncode == 28 or status_code == 0:
-                raise TimeoutError("HTTP/2 连接读取超时 (curl timeout 28)")
-        except (TimeoutError, urllib.error.HTTPError):
-            raise
-        except Exception:
-            pass
-        return None
 
     def execute(
         self,
@@ -176,11 +129,8 @@ class ArxivScheduler:
                 time.sleep(wait_for)
 
             try:
-                # 🌟 优先通过 HTTP/2 极速通道获取实时最新论文 (实测耗时 ~0.87s)
-                data = self._fetch_http2_fast(req, timeout=timeout)
-                if data is None:
-                    with urllib.request.urlopen(req, timeout=timeout) as resp:
-                        data = resp.read()
+                with urllib.request.urlopen(req, timeout=timeout) as resp:
+                    data = resp.read()
                 self.record_success()
                 return data
             except urllib.error.HTTPError:
@@ -250,61 +200,68 @@ class AcademicSearchTerms(BaseModel):
 _OPENALEX_COOLDOWN_UNTIL = 0.0
 
 
+def extract_arxiv_id(text: str) -> Optional[str]:
+    """从文本或 URL 中提取规范的 arXiv 论文 ID（如 YYMM.NNNNN 格式或旧版学科格式）"""
+    if not text:
+        return None
+    # 匹配标准 arXiv URL (abs 或 pdf) 或显式带有前缀 arxiv: 的格式
+    m = re.search(r'(?:arxiv\.org/(?:abs|pdf)/|arxiv:\s*)([a-zA-Z\-]+(?:\.[a-zA-Z\-]+)?/\d{7}|\d{4}\.\d{4,5})(?:v\d+)?(?:\.pdf)?', text, re.IGNORECASE)
+    if m:
+        return m.group(1)
+    # 匹配文本中直接包含的纯 arXiv ID 格式 (例如 YYMM.NNNNN 或带版本号格式)
+    m2 = re.search(r'\b(\d{4}\.\d{4,5})(?:v\d+)?\b', text)
+    if m2:
+        return m2.group(1)
+    return None
+
+
 def _extract_academic_phrases(query: str) -> List[str]:
-    """从输入检索词中解析出 1~3 个规范化的英文学术短语"""
+    """从输入检索词中解析出保真的学术检索短语（语义保真，杜绝粗暴截断丢词）"""
     if not query:
         return []
-    # 1. 优先根据逗号/分号切分短语
-    if "," in query or "，" in query or ";" in query or "；" in query:
-        raw_parts = re.split(r"[,，;；]+", query)
-        phrases = []
-        for p in raw_parts:
-            cp = re.sub(r"[^\w\s-]", " ", p).strip()
-            words = [w for w in cp.split() if w.lower() not in ["and", "or", "the", "for", "with", "in", "of", "to", "on", "at"]]
-            if words:
-                phrases.append(" ".join(words[:3]))
-        if phrases:
-            return phrases[:2]
 
-    # 2. 如果包含显式双引号短语
+    # 1. 显式双引号短语优先完整保留
     quoted = re.findall(r'"([^"]+)"', query)
     if quoted:
-        clean_quotes = []
-        for q in quoted:
-            cq = re.sub(r"[^\w\s-]", " ", q).strip()
-            if cq:
-                c_words = [w for w in cq.split() if w.lower() not in ["and", "or", "the", "for", "with", "in", "of", "to", "on", "at"]]
-                if c_words:
-                    clean_quotes.append(" ".join(c_words[:3]))
+        clean_quotes = [re.sub(r"\s+", " ", q).strip() for q in quoted if q.strip()]
         if clean_quotes:
-            return clean_quotes[:2]
+            return clean_quotes
 
-    # 3. 普通空格分词
-    clean_q = re.sub(r"[^\w\s-]", " ", query).strip()
-    words = [w for w in clean_q.split() if w.lower() not in ["and", "or", "the", "for", "with", "in", "of", "to", "on", "at"]]
-    if not words:
-        return [clean_q] if clean_q else []
-    if len(words) <= 3:
-        return [" ".join(words)]
-    elif len(words) == 4:
-        return [" ".join(words[:2]), " ".join(words[2:])]
-    else:
-        mid = min(len(words) // 2, 3)
-        return [" ".join(words[:mid]), " ".join(words[mid:mid*2])]
+    # 2. 标点明确分隔的短语完整保留
+    if any(sep in query for sep in [",", "，", ";", "；"]):
+        raw_parts = re.split(r"[,，;；]+", query)
+        phrases = [re.sub(r"\s+", " ", p).strip() for p in raw_parts if p.strip()]
+        if phrases:
+            return phrases
+
+    # 3. 针对含并列/对比连词的查询进行语义自然分段
+    conjunction_split = re.split(r"\s+(?:and|versus|vs\.?|with)\s+", query, flags=re.IGNORECASE)
+    if len(conjunction_split) > 1:
+        phrases = [re.sub(r"\s+", " ", p).strip() for p in conjunction_split if p.strip()]
+        if phrases:
+            return phrases
+
+    # 4. 整体查询保真返回（仅清洗首尾与多余空格，绝不按词数暴力截断）
+    clean_q = re.sub(r"[^\w\s-]", " ", query)
+    clean_q = re.sub(r"\s+", " ", clean_q).strip()
+    return [clean_q] if clean_q else []
 
 
 class OnlinePaperSearchAgent:
     """多源学术文献与开源代码生态发现智能体 (arXiv + CrossRef + GitHub)"""
 
-    def __init__(self):
-        base_url = os.getenv("OPENAI_BASE_URL")
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not base_url or not api_key:
-            raise ValueError("[错误] 未在 .env 中正确配置 OPENAI_BASE_URL 或 OPENAI_API_KEY！")
-        self.llm_client = OpenAI(
-            api_key=api_key,
-            base_url=base_url,
-        )
+    def __init__(self, llm_client: Optional[Any] = None):
+        if llm_client is not None:
+            self.llm_client = llm_client
+        else:
+            base_url = os.getenv("OPENAI_BASE_URL")
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not base_url or not api_key:
+                raise ValueError("[错误] 未在 .env 中正确配置 OPENAI_BASE_URL 或 OPENAI_API_KEY！")
+            self.llm_client = OpenAI(
+                api_key=api_key,
+                base_url=base_url,
+            )
         self._keyword_cache: Dict[str, str] = {}
 
     def mark_user_active(self):
@@ -332,6 +289,8 @@ class OnlinePaperSearchAgent:
                     max_tokens=40,
                     timeout=min(get_llm_timeout(100.0), 15.0),
                 )
+                if getattr(resp.choices[0], "finish_reason", None) != "stop":
+                    raise ValueError("模型响应未完整结束，本阶段未完成")
                 raw = (resp.choices[0].message.content or "").strip()
                 clean_terms = raw.replace('"', '').replace("'", "").replace("\n", " ").strip()
                 if clean_terms:
@@ -339,9 +298,9 @@ class OnlinePaperSearchAgent:
                     self._keyword_cache[cache_k] = clean_terms
                     return clean_terms
             except Exception as e:
-                print(f"⚠️ [Keyword Extraction Fast Fallback]: {e}")
+                raise RuntimeError(f"学术关键词提取失败: {e}") from e
 
-        return query.strip()
+        raise RuntimeError("学术关键词提取未返回有效内容")
 
     def search_arxiv(
         self,
@@ -349,23 +308,77 @@ class OnlinePaperSearchAgent:
         max_results: int = 5,
         time_constraint: Optional[Dict[str, Any]] = None,
     ) -> List[ArxivPaper]:
-        """调用 arXiv API 检索学术论文预印本 (基于短语级布尔检索与动态时间约束)"""
+        """调用 arXiv API 检索学术论文预印本 (支持精准 ID 提取直通、专有实体识别与动态时间约束)"""
         # 1. 标记用户活跃，压制后台可能存在的雷达同步线程，独占网络带宽
         self.mark_user_active()
 
-        if re.search(r"[\u4e00-\u9fff]", query):
-            translated = self.extract_academic_keywords(query)
-            if translated and not re.search(r"[\u4e00-\u9fff]", translated):
-                query = translated
+        if not query.strip():
+            raise ValueError("缺少检索词")
 
-        phrases = _extract_academic_phrases(query)
-        if len(phrases) > 1:
-            arxiv_query = " AND ".join([f'all:"{p}"' for p in phrases[:2]])
-        elif phrases:
-            arxiv_query = f'all:"{phrases[0]}"'
+        # 优先检测直接的 arXiv ID 或论文链接 (精准直通)
+        direct_arxiv_id = extract_arxiv_id(query)
+        if direct_arxiv_id:
+            cache_key = (f"id:{direct_arxiv_id.lower()}", 1, False)
+            now = time.monotonic()
+            with _ARXIV_CACHE_LOCK:
+                cached = _ARXIV_CACHE.get(cache_key)
+                if cached:
+                    cached_at, cached_papers = cached
+                    ttl = ARXIV_CACHE_TTL if cached_papers else ARXIV_EMPTY_CACHE_TTL
+                    if now - cached_at < ttl:
+                        _ARXIV_CACHE.move_to_end(cache_key)
+                        return [paper.model_copy(deep=True) for paper in cached_papers]
+                    _ARXIV_CACHE.pop(cache_key, None)
+
+            params = {
+                "id_list": direct_arxiv_id,
+                "start": 0,
+                "max_results": 1,
+            }
+            url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(params)}"
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "User-Agent": ARXIV_USER_AGENT,
+                    "Accept": "application/atom+xml, application/xml",
+                },
+            )
+            try:
+                xml_data = _ARXIV_SCHEDULER.execute(
+                    req,
+                    timeout=ARXIV_REQUEST_TIMEOUT,
+                    is_background=False,
+                )
+                papers = self._parse_atom_feed(xml_data)
+                if papers:
+                    with _ARXIV_CACHE_LOCK:
+                        _ARXIV_CACHE[cache_key] = (time.monotonic(), papers)
+                        _ARXIV_CACHE.move_to_end(cache_key)
+                    return [papers[0].model_copy(deep=True)]
+            except Exception as e:
+                print(f"⚠️ [search_arxiv] 通过 id_list={direct_arxiv_id} 检索失败: {e}，回退至关键词检索")
+
+        # 2. 通用学术查询布尔表达式构建
+        # 显式双引号短语优先保留
+        quoted = re.findall(r'"([^"]+)"', query)
+        if quoted:
+            arxiv_query = " AND ".join([f'all:"{q.strip()}"' for q in quoted[:2]])
         else:
-            clean_q = re.sub(r"[^\w\s-]", " ", query).strip()
-            arxiv_query = f'all:"{clean_q}"'
+            # 过滤常见英文停用词与虚词
+            stop_words = {"and", "or", "the", "for", "with", "in", "of", "to", "a", "an", "on", "at", "by", "from", "after", "is", "are", "which", "how", "what"}
+            words = [w for w in re.findall(r'[a-zA-Z0-9_\-]+', query) if w.lower() not in stop_words]
+            if not words:
+                clean_q = re.sub(r"[^\w\s-]", " ", query).strip()
+                arxiv_query = f'all:{clean_q}' if clean_q else 'all:AI'
+            else:
+                # 复合专有技术实体（驼峰命名或含数字的大写专有模型/架构名）优先定位
+                compound_entities = [w for w in words if any(c.isupper() for c in w[1:]) or any(c.isdigit() for c in w)]
+                if compound_entities:
+                    arxiv_query = f"all:{compound_entities[0]}"
+                elif len(words) <= 3:
+                    arxiv_query = " AND ".join([f"all:{w}" for w in words])
+                else:
+                    arxiv_query = " AND ".join([f"all:{w}" for w in words[:3]])
 
         sort_by_date = bool(time_constraint and time_constraint.get("sort_by_date"))
 
@@ -411,39 +424,6 @@ class OnlinePaperSearchAgent:
                     is_background=False,
                 )
                 papers = self._parse_atom_feed(xml_data)
-                if not papers and len(phrases) > 1:
-                    fallback_query = f'all:"{phrases[0]}"'
-                    if time_constraint and time_constraint.get("start_year"):
-                        start_y = int(time_constraint["start_year"])
-                        end_y = int(time_constraint.get("end_year") or start_y)
-                        fallback_query = f"{fallback_query} AND submittedDate:[{start_y:04d}0101000000 TO {end_y:04d}1231235959]"
-                    fb_params = {
-                        "search_query": fallback_query,
-                        "start": 0,
-                        "max_results": max_results,
-                        "sortBy": "submittedDate" if sort_by_date else "relevance",
-                        "sortOrder": "descending",
-                    }
-                    fb_url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(fb_params)}"
-                    fb_req = urllib.request.Request(
-                        fb_url,
-                        headers={
-                            "User-Agent": ARXIV_USER_AGENT,
-                            "Accept": "application/atom+xml, application/xml",
-                        },
-                    )
-                    try:
-                        fb_xml = _ARXIV_SCHEDULER.execute(
-                            fb_req,
-                            timeout=ARXIV_REQUEST_TIMEOUT,
-                            is_background=False,
-                        )
-                        fb_papers = self._parse_atom_feed(fb_xml)
-                        if fb_papers:
-                            papers = fb_papers
-                    except Exception as fb_err:
-                        print(f"ℹ️ [ArxivSearch] 双短语回退单核心短语提示: {fb_err}")
-
                 with _ARXIV_CACHE_LOCK:
                     _ARXIV_CACHE[cache_key] = (time.monotonic(), papers)
                     _ARXIV_CACHE.move_to_end(cache_key)
@@ -459,8 +439,8 @@ class OnlinePaperSearchAgent:
                     retry_after = e.headers.get("Retry-After") if e.headers else None
                     try:
                         delay = float(retry_after) if retry_after else 1.5
-                    except (TypeError, ValueError):
-                        delay = 1.5
+                    except (TypeError, ValueError) as error:
+                        raise ValueError("arXiv Retry-After 响应头无效") from error
                     time.sleep(delay)
                     continue
                 break
@@ -473,13 +453,7 @@ class OnlinePaperSearchAgent:
                 last_error = e
                 break
 
-        with _ARXIV_CACHE_LOCK:
-            _ARXIV_CACHE[cache_key] = (time.monotonic(), [])
-            _ARXIV_CACHE.move_to_end(cache_key)
-            while len(_ARXIV_CACHE) > ARXIV_CACHE_MAX_ENTRIES:
-                _ARXIV_CACHE.popitem(last=False)
-        print(f"ℹ️ [ArxivSearch] arXiv 响应超时或受限 ({last_error})，自动由 CrossRef/OpenAlex 全球学术库平滑接管证据链。")
-        return []
+        raise RuntimeError(f"arXiv 检索失败: {last_error}") from last_error
 
     def search_radar(
         self,
@@ -492,7 +466,7 @@ class OnlinePaperSearchAgent:
         max_results: int = 15,
         is_background: bool = False,
     ) -> Dict[str, Any]:
-        """天工雷达专用的全学科精准检索引擎，具备内存LRU秒级防限流、本地快照无缝容灾与子学科分布统计"""
+        """天工雷达专用的全学科精准检索引擎，具备内存LRU缓存与子学科分布统计；请求失败明确报错"""
         import copy
         from academic_taxonomy import build_arxiv_query_expression, get_subcategory_meta
         from collections import Counter
@@ -555,35 +529,14 @@ class OnlinePaperSearchAgent:
                 total_elem = root.findtext(f"{opensearch_ns}totalResults")
                 if total_elem and total_elem.isdigit():
                     total_results_count = int(total_elem)
-            except Exception:
-                pass
+            except Exception as e:
+                raise ValueError("arXiv 返回的检索统计无效") from e
         except urllib.error.HTTPError as e:
             if e.code == 429:
                 _ARXIV_SCHEDULER.trigger_cooldown(180.0, reason="雷达检索触发 429 访问受限")
-            print(f"⚠️ [SearchRadar Note]: arXiv HTTP 异常 ({e})，平滑切换至本地经卷快照。")
+            raise RuntimeError(f"雷达在线检索失败: {e}") from e
         except Exception as e:
-            print(f"⚠️ [SearchRadar Note]: arXiv 请求受阻或避让 ({e})，平滑切换至本地经卷快照。")
-
-        # 2. 若网络波动、超时或频次受限导致获取为空，自动无缝触发本地快照容灾
-        if not papers:
-            try:
-                from radar_sync_engine import RADAR_CACHE_DIR
-                sub_key = sub_categories[0] if (sub_categories and len(sub_categories) == 1) else "all"
-                safe_sub = sub_key.replace(".", "_").replace("*", "_all")
-                snapshot_file = RADAR_CACHE_DIR / f"radar_{major or 'CS'}_{safe_sub}.json"
-                if not snapshot_file.exists():
-                    snapshot_file = RADAR_CACHE_DIR / f"radar_{major or 'CS'}_all.json"
-                if snapshot_file.exists():
-                    with open(snapshot_file, "r", encoding="utf-8") as sf:
-                        snap_data = json.load(sf)
-                        if snap_data and snap_data.get("papers"):
-                            snap_data["is_cached_snapshot"] = True
-                            # 写入内存缓存，避免重复磁盘I/O与等待
-                            with _RADAR_SEARCH_CACHE_LOCK:
-                                _RADAR_SEARCH_CACHE[cache_key] = (time.monotonic(), copy.deepcopy(snap_data))
-                            return snap_data
-            except Exception:
-                pass
+            raise RuntimeError(f"雷达在线检索失败: {e}") from e
 
         # 统计当前查询结果在各子学科中的真实分布
         sub_dist_counter = Counter()
@@ -628,10 +581,8 @@ class OnlinePaperSearchAgent:
         time_constraint: Optional[Dict[str, Any]] = None,
     ) -> List[AcademicResource]:
         """调用 CrossRef API 检索正式发表的权威期刊/顶会出版文献 (基于闭合时域区间过滤)"""
-        if re.search(r"[\u4e00-\u9fff]", query):
-            translated = self.extract_academic_keywords(query)
-            if translated and not re.search(r"[\u4e00-\u9fff]", translated):
-                query = translated
+        if not query.strip():
+            raise ValueError("缺少检索词")
 
         phrases = _extract_academic_phrases(query)
         short_q = " ".join(phrases[:2]) if phrases else query.strip()
@@ -677,7 +628,7 @@ class OnlinePaperSearchAgent:
                     doi=doi
                 ))
         except Exception as e:
-            print(f"⚠️ [CrossRefSearch Note]: {e}")
+            raise RuntimeError(f"CrossRefSearch Note: {e}") from e
         return resources
 
     def search_openalex(
@@ -691,18 +642,17 @@ class OnlinePaperSearchAgent:
         import time
         now = time.time()
         if now < _OPENALEX_COOLDOWN_UNTIL:
-            return []
+            raise RuntimeError("OpenAlex 访问受限，仍处于冷却期")
 
-        if re.search(r"[\u4e00-\u9fff]", query):
-            translated = self.extract_academic_keywords(query)
-            if translated and not re.search(r"[\u4e00-\u9fff]", translated):
-                query = translated
+        if not query.strip():
+            raise ValueError("OpenAlex 缺少检索词")
 
         phrases = _extract_academic_phrases(query)
-        if len(phrases) > 1:
-            search_term = " ".join([f'"{p}"' for p in phrases[:2]])
+        quoted = re.findall(r'"([^"]+)"', query)
+        if quoted:
+            search_term = " ".join([f'"{q.strip()}"' for q in quoted[:2]])
         elif phrases:
-            search_term = f'"{phrases[0]}"'
+            search_term = " ".join(phrases[:2])
         else:
             clean_q = re.sub(r"[^\w\s-]", " ", query).strip()
             search_term = clean_q or query.strip()
@@ -736,7 +686,7 @@ class OnlinePaperSearchAgent:
                 year = it.get("publication_year")
                 doi = it.get("doi") or ""
                 cited = it.get("cited_by_count", 0)
-                venue = ((it.get("primary_location") or {}).get("source") or {}).get("display_name") or "国际顶级学术期刊/出版物"
+                venue = ((it.get("primary_location") or {}).get("source") or {}).get("display_name") or "出版信息未提供"
                 authorships = it.get("authorships", [])
                 authors = [
                     a.get("author", {}).get("display_name", "")
@@ -755,7 +705,7 @@ class OnlinePaperSearchAgent:
                 if not pdf_url:
                     pdf_url = doi or str(it.get("id", ""))
 
-                summary = f"🏛️ 权威录用: 《{venue}》 | 📊 被引: {cited} 次 | DOI: {doi}"
+                summary = f"🏛️ 出版信息: 《{venue}》 | 📊 被引: {cited} 次 | DOI: {doi}"
                 resources.append(AcademicResource(
                     id=doi or str(it.get("id", title)),
                     title=title,
@@ -770,11 +720,10 @@ class OnlinePaperSearchAgent:
                 ))
         except urllib.error.HTTPError as he:
             if he.code == 429:
-                _OPENALEX_COOLDOWN_UNTIL = time.time() + 180.0  # 自动进入 3 分钟熔断冷却，由 CrossRef 与 arXiv 全权兜底
-            else:
-                print(f"⚠️ [OpenAlexSearch Note]: {he}")
+                _OPENALEX_COOLDOWN_UNTIL = time.time() + 180.0
+            raise RuntimeError(f"OpenAlex 检索失败: {he}") from he
         except Exception as e:
-            print(f"⚠️ [OpenAlexSearch Error]: {e}")
+            raise RuntimeError(f"OpenAlex 检索失败: {e}") from e
         return resources
 
     def search_semanticscholar(self, query: str, max_results: int = 3) -> List[AcademicResource]:
@@ -801,7 +750,7 @@ class OnlinePaperSearchAgent:
                     continue
                 year = it.get("year")
                 cited = it.get("citationCount", 0)
-                venue = it.get("venue") or "国际同行评议学术出版物"
+                venue = it.get("venue") or "出版信息未提供"
                 authors = [a.get("name", "") for a in it.get("authors", []) if a.get("name")]
                 tldr = (it.get("tldr") or {}).get("text") or it.get("abstract") or ""
                 summary = f"📌 TL;DR: {tldr[:200]}... | 📊 引用: {cited} 次 | 录用: {venue}"
@@ -817,7 +766,7 @@ class OnlinePaperSearchAgent:
                     venue=venue
                 ))
         except Exception as e:
-            print(f"⚠️ [SemanticScholar Note]: {e}")
+            raise RuntimeError(f"SemanticScholar Note: {e}") from e
         return resources
 
     def search_europe_pmc(self, query: str, max_results: int = 3) -> List[AcademicResource]:
@@ -843,13 +792,13 @@ class OnlinePaperSearchAgent:
                 year = None
                 try:
                     year = int(r.get("pubYear")) if r.get("pubYear") else None
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise ValueError("在线文献年份字段无效") from e
                 doi = r.get("doi") or ""
-                journal = r.get("journalTitle") or "生物医药权威同行评议期刊"
+                journal = r.get("journalTitle") or "出版信息未提供"
                 authors_str = r.get("authorString") or ""
                 authors = [a.strip() for a in authors_str.split(",") if a.strip()]
-                summary = f"🩺 生物医学顶刊: 《{journal}》 | DOI: {doi} | PMID: {r.get('pmid', '')}"
+                summary = f"🩺 生物医学文献: 《{journal}》 | DOI: {doi} | PMID: {r.get('pmid', '')}"
                 resources.append(AcademicResource(
                     id=doi or r.get("id", title),
                     title=title,
@@ -862,7 +811,7 @@ class OnlinePaperSearchAgent:
                     venue=journal
                 ))
         except Exception as e:
-            print(f"⚠️ [EuropePMCSearch Note]: {e}")
+            raise RuntimeError(f"EuropePMC 检索失败: {e}") from e
         return resources
 
     def search_inspire_hep(self, query: str, max_results: int = 3) -> List[AcademicResource]:
@@ -887,7 +836,7 @@ class OnlinePaperSearchAgent:
                 year_int = int(year) if year.isdigit() else None
                 cites = meta.get("citation_count", 0)
                 pubs = meta.get("publication_info", [{}])
-                journal = pubs[0].get("journal_title", "权威学术出版物") if pubs else "权威学术出版物"
+                journal = pubs[0].get("journal_title", "出版信息未提供") if pubs else "出版信息未提供"
                 doi_list = meta.get("dois", [{}])
                 doi = doi_list[0].get("value", "") if doi_list else ""
                 summary = f"🔬 INSPIRE-HEP 学术总库 | 出版载体: 《{journal}》 | 📊 被引: {cites} 次"
@@ -904,7 +853,7 @@ class OnlinePaperSearchAgent:
                     venue=journal
                 ))
         except Exception as e:
-            print(f"⚠️ [InspireHEPSearch Note]: {e}")
+            raise RuntimeError(f"InspireHEP 检索失败: {e}") from e
         return resources
 
     def search_doaj(self, query: str, max_results: int = 3) -> List[AcademicResource]:
@@ -926,16 +875,16 @@ class OnlinePaperSearchAgent:
                 year = None
                 try:
                     year = int(bib.get("year")) if bib.get("year") else None
-                except Exception:
-                    pass
-                journal = bib.get("journal", {}).get("title") or "DOAJ 开放获取同行评议顶刊"
+                except Exception as e:
+                    raise ValueError("在线文献年份字段无效") from e
+                journal = bib.get("journal", {}).get("title") or "出版信息未提供"
                 doi = ""
                 for ident in bib.get("identifier", []):
                     if ident.get("type") == "doi":
                         doi = ident.get("id")
                         break
                 authors = [a.get("name", "") for a in bib.get("author", [])[:4] if a.get("name")]
-                summary = f"📚 DOAJ 开放获取顶刊: 《{journal}》 | DOI: {doi}"
+                summary = f"📚 DOAJ 收录: 《{journal}》 | DOI: {doi}"
                 resources.append(AcademicResource(
                     id=doi or title,
                     title=title,
@@ -948,7 +897,7 @@ class OnlinePaperSearchAgent:
                     venue=journal
                 ))
         except Exception as e:
-            print(f"⚠️ [DOAJSearch Note]: {e}")
+            raise RuntimeError(f"DOAJSearch Note: {e}") from e
         return resources
 
     def search_dblp(self, query: str, max_results: int = 3) -> List[AcademicResource]:
@@ -971,8 +920,8 @@ class OnlinePaperSearchAgent:
                 year = None
                 try:
                     year = int(info.get("year")) if info.get("year") else None
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise ValueError("在线文献年份字段无效") from e
                 venue = info.get("venue") or "国际学术出版物"
                 doi = info.get("doi") or ""
                 authors_raw = info.get("authors", {}).get("author", [])
@@ -980,7 +929,7 @@ class OnlinePaperSearchAgent:
                     authors = [a.get("text", "") if isinstance(a, dict) else str(a) for a in authors_raw[:4]]
                 else:
                     authors = [authors_raw.get("text", "") if isinstance(authors_raw, dict) else str(authors_raw)]
-                summary = f"💻 DBLP 检索收录: 《{venue}》 | 出版年份: {year or 'Recent'}"
+                summary = f"💻 DBLP 检索收录: 《{venue}》 | 出版年份: {year or '年份未提供'}"
                 resources.append(AcademicResource(
                     id=doi or info.get("url", title),
                     title=title,
@@ -993,22 +942,20 @@ class OnlinePaperSearchAgent:
                     venue=venue
                 ))
         except Exception as e:
-            print(f"⚠️ [DBLPSearch Note]: {e}")
+            raise RuntimeError(f"DBLPSearch Note: {e}") from e
         return resources
 
     def search_github(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 GitHub API 检索开源代码仓库、论文官方实现与 Star 趋势"""
-        if re.search(r"[\u4e00-\u9fff]", query):
-            translated = self.extract_academic_keywords(query)
-            if translated and not re.search(r"[\u4e00-\u9fff]", translated):
-                query = translated
+        if not query.strip():
+            raise ValueError("缺少检索词")
 
         phrases = _extract_academic_phrases(query)
         clean_target = phrases[0] if phrases else query
         clean_words = [w for w in clean_target.split() if w.lower() not in ["and", "or", "the", "for", "with", "in", "of"]]
         short_q = " ".join(clean_words[:2]) or clean_target
 
-        for stars_filter in ["stars:>5", "stars:>=1"]:
+        for stars_filter in ["stars:>5"]:
             params = {
                 "q": f"{short_q} {stars_filter}",
                 "sort": "stars",
@@ -1035,12 +982,15 @@ class OnlinePaperSearchAgent:
                         desc = repo.get("description") or "无描述"
                         stars = repo.get("stargazers_count", 0)
                         html_url = repo.get("html_url", "")
-                        lang = repo.get("language") or "Python"
+                        lang = repo.get("language") or "语言未提供"
+                        created_at = repo.get("created_at")
+                        year = int(created_at[:4]) if created_at else None
+                        owner = (repo.get("owner") or {}).get("login")
                         resources.append(AcademicResource(
                             id=full_name,
                             title=f"GitHub 开源实现: {full_name}",
-                            authors=[repo.get("owner", {}).get("login", "community")],
-                            year=datetime.now().year,
+                            authors=[owner] if owner else [],
+                            year=year,
                             source="github",
                             summary=f"⭐ Stars: {stars} | 主语言: {lang} | 简介: {desc}",
                             url=html_url,
@@ -1048,8 +998,7 @@ class OnlinePaperSearchAgent:
                         ))
                     return resources
             except Exception as e:
-                print(f"⚠️ [GitHubSearch Note]: {e}")
-                break
+                raise RuntimeError(f"GitHub 检索失败: {e}") from e
         return []
 
     def search_multisource(
@@ -1062,21 +1011,36 @@ class OnlinePaperSearchAgent:
         """跨 arXiv 预印本 + OpenAlex 权威引用 + CrossRef 期刊 + GitHub 开源实现的一体化多源学术并发探针"""
         from concurrent.futures import ThreadPoolExecutor
 
-        # 1. 优先使用已翻译的英文学术词；若无或包含中文，通过 LLM 高精度提炼标准学术短语
-        academic_target = (english_query or "").strip()
-        if not academic_target or re.search(r"[\u4e00-\u9fff]", academic_target):
-            academic_target = self.extract_academic_keywords(query)
-            if re.search(r"[\u4e00-\u9fff]", academic_target):
-                academic_target = ""
+        # 直接使用意图解析提供的检索表达，优先识别显式 arXiv ID 或论文链接 (精准直通)
+        direct_arxiv_id = extract_arxiv_id(query) or extract_arxiv_id(english_query or "")
+        if direct_arxiv_id:
+            academic_target = direct_arxiv_id
+            effective_query = direct_arxiv_id
+            eff_time_constraint = None
+        else:
+            academic_target = (english_query or "").strip()
+            effective_query = academic_target if academic_target else query.strip()
+            if not effective_query:
+                raise ValueError("在线检索缺少检索词")
+            academic_target = effective_query
+            # 默认回溯近三年文献 (时效保障)，若调用方已指定显式时域则遵从显式约束
+            from datetime import datetime
+            if not time_constraint or not time_constraint.get("has_time_constraint"):
+                cur_year = datetime.now().year
+                eff_time_constraint = {
+                    "has_time_constraint": True,
+                    "start_year": cur_year - 3,
+                    "end_year": cur_year,
+                    "is_default_window": True,
+                }
+            else:
+                eff_time_constraint = time_constraint
 
-        # 全球学术引擎优先使用精准规范的英文学术短语，回退保护采用原始 query
-        effective_query = academic_target or query.strip()
-        tc_log = f" (时间约束: {time_constraint})" if time_constraint else ""
-
-        # 单源最多允许 10 个：有时效约束时单源上限直接统一设为 10，常规检索取 5
-        has_time = bool(time_constraint and time_constraint.get("has_time_constraint"))
-        limit_per_source = 10 if has_time else 5
-        print(f"🔍 [MultiSourceSearch] 正在全域学术并发检索 (单源上限: {limit_per_source}): 规范学术短语=\"{academic_target or '回退原始query'}\" | 原始输入=\"{query.strip()}\"{tc_log} ...")
+        # 单源最多允许 10 个：显式时效约束时单源上限直接统一设为 10，常规/默认时域检索取 5
+        has_explicit_time = bool(eff_time_constraint and eff_time_constraint.get("has_time_constraint") and not eff_time_constraint.get("is_default_window"))
+        limit_per_source = 10 if has_explicit_time else 5
+        tc_log = f" (时间约束: {eff_time_constraint})" if eff_time_constraint else ""
+        print(f"🔍 [MultiSourceSearch] 正在全域学术并发检索 (单源上限: {limit_per_source}): 规范学术短语=\"{academic_target}\" | 原始输入=\"{query.strip()}\"{tc_log} ...")
 
         arxiv_papers = []
         openalex_papers = []
@@ -1084,32 +1048,16 @@ class OnlinePaperSearchAgent:
         github_repos = []
 
         with ThreadPoolExecutor(max_workers=4) as executor:
-            fut_arxiv = executor.submit(self.search_arxiv, academic_target, limit_per_source, time_constraint) if academic_target else None
-            fut_openalex = executor.submit(self.search_openalex, effective_query, limit_per_source, time_constraint)
-            fut_crossref = executor.submit(self.search_crossref, effective_query, limit_per_source, time_constraint)
+            fut_arxiv = executor.submit(self.search_arxiv, academic_target, limit_per_source, eff_time_constraint) if academic_target else None
+            fut_openalex = executor.submit(self.search_openalex, effective_query, limit_per_source, eff_time_constraint)
+            fut_crossref = executor.submit(self.search_crossref, effective_query, limit_per_source, eff_time_constraint)
             fut_github = executor.submit(self.search_github, effective_query, 2) if include_github else None
 
-            if fut_arxiv:
-                try:
-                    arxiv_papers = fut_arxiv.result(timeout=15)
-                except Exception as e:
-                    print(f"⚠️ [ArXiv Thread Note]: {e or type(e).__name__}")
-
-            try:
-                openalex_papers = fut_openalex.result(timeout=15)
-            except Exception as e:
-                print(f"⚠️ [OpenAlex Thread Note]: {e or type(e).__name__}")
-
-            try:
-                crossref_papers = fut_crossref.result(timeout=15)
-            except Exception as e:
-                print(f"⚠️ [CrossRef Thread Note]: {e or type(e).__name__}")
-
-            if fut_github:
-                try:
-                    github_repos = fut_github.result(timeout=15)
-                except Exception as e:
-                    print(f"⚠️ [GitHub Thread Note]: {e or type(e).__name__}")
+            # 任一请求失败均明确上报，不用其他来源伪装为全源成功。
+            arxiv_papers = fut_arxiv.result(timeout=15) if fut_arxiv else []
+            openalex_papers = fut_openalex.result(timeout=15)
+            crossref_papers = fut_crossref.result(timeout=15)
+            github_repos = fut_github.result(timeout=15) if fut_github else []
 
         return {
             "arxiv_papers": [p.model_dump() for p in arxiv_papers],
@@ -1179,178 +1127,70 @@ class OnlinePaperSearchAgent:
         return papers
 
     def download_and_ingest(self, paper: Any, rag_engine=None) -> Dict[str, Any]:
-        """下载论文全文并自动触发 4D 学术本体提炼与向量建库 (借鉴 073001 审计与侧车标准)"""
+        """只使用提供的全文地址；下载与索引均成功后才返回成功。"""
         import hashlib
 
-        # 兼容 ArxivPaper 对象或 Dict
-        if isinstance(paper, dict):
-            paper_id = paper.get("paper_id") or paper.get("id") or "paper"
-            title = paper.get("title") or "academic_paper"
-            pdf_url = paper.get("pdf_url") or paper.get("url") or ""
-            authors = paper.get("authors") or []
-            year = paper.get("year")
-            summary = paper.get("summary") or ""
-        else:
-            paper_id = getattr(paper, "paper_id", "paper")
-            title = getattr(paper, "title", "academic_paper")
-            pdf_url = getattr(paper, "pdf_url", "")
-            authors = getattr(paper, "authors", [])
-            year = getattr(paper, "year", None)
-            summary = getattr(paper, "summary", "")
-
+        if rag_engine is None:
+            raise ValueError("全文入库需要可用的知识库引擎")
+        data = paper if isinstance(paper, dict) else paper.model_dump()
+        paper_id = data.get("paper_id") or data.get("id")
+        title = data.get("title")
+        pdf_url = data.get("pdf_url") or data.get("url")
+        if not paper_id or not title:
+            raise ValueError("论文缺少标识或标题")
         clean_pid = re.sub(r"[^A-Za-z0-9._-]+", "_", str(paper_id)).strip("._")
         safe_title = re.sub(r"[^A-Za-z0-9._-]+", "_", str(title)).strip("._")[:60]
         stem = f"{clean_pid}_{safe_title}" if clean_pid else safe_title
-        pdf_name = f"{stem}.pdf"
-        pdf_path = UPLOADS_DIR / pdf_name
+        pdf_path = UPLOADS_DIR / f"{stem}.pdf"
         meta_path = UPLOADS_DIR / f"{stem}.json"
 
-        # 如果已下载并入库过，直接复用
-        if pdf_path.exists() and pdf_path.stat().st_size > 0:
-            print(f"📄 [PaperIngest] 本地已有该论文缓存: {pdf_name}")
-            return {
-                "status": "success",
-                "paper_id": str(paper_id),
-                "file_path": str(pdf_path),
-                "file_name": pdf_name,
-                "title": title,
-                "already_existed": True,
-            }
+        if pdf_path.exists():
+            if not pdf_path.stat().st_size:
+                raise ValueError("已缓存 PDF 为空，未确认入库成功")
+            indexed = rag_engine.collection.get(where={"doc_name": pdf_path.name}, limit=1)
+            if not indexed.get("ids"):
+                raise ValueError("PDF 已下载但知识库中无索引，未确认入库成功")
+            return {"status": "success", "paper_id": str(paper_id),
+                    "file_path": str(pdf_path), "file_name": pdf_path.name,
+                    "title": title, "already_existed": True}
 
-        # 构建全网候选开放下载源列表 (原链优先，备选开源仓储 OSTI/arXiv/EuropePMC 跟进)
-        candidate_urls = []
-        if pdf_url and pdf_url.startswith("http"):
-            candidate_urls.append(pdf_url)
-
-        doi_or_id = paper.get("doi") if isinstance(paper, dict) else getattr(paper, "doi", "")
-        doi_or_id = doi_or_id or str(paper_id)
-        oa_mirrors = self._find_oa_pdf_urls(doi_or_id)
-        for m in oa_mirrors:
-            if m not in candidate_urls:
-                candidate_urls.append(m)
-
-        download_success = False
-        last_download_error = None
+        if not isinstance(pdf_url, str) or not pdf_url.startswith(("http://", "https://")):
+            raise ValueError("论文缺少有效全文地址，未自动寻找其他下载源")
+        req = urllib.request.Request(pdf_url, headers={"User-Agent": "ResearchScholar/1.0"})
         digest = hashlib.sha256()
+        try:
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                headers = getattr(resp, "headers", None)
+                if headers and "html" in headers.get("Content-Type", "").lower():
+                    raise ValueError("全文地址返回 HTML 页面")
+                with pdf_path.open("wb") as out:
+                    first = True
+                    while True:
+                        chunk = resp.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        if first and not chunk.startswith(b"%PDF-"):
+                            raise ValueError("全文地址返回的内容不是 PDF")
+                        first = False
+                        out.write(chunk)
+                        digest.update(chunk)
+            if not pdf_path.stat().st_size:
+                raise ValueError("全文下载为空")
+        except Exception as e:
+            pdf_path.unlink(missing_ok=True)
+            raise RuntimeError(f"论文全文下载失败: {e}") from e
 
-        for try_url in candidate_urls:
-            req = urllib.request.Request(
-                try_url,
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ResearchScholar/1.0"}
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=25) as resp:
-                    headers = getattr(resp, "headers", None)
-                    c_type = (headers.get("Content-Type", "") if headers else "").lower()
-                    if "html" in c_type and not try_url.endswith(".pdf"):
-                        continue
-                    digest = hashlib.sha256()
-                    with open(pdf_path, "wb") as out_f:
-                        while True:
-                            chunk = resp.read(1024 * 1024)
-                            if not chunk:
-                                break
-                            out_f.write(chunk)
-                            digest.update(chunk)
-
-                if pdf_path.exists() and pdf_path.stat().st_size > 0:
-                    file_hash = digest.hexdigest()
-                    print(f"📥 [PaperIngest] 成功下载论文全文: {pdf_name} (源: {try_url[:60]}... | SHA-256: {file_hash[:12]}...)")
-                    download_success = True
-                    break
-                else:
-                    if pdf_path.exists():
-                        pdf_path.unlink()
-            except Exception as e:
-                last_download_error = e
-                if pdf_path.exists():
-                    try:
-                        pdf_path.unlink()
-                    except Exception:
-                        pass
-                print(f"⚠️ [PaperIngest] 镜像源受限 ({try_url[:55]}...): {e}")
-
-        if download_success:
-            file_hash = digest.hexdigest()
-            meta_data = {
-                "paper_id": str(paper_id),
-                "title": title,
-                "authors": authors,
-                "year": year,
-                "summary": summary,
-                "pdf_url": try_url,
-                "sha256": file_hash,
-                "downloaded_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-            }
-            meta_path.write_text(json.dumps(meta_data, ensure_ascii=False, indent=2), encoding="utf-8")
-            chunks_indexed = 0
-            if rag_engine is not None:
-                print(f"🧠 [PaperIngest] 正在对新抓取论文自动提炼 4D 学术本体并建库...")
-                chunks_indexed = rag_engine.ingest_file(pdf_path)
-
-            return {
-                "status": "success",
-                "paper_id": str(paper_id),
-                "file_path": str(pdf_path),
-                "file_name": pdf_name,
-                "title": title,
-                "chunks_indexed": chunks_indexed,
-                "already_existed": False,
-            }
-        else:
-            # 优雅降级兜底: 若全网均无开放全文 PDF (商业付费闭源)，将权威摘要、DOI与学术元数据入库构建学术证据
-            fallback_name = f"{stem}_abstract.txt"
-            fallback_path = UPLOADS_DIR / fallback_name
-            abstract_content = (
-                f"# 学术文献研读: {title}\n"
-                f"- 作者团队: {', '.join(authors) if isinstance(authors, list) else authors}\n"
-                f"- 出版年份: {year}\n"
-                f"- 权威出版/DOI: {paper_id}\n\n"
-                f"## 核心学术摘要与方案结论\n{summary}\n"
-            )
-            fallback_path.write_text(abstract_content, encoding="utf-8")
-            chunks_indexed = 0
-            if rag_engine is not None:
-                print(f"📑 [PaperIngest] 原文受商业出版权限限制 ({last_download_error})，已自动将权威文献摘要与元数据建库入卷...")
-                chunks_indexed = rag_engine.ingest_file(fallback_path)
-
-            return {
-                "status": "success",
-                "paper_id": str(paper_id),
-                "file_path": str(fallback_path),
-                "file_name": fallback_name,
-                "title": title,
-                "chunks_indexed": chunks_indexed,
-                "already_existed": False,
-                "note": "abstract_indexed"
-            }
-
-    def _find_oa_pdf_urls(self, identifier: str) -> List[str]:
-        """依据 DOI 或 arXiv ID 动态解析全球开放获取全文 PDF 镜像 (OSTI, arXiv, EuropePMC, Unpaywall 等)"""
-        candidates = []
-        clean_id = str(identifier).strip()
-        m_doi = re.search(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9]+", clean_id)
-        if m_doi:
-            doi = m_doi.group(0)
-            url = f"https://api.openalex.org/works/https://doi.org/{doi}"
-            req = urllib.request.Request(url, headers={"User-Agent": "ResearchScholar/1.0 (mailto:scholar@test.local)"})
-            try:
-                with urllib.request.urlopen(req, timeout=10) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
-                for loc in data.get("locations", []):
-                    p_url = loc.get("pdf_url")
-                    if p_url and p_url not in candidates:
-                        candidates.append(p_url)
-            except Exception:
-                pass
-
-        m_arx = re.search(r"(\d{4}\.\d{4,5}(v\d+)?)", clean_id)
-        if m_arx:
-            arx_id = m_arx.group(1)
-            arx_url = f"https://arxiv.org/pdf/{arx_id}.pdf"
-            if arx_url not in candidates:
-                candidates.append(arx_url)
-        return candidates
+        metadata = {"paper_id": str(paper_id), "title": title,
+                    "authors": data.get("authors") or [], "year": data.get("year"),
+                    "summary": data.get("summary") or "", "pdf_url": pdf_url,
+                    "sha256": digest.hexdigest(), "downloaded_at": time.strftime("%Y-%m-%d %H:%M:%S")}
+        meta_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+        chunks_indexed = rag_engine.ingest_file(pdf_path)
+        if not isinstance(chunks_indexed, int) or chunks_indexed <= 0:
+            raise RuntimeError("论文全文未生成有效切片，入库未完成")
+        return {"status": "success", "paper_id": str(paper_id), "title": title,
+                "file_path": str(pdf_path), "file_name": pdf_path.name,
+                "chunks_indexed": chunks_indexed, "already_existed": False}
 
     def generate_search_brief(
         self,
@@ -1371,33 +1211,35 @@ class OnlinePaperSearchAgent:
 
         if requires_long_form:
             length_constraint = f"10. 【深度学术著作/长篇专著篇幅规范】：依据学者规划要求（类型：{long_form_type}），请展开万字级/长篇系统性论述与详尽技术架构推演，全面展开各章节论证。"
+            budget_max_tokens = 4096
         else:
             length_constraint = (
-                "10. 【动态按需深入与高信噪比论证规范（解除字数限制，避免论文级冗长注水）】：\n"
-                "    - 彻底解除人为字数限制，根据主题的技术深度自然展开，说透核心机理即止，避免论文级空泛长篇大论；\n"
-                "    - **必须深入展开的内容**：科学问题的本质矛盾与瓶颈、核心数学控制方程/物理量推导（标准 LaTeX 公式及变量解释）、代表性文献提出的关键方法机理与具体实证贡献；\n"
-                "    - **绝对不要展开的内容**：宏观通识历史铺陈（如'自微积分创立以来'等科普大白话）、客套寒暄、文学修饰词与冗长的防御性免责声明；\n"
-                "    - 直奔技术靶心，首句直接切入核心命题，结构清晰，高信噪比交付。"
+                "10. 【高信噪比技术备忘篇幅规范（标准：2,000～3,000字，坚决拒绝注水与无事实推演）】：\n"
+                "    - 严格遵循 2,000～3,000 字的高信噪比学术研讨技术备忘标准，篇幅适中、重点突出，严禁论文级空泛展开或注水万字；\n"
+                "    - **回答重点**：直奔核心技术靶心，首句直接切入核心命题，仅针对检索资产中真实存在的证据展开对比与推导，说透核心机理与架构演进差异即止；\n"
+                "    - **严谨边界**：若资料仅提供题名与书目信息而无正文，必须如实陈述证据局限，严禁凭空构想数学公式、虚构实验指标或无文献依据的演进谱系；\n"
+                "    - **坚决剔除**：宏观通识科普历史（如'自微积分创立以来'等科普大白话）、客套寒暄、文学修辞词与冗长的防御性免责声明。"
             )
+            budget_max_tokens = 2500
 
         evidence_section = ""
         if openalex_papers:
             evidence_section += "\n【OpenAlex 全球权威期刊/顶会高被引文献】\n"
             for i, op in enumerate(openalex_papers, 1):
                 authors_str = ", ".join(op.authors) if op.authors else "学术团队"
-                evidence_section += f"- [{i}] 《{op.title}》({op.year or 'Recent'}) | 录用/出版: {op.summary} | 链接: {op.url}\n"
+                evidence_section += f"- [{i}] 《{op.title}》({op.year or '年份未提供'}) | 录用/出版: {op.summary} | 链接: {op.url}\n"
 
         if papers:
             evidence_section += "\n【arXiv 预印本文献】\n"
             for i, p in enumerate(papers, 1):
                 authors_str = ", ".join(p.authors) if p.authors else "未知作者"
-                evidence_section += f"- [{i}] 《{p.title}》({p.year or 'Recent'}) | 作者: {authors_str} | arXiv:{p.paper_id}\n  摘要: {p.summary[:300]}...\n  PDF: {p.pdf_url}\n"
+                evidence_section += f"- [{i}] 《{p.title}》({p.year or '年份未提供'}) | 作者: {authors_str} | arXiv:{p.paper_id}\n  摘要: {p.summary[:300]}...\n  PDF: {p.pdf_url}\n"
 
         if crossref_papers:
             evidence_section += "\n【CrossRef 权威发表期刊/会议 (DOI)】\n"
             for i, cp in enumerate(crossref_papers, 1):
                 authors_str = ", ".join(cp.authors) if cp.authors else "科研学者团队"
-                evidence_section += f"- [{i}] 《{cp.title}》({cp.year or 'Recent'}) | 出版: {cp.summary} | 链接: {cp.url}\n"
+                evidence_section += f"- [{i}] 《{cp.title}》({cp.year or '年份未提供'}) | 出版: {cp.summary} | 链接: {cp.url}\n"
 
         if github_repos:
             evidence_section += "\n【GitHub 官方开源工程生态】\n"
@@ -1410,12 +1252,19 @@ class OnlinePaperSearchAgent:
         if active_topic:
             context_prompt += f"\n【当前会话锁定的核心研究主题】: {active_topic}\n"
 
+        if not evidence_section.strip():
+            raise RuntimeError("未检索到文献，不能用模型自身知识代替检索综述")
         partner_name = get_assistant_name()
         prompt = f"""你是一位充满敏锐洞察力、学养深厚的科研搭档“{partner_name}”。
 你的任务是针对学者探讨的研究主题：“{query}”，组织一份逻辑严密、兼具理论深度与前沿学术视野的【前沿学术文献综述与前瞻方案研讨】。
 {context_prompt}
 【检索到的多源学术资产证据】：
-{evidence_section if evidence_section else "（本次检索未命中完全同名外部文献条目，请基于你的深厚多学科知识库与第一性原理，为学者针对该主题展开深入、严谨的系统性学术剖析与方案推演）"}
+{evidence_section}
+
+【事实依据与严谨论证红线】：
+- 仅依据上述真实检索资产中提供的题名、作者、摘要与方案信息展开对比与机理剖析；
+- 若某文献条目仅有题名或缺少具体摘要正文，必须如实陈述该研究方向线索，严禁无事实依据凭空推演其具体模型细节或虚构实验结论；
+- 直奔技术靶心，严格交付 2,000～3,000 字的高信噪比技术备忘，杜绝万字注水与宏观科普。
 
 请遵循以下科研研讨规范进行解析：
 1. 研讨搭档身份与称谓：
@@ -1442,9 +1291,11 @@ class OnlinePaperSearchAgent:
                 model=model_name,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
-                max_tokens=4096,
+                max_tokens=budget_max_tokens,
                 timeout=get_llm_timeout(100.0),
             )
-            return res_str or f"{partner_name}已完成文献检索研讨分析。"
+            if not res_str or not res_str.strip():
+                raise RuntimeError("文献综述未返回有效正文")
+            return res_str
         except Exception as e:
-            return f"{partner_name}在解析学术文献时发生异常: {e}"
+            raise RuntimeError(f"文献综述生成失败: {e}") from e

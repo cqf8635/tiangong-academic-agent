@@ -14,7 +14,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import numpy as np
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from config_utils import get_default_llm_model, get_llm_timeout
 from prompts import build_session_memory_prompt, get_assistant_name
@@ -35,7 +35,21 @@ class ChatMessage(BaseModel):
     audio_url: Optional[str] = None
     agent_dialogue_history: Optional[List[Dict[str, Any]]] = None
     synthesized_evidence_slate: Optional[str] = None
+    review_verdict: Optional[Dict[str, Any]] = None
     dialectical_notes: Optional[str] = None
+
+    @field_validator("review_verdict", mode="before")
+    @classmethod
+    def _coerce_review_verdict(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            if v == "revise":
+                return {"needs_revision": True, "summary": "历史审核要求修订", "issues": []}
+            elif v == "pass":
+                return {"needs_revision": False, "summary": "历史审核通过", "issues": []}
+            return {"needs_revision": False, "summary": v, "issues": []}
+        return v
+    stage_statuses: Dict[str, str] = Field(default_factory=dict)
+    token_usage: Optional[Dict[str, Any]] = None  # 本轮大模型 Token 消耗明细与统计 (Prompt/Completion/Total)
     image_url: Optional[str] = None  # 用户附带的截图或图片 (URL 或 Base64)
     timestamp: str = Field(default_factory=lambda: time.strftime("%H:%M:%S"))
 
@@ -89,8 +103,8 @@ class SessionManager:
                     "message_count": msg_count,
                     "updated_at": data.get("updated_at", 0),
                 })
-            except Exception:
-                pass
+            except Exception as e:
+                raise RuntimeError(f"会话文件操作失败: {e}") from e
 
         # 若存在多个未发过消息的重复空会话，自动清理多余的幽灵会话文件
         if len(empty_default_sessions) > 1:
@@ -98,8 +112,8 @@ class SessionManager:
             for stale_file, _ in empty_default_sessions[1:]:
                 try:
                     stale_file.unlink(missing_ok=True)
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise RuntimeError(f"会话文件操作失败: {e}") from e
             # 重新过滤
             sessions = [s for s in sessions if not (s["message_count"] == 0 and "新建" in s["title"]) or s["session_id"] == empty_default_sessions[0][0].stem]
 
@@ -125,8 +139,8 @@ class SessionManager:
                     data = json.loads(f.read_text(encoding="utf-8"))
                     if len(data.get("messages", [])) == 0 and "新建" in data.get("title", ""):
                         return ConversationSession(**data)
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise RuntimeError(f"会话文件操作失败: {e}") from e
 
         sid = session_id or f"session_{str(uuid.uuid4())[:8]}"
         session = ConversationSession(
@@ -146,8 +160,8 @@ class SessionManager:
         try:
             data = json.loads(p.read_text(encoding="utf-8"))
             return ConversationSession(**data)
-        except Exception:
-            return None
+        except Exception as e:
+            raise RuntimeError(f"会话读取失败: {e}") from e
 
     @classmethod
     def save_session(cls, session: ConversationSession):
@@ -166,22 +180,23 @@ class SessionManager:
 
     @classmethod
     def get_active_doc(cls, session_id: str) -> Optional[str]:
-        """获取当前会话正在聚焦讨论的文献名称 (优先当前标记，其次回溯最近证据)"""
+        """获取当前会话明确保存的聚焦文献名称"""
         session = cls.get_session(session_id)
         if not session:
             return None
         if session.active_doc:
             return session.active_doc
-        # 回溯查找最近一次命中证据的文献
-        for m in reversed(session.messages):
-            if m.retrieved_evidence:
-                first_ev = m.retrieved_evidence[0]
-                doc_name = first_ev.get("doc_name")
-                if doc_name:
-                    session.active_doc = doc_name
-                    cls.save_session(session)
-                    return doc_name
         return None
+
+    @classmethod
+    def set_active_doc(cls, session_id: str, doc_name: Optional[str]) -> Optional[ConversationSession]:
+        """显式设置或清除当前会话的聚焦文献名称（区分普通检索命中与用户显式聚焦）"""
+        session = cls.get_session(session_id)
+        if not session:
+            return None
+        session.active_doc = doc_name
+        cls.save_session(session)
+        return session
 
     @classmethod
     def get_topic_state(cls, session_id: str) -> Dict[str, Any]:
@@ -210,11 +225,7 @@ class SessionManager:
             snippet = message.content.strip().replace("\n", " ")[:18]
             session.title = snippet
 
-        # 如果智能体回复中命中了特定文献证据，自动将该文献绑定为会话聚焦文献
-        if message.sender == "agent" and message.retrieved_evidence:
-            first_doc = message.retrieved_evidence[0].get("doc_name")
-            if first_doc:
-                session.active_doc = first_doc
+        # 严格区分普通检索命中与显式聚焦：普通检索证据不自动篡改会话聚焦文献
 
         session.messages.append(message)
         cls.save_session(session)
@@ -280,17 +291,15 @@ class SessionManager:
                 # 取前 10 个高维骨架分支
                 findings = "\n".join(lines[:10])
             
-            if not findings and agent_msg.content:
-                # 备用：按自然段落提取核心论断段落
-                paras = [p.strip() for p in agent_msg.content.split("\n\n") if p.strip()]
-                findings = "\n".join(paras[:2])
+            if not findings:
+                return None  # 无提取结果时不生成主题结论记录。
 
             topic_node = {
                 "topic_id": f"T{len(session.topic_catalog) + 1}",
                 "topic_name": topic_name,
                 "action_type": action_type,
                 "entities": entities,
-                "key_findings": findings or "完成本轮数理研讨与推演",
+                "key_findings": findings,
                 "turn_idx": turn_idx,
                 "created_at": time.time(),
             }
@@ -299,8 +308,7 @@ class SessionManager:
             print(f"🗂️ [SessionManager] 已为会话 {session_id} 沉淀主题档案 [{topic_node['topic_id']}]: 《{topic_name}》 (类型: {action_type})")
             return topic_node
         except Exception as e:
-            print(f"⚠️ [SessionManager Topic Record Note]: {e}")
-            return None
+            raise RuntimeError(f"主题归档失败: {e}") from e
 
     @classmethod
     def match_best_historical_topic(
@@ -374,15 +382,7 @@ class SessionManager:
                 f"- 核心理论定论与基线依据:\n{best.get('key_findings')}\n"
             )
 
-        # 兜底：若是普通自然追问且只有少数轮次，取紧邻上一轮定论
-        if catalog:
-            last = catalog[-1]
-            return (
-                f"【紧邻上一轮研讨定论 (主题: 《{last.get('topic_name')}》)】:\n"
-                f"{last.get('key_findings')}\n"
-            )
-
-        return session.history_summary or ""
+        return ""
 
     @classmethod
     def compress_and_update_summary(
@@ -443,15 +443,18 @@ class SessionManager:
                 max_tokens=800,
                 timeout=get_llm_timeout(60.0),
             )
-            new_summary = resp.choices[0].message.content.strip()
+            if getattr(resp.choices[0], "finish_reason", None) != "stop":
+                raise ValueError("模型响应未完整结束，本阶段未完成")
+            new_summary = (resp.choices[0].message.content or "").strip()
+            if not new_summary:
+                raise ValueError("历史摘要更新返回空内容")
             session.history_summary = new_summary
             session.last_summarized_index = end_idx
             cls.save_session(session)
             print(f"🧠 [SessionManager] 已为会话 {session_id} 成功增量压缩历史（索引 {start_idx} -> {end_idx}）")
             return new_summary
         except Exception as e:
-            print(f"⚠️ [SessionManager] 历史对话压缩摘要生成异常: {e}")
-            return session.history_summary or ""
+            raise RuntimeError(f"历史摘要更新失败: {e}") from e
 
     @classmethod
     def clear_session_messages(cls, session_id: str) -> Optional[ConversationSession]:
@@ -471,8 +474,8 @@ class SessionManager:
         for f in SESSIONS_DIR.glob("*.json"):
             try:
                 f.unlink()
-            except Exception:
-                pass
+            except Exception as e:
+                raise RuntimeError(f"会话文件操作失败: {e}") from e
         return cls.create_session(title="新建学术研讨会话")
 
     @classmethod

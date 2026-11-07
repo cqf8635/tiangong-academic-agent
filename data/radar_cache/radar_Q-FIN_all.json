@@ -1,8 +1,163 @@
 {
   "query_expression": "cat:q-fin*",
   "total_fetched": 35,
-  "total_results": 19440,
+  "total_results": 19447,
   "papers": [
+    {
+      "paper_id": "2611.07464v1",
+      "title": "FINCOSMOS: An Open-World Evaluation Paradigm for Agents in Finance",
+      "authors": [
+        "Yupeng Cao",
+        "Xueqing Peng",
+        "Lingfei Qian",
+        "Haohang Li",
+        "Yangyang Yu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T05:19:44Z",
+      "summary": "Language agents increasingly work for users on the open Web, and finance is where trusting them is hardest. The data must come from the Web, the strategy lives in the user's head, and correctness depends on time, so an agent can fail silently: a strategy the user never asked for, unverified data, or a backtest that uses the future yields a report as convincing as a correct one. Existing benchmarks close the world somewhere, fixing the task, the data, or the timeline, and thereby remove these failures instead of measuring them. We introduce FINCOSMOS, an open-world evaluation paradigm for agents doing financial work. A simulated user holds a hidden strategy sampled from a compositional grammar and reveals it only when asked. The agent receives no data, so it must acquire data from the Web, build its own backtest under a data cutoff, and deliver verifiable results. Grading needs no reference answer. Programs verify point-in-time correctness and recompute every reported metric, the delivered strategy is checked against the hidden specification, and a run is accepted only when the user is satisfied and none of 15 veto checks fails. Across four coding agents and a model without tools in 150 sessions, no session is accepted: every session that the simulated user signed off fails a program check, and agents raise only 54--64\\% of the details they were not told. Human experts attribute 88.33\\% of failures to the agents. With FINCOSMOS feedback, an agent with persistent memory learned all ten tasks.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07464v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "q-fin.CP"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "q-fin.CP (计算金融与量化模拟)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07457v1",
+      "title": "Information-Theoretic Model for the Growth Optimal Portfolio of Stocks",
+      "authors": [
+        "Eckhard Platen",
+        "Kevin Fergusson"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T05:09:32Z",
+      "summary": "Drawing on information-theoretic principles and empirical evidence, a proxy for the growth-optimal portfolio of stocks (the benchmark) is constructed and modeled. The derivative of its activity time captures overreactions in trading behavior and follows a fast-moving, quasi-stationary scalar diffusion. The benchmark's log-returns are predicted to follow a Student t distribution with degrees of freedom slightly less than four, and this prediction is tested empirically. With the benchmark as numeraire, the derived model enables benchmark-neutral pricing and hedging.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07457v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PR",
+      "categories": [
+        "q-fin.PR"
+      ],
+      "category_names_zh": [
+        "q-fin.PR (衍生品与资产定价)"
+      ],
+      "comment": "33 pages, 9 figures, 10 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07287v1",
+      "title": "Neural Realized Measures: Forecast-Supervised Intraday Aggregation for Volatility Forecasting",
+      "authors": [
+        "Brian Sing Fan Chan",
+        "Jennifer So Kuen Chan"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T01:10:44Z",
+      "summary": "High-frequency volatility forecasting typically separates measurement from prediction: intraday observations are first compressed into a daily realized measure using a fixed aggregation rule, and the resulting statistic is then passed to a forecasting model. This conventional pipeline therefore treats measure construction as forecast-agnostic preprocessing. We ask whether the aggregation stage itself can instead be learned from the downstream forecasting objective while preserving the statistical structure of established realized measures. We propose Neural Realized Measures (NRM), a primitive-preserving, forecast-supervised aggregation framework that retains the original measure-specific intraday contributions but replaces uniform aggregation with positive, mean-normalized context-dependent weights. Uniform weights exactly recover the corresponding raw realized measure (RRM), so the classical construction is nested as a special case. Because NRM remains an explicit weighted sum of established primitive contributions, it also retains direct bar-level attribution. Across SF, HAR, and MIDAS forecasting specifications, NRM is evaluated against corresponding RRM specifications under controlled comparisons. In Heston simulations, NRM reduces RMSE for both contemporaneous and next-day latent integrated variance across all evaluated primitive--regime combinations. On six cryptocurrencies using five-minute data, NRM improves QLIKE in all 54 paired out-of-sample comparisons, with mean gains of 7.23\\%, 8.15\\%, and 9.22\\% under SF, HAR, and MIDAS, respectively. Validation-selected NRM specifications also achieve the lowest mean QLIKE across the six assets among the evaluated approaches. Ablation and SHAP analyses reveal systematic time-of-day and nonlinear local-context effects in the learned allocation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07287v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.ST",
+      "categories": [
+        "q-fin.ST",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "q-fin.ST (统计金融学与高频数据)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "9 pages, 3 figures, 5 tables. Accepted at the ACM International Conference on AI in Finance (ICAIF 2026), Milan, Italy",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07120v1",
+      "title": "A Rough Instantaneous Squared VIX Model for Term Structure and Option Pricing",
+      "authors": [
+        "Tianfeng Yang",
+        "Wen Su",
+        "Blanka Horvath"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T20:34:55Z",
+      "summary": "The VIX term structure provides forward-looking measures of market uncertainty across horizons, while VIX options allow investors to hedge volatility risk. This paper proposes a rough instantaneous squared VIX (RISVIX) model by introducing fractional memory into the conventional Markovian framework. We derive an explicit representation of the VIX term structure governed by Mittag--Leffler decay and a semi-closed-form pricing formula for VIX options based on an affine Fourier--Laplace transform. These results support a two-step calibration procedure that estimates memory, mean reversion, and date-specific initial states from VIX term-structure indices before calibrating the remaining distributional parameters to VIX option prices. Using daily VIX term-structure indices and VIX option quotes from January 2018 to June 2025, we find that RISVIX improves upon the Markovian benchmark in fitting the VIX term structure, with larger gains during elevated-volatility periods and for its slope and curvature. RISVIX also improves out-of-sample option pricing, reducing MSE and MAE by 13.06\\% and 6.33\\%, respectively, with larger gains at shorter maturities and in high-VIX states. These findings suggest that the gains from fractional memory are particularly pronounced when volatility is elevated and can be obtained within a tractable direct model of VIX derivatives. Comparisons with additional benchmarks from the recent literature also show improvements to varying degrees in both VIX term-structure fitting and option pricing.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07120v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.PR",
+      "categories": [
+        "q-fin.PR",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "q-fin.PR (衍生品与资产定价)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07110v1",
+      "title": "Credibility Clustering for Experience Rating: An Automated Approach to Risk Group Allocation in Group Life Insurance",
+      "authors": [
+        "Thom van Rijn",
+        "Frank Weber",
+        "Michael Merz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T20:24:47Z",
+      "summary": "In insurance, experience rating plays a crucial role in mitigating adverse selection by adjusting premiums according to historical claims experience. A key step in this process is the classification of insured collectives into homogeneous risk groups. Within group life insurance, this classification traditionally relies on manual decisions and arbitrary thresholds, which may lead to inefficiencies and inconsistent outcomes. This paper proposes a data-driven methodology for automating risk group allocation based on a combination of the multidimensional Bühlmann-Straub model and k-means clustering -- referred to as credibility clustering. By incorporating credibility weights, the method accounts for the varying statistical significance of experience data and ensuresthat risk classifications are both actuarially sound and practically implementable. Empirical results based on real-world group life insurance data from a major European insurer demonstrate that the proposed framework outperforms the two k-means benchmark variants considered in the empirical application in terms of viability, temporal stability and accounting for statistical reliability.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07110v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07083v1",
+      "title": "Necessary and sufficient conditions for the martingale property of stochastic exponentials driven by multi-dimensional diffusions",
+      "authors": [
+        "Erhan Bayraktar",
+        "Hao Xing"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T19:37:54Z",
+      "summary": "We give necessary and sufficient coefficient conditions for stochastic exponentials driven by multidimensional diffusions to be true martingales. The classical reduction to non-exit of the diffusion with Girsanov-shifted drift separates the analysis into smooth boundary points, infinity, and nonsmooth boundary pieces. On smooth domains, under regularity and non-explosion hypotheses, martingality is equivalent to nonpositivity of the shifted Fichera drift, provided an explicit local condition holds where that drift vanishes and the stochastic integrand is unbounded. At infinity, Feller's test gives exact criteria when a scalar function of the diffusion reduces to a one-dimensional diffusion up to a time change with rate bounded above and away from zero. General radial and projection tests supply sufficient conditions. Applications give explicit necessary and sufficient conditions for inverse-CIR and $4/2$ models with correlated factors and singular stochastic integrands, including critical equality cases. The coupled non-affine examples go beyond direct scalar Feller tests and affine Riccati criteria, and exhibit boundary exits not decided by tests at infinity. Further exact criteria cover logarithmic boundary singularities, weighted distances, and an absorbed factor. The martingale conditions also yield uniqueness criteria for associated valuation equations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07083v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.PR",
+      "categories": [
+        "math.PR",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "math.PR (概率论与随机过程)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": "Keywords: Stochastic exponential; true martingale; strict local martingale; multi-dimensional diffusion; Fichera drift; Feller's test; Khasminskii's criterion; stochastic volatility; affine and Wishart processes; uniqueness for degenerate parabolic equations",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.06607v1",
       "title": "Hard to Fool: A Bounded LLM Research Loop for Quantitative Finance, and What Two Dozen Campaigns Found",
@@ -746,177 +901,23 @@
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2611.02258v1",
-      "title": "Beyond Binary Detection: Type-Aware Hallucination Analysis and Hierarchical Detection in Financial Question Answering",
-      "authors": [
-        "Xiongyu Chen",
-        "Sizhen Zhu",
-        "Zhuoer Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T22:26:11Z",
-      "summary": "Large language models are increasingly used to answer questions over financial filings, where an unfaithful answer can mislead investment, compliance, or client decisions. Hallucination detectors are a common safeguard, but they are usually evaluated with a single binary score that reveals neither which kinds of errors analysesed nor why. This paper studies hallucination detection on PHANTOM, a long-context benchmark built from SEC filings, at the level of hallucination type. We first analyze 15,443 paired hallucinated and faithful answers without any detector and find that hallucinated answers are more than twice as long as faithful ones, and that lexical grounding separates the two classes only because faithful answers are bimodal. We then generate hallucinations in nine financially motivated categories, confirm each with a separate verification pass, and diagnose an LLM-based detector on 4,086 usable examples. Generation success varies from 66.3% to 100% across categories. The detector reaches 80.2% binary accuracy but only 44.7% subtype accuracy, never assigns two of the nine categories, and misses between 5.3% and 46.8% of hallucinations depending on category; these misses are unrelated to input length but rise with how far an answer departs from the correct one. Guided by this diagnosis, we propose a two-stage hierarchical detector that first decides whether an answer is hallucinated and then assigns a subtype, raising binary accuracy to 95.6% and subtype accuracy to 56.1%. The results show that type-level evaluation exposes detector weaknesses that aggregate metrics conceal.",
-      "pdf_url": "https://arxiv.org/pdf/2611.02258v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-fin.CP"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-fin.CP (计算金融与量化模拟)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.01892v1",
-      "title": "Reduction of the integro-differential equation to an ordinary differential equation in ruin models with investment in a risky asset",
-      "authors": [
-        "Goluba Yurieva"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T13:35:55Z",
-      "summary": "We study ruin models with the surplus invested in a risky asset and Erlang-distributed claims: non-life insurance, annuity payments and the mixed model. Assuming that the integro-differential equation for the survival probability has a classical twice continuously differentiable solution, we prove that this solution satisfies a linear ordinary differential equation. We construct explicit annihilating operators and write the coefficients of the reduced equation in closed form through binomial coefficients (for the mixed model with equal shape parameters). A converse criterion is obtained: a bounded solution of the reduced equation satisfies the integro-differential equation if and only if the residual vanishes at zero initial capital together with its derivatives of order below that of the annihilator. The exponent of the power branch at infinity is determined by the parameters of the risky asset alone and does not depend on the shape parameter. For the mixed model we classify the fundamental set of solutions: the exponentially growing modes are excluded by boundedness. The connection coefficient of the power branch is nonzero by a known power-law lower bound for the ruin probability, and in the annuity model by the reduced equation and the boundary condition at zero. Hence the ruin probability has power-law asymptotics with a positive constant for all shape parameters and all positive exponents, and a complete asymptotic expansion up to a multiplicative constant in all three models. For non-life insurance with Erlang claims of order two the expansion coefficients are computed by an explicit recurrence.",
-      "pdf_url": "https://arxiv.org/pdf/2611.01892v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.PR",
-      "categories": [
-        "math.PR",
-        "q-fin.MF"
-      ],
-      "category_names_zh": [
-        "math.PR (概率论与随机过程)",
-        "q-fin.MF (数理金融学)"
-      ],
-      "comment": "34 pages, 0 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.01886v1",
-      "title": "The Laplace transform of the time of ruin in the Cramér--Lundberg model with Erlang $E_2(μ)$ claims: spectrum, exact moments and matrix reduction",
-      "authors": [
-        "Goluba Yurieva"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T13:30:15Z",
-      "summary": "We study the Laplace transform of the time of ruin in the classical Cramér--Lundberg model with claims having an Erlang distribution of shape parameter 2. We derive an integro-differential equation with two boundary conditions. For every positive discount rate, we show that its characteristic polynomial has one negative root and two distinct positive roots. Boundedness excludes the growing exponential term and yields a representation of the transform as a sum of two decaying exponentials. We construct a finite-dimensional matrix reduction of the convolution chain. For a model parameter set, we obtain exact expressions for the ruin probability, the mean time of ruin, and higher moments, including the third moment at zero initial surplus. We prove analyticity in the discount rate and justify the resulting moment series. We consider the analytic continuation of the representation to negative discount rates separately. For Erlang claims with an arbitrary positive integer shape parameter, we establish a closed linear system and the asymptotics of the root continuing the zero root at zero discount.",
-      "pdf_url": "https://arxiv.org/pdf/2611.01886v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.PR",
-      "categories": [
-        "math.PR",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "math.PR (概率论与随机过程)",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": "16 pages, 0 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.01855v1",
-      "title": "Long-term yields of short-rate models as Feynman-Kac ground states: a variational quantum eigensolver with single-setting energy estimation on two NISQ platforms",
-      "authors": [
-        "Doyeol \"David\" Ahn"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T12:47:08Z",
-      "summary": "We show that the long-term yield of a short-rate model is the ground-state energy of a Schrodinger operator obtained from the Feynman-Kac bond-pricing equation, so that it can be computed by a variational quantum eigensolver (VQE). We treat the Vasicek, Cox-Ingersoll-Ross and Black-Karasinski models; the last has no closed form. Calibrated monthly to the U.S. Treasury curve from 1985 to 2026, the long-term yield follows the 30-year yield with an in-sample correlation of 0.98. The Hamiltonian is stoquastic, so its ground state is positive and the energy can be estimated from computational-basis samples with a single measurement setting. On ibm_cleveland, gate noise appears mainly as bit flips of the high-order qubits. A bit-flip deconvolution with a tail set fixed by a WKB criterion, combined with readout mitigation and zero-noise extrapolation, gives four-qubit estimates within 33-125 bp of the grid ground-state energies for all three models, and within 23-67 bp for Treasury-calibrated parameters. On IonQ Forte Enterprise the same analysis reduces the error in the same proportions. On the same circuits, a Pauli-measurement VQE deviates by 791-1,129 bp, so the single-setting estimator gives about ten times smaller errors with one setting instead of nine. An on-device VQE converges from 4,939 bp to 130 bp.",
-      "pdf_url": "https://arxiv.org/pdf/2611.01855v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "cs.CE",
-        "q-fin.CP",
-        "q-fin.MF"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "cs.CE (计算工程、金融与科学计算)",
-        "q-fin.CP (计算金融与量化模拟)",
-        "q-fin.MF (数理金融学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.01799v1",
-      "title": "Learning AI Agents, Market Makers, and Stress in Automated Markets",
-      "authors": [
-        "Irene Aldridge"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T11:08:08Z",
-      "summary": "Automated markets increasingly route order flow from learning trading agents through automated market makers (AMMs). We model trader archetypes as AI agents defined by their reward functions and analyze the feedback they create on a constant-product AMM. Herd-dominated and arbitrage-dominated markets of equal size have identical return distributions and turnover, so no rule based on volatility, value-at-risk, stress frequency, or volume can tell them apart; yet their stress episodes differ in length by a factor unbounded in the feedback-to-noise ratio $β/s$. Serial statistics identify the feedback sign from $Θ((s/β)^2\\log(1/δ))$ observations, and this rate is tight. When agents trade together, profit-seeking agents ride herds rather than lean against them, leading to all-or-nothing participation. Spread-earning market makers restore stability but make liquidity fragile, with discontinuous collapse and hysteresis; maker--taker pricing, not a uniform fee, is the effective instrument.",
-      "pdf_url": "https://arxiv.org/pdf/2611.01799v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "cs.LG",
-        "econ.TH",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "cs.LG (机器学习 (ML))",
-        "econ.TH (微观经济与理论经济)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "15 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.01656v2",
-      "title": "AIDA: An AI Outage Registry with Evidence from On-Chain MEV",
-      "authors": [
-        "Wenbin Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-01T07:05:25Z",
-      "summary": "Generative AI coding tools have lowered the cost of writing trading software, but no systematic dataset records when these services fail. We introduce the AI Incident and Disruption Archive (AIDA), a multi-vendor registry of 5,868 deduplicated outage incidents across 30 providers from 2025 to 2026, with foundation-model incidents verified against primary status-page or postmortem URLs. Pairing AIDA with 5,041,034 verified maximal extractable value (MEV) transactions by 8,516 Ethereum addresses, their contract creations, and a 22-month Base Layer-2 panel of 1,099,593,191 swaps and 29,120 private executors, we establish two findings. First, entry into MEV expanded where code and public state suffice, as active arbitrage addresses quadrupled from late 2024 to late 2026 and liquidators grew by a third, while sandwich attackers, who need private order flow and builder access, declined. Execution nonetheless remained concentrated, with the top fifty addresses executing two thirds of verified trades. Second, AI outages stall new trading code while deployed bots keep trading. On Ethereum, addresses releasing a private executor fall to 0.67 on the day of an eight-hour disruption (0.68 for executor creations during OpenAI outage hours) and to 0.66 at lag two before rebounding on day three; on Base, operator top-level creations fall to 0.76 during OpenAI hours and executor-deploying operators to 0.88 at lag two. Non-trading creations, automated factory clones, and live arbitrage and sandwich execution across both chains remain unchanged. Cheaper code thus lowers the barrier to building MEV contracts, while private order flow, latency and capital still determine who wins execution.",
-      "pdf_url": "https://arxiv.org/pdf/2611.01656v2.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR",
-        "cs.CE"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)",
-        "cs.CE (计算工程、金融与科学计算)"
-      ],
-      "comment": "27 pages, 7 figures, 5 tables",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
     {
       "code": "q-fin.ST",
       "name_zh": "统计金融学与高频数据",
-      "count": 13
-    },
-    {
-      "code": "q-fin.CP",
-      "name_zh": "计算金融与量化模拟",
-      "count": 8
+      "count": 14
     },
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
       "count": 8
+    },
+    {
+      "code": "q-fin.CP",
+      "name_zh": "计算金融与量化模拟",
+      "count": 7
     },
     {
       "code": "q-fin.PM",
@@ -929,13 +930,8 @@
       "count": 5
     },
     {
-      "code": "cs.CE",
-      "name_zh": "计算工程、金融与科学计算",
-      "count": 5
-    },
-    {
-      "code": "q-fin.TR",
-      "name_zh": "交易策略与市场微观结构",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 4
     },
     {
@@ -944,9 +940,9 @@
       "count": 4
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 4
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 3
     },
     {
       "code": "math.OC",
@@ -954,14 +950,29 @@
       "count": 3
     },
     {
-      "code": "math.PR",
-      "name_zh": "概率论与随机过程",
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
       "count": 3
     },
     {
-      "code": "econ.EM",
-      "name_zh": "计量经济学",
-      "count": 3
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 2
+    },
+    {
+      "code": "q-fin.PR",
+      "name_zh": "衍生品与资产定价",
+      "count": 2
+    },
+    {
+      "code": "math.PR",
+      "name_zh": "概率论与随机过程",
+      "count": 2
+    },
+    {
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
+      "count": 2
     },
     {
       "code": "stat.ME",
@@ -969,13 +980,8 @@
       "count": 2
     },
     {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
-      "count": 2
-    },
-    {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
       "count": 2
     },
     {
@@ -989,8 +995,8 @@
       "count": 1
     },
     {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
+      "code": "quant-ph",
+      "name_zh": "量子力学、量子通信与量子计算",
       "count": 1
     },
     {
@@ -1002,12 +1008,7 @@
       "code": "math.ST",
       "name_zh": "数理统计理论",
       "count": 1
-    },
-    {
-      "code": "econ.TH",
-      "name_zh": "微观经济与理论经济",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-06T09:25:36.953108"
+  "snapshot_synced_at": "2026-11-07T08:34:42.359678"
 }

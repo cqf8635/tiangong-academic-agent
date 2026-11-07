@@ -10,6 +10,8 @@ def test_multiturn_state_driven_intent_flow(monkeypatch):
     mock_rag = MagicMock()
     mock_rag.embedding_model.encode.return_value = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]])
     mock_rag.search.return_value = []
+    mock_rag.reranker = MagicMock()
+    mock_rag.reranker.predict.side_effect = lambda pairs: [0.9] * len(pairs)
     monkeypatch.setattr(MasterEngineRegistry, "get_rag_engine", lambda: mock_rag)
 
     agent = IntentRecognitionAgent()

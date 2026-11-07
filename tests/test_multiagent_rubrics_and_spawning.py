@@ -1,4 +1,5 @@
 import pytest
+import json
 from unittest.mock import MagicMock, patch
 from master_agent_workflow import (
     MasterAgentState,
@@ -19,6 +20,8 @@ def test_dynamic_specialist_spawning_and_collaboration(monkeypatch):
     mock_llm_client = MagicMock()
     mock_rag = MagicMock()
     mock_rag.search.return_value = []
+    mock_rag.reranker = MagicMock()
+    mock_rag.reranker.predict.side_effect = lambda pairs: [0.9] * len(pairs)
     mock_paper_agent = MagicMock()
     mock_paper = MagicMock()
     mock_paper.title = "Lattice QCD on Quantum Computers"
@@ -121,7 +124,9 @@ def test_dialectical_inquiry_and_reflective_revision(monkeypatch):
     )
 
     # 阶段 1: 博弈质询席位执行去冗与证据链核验
-    monkeypatch.setattr("master_agent_workflow.safe_chat_completion", lambda *args, **kwargs: inquiry_text)
+    monkeypatch.setattr("master_agent_workflow.safe_chat_completion", lambda *args, **kwargs: json.dumps({
+        "needs_revision": True, "summary": "初稿需纠正具体问题", "issues": [inquiry_text]
+    }, ensure_ascii=False))
 
     state_initial: MasterAgentState = {
         "user_query": "格点规范理论与量子变分方案",
@@ -139,7 +144,7 @@ def test_dialectical_inquiry_and_reflective_revision(monkeypatch):
     assert res_inquiry["status"] == "dialectical_inquiry_completed"
     assert "学术博弈质询与去冗备忘" in res_inquiry["dialectical_notes"]
     assert len(res_inquiry["agent_dialogue_history"]) == 1
-    assert res_inquiry["agent_dialogue_history"][0]["action"] == "DIALECTICAL_INQUIRY_AND_PRUNING"
+    assert res_inquiry["agent_dialogue_history"][0]["action"] == "CRITIQUE_AND_REQUIRE_REVISION"
     print("\n✅ 第一阶段通过: 学术博弈质询专员成功对初稿执行去冗提纯与证据追问，写入研讨对话流！")
 
     # 阶段 2: 主研团队阅读对话流，执行深度认知反思并重构解答
@@ -160,6 +165,8 @@ def test_multisource_online_evidence_injection_and_deduplication(monkeypatch):
     mock_llm_client = MagicMock()
     mock_rag = MagicMock()
     mock_rag.search.return_value = []
+    mock_rag.reranker = MagicMock()
+    mock_rag.reranker.predict.side_effect = lambda pairs: [0.9] * len(pairs)
     mock_paper_agent = MagicMock()
 
     # 构造包含重复项的多源搜索结果
@@ -267,7 +274,13 @@ def test_multisource_online_evidence_injection_and_deduplication(monkeypatch):
     assert any("CrossRef" in lbl for lbl in labels)
 
     # 验证审稿节点不会丢失 evidence
-    rev_out = academic_reviewer_node(out)
+    rev_mock = json.dumps({
+        "needs_revision": False,
+        "summary": "文献支撑充分",
+        "issues": [],
+    }, ensure_ascii=False)
+    monkeypatch.setattr("master_agent_workflow.safe_chat_completion", lambda *args, **kwargs: rev_mock)
+    rev_out = academic_reviewer_node({**state, **out})
     assert len(rev_out.get("retrieved_evidence", [])) == 3
     print("\n✅ 多源在线学术文献去重汇聚与证据链路贯通测试通过！")
 
@@ -351,7 +364,11 @@ def test_evidence_synthesis_node_and_full_academic_pipeline_convergence(monkeypa
 
     # 2. 验证博弈质询节点优先摄入整理归纳备忘录
     state_with_slate = {**state, **synth_res}
-    inquiry_mock = "#### 🔬 学术博弈质询与去冗备忘\n1. 针对整理归纳备忘录中指出的有限温激发态退相干断裂带，主研方案未给出保护边界！"
+    inquiry_mock = json.dumps({
+        "needs_revision": True,
+        "summary": "针对整理归纳备忘录中指出的有限温激发态退相干断裂带，主研方案未给出保护边界！",
+        "issues": ["有限温激发态退相干断裂带未给出保护边界"],
+    }, ensure_ascii=False)
     monkeypatch.setattr("master_agent_workflow.safe_chat_completion", lambda *args, **kwargs: inquiry_mock)
 
     inquiry_res = dialectical_inquiry_node(state_with_slate)

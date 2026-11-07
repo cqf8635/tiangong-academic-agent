@@ -11,12 +11,17 @@ from __future__ import annotations
 
 from datetime import datetime
 import difflib
+import hashlib
+import json
+import math
+from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor
 
 from document_rag_engine import UniversalDocumentRAGEngine
 from online_paper_search_agent import OnlinePaperSearchAgent
+from evidence_scoring import score_evidence
 
 
 def normalize_title(title: str) -> str:
@@ -38,6 +43,8 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
         return 0.0
     if norm1 == norm2:
         return 1.0
+    if title1.startswith("未命名文献 [") or title2.startswith("未命名文献 ["):
+        return 0.0
 
     # 1. 词袋 Jaccard 相似度
     words1 = set(norm1.split())
@@ -74,12 +81,14 @@ class UnifiedEvidenceCard:
         is_local_indexed: bool = False,
         summary: str = "",
         page_or_slide: Optional[Any] = None,
+        score_method: str = "",
     ):
         self.doc_name = doc_name
         self.doc_type = doc_type  # local_pdf | arxiv | openalex | crossref | github | fused_academic
         self.text = text
         self.score = score
-        self.year = year or datetime.now().year
+        self.score_method = score_method
+        self.year = year
         self.location_label = location_label
         self.section = section
         self.page_or_slide = page_or_slide
@@ -112,9 +121,11 @@ class UnifiedEvidenceCard:
             "doc_name": self.doc_name,
             "doc_type": self.doc_type,
             "location_label": fused_label,
-            "page_or_slide": self.page_or_slide if self.page_or_slide is not None else self.year,
+            "year": self.year,
+            "page_or_slide": self.page_or_slide,
             "section": self.section or "Core Theory",
             "score": self.score,
+            "score_method": self.score_method,
             "text": self.text,
             "summary": self.summary,
             "arxiv_id": self.arxiv_id,
@@ -149,15 +160,16 @@ class CrossSourceHybridRetriever:
         time_constraint: Optional[Dict[str, Any]] = None,
         english_query: Optional[str] = None,
         max_chunks_per_doc: int = 4,
+        discipline_filter: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
-        """执行全源混合并发召回、跨源语义去重与全局融合重排 (同文献多页保护，支持全面文献深读)"""
+        """混合召回、去重与重排；time_constraint 仅用于在线检索，discipline_filter 传递至本地领域分流。"""
         raw_candidates: List[UnifiedEvidenceCard] = []
 
         # 1. 并发执行多路召回
         with ThreadPoolExecutor(max_workers=2) as executor:
             # 路线 A: 本地 RAG 语义检索 (扩大候选窗口至 max(top_k, 8)，获取同文献更多代表性页面)
             local_limit = max(top_k, 8)
-            fut_local = executor.submit(self._fetch_local_evidence, query, negative_keywords, time_constraint, local_limit) if include_local else None
+            fut_local = executor.submit(self._fetch_local_evidence, query, negative_keywords, local_limit, discipline_filter) if include_local else None
             # 路线 B: 线上多源学术与开源工程探针
             fut_online = executor.submit(self._fetch_online_evidence, query, time_constraint, english_query) if include_online else None
 
@@ -167,29 +179,38 @@ class CrossSourceHybridRetriever:
         raw_candidates.extend(local_cards)
         raw_candidates.extend(online_cards)
 
-        print(f"📦 [CrossSourceHybrid] 多路召回原始候选总数: {len(raw_candidates)} 项 (本地符合时间切片: {len(local_cards)} 个, 线上文献候选: {len(online_cards)} 篇)")
+        print(f"📦 [CrossSourceHybrid] 多路召回原始候选总数: {len(raw_candidates)} 项 (本地切片: {len(local_cards)} 个, 线上文献候选: {len(online_cards)} 篇)")
 
         if not raw_candidates:
             return []
+
+        # Mixed candidates need the same metric; reuse configured models without
+        # loading a separate reranker or adding an online relevance threshold.
+        if online_cards:
+            scored = score_evidence(query, [card.to_dict() for card in raw_candidates], self.rag_engine)
+            for card, result in zip(raw_candidates, scored):
+                card.score = result["score"]
+                card.score_method = result["score_method"]
 
         # 2. 执行跨源多维去重与节点属性融合 (保留同文献不同页码的互补切片)
         deduped_cards = self._deduplicate_and_merge(raw_candidates, max_chunks_per_doc=max_chunks_per_doc)
         print(f"✨ [CrossSourceHybrid] 跨源去重与融合后唯一候选数: {len(deduped_cards)} 个 (消除冗余 {len(raw_candidates) - len(deduped_cards)} 个)")
 
-        # 3. 全局重排 (基于分数与多源权重)
-        deduped_cards.sort(key=lambda c: (c.is_local_indexed * 0.15 + (1 if c.github_url else 0) * 0.05 + c.score), reverse=True)
+        # 来源与重复次数不代表内容相关性，按实际评分排序。
+        deduped_cards.sort(key=lambda c: c.score, reverse=True)
 
         return [c.to_dict() for c in deduped_cards[:top_k]]
 
     @staticmethod
     def _resolve_local_doc_year(doc_name: str, chunk_meta: Dict[str, Any]) -> Optional[int]:
         """解析本地文献的真实发表年份 (优先侧车元数据/文件名/arXiv号，拒绝盲目填充当前年份)"""
+        doc_name = str(doc_name or "")
         # 1. 切片自带年份
         if chunk_meta.get("year"):
             try:
                 return int(chunk_meta["year"])
-            except Exception:
-                pass
+            except Exception as e:
+                raise ValueError("文献年份元数据无效") from e
         # 2. 检查 uploads 目录下的下载论文侧车元数据
         try:
             from online_paper_search_agent import UPLOADS_DIR
@@ -199,8 +220,8 @@ class CrossSourceHybridRetriever:
                 meta_dict = json.loads(meta_path.read_text(encoding="utf-8"))
                 if meta_dict.get("year"):
                     return int(meta_dict["year"])
-        except Exception:
-            pass
+        except Exception as e:
+            raise RuntimeError(f"文献年份侧车元数据读取失败: {e}") from e
         # 3. 从文件名提取 arXiv 年份 (如 2403.xxxx -> 2024, 2501.xxxx -> 2025)
         m_arxiv = re.search(r'\b(2[0-9])(0[1-9]|1[0-2])\.[0-9]{4,5}\b', doc_name)
         if m_arxiv:
@@ -215,35 +236,49 @@ class CrossSourceHybridRetriever:
         self,
         query: str,
         negative_keywords: Optional[List[str]],
-        time_constraint: Optional[Dict[str, Any]] = None,
         limit: int = 8,
+        discipline_filter: Optional[str] = None,
     ) -> List[UnifiedEvidenceCard]:
-        """获取本地精准切片并转换为统一卡片 (基于真实年份严格执行时效过滤，支持同文献多页召回)"""
+        """获取本地切片并转换为统一卡片，透传学科过滤参数，不按发表年份过滤。"""
         if not self.rag_engine:
-            return []
+            raise RuntimeError("本地检索引擎不可用")
         try:
             candidate_k = max(25, limit * 3)
-            chunks = self.rag_engine.search(query, top_k=limit, candidate_k=candidate_k, negative_keywords=negative_keywords)
+            chunks = self.rag_engine.search(
+                query,
+                top_k=limit,
+                candidate_k=candidate_k,
+                negative_keywords=negative_keywords,
+                discipline_filter=discipline_filter,
+            )
+            # Missing scores must be computed, never replaced with a fixed high value.
+            unscored = []
+            for chunk in chunks:
+                try:
+                    valid_score = math.isfinite(float(chunk.get("score")))
+                except (TypeError, ValueError):
+                    valid_score = False
+                if not valid_score:
+                    unscored.append(chunk)
+            if unscored:
+                scored = score_evidence(query, unscored, self.rag_engine)
+                replacements = {id(original): result for original, result in zip(unscored, scored)}
+                chunks = [replacements.get(id(chunk), chunk) for chunk in chunks]
             cards = []
-            has_time = bool(time_constraint and time_constraint.get("has_time_constraint"))
-            start_yr = time_constraint.get("start_year") if has_time else None
-            end_yr = time_constraint.get("end_year") if has_time else None
-
             for c in chunks:
-                doc_name = c.get("doc_name", "本地文献")
-                doc_year = self._resolve_local_doc_year(doc_name, c)
-
-                # 若提问有明确的时间约束 (如近两年 2024~2026):
-                # 只有真正符合该年份区间的本地文献才准予召回；早于起始年份或年份未知的经典教材，一律拦截过滤
-                if has_time and start_yr:
-                    if doc_year is None or doc_year < start_yr or (end_yr and doc_year > end_yr):
-                        continue
+                original_name = str(c.get("doc_name") or "").strip()
+                doc_year = self._resolve_local_doc_year(original_name, c)
+                identity = c.get("doc_id") or c.get("chunk_id") or hashlib.sha256(
+                    str(c.get("text") or "").encode("utf-8")
+                ).hexdigest()[:16]
+                doc_name = original_name or f"未命名文献 [{identity}]"
 
                 cards.append(UnifiedEvidenceCard(
                     doc_name=doc_name,
                     doc_type="local_pdf",
                     text=c.get("text", ""),
-                    score=c.get("score", 0.8),
+                    score=float(c["score"]),
+                    score_method=c.get("score_method", ""),
                     year=doc_year,
                     location_label=c.get("location_label", "本地切片"),
                     section=c.get("section", ""),
@@ -252,8 +287,7 @@ class CrossSourceHybridRetriever:
                 ))
             return cards
         except Exception as e:
-            print(f"⚠️ [LocalEvidenceFetch Note]: {e}")
-            return []
+            raise RuntimeError(f"本地检索失败: {e}") from e
 
     def _fetch_online_evidence(
         self,
@@ -263,7 +297,7 @@ class CrossSourceHybridRetriever:
     ) -> List[UnifiedEvidenceCard]:
         """获取线上多源资产 (arXiv, CrossRef, GitHub) 并转换为统一卡片"""
         if not self.paper_agent:
-            return []
+            raise RuntimeError("在线检索引擎不可用")
         try:
             bundle = self.paper_agent.search_multisource(
                 query,
@@ -279,8 +313,7 @@ class CrossSourceHybridRetriever:
                     doc_name=p.get("title", ""),
                     doc_type="arxiv",
                     text=f"【arXiv 论文题目】: {p.get('title')}\n【主要作者】: {', '.join(p.get('authors', [])[:3])}\n【发表年份】: {p.get('year')}\n【核心摘要】: {p.get('summary')}\n【PDF链接】: {p.get('pdf_url')}",
-                    score=0.92,
-                    year=p.get("year") or datetime.now().year,
+                    year=p.get("year"),
                     location_label=f"arXiv:{p.get('paper_id')} ({p.get('year')}年)",
                     section="Preprint Abstract",
                     arxiv_id=p.get("paper_id"),
@@ -295,8 +328,7 @@ class CrossSourceHybridRetriever:
                     doc_name=op.get("title", ""),
                     doc_type="openalex",
                     text=f"【OpenAlex 期刊/会议】: {op.get('title')}\n【主要作者】: {', '.join(op.get('authors', [])[:3])}\n【发表年份】: {op.get('year')}\n【出版/收录】: {op.get('summary')}\n【URL】: {op.get('url')}",
-                    score=0.91,
-                    year=op.get("year") or datetime.now().year,
+                    year=op.get("year"),
                     location_label=f"OpenAlex ({op.get('year')}年)",
                     section="OpenAlex Index",
                     doi=op.get("doi"),
@@ -311,8 +343,7 @@ class CrossSourceHybridRetriever:
                     doc_name=c.get("title", ""),
                     doc_type="crossref",
                     text=f"【已发表论文】: {c.get('title')}\n【作者团队】: {', '.join(c.get('authors', [])[:3])}\n【出版信息】: {c.get('summary')}\n【DOI链接】: {c.get('url')}",
-                    score=0.90,
-                    year=c.get("year") or datetime.now().year,
+                    year=c.get("year"),
                     location_label=f"DOI 出版文献 ({c.get('year')}年)",
                     section="Published DOI",
                     doi=c.get("doi"),
@@ -327,8 +358,7 @@ class CrossSourceHybridRetriever:
                     doc_name=f"GitHub Repo: {g.get('id')}",
                     doc_type="github",
                     text=f"【开源仓库】: {g.get('title')}\n【技术简介】: {g.get('summary')}\n【项目链接】: {g.get('url')}",
-                    score=0.88,
-                    year=datetime.now().year,
+                    year=g.get("year"),
                     location_label=f"GitHub ⭐{g.get('stars', 0)}",
                     section="Open Source Code",
                     github_url=g.get("url"),
@@ -338,8 +368,7 @@ class CrossSourceHybridRetriever:
 
             return cards
         except Exception as e:
-            print(f"⚠️ [OnlineEvidenceFetch Note]: {e}")
-            return []
+            raise RuntimeError(f"在线检索失败: {e}") from e
 
     def _deduplicate_and_merge(
         self,
@@ -449,5 +478,7 @@ class CrossSourceHybridRetriever:
             if incoming.text and incoming.text not in base.text:
                 base.text = f"{base.text}\n\n{incoming.text}"
 
-        # 分数叠加增益
-        base.score = max(base.score, incoming.score) + 0.05
+        # 重复来源只补全材料，不给相关性分数增加固定奖励。
+        if incoming.score > base.score:
+            base.score = incoming.score
+            base.score_method = incoming.score_method

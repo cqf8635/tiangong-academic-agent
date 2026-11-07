@@ -77,7 +77,7 @@
       if (this.isAudioConnected && this.analyser) return;
       try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
+        if (!AudioContextClass) throw new Error("浏览器不支持音频分析");
 
         if (!this.audioCtx) {
           this.audioCtx = new AudioContextClass();
@@ -99,7 +99,7 @@
           this.isAudioConnected = true;
         }
       } catch (err) {
-        console.warn('[DigitalAvatar] AudioContext notice:', err);
+        throw err;
       }
     }
 
@@ -113,7 +113,10 @@
       if (this.stageVideo) {
         this.stageVideo.style.display = 'block';
         this.stageVideo.currentTime = 0;
-        this.stageVideo.play().catch(() => {});
+        this.stageVideo.play().catch((error) => {
+          console.error('搭档视频播放失败:', error);
+          if (this.stageBadgeStatus) this.stageBadgeStatus.textContent = `搭档视频播放失败: ${error.message}`;
+        });
       }
 
       if (this.animationFrameId) {
@@ -181,7 +184,8 @@
         THINKING: { desc: '🧠 经卷推演 (Thinking)', class: 'thinking' },
         SPEAKING: { desc: '🎙️ 温润领读 (Speaking)', class: 'speaking' },
       };
-      const info = statusMap[state] || statusMap.IDLE;
+      const info = statusMap[state];
+      if (!info) throw new Error(`未知搭档状态: ${state}`);
 
       if (this.stageBadgeStatus) {
         this.stageBadgeStatus.innerHTML = `<span class="state-dot ${info.class}"></span> ${desc || info.desc}`;
@@ -216,15 +220,8 @@
       let formulaHtml = '';
       if (formula) {
         const cleanMath = formula.replace(/^\$\$|\$\$$/g, '').trim();
-        if (window.katex) {
-          try {
-            formulaHtml = window.katex.renderToString(cleanMath, { displayMode: true, throwOnError: false });
-          } catch (_) {
-            formulaHtml = `<span style="font-family: var(--font-mono); color: #fde047;">${cleanMath}</span>`;
-          }
-        } else {
-          formulaHtml = `<span style="font-family: var(--font-mono); color: #fde047;">${cleanMath}</span>`;
-        }
+        if (!window.renderMathSource) throw new Error('公式渲染引擎未加载');
+        formulaHtml = window.renderMathSource(cleanMath, true);
       }
 
       let html = '';

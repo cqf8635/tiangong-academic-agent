@@ -243,15 +243,8 @@ def download_and_ingest_arxiv_paper(arxiv_id: str) -> str:
     rag = get_rag()
     papers = agent.search_arxiv(query=f"id:{arxiv_id}", max_results=1)
     if not papers:
-        # Fallback to direct URL construction
-        from online_paper_search_agent import ArxivPaper
-        paper = ArxivPaper(
-            paper_id=arxiv_id,
-            title=f"arXiv_{arxiv_id}",
-            pdf_url=f"https://export.arxiv.org/pdf/{arxiv_id}.pdf",
-        )
-    else:
-        paper = papers[0]
+        raise RuntimeError(f"未检索到 arXiv:{arxiv_id} 的真实元数据，未构造替代论文")
+    paper = papers[0]
 
     res = agent.download_and_ingest(paper, rag_engine=rag)
     if res.get("status") == "success":
@@ -330,7 +323,7 @@ def derive_formula_stepwise(topic_or_equation: str) -> str:
             timeout=get_llm_timeout(90.0),
         )
     except Exception as e:
-        return f"公式推演服务异常: {e}"
+        raise RuntimeError(f"公式推演服务异常: {e}") from e
 
 
 @mcp.tool()
@@ -392,7 +385,7 @@ def text_to_speech(text: str, output_wav_path: Optional[str] = None) -> str:
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return f"✅ 音频合成成功: {out_file}"
     except Exception as e:
-        return f"[TTS 失败]: {e}"
+        raise RuntimeError(f"TTS 失败: {e}") from e
 
 
 # ==========================================

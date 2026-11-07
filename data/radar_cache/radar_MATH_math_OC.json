@@ -1,19 +1,448 @@
 {
   "query_expression": "cat:math.OC",
   "total_fetched": 25,
-  "total_results": 66194,
+  "total_results": 66237,
   "papers": [
     {
-      "paper_id": "2611.06887v1",
-      "title": "Risk-Sensitive Stochastic Optimal Control on Positive Cones",
+      "paper_id": "2611.08468v1",
+      "title": "An Accelerated Proximal Gradient Method for Bures-Wasserstein Space",
       "authors": [
-        "Mohamad Al Ahdab",
-        "John-Josef Leth"
+        "Jakob Nylöf",
+        "Sloan Nietert",
+        "Julien Pallage",
+        "Giancarlo Ferrari-Trecate",
+        "Daniel Kuhn"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T18:41:32Z",
-      "summary": "We consider stochastic optimal control problems in which the state is constrained to a proper cone. Specifically, we consider risk-neutral, risk-averse, and risk-seeking formulations within a single entropic-risk framework. We investigate classes of problems whose Bellman operator preserves affine functions and characterize their optimal value functions and feedback policies for both finite-horizon and time-average infinite-horizon problems. Additionally, we establish convergence and state-bound results under finite-step cost observability. Moreover, we demonstrate an exact connection between entropic-risk optimal control on proper cones and deterministic infsup control for systems whose dynamics and stage costs are affine in the disturbances. In addition, we provide examples of classes of systems for which explicit solutions can be obtained.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06887v1.pdf",
+      "published_at": "2026-11-05T18:55:10Z",
+      "summary": "We study composite optimization over the Bures--Wasserstein (BW) space of Gaussian measures. Our main observation is that a useful class of BW problems can be lifted into the Euclidean space of affine transport maps, such that the lifted problems can be solved efficiently using accelerated proximal gradient methods. For objectives whose smooth and nonsmooth components admit convex smooth and convex proximable affine lifts, respectively, our algorithm BW-FISTA achieves minimax-optimal objective gap $O(k^{-2})$ after $k$ iterations. We verify these regularity conditions for potential and interaction energies together with common spectral regularizers, and we treat stochastic gradients under a suitable noise model. As a principal application, we consider Gaussian variational inference with a log-concave, log-smooth target. Here, the resulting entropy term is handled by an efficient, exact proximal step, and we improve the previous rate of $O(k^{-1})$ to $O(k^{-2})$. We numerically verify this predicted boost with synthetic experiments.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08468v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "Submitted on September 2 to the Geometric Distributional Deep Learning workshop at NeurIPS 2026, accepted",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08457v1",
+      "title": "Adversarial Training with Large Step Sizes: Implicit Bias, Optimization, and Sharpness",
+      "authors": [
+        "Yi Feng",
+        "Andrea Paudice"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:48:50Z",
+      "summary": "Adversarial Training (AT) is an important method for improving model robustness. We study the dynamics of deterministic Gradient Descent (GD) in AT. Most existing works in this direction focus on the small or vanishing step sizes regime, where GD resembles a continuous-time flow. However, such step sizes can make training inefficient and are rarely used in practice. In this paper, we study the AT dynamics of GD with large constant step sizes. We first study GD in adversarial linear logistic regression, focusing on two aspects: where the model parameters converge (implicit bias) and how quickly the losses decrease (optimization). We then turn to neural networks training and study how the sharpness of losses evolve during AT. Our results advance the understanding of the behaviors of GD with large step sizes in AT and highlight three key differences from its behavior in Standard Training (ST): (i) the implicit bias gap between AT and ST, previously established only for small step sizes, persists for arbitrarily large constant step sizes, (ii) different from ST, there is no uniform rate of convergence for the optimization error in AT, and (iii) sharpness can exhibit two-stage dynamics that differ from the Edge-of-Stability behavior observed in ST.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08457v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08404v1",
+      "title": "Augmented Lagrangian methods with telescopic subproblems for MPCCs and cardinality constraints with general constraints: constraint-preserving swaps and B-stationarity",
+      "authors": [
+        "Ernesto G. Birgin",
+        "J. M. Martínez"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:13:15Z",
+      "summary": "We consider optimization problems with general equality and inequality constraints and partitioned cardinality constraints, which include complementarity constraints. In the augmented Lagrangian method that we consider, the bounds and the cardinality constraints are kept in the subproblems, which are solved by the Telescopic Method. The limit points of this method are B-stationary, without constraint qualifications, if the penalty parameters remain bounded, but not in general. The reason is that the swaps of the Telescopic Method pass through points at which the constraints have different values, and the corresponding variation of the penalty term grows with the penalty parameter. With unbounded penalty parameters and a derivative test outside the current face, the feasible limit points at which a linear independence constraint qualification holds are M-stationary for MPCCs. We modify the swaps, by means of a scaled Newton restoration, so that they preserve the values of the constraints, and we prove that every feasible limit point at which this constraint qualification holds is then B-stationary (S-stationary for MPCCs), whatever the behavior of the penalty parameters. Counterexamples show that the modification is necessary, even with exact solutions of the subproblems, and that the constraint qualification cannot be weakened to one of Mangasarian-Fromovitz type. In the MacMPEC collection, the method found certified S- or B-stationary points in 185 of the 193 instances, more than Algencan and the regularization method of Scholtes. In experiments with cardinality-constrained portfolios and sparse principal component analysis, the constraint-preserving swaps improved the original swaps and the methods applied to complementarity reformulations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08404v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "41 pages, 2 figures, 6 tables. Supplementary material (results by instance) in the ancillary file bmalmpcc-suppl.pdf",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08359v1",
+      "title": "A Theoretical Analysis of a Bilevel Optimization Formulation for Combined Local-Global Optical Flow Models",
+      "authors": [
+        "El Mostafa Kalmoun"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T17:38:50Z",
+      "summary": "This paper analyzes a bilevel formulation for learning the regularization parameter of combined local-global (CLG) optical flow models. The lower-level problem computes the flow from a Lucas--Kanade data term and a quadratic or total variation (TV) regularizer, and the upper-level problem selects the parameter that minimizes the squared distance to a ground-truth flow. The setting is finite-dimensional, and a full-rank assumption makes the lower-level solution unique. For the quadratic model we derive sufficient conditions for the existence of an optimal parameter, for every optimal parameter to be positive, and for strict local optimality. For TV regularization an optimal parameter always exists, because the lower-level solution vanishes for large parameters, and we give a sufficient condition for positivity that accounts for the coupling of the two flow components through the local structure tensors. Synthetic examples illustrate the conditions, including cases in which they fail.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08359v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "31 pages, 5 figures. Submitted to the Journal of Mathematical Imaging and Vision. Python code in the ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08304v1",
+      "title": "Hardness of integer linear feasibility with cyclic support",
+      "authors": [
+        "Marco Di Summa"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T17:06:59Z",
+      "summary": "We prove that integer linear feasibility is strongly $NP$-complete even when the constraint matrix has exactly two nonzero entries in every row and column, with its support forming a single cycle. This holds already for monotone systems (one positive and one negative coefficient in each inequality) with nonzero coefficients of absolute value $2$ or $3$ and right-hand sides in $\\{-1,0,1,2\\}$. No variable bounds are supplied separately from the system. For systems in which each inequality involves at most two variables, this strengthens known hardness results by restricting all numerical data to fixed finite sets. For systems in which each variable occurs in at most two inequalities, this establishes, to the best of our knowledge, the first $NP$-hardness result for feasibility. We also give negative answers, unless $P=NP$, to questions on polynomial-time solvability of integer programs with bounded coefficients and bounded totally $Δ$-modular treewidth, and on fixed-parameter tractability of integer bound propagation with respect to coefficient and right-hand-side magnitudes.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08304v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.DM"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cs.DM (离散数学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08302v1",
+      "title": "Dynamic Optimistic Constrained OCO with Memory via Delay Equivalence",
+      "authors": [
+        "Mohammed Abdullah",
+        "George Iosifidis",
+        "Salah Eddine Elayoubi",
+        "Tijani Chahed"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T17:05:45Z",
+      "summary": "Online Convex Optimization with memory and time-varying constraints (COCO-M) is a recently-introduced framework that captures the dynamics of stateful online learning and non-stochastic control with budget constraints. Despite its expressive power, COCO-M remains largely understudied. In this work, we tackle this problem in its full scale, providing an optimistic algorithm that incorporates untrusted predictions to tame universal dynamic regret and cumulative constraint violation. Our analysis leverages a potent reduction from memory to delay and treats state-dependent gradients as delayed feedback. We establish the first bounds that adapt to both environment non-stationarity (path length $P_T$) and prediction accuracy, while lifting previous restrictive assumptions such as functional separability. En route to these results, we derive findings of independent interest for the memory-to-delay reduction, and for delayed OCO with time-varying constraints. The proposed framework ensures sublinear worst-case guarantees that improve with prediction accuracy, reaching $\\mathcal O(1)$ regret under perfect predictions, with cumulative constraint violation (CCV) $\\mathcal O(\\sqrt{T})$ for unknown $P_T$ and $\\mathcal O(\\log T)$ for known or online observable $P_T$ , while recovering the optimal COCO rates when memory disappears.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08302v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "Accepted at the 40th Conference on Neural Information Processing Systems (NeurIPS 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08297v1",
+      "title": "A Proximal Newton Framework with Local Superlinear Convergence for Simple Bilevel Optimization",
+      "authors": [
+        "Xiaoning Bai",
+        "Boris S. Mordukhovich",
+        "Shangzhi Zeng",
+        "Jin Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T16:57:36Z",
+      "summary": "In this paper, we study a penalty method for simple bilevel optimization in which the lower-level objective has a convex composite structure. Our approach is based on a vanishing-penalty reformulation, which gives rise to a sequence of penalized problems as the penalty parameter decreases. A key difficulty is that metric subregularity of the lower-level optimality mapping does not, in general, yield a uniform error bound for the penalized problems as the penalty parameter vanishes, preventing a direct application of standard proximal Newton theory. To address this difficulty, we first analyze a regularized proximal Newton step by exploiting the specific structure of simple bilevel problems, and establish the local estimates that underpin superlinear convergence. Building on this local analysis, we propose SiB-Newton, which incorporates the proximal Newton step into a globalization strategy. We establish convergence guarantees for SiB-Newton and show that, under suitable local conditions, Newton steps are eventually accepted and the iterates converge at a superlinear rate. Numerical experiments on synthetic examples verify the predicted local superlinear convergence rate.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08297v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08253v1",
+      "title": "All minimum cuts of symmetric submodular functions",
+      "authors": [
+        "Chao Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T16:28:28Z",
+      "summary": "We compute Cunningham's canonical decomposition of a symmetric submodular function on $n$ elements in $O(n^3)$ time. The decomposition represents all minimum cuts in linear space. For the pair $s,t$ produced by Queyranne's algorithm, we construct in $O(n^2)$ time a digraph representing exactly the minimum $st$-cuts of the function. Using this construction in Chekuri and Xu's decomposition algorithm gives the cubic bound.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08253v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.DS",
+      "categories": [
+        "cs.DS",
+        "math.CO",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "cs.DS (数据结构与算法)",
+        "math.CO (组合数学与图论)",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08201v1",
+      "title": "Viscosity-variational inequality solutions of fully nonlinear second-order stationary mean field games with nonseparable and nondifferentiable Hamiltonians",
+      "authors": [
+        "Thomas Sales",
+        "Iain Smears"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T15:54:36Z",
+      "summary": "We analyse stationary fully nonlinear uniformly elliptic second-order mean field games with nonseparable and nondifferentiable Hamiltonians by introducing the notion of viscosity-variational inequality solution. In this formulation of the problem, the value function is the viscosity solution of the Hamilton--Jacobi--Bellman (HJB) equation, and the Kolmogorov--Fokker--Planck (KFP) equation for the player density is understood as a nonstandard variational inequality that no longer involves partial derivatives of the value function. The advantages of this formulation are found in its stability and continuity properties for handling weak convergence arguments, which we use to prove the existence of solutions of the problem. Furthermore, we prove the equivalence of the notion of viscosity-variational inequality solution with the notion of a partial differential inclusion solution, where the value function is a strong solution of the HJB equation and the player density is a very weak solution of the KFP equation with coefficients belonging to subdifferential sets of the Hamiltonian. Finally, we prove the uniqueness of solutions in the case of separable Hamiltonians with strictly monotone couplings.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08201v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.AP",
+      "categories": [
+        "math.AP",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.AP (偏微分方程 (PDE))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "38 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08123v1",
+      "title": "Adaptive pairwise preference elicitation for decision support: identifying the best alternative with fewer judgments",
+      "authors": [
+        "Luis Ángel Calvo",
+        "Jiri Mazurek"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T14:56:24Z",
+      "summary": "Interactive decision support systems often require repeated preference judgments, although identifying the best alternative may not justify eliciting all \\(n(n-1)/2\\) pairwise comparisons. We propose ALEC (Adaptive Lexicographic Elicitation of Comparisons), which re-ranks the alternatives after each judgment and asks the first unobserved pair in the lexicographic order of the current ranking, using the Analytic Hierarchy Process as the concrete setting. Under a log-normal error model, directly comparing a contrast maximises the one-step reduction in its effective resistance. Posterior bounds on the probability of a wrong choice or of exceeding a relative-loss tolerance provide stopping rules valid under adaptive questioning, while a consistency-and-margin condition gives a deterministic certificate of agreement with the full-matrix winner. Simulations show that re-ranking is most useful in larger problems with limited budgets; ALEC outperforms Harker's original rule in most scenarios with \\(n\\ge11\\), while under a common stopping rule it achieves higher hit-rate point estimates than the stronger Harker-log variant at a modest additional questioning cost. With a 5\\% loss tolerance and a cap of \\(2n\\) additional comparisons, the stopping rule saves \\res{prot-s06-saveadd-min}--\\res{prot-s06-saveadd-max}\\% of them, while among runs stopped by the bound the observed rate of losses above tolerance remains at most \\res{s06-errearly-max}\\%, against a nominal 10\\%. ALEC therefore provides an adaptive elicitation module for decision support systems that balances decision precision against user effort.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08123v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08121v1",
+      "title": "Overcoming Fundamental Control Limitations in Powered Descent Flight through Robust Incremental Nonlinear Dynamic Inversion",
+      "authors": [
+        "João T. Diz",
+        "Paulo Rosa",
+        "Pedro Simplício",
+        "Paul Acquatella",
+        "Erik-Jan van Kampen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T14:54:21Z",
+      "summary": "This work identifies a fundamental, controller-independent limitation in reusable launch vehicle powered descent: a sudden $180^\\circ$ phase transition in the open-loop transfer functions from the control inputs to the lateral drift and drift rate. The transition occurs inside the flight envelope, reverses the effective control direction, and can destabilize the closed loop system under uncertainty. An analytical condition governing this transition is derived, its physical mechanism is established, and its dependence on vehicle mass, aerodynamic properties, and geometry is characterized. An Incremental Nonlinear Dynamic Inversion (INDI)-based control architecture is then developed to inherently address this limitation and is tuned via $\\mathcal{H}_\\infty$ Closed Loop Shaping to provide local robustness and performance guarantees. The internal dynamics introduced by the INDI inversion are analytically derived and proven to be stable throughout the flight envelope. The proposed controller is compared against a robust gain-scheduled baseline controller through linear stability analysis and an extensive nonlinear Monte Carlo campaign. Both controllers achieve 100% success across the considered Monte Carlo campaign, though the INDI-based controller provides improved tracking performance, superior nominal and dispersed stability margins, requires fewer controller design points, and reduces controller tuning complexity.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08121v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "28 pages, 16 figures, 5 tables. Accepted for presentation at the AIAA SciTech 2027 Forum, Orlando, FL, January 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08101v1",
+      "title": "On the Minimal Controllability of Boolean Networks With $k$-Regular Dependency Graphs",
+      "authors": [
+        "Christopher H. Fok",
+        "Chi-Wing Wong",
+        "Wai-Ki Ching"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T14:43:06Z",
+      "summary": "Boolean networks (BNs) are widely used to model gene regulatory networks and other biological systems. In this paper, we investigate the minimal controllability problem for BNs subject to degree constraints. We first establish three new best-case upper bounds for XOR-BNs whose dependency graphs are $k$-regular. We then introduce classes of BNs that are invariant under cyclically partite transformation (CPT-invariant) and prove theorems connecting BN controllability with the surjectivity of vector-valued Boolean functions. Finally, by combining an analysis of this surjectivity with a probabilistic argument, we derive a new general lower bound on the minimum number of control nodes required for majority-type threshold BNs with $(2k+1)$-regular dependency graphs.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08101v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "16 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08090v1",
+      "title": "A Solution Method for Single-Source Capacitated Facility Location Problems Under Decision-Dependent Demand Uncertainty",
+      "authors": [
+        "Giovanni Pantuso",
+        "Miguel Lejeune"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T14:35:43Z",
+      "summary": "We present a model and an exact solution method for single-source capacitated facility location problems with decision-dependent demand uncertainty. The model allows the joint probability distribution of customer demands to depend on the facility to which demand points are allocated. The number of possible decision-dependent distributions is therefore equal to the number of feasible allocations of demand points to (groups of) facilities. To address the exponential size of the model, we apply and extend a recent version of the L-Shaped method for stochastic programs with decision-dependent uncertainty. In particular,we compare the original optimality cut with a new optimality cut based on a bilinear reformulation. We prove that, separated together with the original one, the new cut yields a tighter restriction, at the expense of introducing bilinear terms. In addition, we prove an effective decision-independent valid inequality that significantly improves convergence. Extensive numerical tests on 180 instances demonstrate that the method, supported by the valid inequality, can find optimal or near-optimal solutions to problem instances with up to 620 potential probability distributions. The tests also show that, while the new cut closes slightly more instances, the original cut remains preferable in terms of solution time and optimality gap.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08090v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08061v1",
+      "title": "A globally convergent stochastic semismooth Newton method for strongly convex problems in Hilbert spaces",
+      "authors": [
+        "Pavel Dvurechensky",
+        "Caroline Geiersbach",
+        "Michael Hintermüller",
+        "Felix Sauer"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T14:15:36Z",
+      "summary": "We propose and analyze a globalized stochastic semismooth Newton method for stochastic optimization problems in Hilbert spaces where the objective is strongly convex with Lipschitz continuous, Newton differentiable gradient. Gradient and generalized Hessian information are only available through mini-batching. In each iteration, a full semismooth Newton trial step is accepted or rejected based on a stochastic residual test and rejected steps are replaced by damped steps in the same Newton direction. Throughout, we admit gradient estimators with affinely growing variance, as arises in optimization problems with random partial differential equations as constraints. We prove non-asymptotic global R-linear convergence in expectation as well as almost sure convergence. For sufficiently fast-growing batch sizes, the method transitions almost surely into a regime of pure Newton steps and converges R-superlinearly almost surely. The method is applied to the optimal control of a random elliptic equation featuring a Huber tracking term as well as a random parabolic equation with a Moreau--Yosida penalization of an almost sure state constraint.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08061v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "25 pages, 3 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08015v1",
+      "title": "Funnel MPC for port-Hamiltonian systems",
+      "authors": [
+        "Loris Könitzer",
+        "Jonas Kirchhoff",
+        "Thomas Berger"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T13:36:46Z",
+      "summary": "Port-Hamiltonian systems are an energy-based modelling formalism, that has strong ties to the physical models and allows interconnection of systems. Funnel MPC, a Model Predictive Control (MPC) scheme, allows for output tracking with prescribed error bounds. Earlier works focused on systems with stable internal dynamics, which typically excludes port-Hamiltonian systems. We introduce a modified stage cost design that takes into account the port-Hamiltonian structure of the system and allows deactivation of the funnel cost. We show initial and recursive feasibility for a class of port-Hamiltonian systems with relative degree one including unstable internal dynamics.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08015v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07968v1",
+      "title": "Quantifying the remaining search space in analogue optimisation",
+      "authors": [
+        "Jona Nagerl",
+        "Younes Naceur",
+        "Natalia G. Berloff"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T13:01:12Z",
+      "summary": "Benchmarking analogue optimisers requires certifying not only how close a returned energy is to the optimum, but also how many better configurations may remain. Semidefinite relaxations provide rigorous bounds on the ground-state energy and selected observables, yet reveal little about the size of this residual search space. We introduce a deterministic, instance-specific upper bound on the number of binary configurations whose energies improve upon a returned state by a prescribed margin. Combined with a semidefinite energy interval, this yields a complementary certificate of both the magnitude and multiplicity of any possible improvement. To judge an analogue optimiser's native performance, we provide a generalisation of the framework to obtain bounds on the Haar volume of the remaining continuous phase-space. To further characterise the remaining search space, we extend our bounds to resolve regions in configuration space in both the binary and continuous setting. Our approach couples a variational-Chernoff reduction with an elimination bound of the resulting partition function. Comparisons with exact enumeration and independent Haar sampling are consistent with the bounds on small instances. In numerical experiments at $N=1000$, even the largest family-median bound restricts the potentially improving binary configurations to less than $10^{-144}$ of the full configuration space, while the largest upper bound on the corresponding Haar volume is of order $10^{-499}$.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07968v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cond-mat.dis-nn",
+        "physics.comp-ph"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cond-mat.dis-nn (无序系统与神经网络)",
+        "physics.comp-ph (计算物理学)"
+      ],
+      "comment": "17 pages, 5 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07965v1",
+      "title": "Reversible Dynamics, Asymmetric Actions: Parking as a Trajectory-Level Affordance",
+      "authors": [
+        "Adam Y. Shavit"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T13:00:12Z",
+      "summary": "Drivers are often told to back into a tight parking space, not drive in nose first. The advice looks paradoxical, because a slow car is dynamically reversible: reverse its speed and replay the steering backward, and it retraces a feasible path. Played backward, though, reverse-in shows a car driving forward out of the space. Reverse-in and forward-in are different tasks: they share a start position but end facing opposite ways. We separate three clearances between car and obstacles. Static fit $F$ is the clearance the parked car keeps at its best acceptable destination pose. Eventual access $A_\\infty$ is the clearance it can keep all the way there with unlimited corrections. Resource-bounded access $A_K$ is the clearance that survives a budget of $K$ reversals, switches between forward and reverse. They satisfy $F\\ge A_\\infty\\ge A_K$. In one fully specified scene (one car, bay, aisle and start), a certified argument proves $A_\\infty=F=0.5000$ m for both tasks. In this scene, all certified forward/reverse asymmetry therefore arises at finite $K$: it lies in how many corrections each task needs, not in the clearance either can eventually keep. With one reversal, an explicit path gives reverse-in at least $0.4410$ m clearance. A certified reachability argument caps forward-in's one-reversal clearance at $d_0<0.1720002$ m. With two reversals, forward-in gets at least $0.2833$ m. To keep a clearance strictly above any $d$ with $d_0\\le d<0.2833$ m, reverse-in thus needs exactly one reversal and forward-in exactly two when both tasks move forward first. If both move in reverse first, the counts are two and three. The contrast depends on the start position (Section 4.15). Proposed experiments test whether observers distinguish fit, eventual access and budgeted access. They compare these with simpler cues, such as how the turning body sweeps, and learned manoeuvre labels.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07965v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC",
+        "cs.RO",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)",
+        "cs.RO (机器人学与具身智能)",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "79 pages, 15 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07958v1",
+      "title": "On the Spectral Dependence of Decentralized Stochastic Gradient Tracking",
+      "authors": [
+        "Sulaiman A. Alghunaim",
+        "Haoyuan Cai",
+        "Ali H. Sayed"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T12:55:35Z",
+      "summary": "We study how the spectral geometry of the mixing matrix enters the convergence of decentralized stochastic gradient tracking (GT) for smooth strongly convex problems. General bounds contain the factor $Δ_λ^{-3}$ in the higher-order stochastic term, where $Δ_λ$ is the absolute spectral gap. We show that, even for two agents with identical quadratic objectives, the exact steady-state mean-square disagreement scales as $α^2σ^2Δ_λ^{-3}$ as the nontrivial eigenvalue approaches $-1$, provided the stepsize $α$ is sufficiently small relative to the gap. Here $σ^2$ is the gradient-noise variance. By unrolling the disagreement recursion, we establish a stochastic bound that averages all nontrivial eigenvalue contributions for diagonalizable mixing matrices, up to an eigenvector conditioning factor. As a real or complex eigenvalue approaches the unit circle away from $1$, its contribution grows as the inverse cube of its distance to the circle; growth can be slower near $1$. For symmetric mixing with gaps $p$ at $1$ and $ν$ at $-1$, the weighted sum $θ_1/p+θ_2/ν^3$ replaces the prior factor $(Δ_λν^2)^{-1}$. For $N$ agents, $Nθ_1$ and $Nθ_2$ count the nonnegative and negative nontrivial eigenvalues, respectively. On a symmetric family, a finite-horizon lower bound for the average iterate matches the worst-case factor $p^{-1}+ν^{-3}$ up to universal constants. Numerical experiments confirm the predicted scaling.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07958v1.pdf",
       "source": "arxiv",
       "primary_category": "math.OC",
       "categories": [
@@ -29,121 +458,28 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.06879v1",
-      "title": "Adaptive Multi Mode: Budget-Aware Routing of Optimizers By Online Landscape Probes",
+      "paper_id": "2611.07902v1",
+      "title": "XM4D: 4D Reconstruction through Certifiable Geometric Optimization",
       "authors": [
-        "Benjamin Jacob Bodner"
+        "Haoyu Han",
+        "Jack Benarroch Jedlicki",
+        "Jiahui Lei",
+        "Heng Yang"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T18:35:35Z",
-      "summary": "The best classical optimizer for a continuous black-box problem depends on its budget and landscape. Existing routers decide from the dimension and budget, past improvement or features fitted to one benchmark, and few test an optimizer's implicit assumptions online. AMM (Adaptive Multi Mode) routes a known budget among quasi-Newton, trust-region, coordinate, multistart and evolution-strategy optimization engines with online probes of curvature, plateaus, separability, kinks, basins and fractal structure. Each probe has a default, a dimension-by-budget validity range and a cost charged to the budget. In its pre-registered development loop on bbob, 32 of 36 predictions held over the last 16 confirmations. AMM was then tested once on held-out bbob instances 101-110 (D=2-40, 10*D-1000*D) against up to seven competitors. It has the highest target share in 382 of 600 function-dimension-budget cells (236 outright, 146 tied) and, by a descriptive posterior rule, is credibly behind in 35, mostly at 10*D and 30*D. At every budget it also leads the controls built from its own engines (the best engine alone, the best engine per dimension and budget, and a greedy schedule), narrowly at 10*D and 30*D, and nevergrad's NgIohTuned. In pre-registered runs its lead over IPOP-CMA-ES holds under affine and box transformations, on box-constrained bbob and, pooled, on rotated f2-f4, but rotating the separable f3 and f4 removes most of the lead there. On held-out MA-BBOB its final share at 2000*D is level with IPOP-CMA-ES's and its anytime area lower. We published AMM as an open-source Python package (pip install amm-optimizer; https://github.com/BjBodner/amm-optimizer).",
-      "pdf_url": "https://arxiv.org/pdf/2611.06879v1.pdf",
+      "published_at": "2026-11-05T12:20:52Z",
+      "summary": "Accurate 4D reconstruction remains challenging: jointly estimating camera motion, scene geometry, and non-rigid deformation entails highly nonconvex optimization, making global optimality difficult to guarantee. We present XM4D, a framework for accurate and efficient 4D reconstruction built upon certifiably globally optimal geometric optimization. By separating the estimation of camera motion from non-rigid deformation, we formulate both stages as structured quadratically constrained quadratic programs (QCQP) that admit semidefinite programming (SDP) relaxations and verifiable global optimality certificates. For camera motion estimation, we lift static point tracks into 3D using foundational depth prediction models and formulate a scaled bundle adjustment problem that jointly estimates camera poses, depth scales, and static landmarks. By analytically eliminating translations and landmarks, we reduce the problem to a QCQP over scaled rotations. For non-rigid reconstruction, we represent dynamic motion using an embedded deformation graph (EDG) and show that its tracking, rigidity, and temporal regularization objectives similarly reduce to a rotation-only QCQP. Both problems admit SDP relaxations that we solve efficiently with a GPU-accelerated Burer-Monteiro solver based on Riemannian optimization. The recovered geometry further initializes dynamic Gaussian splatting for photometric refinement. Extensive experiments across seven benchmarks demonstrate accurate camera motion estimation on both static and dynamic scenes, efficient optimization that scales to thousands of frames, and state-of-the-art novel-view rendering quality.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07902v1.pdf",
       "source": "arxiv",
-      "primary_category": "cs.LG",
+      "primary_category": "cs.CV",
       "categories": [
-        "cs.LG",
-        "cs.NE",
+        "cs.CV",
+        "cs.RO",
         "math.OC"
       ],
       "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.NE (神经与进化计算)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "29 pages, 8 figures, 19 tables. Code: https://github.com/BjBodner/amm-optimizer",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06823v1",
-      "title": "Optimal Holding Times for Entanglement Swapping",
-      "authors": [
-        "Van Sy Mai",
-        "Richard J. La",
-        "Abdella Battou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T17:32:52Z",
-      "summary": "We revisit the optimization of entanglement holding times in memory-based quantum repeaters for maximizing entanglement swapping throughput under different fidelity constraints - strict, probabilistic, and mean. We consider two heterogeneous quantum links that are equipped with single or multiple memories and differ in decoherence rates, memory capacities, entanglement attempt rates and success probabilities, as well as classical communication latencies. Efficient models are developed to estimate the expected entanglement throughput and the probability density functions of the conditional wait time to swap. The models are then used to satisfy different fidelity requirements by optimizing the maximum holding times for the two links. Finally, our proposed model and approach are validated with a discrete-event quantum network simulator.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06823v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "8 pages, 2 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06739v1",
-      "title": "Deterministic Oracle Complexity for Goldstein Stationarity in Nonsmooth Nonconvex Optimization with Constraints",
-      "authors": [
-        "Yixi Ding",
-        "Ya-xiang Yuan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:22:49Z",
-      "summary": "We consider the deterministic oracle complexity of finding a $(δ,ε)$-Goldstein stationary point of a Lipschitz function under constraints. The problem is posed in $\\mathbb{R}^d$, where $d$ denotes the dimension; constraints are specified either by a closed feasible set or by a single explicit inequality. For closed feasible sets that are star-shaped with respect to an interior ball, including all convex bodies, we use a resisting-oracle construction to show that every deterministic algorithm needs $Ω(ε^{-2})$ objective-oracle calls in the worst case when $d\\gtrsimε^{-2}$ and $δ\\lesssimε$. For explicit inequalities satisfying uniform Goldstein constraint qualification and strict feasibility, finding Goldstein KKT stationary points requires exponentially many oracle calls in $d$ in the worst case, even at fixed stationarity accuracy. This exponential dependence holds under dimension-independent constraint regularity and strict-feasibility bounds, with a sufficiently small neighborhood radius and complementary slackness error. The result covers common constraints such as ball and box constraints and also allows nonconvex feasible regions. For convex coercive constraints with a Slater point, the resisting-oracle argument also gives an $Ω(ε^{-2})$ oracle-call bound in the same dimension and radius regime while allowing a larger complementary slackness error. These results hold for all deterministic algorithms using a local oracle, whether or not the returned point was queried. Each constructed objective has a strictly feasible global minimizer; the lower bounds therefore concern the information required to find stationary points, not their existence.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06739v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "26 pages, 1 figure",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06722v1",
-      "title": "Technical Report: Partially Asynchronous Distributed Optimization on Riemannian Manifolds",
-      "authors": [
-        "Adam Pooley",
-        "William Warke",
-        "Matthew T. Hale"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:12:37Z",
-      "summary": "There is a large body of work on distributed optimization for problems in Euclidean space. However, many existing algorithms and analyses do not directly transfer to problems defined on smooth manifolds. Therefore, in this paper we propose a distributed asynchronous optimization algorithm for problems on Riemannian manifolds. The algorithm we develop is a parallelized form of Riemannian block coordinate descent in which all agents can compute and communicate asynchronously. We assume only \"partial asynchrony\", namely that all delays in computations and communications obey some finite bound. We relax common assumptions by requiring neither convexity of the objective nor compactness of the manifold. Under mild conditions, we prove that agents' iterates drive the Riemannian gradient of their objective to zero, and we derive a rate of convergence for the norm of the gradient. Under different communication delays and numbers of agents over a finite horizon, we empirically show that our algorithm achieves a suboptimality of up to 730 times smaller than that of a synchronous baseline algorithm in an example simulation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06722v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "20 pages, 5 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06713v1",
-      "title": "Multi-Step Performance Estimation for Gradient Descent under the Polyak Lojasiewicz Condition",
-      "authors": [
-        "Wanli Hong",
-        "Shuyang Ling"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:09:26Z",
-      "summary": "Gradient descent is a fundamental algorithm in machine learning and statistical inference. Performance estimation provides a systematic framework for obtaining sharp convergence bounds through semidefinite programming. We study the worst-case performance of constant-stepsize gradient descent over the class of $L$-smooth functions satisfying the $μ$-Polyak--Łojasiewicz (PŁ) inequality. We formulate the $N$-step objective-gap analysis as a semidefinite programming (SDP) relaxation based on pairwise smoothness constraints and pointwise PŁ inequalities. Since an exact interpolation condition for smooth PŁ functions is not currently available, the resulting SDP provides a valid upper bound on the true worst-case performance. We solve a reduced SDP retaining only consecutive-pair smoothness constraints analytically for every horizon $N$ and every stepsize $t\\in(0,2/L)$. The solution exhibits three stepsize regimes. For $0<t\\leq 1/L$ and $1/L<t\\leq \\sqrt{3}/L$, the reduced and full pairwise SDPs have the same optimal value, and the one-step SDP contraction factor tensorizes to a geometric $N$-step rate. For $\\sqrt{3}/L<t<2/L$, the reduced-SDP value is nongeometric in the horizon: an initial transient phase is followed by eventual geometric decay. The resulting asymptotic contraction factor is tight for the full pairwise SDP and strictly improves the bound obtained by recursively applying the one-step estimate. Explicit primal and dual feasible solutions certify the results, with numerical SDP experiments guiding their construction. Our results show that analyzing several iterations together can give a better convergence bound than repeatedly applying the sharp one-step SDP bound in the Regime III.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06713v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.RO (机器人学与具身智能)",
         "math.OC (运筹学、优化与控制论)"
       ],
       "comment": null,
@@ -151,413 +487,16 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.06672v1",
-      "title": "Robust Markov Decision Processes: An Introduction Using Convex Optimization and Game Theory",
+      "paper_id": "2611.07837v1",
+      "title": "Quantifying and minimizing collision intensity in stationary crowd flow",
       "authors": [
-        "Julien Grand-Clément"
+        "Yuri Ashrafyan",
+        "Diogo A. Gomes"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T15:45:36Z",
-      "summary": "The goal of these notes is to provide a unified and rigorous introduction to robust sequential decision-making. We offer a self-contained introduction to the main results in the field. After a concise introduction to MDPs we introduce robust MDPs with general uncertainty sets, before focusing on rectangular models of uncertainty. We make a significant effort to show connections between robust MDPs and several other popular models for sequential decision-making: MDPs with uncertain rewards, Multi-Objective MDPs and Pareto optimality, MDPs with time-varying uncertain parameters, non-rectangular robust MDPs, stochastic games, distributionally robust MDPs, and risk-averse MDPs. Having all these results in one place, within a single unifying formalism, will hopefully be useful for researchers who want to start working on this topic. The exposition combines operator and fixed point approaches, convex optimization (more specifically, duality in saddle-point problems), and game-theoretic arguments. The latter identifies robust MDPs with a certain type of two-player game; this helps build useful intuition, especially when constructing counterexamples.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06672v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06591v1",
-      "title": "Dual-Mode Extremum Seeking for Diffusion Systems with Boundary-Cost Feedback",
-      "authors": [
-        "Martin Guay",
-        "Denis Dochain"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T14:44:24Z",
-      "summary": "Thermally tuned devices pose a basic control problem. A heater on one edge of a thin plate must hold a small element at an unknown optimal temperature, and the only signal available is the device's own performance. Boundary measurements of {such} an unknown performance objective can be used to tune a diffusion process without reconstructing its spatial state. This paper studies a dual-mode extremum-seeking controller for this setting, modeled as a semilinear diffusion equation on a square with nonuniform boundary actuation. The implementation contains two scalar states and exploits the leading attenuation and \\rev{$π/4$} phase \\rev{lag} of the diffusion response, a property shared by every periodically heated surface. It requires neither numerical plant coefficients nor the sign of the input gain. An energy estimate first establishes exponential stability of a coupled linear diffusion and controller model. A local bound on the remaining reaction and cost nonlinearities then yields stability and disturbance estimates for the averaged system. Complete kernel and boundary-trace arguments justify a change of coordinates that compares the implemented and averaged trajectories for all time. The resulting practical stability guarantee concerns the field, input bias, and sensitivity estimate, and is unaffected by a constant cost offset under corresponding filter initialization. At fixed dither amplitude, the residual state bound decreases with the inverse square root of frequency, while the ultimate cost bound decreases with its inverse. A thermal optical-filter example illustrates the predicted trends and the conservatism of the sufficient conditions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06591v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC",
-        "math.AP"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)",
-        "math.AP (偏微分方程 (PDE))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06538v1",
-      "title": "Constrained Mean Variance Portfolio Selection under Reflected Factor Dynamics: Stochastic Riccati Equations, Neumann Problems,and a Deep Solver",
-      "authors": [
-        "Zhecheng Huang",
-        "Guojiang Shao",
-        "Qi Zhang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T14:08:40Z",
-      "summary": "We study extended stochastic Riccati equations (ESREs) arising in constrained continuous time mean variance portfolio selection with random market coefficients. Reflected Markovian diffusions are introduced to model factor dynamics in a bounded state space, naturally leading to homogeneous Neumann boundary conditions. A logarithmic transformation converts the extended stochastic Riccati equations into quadratic backward stochastic differential equations (BSDEs) driven by the reflected factors. We establish their probabilistic representation through semilinear parabolic Neumann problems and prove existence and uniqueness of bounded continuous viscosity solutions. Existence is obtained through stability and comparison arguments for quadratic BSDEs, whereas uniqueness is established by combining a Kobylanski-type transformation with a viscosity comparison principle adapted to the Neumann boundary setting. We further develop a Deep BSDE method combining reflected-path simulation, geometry-aware boundary treatment, and efficient evaluation of the constrained Hamiltonian. Numerical experiments demonstrate the effectiveness of the method, providing a mesh-free framework for high-dimensional constrained portfolio problems with Neumann boundary.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06538v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06502v1",
-      "title": "A Variational Quantum Algorithm for Multi-Skill Project Scheduling",
-      "authors": [
-        "Raul Martinez",
-        "Miguel Sánchez-Beato",
-        "Matilde Osa",
-        "Jorge Parra",
-        "Mario Calonge"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T13:33:10Z",
-      "summary": "Job scheduling is an NP-hard optimization problem with clear industrial relevance. In practice, distributing work across a team is not only about meeting deadlines or improving productivity; it also affects fatigue, stress, and employee well-being. Variational Quantum Algorithms (VQAs) provide a promising way to address these problems through QUBO formulations, although their scalability on near-term NISQ hardware is still limited by Hilbert-space growth and barren plateaus. In this work, we simulate a VQA for a realistic Multi-Skill Resource-Constrained Project Scheduling Problem (MS-RCPSP), including worker capacities, skill matrices, task priorities, deadlines, and calendar stability during rescheduling. To keep the problem within a near-term circuit size, we use a temporal batch decomposition that solves one day at a time, propagates the remaining workload, and combines it with a logarithmic binary encoding that keeps every batch at or below 30 qubits. Because the ground state of a QUBO Hamiltonian is a computational basis state, entanglement is not required to represent the solution, raising the question of whether it helps or hinders ansatz training. We address this question by comparing the linear and brick-wall entangling topologies of a hardware-efficient ansatz with an entanglement-free reference that has the same number of parameters and by training every configuration with COBYLA and with Adam using SPSA gradient estimation. For the instance and initialization studied, the entanglement-free reference produced feasible schedules under both optimizers. With COBYLA, it produced the feasible schedule closest to the required workload at a fraction of the simulation cost of the entangled topologies, indicating that entanglement did not improve the solutions found by the VQA.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06502v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "15 pages, 5 figures, 4 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06495v1",
-      "title": "Constrained defined-contribution pension management: A reparameterized neural network approach",
-      "authors": [
-        "Yueman Feng",
-        "Wenyuan Li"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T13:30:05Z",
-      "summary": "This paper studies constrained defined contribution (DC) pension management under a two-factor financial market model. The pension participant is allowed to invest in cash, two nominal bonds, an inflation-linked bond, and a stock index. Moreover, they can also purchase term life insurance to manage pre-retirement death risk. Unlike traditional literature, we consider a pension member restricted to a general non-empty, closed, and convex trading constraint set that includes no short-selling, no borrowing, and portfolio-mix constraints as special cases. Such restrictions reflect common limits on pension-account trading. To solve the problem, we construct a family of unconstrained artificial markets, in which the original trading constraints are satisfied by adjusting the drift terms of the risky assets. Using a duality transformation, we derive the Lagrangian dual problem and propose a reparameterized neural network method to compute lower and upper bounds on the primal value function. We calibrate our model with U.S. data using a Kalman filter method, and find that our method produces a smaller duality gap than the benchmark methods. We also compare the constrained results with the unconstrained explicit solution and find that trading constraints substantially change wealth accumulation, portfolio strategies, and insurance demand. This highlights that unconstrained solutions may provide misleading guidance for pension management in practice.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06495v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06466v1",
-      "title": "Phase Locking in Oscillator Networks with Uncertain and State-Dependent Couplings",
-      "authors": [
-        "Iva Bačić",
-        "Philipp C. Böttcher",
-        "Marc Hunkemöller",
-        "Carsten Hartmann",
-        "David Gross"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T13:03:20Z",
-      "summary": "Phase locking in oscillator networks depends critically on the interaction strengths between coupled units. In many applications, however, these couplings are uncertain, state dependent, or time varying. We derive rigorous conditions for phase locking in Kuramoto-type networks when each coupling strength is known only within prescribed bounds. Building on a convex formulation of the nonlinear fixed-point equations, we obtain edge-wise error bounds for arbitrary feasible approximations that hold uniformly over all admissible couplings. These bounds yield sufficient conditions for the existence of phase-locked states with prescribed phase-difference limits. We illustrate the framework for AC power grids with uncertain voltage magnitudes and adaptive oscillator networks with state-dependent couplings. For the latter, the bounds can be further tightened by exploiting the state dependence of the couplings.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06466v1.pdf",
-      "source": "arxiv",
-      "primary_category": "nlin.AO",
-      "categories": [
-        "nlin.AO",
-        "eess.SY",
-        "math.DS",
-        "math.OC",
-        "physics.soc-ph"
-      ],
-      "category_names_zh": [
-        "nlin.AO (自适应与涌现)",
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "math.DS (动力系统)",
-        "math.OC (运筹学、优化与控制论)",
-        "physics.soc-ph (物理与社会科学 (复杂系统))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06404v1",
-      "title": "The optimal barrier parameter of the three-dimensional power cone",
-      "authors": [
-        "Rui-Jin Zhang",
-        "Wenhao Fu",
-        "Yu-Hong Dai"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T12:05:35Z",
-      "summary": "We determine the optimal logarithmically homogeneous self-concordant barrier parameter for the three-dimensional power cone. Although several self-concordant barriers for this cone have been constructed, its optimal barrier parameter had remained unknown. For a power cone with exponent $c\\in(0,1)$, we prove that the optimal parameter is $\\frac{3}{1+\\min\\{c,1-c\\}}$. Except at $c=1/2$, this value is strictly smaller than the parameter $3-2\\min\\{c,1-c\\}$ of Chares' conjectured barrier. At $c=1/2$, the optimal parameter equals $2$, in agreement with the optimal barrier parameter of the second-order cone. The proof combines a sharp lower bound for arbitrary logarithmically homogeneous self-concordant barriers with an explicit barrier attaining the bound.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06404v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "25 pages, 1 figure",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06401v1",
-      "title": "Twofold Control: Simultaneous Optimization of Initial Conditions and Control Inputs",
-      "authors": [
-        "Martin Lazar",
-        "Mara Vlašić"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T12:04:47Z",
-      "summary": "The paper introduces a novel control notion, twofold controllability, which consists of the joint optimisation of the initial state and the distributed control input in a controlled dynamical system, with the aim of reaching a prescribed target state within a given time interval. We show that the resulting problem is well-posed, derive the corresponding optimality conditions, and provide an explicit formulation of its solution. The proposed approach ensures the reachability of any target state independently of the Kalman rank condition. We show that incorporating the additional control component enlarges the set of states reachable with a fixed control cost. At the same time, the average energy required to reach target vectors on the unit sphere decreases. Furthermore, we analyse the asymptotic behaviour as the cost of controlling the system through the initial state tends to infinity. Particular attention is paid to the case in which the controllability Gramian is singular and the classical notion of controllability does not hold. The theoretical results are illustrated by numerical examples, including ones arising from the semi-discretisation of the heat and wave equations with boundary control.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06401v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06315v1",
-      "title": "Exact certification for conic optimization over quadratic modules: partitions of unity and recession directions",
-      "authors": [
-        "Didier Henrion",
-        "Alaa Ibrahim",
-        "Victor Magron"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T10:49:14Z",
-      "summary": "We consider linear conic problems whose cone is a product of truncated quadratic modules, the sum-of-squares (SOS) side of the moment-SOS hierarchy. A floating-point solution is turned into an exact rational certificate in three steps: rounding, repair of each block residual by a constant, and absorption of the constants along a recession direction of the problem. The repair relies on strict partitions of unity in the quadratic modules. We characterize their existence, relate the canonical one to the analytic center of the dual pseudo-moment cone, Christoffel-Darboux polynomials and Pell equations, and we derive closed-form rational partitions for balls and boxes. The loss incurred by the certification is the optimal value of a recession problem, equal to a support function of the masses of the dual feasible pseudomoments. The method is illustrated on polynomial optimization, volume computation and positivity of polynomials along D-finite trajectories.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06315v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.SC",
-      "categories": [
-        "cs.SC",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "cs.SC (符号计算与计算机代数)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06252v1",
-      "title": "Law-Dependent Poisson-Refresh Randomised Feedback Control for Stochastic Systems",
-      "authors": [
-        "Randa Herzallah"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T10:01:40Z",
-      "summary": "This paper studies a continuous-time probabilistic control problem for stochastic systems in which the feedback law assigns a probability distribution over control inputs. The control is modelled as a law-dependent Poisson-refresh process: it is held constant between refresh times and resampled at Poisson times from a feedback rule depending on the current state and state law. The closed-loop system is therefore formulated as a jump--diffusion for the joint state--control process. The objective is to design the sampling rule by comparing the realised closed-loop system with a prescribed reference description. The cost separates two local terms: a relative-entropy penalty for the instantaneous refresh kernel and a state-side drift-mismatch cost. The state-side term is evaluated at the realised control value and is motivated by a frozen-control Girsanov identity. Under global Lipschitz, moment, and uniform ellipticity assumptions, we prove well-posedness of the closed loop and a dynamic programming principle on the joint state--control law space. For linear data and admissible mean-dependent affine-Gaussian refresh rules, the full joint law need not remain Gaussian, but the first and second moments of the joint state--control process close exactly. This yields a deterministic reduced control problem on moment space, with an explicit running cost, a reduced Hamiltonian, and a verification theorem.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06252v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "Submitted to Applied Mathematics & Optimization (Springer Nature)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06224v1",
-      "title": "Calmness Modulus of Parameterized Convex Constraint Systems: Exact Closed-Form Formulas via Second-Order Admissibility",
-      "authors": [
-        "Jesús Camacho"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T09:34:46Z",
-      "summary": "We resolve the open problem of deriving an exact, closed-form algebraic formula for the calmness modulus of $\\mathcal{C}^2$ convex constrained feasible set mappings $\\mathcal{F}(b) := \\{ x \\in \\mathbb{R}^n \\colon f_t(x) \\le b_t, \\, \\forall t \\in T \\}$ under right-hand side perturbations at a given pair of the graph $(\\bar{b}, \\bar{x})$. First, under the condition $0_n \\in \\mathrm{int}\\left(\\mathrm{conv}\\left\\{ \\nabla f_t(\\bar{x}) ,\\; t \\in T(\\bar{x}) \\right\\}\\right)$, we prove that the calmness modulus coincides with the inverse distance from the origin to the boundary of the nominal subdifferential. Second, for general $\\mathcal{C}^2$ convex systems where the previously mentioned interior condition does not hold, we introduce a second-order admissibility filtering over the active indexes. We show that this filtered family, $\\mathcal{D}^0_2(\\bar{x})$, yields an exact characterization of the calmness modulus relying solely on nominal data.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06224v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06183v1",
-      "title": "Improving Hydrofoil Efficiency Through Simulation-Driven Design Optimization",
-      "authors": [
-        "Ante Sikirica",
-        "Ivana Lučin",
-        "Marta Alvir",
-        "Tin Matulja"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T09:01:09Z",
-      "summary": "Foil windsurfing is a sport in which competitors fine-tune their setup to optimize performance under varying environmental conditions. However, such adjustments are typically guided by intuition. This paper presents a methodology for improving hydrofoil design using computational fluid dynamics. First, structured light scanning was used to obtain the geometry of a conventional hydrofoil. Subsequently, five derived designs have been explored, inspired by advancements in airplane wing design. Following this, a preliminary design was selected, and a design of experiments approach was implemented. Generated simulation data were used to train a machine learning surrogate, which is ultimately used in the multi-objective design optimization. While the surrogate-based approach yielded promising results, it was limited to exploring a restricted set of design parameters. To overcome this constraint, additional improvements were attained through adjoint optimization, demonstrating that comparable performance can be achieved with a distinctly different hydrofoil design. Finally, the conventional design was refined through adjoint optimization. Notably, adjoint optimization yielded a 15% increase in efficiency. The results suggest that both proposed approaches can produce novel hydrofoil designs capable of outperforming the original configuration under specific conditions; however, due to its inherent flexibility, the adjoint approach with realistic constraints offers more freedom in the design exploration process.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06183v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "36 pages",
-      "journal_ref": "Ocean Engineering 347 (2026) 123943",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06125v1",
-      "title": "The Convergence Rate of Accelerated Proximal Gradient Methods with General Inertia Term for Convex Composite Multiobjective Optimization",
-      "authors": [
-        "Chengzhi Huang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T08:10:17Z",
-      "summary": "We study accelerated proximal gradient methods with general stepsizes for convex composite multiobjective optimization, in which every objective is the sum of a smooth convex term and a proper closed convex extended-valued term, and the proximal subproblem retains a separate offset for each objective. The momentum coefficient may depend on the computed trajectory. For a two-parameter root momentum rule we prove boundedness, weighted square summability of the displacements, a merit-function rate of $o(k^{-2})$, and displacement decay of $o(k^{-1})$ whenever the first parameter converges to a value in $(0,1)$; the second parameter need not converge or have bounded total variation. The analysis is organized as a chain of basic estimates, an energy identity, coefficient asymptotics, and auxiliary lemmas that are reused in every regime. For the critical parameter $α=3$ we establish the finite bound $u_0(x^N)\\le 2\\ell R/[N(N+3)]$, square summability of the displacements, displacement decay $O(1/N)$, and convergence of the full sequence to a weak Pareto point. The remaining little-o question at $α=3$ is shown to be exactly the vanishing of a nonnegative critical energy, so it is separated from the large-$O$ estimate rather than left as a missing step. For $1<α<3$ we give the rate $O(N^{-(α-1)})$ and for every $α>0$ the qualitative conclusion $u_0(x^k)\\to0$, $F_i(x^k)\\to c_i$, and $\\sum_k D_k/k<\\infty$. A table summarizes the rate picture over the whole positive range of $α$, and a JOS1 experiment illustrates the predicted little-$o$ separation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06125v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06021v1",
-      "title": "Attraction-Ranking Mismatch in Out-of-Distribution Detection: Theory and Evidence from Hamiltonian Feature Dynamics",
-      "authors": [
-        "Zilin Wang",
-        "Lianghai Xiao"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T06:17:36Z",
-      "summary": "Attracting features toward learned in-distribution (ID) regions is an intuitive strategy for out-of-distribution (OOD) detection, but does such attraction improve detection? We investigate this question using class-conditioned Hamiltonian dynamics as a controlled testbed and identify an attraction-ranking mismatch: improving individual class-affinity scores need not improve the relative ordering of ID and OOD samples. Our analysis separates misalignment between the driving field and the detection score from ranking failure that persists even when they are aligned. An exact AUROC decomposition and a local boundary analysis identify relative score changes at the ID-OOD ranking boundary as the source of first-order AUROC change under regularity conditions. Experiments demonstrate that a score-aligned rule can improve performance on a held-out source validation split yet consistently degrade it after transfer, even without a single winning-class change. A separate perturbation study finds that near-boundary relative score changes track the direction of small AUROC changes in the tested settings. Finally, centroid approximation and shared scales connect the zero-step score to a static centroid family that includes the existing CTM detector. Together, these results explain why class attraction is insufficient to justify feature refinement and motivate evaluating its effect on the ranking boundary.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06021v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "24 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05884v1",
-      "title": "Weak and strong convergence of a general splitting approach for monotone multioperator inclusions",
-      "authors": [
-        "Minh N. Dao",
-        "Matthew K. Tam",
-        "Thang D. Truong"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T03:18:44Z",
-      "summary": "In this paper, we study a general forward-backward splitting approach for monotone inclusion problems that simultaneously accommodate set-valued, monotone Lipschitz continuous, and cocoercive operators. Weak convergence is established under a general setting. Strong convergence is obtained when both the maximally monotone operators are linear relations and the monotone Lipschitz continuous and cocoercive operators are linear. When the set-valued operators are normal cones to closed linear subspaces, we derive an explicit characterization of limit points of generated sequences using a new technique. Numerical experiments on a quadratic minimization problem with multiple-set split feasibility constraints are presented to illustrate the theoretical results.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05884v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05869v1",
-      "title": "On Convergence of Gradient Temporal-Difference Learning with Regularized Corrections and Eligibility Traces",
-      "authors": [
-        "Jingyi Jin",
-        "Martha White",
-        "Hao Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T03:02:33Z",
-      "summary": "Temporal-difference (TD) learning underlies many prediction and control algorithms, but can diverge when combined with off-policy learning, bootstrapping, and function approximation. TD with Regularized Corrections (TDRC) is theoretically sound and practically simple, but existing convergence theory covers only the one-step case under i.i.d. sampling, while the Huber Bellman-error formulation has not been extended to TDRC or eligibility traces. In this work, we establish convergence of constrained TDRC($λ$) with diminishing stepsizes and non-i.i.d. off-policy data, for state-dependent and history-dependent $λ$-parameters. We also propose TDRC($λ$)-Huber, which preserves the TDRC($λ$) fixed point while reducing sensitivity to large Bellman errors. For both algorithms, we apply an ODE-based weak-convergence method from stochastic approximation theory. For the nonlinear mean dynamics of TDRC($λ$)-Huber, we give an integral small-gain condition that guarantees uniqueness and global asymptotic stability of the target equilibrium. We then establish convergence of the constrained algorithm, derive computable sufficient conditions for convergence, and identify a regularization-based convergence mechanism shared by linear TDRC($λ$) and TDRC($λ$)-Huber. When the mean TD matrix is positive stable, both constrained algorithms converge under sufficiently strong regularization without requiring positive definiteness.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05869v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "66 pages, 1 figure. Submitted to the Journal of Machine Learning Research",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05845v1",
-      "title": "Effect of a fourth-order diffusion term on the robustness of the transfer function stability for hyperbolic systems",
-      "authors": [
-        "Eduardo Cerpa",
-        "Felipe Labra"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T02:35:36Z",
-      "summary": "We study a $2\\times2$ hyperbolic system with anti-located control and observation. It is well known that the system can be stabilized with a delayed output-feedback control and that, unfortunately, this design is arbitrarily sensitive to small errors in the transport velocity. It was recently proved that adding a second-order diffusion term to the system restores robustness. We show that the same phenomenon occurs with a fourth-order diffusion term: the maximal spectral abscissa of the closed-loop system converges, as the diffusion parameter goes to zero, to the explicit value $-\\ln(2)$, and the resulting stability margin is robust to small perturbations of the transport velocity. This additional term leads to a quartic characteristic equation whose roots have no tractable closed-form expression. We develop an asymptotic classification of its four roots and use it to obtain a first-order expansion of the transfer function with an explicit error bound. Combining this expansion with a topological degree argument, we show that $-\\ln(2)$ is in fact the exact limiting value of the spectral abscissa, extending to the fourth-order case the sharpness result previously available only for second-order diffusive terms.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05845v1.pdf",
+      "published_at": "2026-11-05T11:15:52Z",
+      "summary": "We develop a continuum model to quantify kinematic collision risk in stationary crowd flow. From the density-weighted inward relative flux, we derive a collision functional based on the symmetric velocity gradient. For incompressible flows with constant density, this functional is convex and positively homogeneous of degree one in a combination of second derivatives of the stream function. We minimize it subject to prescribed boundary flux. On bounded simply connected domains with Lipschitz boundary, under a finite-energy lifting assumption, we prove existence of minimizers in a relaxed class that allows this derivative combination to be a vector-valued Radon measure. We show that disks are the only domains with a nontrivial zero-trace kernel, corresponding to rigid rotation about the center. Using the compact embedding for functions of bounded deformation, we prove that relaxed energy sublevels are compact without normalization on every other admissible domain, and after removing one rotational component on disks. We identify the relaxed functional with the strong $W^{1,1}$ lower semicontinuous envelope of the functional on the prescribed-trace class with integrable controlled derivatives. Then, we derive optimality conditions via convex duality. We construct explicit radial flows on annular sectors and prove that they minimize the energy over the full admissible classes, including nonradial competitors. On the square, distinct minimizers with the same prescribed boundary flux have different local collision intensities. The square--disk comparison shows that the saddle flow loses optimality when the domain changes, even after normalization.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07837v1.pdf",
       "source": "arxiv",
       "primary_category": "math.AP",
       "categories": [
@@ -568,60 +507,133 @@
         "math.AP (偏微分方程 (PDE))",
         "math.OC (运筹学、优化与控制论)"
       ],
+      "comment": "28 pages, 6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07815v1",
+      "title": "Newton Steps are Faster for Linear Complementarity Problems",
+      "authors": [
+        "Haoyuan Ma",
+        "László A. Végh",
+        "Adrian Vladu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T10:53:47Z",
+      "summary": "Linear Complementarity Problems (LCPs) with sufficient matrices form a well-studied class of problems, dating back from the foundational works of Cottle and Dantzig (1968). LCPs capture convex quadratic programs, and admit reductions from problems such as discounted stochastic games or mean-payoff games. While the original approach for solving these problems was based on pivoting methods, in their 1991 book, Kojima, Megiddo, Noma, and Yoshise introduced an interior point method (IPM) with running time that is polynomial in the input size, but which depends linearly on a certain parameter called the handicap number of the matrix. Despite the ensuing rich literature on sufficient LCP IPMs, the linear dependence on the handicap number has not been improved since then. We present an IPM whose running time depends on the square root of the handicap number. The algorithm can decrease the duality gap by a constant factor in $O\\left(\\min\\left\\{\\sqrt{n} (1+κ),n^{9/8}\\sqrt{1+κ}\\right\\}\\right)$ iterations. Curiously, this can already be achieved using standard Newton updates. We analyze the IPM in a norm defined by a local weighting, where centralizing Newton steps quadratically converge to the central path, without any dependence on the handicap number. The weights arise from a characterization by Rump (Linear Algebra and Its Applications, 1997, 1998, 2003) of the sign-real spectral radius and its relation to sufficiency; another ingredient of our proof is a new operator norm characterization of the handicap number. Moreover, the connection to Rump's work also enables us to show coNP-completeness of testing sufficiency, and approximation hardness of the handicap number.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07815v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.DS"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cs.DS (数据结构与算法)"
+      ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05835v1",
-      "title": "Pathwise-Budgeted LLM Routing: Online Allocation with K-Bit Tail-Cost Learning",
+      "paper_id": "2611.07777v1",
+      "title": "Online Optimization for Controlling HVAC Systems",
       "authors": [
-        "Hanzhang Qin",
-        "Sophie H. Yu",
-        "Yuewei Zhang",
-        "Zhi-Hai Zhang"
+        "Tong Wu",
+        "Dominik Baumann",
+        "Angela Fontan",
+        "Nicola Bastianello"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T02:24:27Z",
-      "summary": "Firms using large language models under fixed budgets must decide which model to call and whether to retry a failed task. Because a call's charge is revealed only after completion, one long response can exhaust the remaining budget and leave later tasks unserved. Our objective is to maximize the number of tasks solved before service stops. We develop a contextual bandit policy, ADP-HT, which learns each model's task-specific success probability and constructs conservative cost estimates from coarsened response-length labels on a quantile grid with $2^K$ intervals. The policy weighs predicted success against these costs, adjusting the cost penalty to realized spending and the budget available per remaining task. Under calibration, local regularity, and grid-coverage conditions, we bound the excess allowance in the policy's conservative cost estimates. At a fixed sample size, increasing $K$ reduces the discretization term but increases the estimation allowance. At the tightest tested budgets, ADP-HT solves more than twice as many MATH500 and GPQA tasks as the best implemented baseline. It achieves the highest mean cumulative score at ten of fourteen RouterBench budgets. On LiveCodeBench, it outperforms a deployed commercial router in both default and cost-saving modes at the three lowest test budgets.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05835v1.pdf",
+      "published_at": "2026-11-05T10:15:05Z",
+      "summary": "Heating, ventilation, and air-conditioning (HVAC) systems account for a significant portion of buildings' energy consumption, motivating the design of energy- and cost-efficient control strategies. However, conventional strategies employ simple, reactive control, without incorporating a model. Therefore, in this paper we adopt an economic model predictive control framework and focus on designing online algorithms to solve the control input design problems with a limited computational budget. In particular, we propose two tailored online algorithms based on projected gradient descent, with a custom projection routine, and the projected primal-dual method. We discuss the pros and cons of both algorithm designs, focusing in particular on computational efficiency. We further compare them through numerical experiments simulating the control of an HVAC system over the course of a day. The results show that computationally efficient online solvers for HVAC systems control are indeed possible. Moreover, the performance closely matches that of a baseline algorithm with unlimited computational budget, in terms of reference temperature tracking and comfort temperature range enforcement.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07777v1.pdf",
       "source": "arxiv",
-      "primary_category": "cs.LG",
+      "primary_category": "math.OC",
       "categories": [
-        "cs.LG",
-        "math.OC"
+        "math.OC",
+        "eess.SY"
       ],
       "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "math.OC (运筹学、优化与控制论)"
+        "math.OC (运筹学、优化与控制论)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.05821v1",
-      "title": "Observability and stabilizability for Grushin-Type parabolic equations in the whole space",
+      "paper_id": "2611.07691v1",
+      "title": "Randomized and Oracle-Based Feasible Directions Methods for Nonsmooth Nonconvex Constrained Optimization",
       "authors": [
-        "Shanlin Huang",
-        "Gengsheng Wang",
-        "Jiaqi Yu"
+        "Dan Greenstein",
+        "Nadav Hallak"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T01:57:37Z",
-      "summary": "We study observability and stabilization for the whole-space Grushin heat equation $$ \\partial_t u-Δ_γu=0,\\qquad Δ_γ:=Δ_x+|x|^{2γ}Δ_y,\\qquad (t,x,y)\\in(0,T)\\times\\mathbb{R}^n\\times\\mathbb{R}^m,\\quad γ>0. $$ For product sets $E=E_1\\times E_2$, we identify three observability regimes in which thickness, distance from the degeneracy set $\\{x=0\\}$, and local density near that set play different roles. (i) In the subcritical regime $0<γ<1$, the observability inequality holds for every $T>0$ if and only if both $E_1$ and $E_2$ are thick; hence $T_{\\min}(E)=0$. (ii) At the critical exponent $γ=1$, if $E_2=\\mathbb{R}^m$ and $E_1\\subset\\mathbb{R}^n$ is thick, we determine the exact minimal observable time: $$ T_{\\min}(E)=\\frac{a_{\\mathrm{ess}}(E_1)^2}{2n},\\qquad a_{\\mathrm{ess}}(E_1):=\\operatorname*{ess\\,inf}_{x\\in E_1}|x|. $$ Thus, the threshold depends on the essential distance of $E_1$ from the degeneracy set. (iii) In the supercritical regime $γ>1$, we consider $n=1$, $E_2=\\mathbb{R}^m$ and thick sets $E_1\\subset\\mathbb{R}$. If $a_{\\mathrm{ess}}(E_1)>0$, observability fails for every $T>0$, so that $T_{\\min}(E)=+\\infty$. If $a_{\\mathrm{ess}}(E_1)=0$, observability depends on the density of $E_1$ near $0$, measured by $$ D_{E_1}(r):=\\log\\!\\left(\\frac{2r}{|E_1\\cap(-r,r)|}\\right),\\qquad L_{E_1}:=\\limsup_{r\\downarrow0}r^2D_{E_1}(r). $$ If $L_{E_1}=0$, then $T_{\\min}(E)=0$; if $0<L_{E_1}<\\infty$, a finite sufficient observation time exists. Moreover, observability at time $T$ requires $$ \\limsup_{r\\downarrow0}r^{2(1+γ)/(γ-1)}D_{E_1}(r)\\le C_{T,γ}. $$ In contrast, for every $γ>0$, exponential and complete stabilizability hold if and only if both $E_1$ and $E_2$ are thick. The stabilization criterion is therefore independent of $γ$.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05821v1.pdf",
+      "published_at": "2026-11-05T09:16:30Z",
+      "summary": "Minimizing nonsmooth nonconvex objectives over general convex sets using no derivatives of the objective, together with structural access to the constraint set, poses a fundamental geometric difficulty: at boundary points, the feasible direction cone may fail to be closed, preventing the construction of finite sets of search directions that capture all feasible descent directions. We develop a feasible-directions framework for problems structured as the difference between a continuously differentiable function and a convex function over a closed convex set, and access the objective without knowledge of its decomposition, through exact line searches along feasible segments. To address the geometric obstruction, we introduce $η$-feasible directions, which remain uniformly separated from the boundary of the feasible direction cone, enabling finite-direction search even in the presence of nonlinear constraints. We present two algorithmic realizations of this framework. The first assumes access to an $η$-direction oracle and extends feasible-directions methods from linear to general convex constraints. The second replaces the oracle by a noise-augmented randomization scheme that constructs spanning directions from the affine-hull inner normal and almost surely avoids nonsmooth boundary points when initialized outside that set. Under curvature bounds and Lipschitz continuity of the smooth component's gradient, we jointly control the spanning coefficients and feasible step lengths of the oracle construction. This yields finite-time approximate $d$-stationarity along every unit feasible direction admitting a prescribed positive step length. For both methods, we also establish a rate in the proximal directional minimization (PDM) measure, assuming uniformly bounded direction-set sizes. Randomized exploration ensures that, almost surely, every accumulation point is $d$-stationary.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07691v1.pdf",
       "source": "arxiv",
-      "primary_category": "math.AP",
+      "primary_category": "math.OC",
       "categories": [
-        "math.AP",
+        "math.OC",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07675v1",
+      "title": "Randomized Parallel Complexity of Weakly Convex Optimization",
+      "authors": [
+        "Kang Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T09:04:17Z",
+      "summary": "We study the minimum number of query rounds needed to find approximate stationary points of nonsmooth weakly convex functions, measured by the gradient of the Moreau envelope. Each round permits multiple simultaneous queries. In the stated parameter regime, the standard subgradient rate is optimal in sufficiently high dimensions, even for randomized algorithms making polynomially many parallel queries per round. We then show how the order structure of the real line enables faster search: a deterministic algorithm using only function values achieves logarithmic round complexity, with a further reduction through parallel queries. Matching lower bounds hold even when each query returns the entire subdifferential. Together, these results clarify the role of dimension in determining the benefits of parallel queries for weakly convex optimization.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07675v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.AI",
+        "cs.CC"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CC (计算复杂性理论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07649v1",
+      "title": "A Graph-Theoretic Approach to Matrix AM-GM: Counterexamples and Sharp Exponential Bounds",
+      "authors": [
+        "Zehua Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T08:34:43Z",
+      "summary": "We develop a graph-theoretic approach to the expected-norm matrix arithmetic--geometric mean inequality. By encoding matrix interactions with a path-supported Gram matrix, we obtain a projection family whose product is nonzero exactly when the transition graph of its index sequence is a path. This gives an intuitive explanation for failure: repeated indices can create cycles or branches that annihilate products, an effect absent for positive scalars. We prove the universal lower bound $(n)_m/n^m$ for the ratio of the with-replacement to the without-replacement mean and show that it is asymptotically sharp on the exponential scale when $m=n$. Specifically, our construction gives a ratio $\\exp(-n+O(\\sqrt n))$, matching the lower bound's leading exponential rate over unrestricted dimensions. We also determine an explicit overlap threshold, derive exact six-factor counterexamples, and show that exponential failure can coexist with vanishing pairwise commutators.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07649v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
         "math.OC"
       ],
       "category_names_zh": [
-        "math.AP (偏微分方程 (PDE))",
         "math.OC (运筹学、优化与控制论)"
       ],
-      "comment": "44 pages",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     }
@@ -633,55 +645,70 @@
       "count": 25
     },
     {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 4
+    },
+    {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 4
+      "count": 3
+    },
+    {
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 2
+    },
+    {
+      "code": "cs.DS",
+      "name_zh": "数据结构与算法",
+      "count": 2
     },
     {
       "code": "math.AP",
       "name_zh": "偏微分方程 (PDE)",
-      "count": 3
-    },
-    {
-      "code": "eess.SY",
-      "name_zh": "系统与控制理论 (Systems and Control)",
       "count": 2
     },
     {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
+      "code": "cs.RO",
+      "name_zh": "机器人学与具身智能",
       "count": 2
     },
     {
-      "code": "cs.NE",
-      "name_zh": "神经与进化计算",
+      "code": "cs.DM",
+      "name_zh": "离散数学",
       "count": 1
     },
     {
-      "code": "q-fin.PM",
-      "name_zh": "资产组合管理",
+      "code": "math.CO",
+      "name_zh": "组合数学与图论",
       "count": 1
     },
     {
-      "code": "nlin.AO",
-      "name_zh": "自适应与涌现",
+      "code": "cond-mat.dis-nn",
+      "name_zh": "无序系统与神经网络",
       "count": 1
     },
     {
-      "code": "math.DS",
-      "name_zh": "动力系统",
+      "code": "physics.comp-ph",
+      "name_zh": "计算物理学",
       "count": 1
     },
     {
-      "code": "physics.soc-ph",
-      "name_zh": "物理与社会科学 (复杂系统)",
+      "code": "q-bio.NC",
+      "name_zh": "神经科学与脑认知",
       "count": 1
     },
     {
-      "code": "cs.SC",
-      "name_zh": "符号计算与计算机代数",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 1
+    },
+    {
+      "code": "cs.CC",
+      "name_zh": "计算复杂性理论",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-06T09:24:52.528796"
+  "snapshot_synced_at": "2026-11-07T08:34:04.218049"
 }

@@ -17,6 +17,7 @@ import re
 import shutil
 import time
 import urllib.request
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -30,8 +31,9 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from document_rag_engine import UniversalDocumentRAGEngine
-from intent_recognition_agent import IntentRecognitionAgent
-from master_agent_workflow import MasterAgentState, build_master_workflow, register_stream_callback
+from intent_recognition_agent import IntentParsingError, IntentRecognitionAgent
+from master_agent_workflow import MasterAgentState, MasterEngineRegistry, build_master_workflow, register_stream_callback
+from llm_accounting import TrackingClient, UsageLedger
 from meeting_summarizer import MeetingSummarizer
 from online_paper_search_agent import OnlinePaperSearchAgent
 
@@ -79,7 +81,11 @@ async def on_app_startup():
         try:
             from voice_langgraph_agent import WhisperEngine
             print("🚀 [Startup Warmup] 正在预加载本地 Whisper-large-v3 音频大模型至 GPU 显存...")
-            WhisperEngine.get_pipeline()
+            from voice_langgraph_agent import MODEL_DIR
+            if MODEL_DIR.suffix == ".pt":
+                WhisperEngine.get_whisper_native_model()
+            else:
+                WhisperEngine.get_pipeline()
             print("✅ [Startup Warmup] 本地 Whisper-large-v3 音频模型预热完成，随时待命！")
         except Exception as e:
             print(f"⚠️ [Startup Warmup] Whisper 模型预热提示: {e}")
@@ -218,37 +224,86 @@ def _execute_chat_workflow(req: ChatRequest) -> Dict[str, Any]:
         "reflection_notes": None,
         "peer_review_notes": None,
         "review_verdict": None,
-        "review_scores_round1": None,
-        "revision_count": 0,
         "agent_dialogue_history": [],
+        "stage_statuses": {},
+        "token_usage": None,
         "status": "init",
     }
+
+    # 动态初始化本轮 Token 消耗记账器并代理全局大模型客户端
+    from llm_accounting import TrackingClient, UsageLedger
+    from master_agent_workflow import MasterEngineRegistry
+
+    round_ledger = UsageLedger()
+    original_client = MasterEngineRegistry.get_llm_client()
+    tracked_client = TrackingClient(original_client, round_ledger)
+    MasterEngineRegistry.llm_client = tracked_client
+    if MasterEngineRegistry.intent_agent is not None:
+        MasterEngineRegistry.intent_agent.client = tracked_client
+    if MasterEngineRegistry.paper_search_agent is not None:
+        MasterEngineRegistry.paper_search_agent.llm_client = tracked_client
+    if MasterEngineRegistry.meeting_summarizer is not None:
+        MasterEngineRegistry.meeting_summarizer.client = tracked_client
 
     # 执行 LangGraph 状态图 (原生挂载 thread_id 记忆会话检查点)
     try:
         config = {"configurable": {"thread_id": session_id}}
         result_state = master_app.invoke(initial_state, config=config)
+    except IntentParsingError as e:
+        print(f"❌ [Intent Parsing Error]: {e}")
+        failure_text = "⚠️ 意图解析未成功，本轮已停止，未执行检索或回答生成。请稍后重新发送。"
+        stages = {"intent_parsing": "failed", "generation": "skipped"}
+        token_usage = round_ledger.snapshot()
+        SessionManager.add_message(session_id, ChatMessage(
+            sender="agent", content=failure_text, stage_statuses=stages, token_usage=token_usage,
+        ))
+        # 错误提示只写入聊天记录，不更新主体、聚焦资料或主题结论档案。
+        return {
+            "session_id": session_id,
+            "query": req.query,
+            "intent_decision": None,
+            "target_agent": "",
+            "retrieved_evidence": [],
+            "final_answer": failure_text,
+            "mindmap_markdown": None,
+            "audio_url": None,
+            "agent_dialogue_history": [],
+            "status": "intent_parsing_failed",
+            "stage_statuses": stages,
+            "token_usage": token_usage,
+        }
     except Exception as e:
         print(f"❌ [Master Workflow Error]: {e}")
-        err_msg = str(e)
-        if "503" in err_msg or "Service temporarily unavailable" in err_msg:
-            fallback_text = "⚠️ **【搭档提示】上游大模型 API 出现暂时性繁忙排队 (HTTP 503 Service Unavailable)**\n\n上游服务暂时过载，请稍候点击下方快捷词条或重新发送问题即可继续研讨。"
-        elif "429" in err_msg or "Rate limit" in err_msg:
-            fallback_text = "⚠️ **【搭档提示】模型调用频次已达限制 (HTTP 429 Rate Limit)**\n\n请稍候 3~5 秒后再次提问。"
-        elif "524" in err_msg:
-            fallback_text = "⚠️ **【搭档提示】上游代理响应超时 (HTTP 524 Gateway Timeout)**\n\n上游代理排队较慢，请稍后重试。"
-        else:
-            fallback_text = f"⚠️ **【搭档提示】大模型接口调用异常**: {err_msg}\n\n建议稍后重新发送提问。"
-
-        result_state = {
+        stage = getattr(e, "stage", "workflow")
+        failure_text = f"⚠️ 本轮处理失败，已停止（{stage}）：{e}"
+        stages = {stage: "failed", "workflow": "failed"}
+        token_usage = round_ledger.snapshot()
+        SessionManager.add_message(session_id, ChatMessage(
+            sender="agent", content=failure_text, stage_statuses=stages, token_usage=token_usage,
+        ))
+        # 失败直接返回，不归档主题结论，不生成导图和语音。
+        return {
+            "session_id": session_id,
+            "query": req.query,
             "intent_decision": None,
-            "target_agent": "ErrorFallbackAgent",
-            "topic_state": topic_state,
+            "target_agent": "",
             "retrieved_evidence": [],
-            "final_answer": fallback_text,
-            "tts_audio_file": None,
-            "status": "error_fallback",
+            "final_answer": failure_text,
+            "mindmap_markdown": None,
+            "audio_url": None,
+            "agent_dialogue_history": [],
+            "status": "workflow_failed",
+            "stage_statuses": stages,
+            "token_usage": token_usage,
         }
+    finally:
+        MasterEngineRegistry.llm_client = original_client
+        if MasterEngineRegistry.intent_agent is not None:
+            MasterEngineRegistry.intent_agent.client = original_client
+        if MasterEngineRegistry.paper_search_agent is not None:
+            MasterEngineRegistry.paper_search_agent.llm_client = original_client
+        if MasterEngineRegistry.meeting_summarizer is not None:
+            MasterEngineRegistry.meeting_summarizer.client = original_client
 
     # 持久化同步主题生命周期状态机与前序学术候选池
     if result_state.get("topic_state"):
@@ -270,7 +325,10 @@ def _execute_chat_workflow(req: ChatRequest) -> Dict[str, Any]:
 
     from document_rag_engine import extract_answer_mindmap
     final_ans = result_state.get("final_answer", "")
-    mindmap_md = extract_answer_mindmap(final_ans, req.query)
+    control_not_executed = (result_state.get("stage_statuses") or {}).get("system_control") == "not_executed"
+    mindmap_md = None if control_not_executed else extract_answer_mindmap(final_ans, req.query)
+
+    token_usage = round_ledger.snapshot()
 
     # 保存智能体回复到该领域频道
     agent_msg = ChatMessage(
@@ -284,13 +342,17 @@ def _execute_chat_workflow(req: ChatRequest) -> Dict[str, Any]:
         agent_dialogue_history=result_state.get("agent_dialogue_history", []),
         synthesized_evidence_slate=result_state.get("synthesized_evidence_slate"),
         dialectical_notes=result_state.get("dialectical_notes") or result_state.get("peer_review_notes"),
+        review_verdict=result_state.get("review_verdict"),
+        stage_statuses=result_state.get("stage_statuses") or {},
+        token_usage=token_usage,
     )
     SessionManager.add_message(session_id, agent_msg)
     
     # 自动归档本轮主题档案 (无损提炼核心定论，供后续轮次外科手术式调取)
     s_now = SessionManager.get_session(session_id)
     turn_num = len([m for m in (s_now.messages if s_now else []) if m.sender == "agent"])
-    SessionManager.record_turn_topic(session_id, turn_num, req.query, agent_msg)
+    if not control_not_executed:
+        SessionManager.record_turn_topic(session_id, turn_num, req.query, agent_msg)
 
     return {
         "session_id": session_id,
@@ -311,9 +373,10 @@ def _execute_chat_workflow(req: ChatRequest) -> Dict[str, Any]:
         "reflection_notes": result_state.get("reflection_notes"),
         "peer_review_notes": result_state.get("peer_review_notes"),
         "review_verdict": result_state.get("review_verdict"),
-        "review_scores_round1": result_state.get("review_scores_round1"),
         "agent_dialogue_history": result_state.get("agent_dialogue_history", []),
         "status": result_state.get("status"),
+        "stage_statuses": result_state.get("stage_statuses") or {},
+        "token_usage": token_usage,
     }
 
 
@@ -337,12 +400,12 @@ async def chat_stream_endpoint(req: ChatRequest):
 
     async def run_workflow():
         try:
-            register_stream_callback(token_handler)
+            register_stream_callback(token_handler, session_id=req.session_id)
             result = await asyncio.to_thread(_execute_chat_workflow, req)
-            register_stream_callback(None)
+            register_stream_callback(None, session_id=req.session_id)
             await queue.put({"type": "done", "data": result})
         except Exception as e:
-            register_stream_callback(None)
+            register_stream_callback(None, session_id=req.session_id)
             await queue.put({"type": "error", "message": str(e)})
         finally:
             await queue.put(None)
@@ -374,22 +437,73 @@ async def chat_stream_endpoint(req: ChatRequest):
 # ==========================================
 @app.post("/api/documents/upload")
 async def upload_document(file: UploadFile = File(...)):
-    ext = Path(file.filename).suffix.lower()
-    
-    dest_path = UPLOAD_DIR / file.filename
-    with open(dest_path, "wb") as f:
-        shutil.copyfileobj(file.file, f)
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="上传文件名为空")
 
-    # 自动解析切块入库 (依托全格式解析与最大宽容度兜底)
+    clean_filename = Path(file.filename).name
+    ext = Path(clean_filename).suffix.lower()
+    dest_path = UPLOAD_DIR / clean_filename
+
+    temp_suffix = f".{uuid.uuid4().hex[:8]}.upload_tmp"
+    temp_file = dest_path.with_name(f".{dest_path.name}{temp_suffix}")
+
+    # 1. 先接收至临时文件，避免上传中断或同名覆盖时直接损毁原物理文件
     try:
-        chunks_count = rag_engine.ingest_file(dest_path)
+        with open(temp_file, "wb") as f:
+            shutil.copyfileobj(file.file, f)
     except Exception as e:
-        if dest_path.exists():
-            dest_path.unlink()
+        if temp_file.exists():
+            temp_file.unlink(missing_ok=True)
+        raise HTTPException(status_code=500, detail=f"文件接收写入临时存储失败: {e}")
+
+    had_previous = dest_path.exists()
+    backup_path = dest_path.with_name(f".{dest_path.name}.{uuid.uuid4().hex[:8]}.bak") if had_previous else None
+
+    try:
+        if had_previous and backup_path:
+            shutil.copy2(str(dest_path), str(backup_path))
+            try:
+                rag_engine.delete_document(clean_filename)
+            except Exception:
+                pass
+
+        # 原子替换正式路径
+        os.replace(str(temp_file), str(dest_path))
+
+        # 执行解析切片与入库
+        chunks_count = rag_engine.ingest_file(dest_path)
+        if chunks_count <= 0:
+            raise ValueError("文档未生成有效切片，入库未完成")
+
+        # 入库成功，清理备份
+        if had_previous and backup_path and backup_path.exists():
+            backup_path.unlink(missing_ok=True)
+
+    except Exception as e:
+        # 入库失败，清理可能残留的新切片与向量
+        try:
+            rag_engine.delete_document(clean_filename)
+        except Exception:
+            pass
+
+        # 若此前存在原同名文件，恢复原文件并尝试重建原有索引
+        if had_previous and backup_path and backup_path.exists():
+            os.replace(str(backup_path), str(dest_path))
+            try:
+                rag_engine.ingest_file(dest_path)
+            except Exception as restore_err:
+                logger.error(f"恢复原文件索引失败: {restore_err}")
+        else:
+            if dest_path.exists():
+                dest_path.unlink(missing_ok=True)
+
         raise HTTPException(status_code=400, detail=f"文件解析入库失败 ({ext}): {e}")
+    finally:
+        if temp_file.exists():
+            temp_file.unlink(missing_ok=True)
 
     return {
-        "filename": file.filename,
+        "filename": clean_filename,
         "doc_type": ext.lstrip(".") or "txt",
         "chunks_count": chunks_count,
         "status": "ingested",
@@ -483,8 +597,8 @@ async def get_latest_meeting():
             if line.strip():
                 try:
                     raw_lines.append(json.loads(line.strip()))
-                except Exception:
-                    pass
+                except Exception as e:
+                    raise HTTPException(status_code=400, detail=f"会议记录解析失败: {e}") from e
 
     return {
         "has_meeting": True,
@@ -549,8 +663,9 @@ class VoiceSessionManager:
     def start_voice_agent(self, loop, mode: str = "mic"):
         if self.is_running:
             return
+        if mode not in {"mic", "system"}:
+            raise ValueError(f"不支持的音源模式: {mode}")
         self.is_running = True
-        mode = mode if mode in {"mic", "system"} else "mic"
 
         def run_worker():
             try:
@@ -587,7 +702,10 @@ class VoiceSessionManager:
                 }
                 app_agent.invoke(init_state)
             except Exception as e:
-                print(f"[Voice Worker Error]: {e}")
+                logger.exception("实时语音处理失败，已停止")
+                asyncio.run_coroutine_threadsafe(
+                    self.broadcast_speech({"type": "error", "message": str(e)}), loop,
+                )
             finally:
                 self.is_running = False
 
@@ -656,55 +774,16 @@ async def transcribe_audio_file(file: UploadFile = File(...)):
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-        native_model = WhisperEngine.get_whisper_native_model()
-        if native_model is not None:
-            # 官方原生 whisper 支持直接传音频文件路径，ffmpeg 自动提取 16kHz float32
-            # 方案 A: 严格 FP16 半精度 + 贪婪单分支解码 (beam_size=1)，动态显存直降 500MB~1GB
-            is_cuda = next(native_model.parameters()).is_cuda
-            try:
-                res = native_model.transcribe(
-                    tmp_path,
-                    language=None,
-                    task="transcribe",
-                    initial_prompt=VOICE_INITIAL_PROMPT,
-                    fp16=is_cuda,
-                    temperature=(0.0, 0.2, 0.4),
-                    compression_ratio_threshold=2.4,
-                    no_speech_threshold=0.6,
-                    condition_on_previous_text=False,
-                )
-            except torch.OutOfMemoryError:
-                logger.warning("⚠️ [Whisper Large-v3] GPU 显存紧张，自动无缝降级至 CPU 极速转录通道...")
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-                cpu_model = native_model.to("cpu")
-                WhisperEngine._whisper_native_model = cpu_model
-                res = cpu_model.transcribe(
-                    tmp_path,
-                    language=None,
-                    task="transcribe",
-                    initial_prompt=VOICE_INITIAL_PROMPT,
-                    fp16=False,
-                    temperature=(0.0, 0.2, 0.4),
-                    compression_ratio_threshold=2.4,
-                    no_speech_threshold=0.6,
-                    condition_on_previous_text=False,
-                )
-
-            text = res.get("text", "").strip()
-            logger.info(f"🎙️ [Whisper Large-v3 方案A 原生识别成功]: {text}")
-            return {"text": text, "status": "success", "engine": "whisper-large-v3-native"}
-        else:
-            return {"text": "", "status": "error", "message": "Whisper 原生引擎未就绪"}
+        import whisper
+        samples = whisper.load_audio(tmp_path)
+        text = WhisperEngine.transcribe(samples, language="auto")
+        return {"text": text, "status": "success", "engine": "configured-whisper"}
     except Exception as e:
         logger.error(f"本地 Whisper 转录异常: {e}", exc_info=True)
         return {"text": "", "status": "error", "message": str(e)}
     finally:
         if os.path.exists(tmp_path):
-            try:
-                os.remove(tmp_path)
-            except Exception:
-                pass
+            os.remove(tmp_path)
 
 
 # ==========================================
@@ -762,8 +841,8 @@ async def get_radar_taxonomy():
 
 @app.post("/api/radar/search")
 async def radar_search(req: RadarSearchRequest):
-    """精准多学科雷达检索，提供子学科分布直方图与高精度文献卡片数据 (支持本地快照离线容灾)"""
-    # 1. 尝试从本地持久化快照中先读取（如果未输入特定搜索词，且是请求第 1 页默认流）
+    """精准多学科雷达检索，提供子学科分布直方图与高精度文献卡片数据"""
+    # 默认浏览首屏成功后保存快照；请求失败或结果为空时不读取快照代替。
     sub_key = req.sub_categories[0] if (req.sub_categories and len(req.sub_categories) == 1) else "all"
     is_default_browse = (not req.query or not req.query.strip()) and req.start == 0 and req.sort_by == "submittedDate"
 
@@ -781,22 +860,10 @@ async def radar_search(req: RadarSearchRequest):
             # 自动沉淀为本地快照
             radar_sync_engine.save_snapshot(req.major or "CS", sub_key, res)
 
-        # 🌟 若在线检索无返回或超时受限，自动由本地持久化快照平滑接管 (零报错、零空白、零延时)
-        if not (res and res.get("papers")):
-            cached_snapshot = radar_sync_engine.read_snapshot(req.major or "CS", sub_key)
-            if cached_snapshot:
-                cached_snapshot["is_cached_snapshot"] = True
-                return {"status": "success", "data": cached_snapshot, "is_cached_snapshot": True}
-
         return {"status": "success", "data": res}
     except Exception as e:
         import traceback
         traceback.print_exc()
-        # 2. 如果网络波动/超时，自动回退到本地持久化快照
-        cached_snapshot = radar_sync_engine.read_snapshot(req.major or "CS", sub_key)
-        if cached_snapshot:
-            cached_snapshot["is_cached_snapshot"] = True
-            return {"status": "success", "data": cached_snapshot, "is_cached_snapshot": True}
         raise HTTPException(status_code=500, detail=f"雷达检索异常: {str(e)}")
 
 
@@ -853,58 +920,76 @@ def _safe_translation_stem(req: RadarTranslateRequest) -> str:
 
 
 def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
-    """按需下载并提取 PDF 全文；缓存只写入被 .gitignore 忽略的 uploads 目录。"""
+    """提取真实 PDF 正文；摘要不能代替全文，旧版替代内容缓存不再复用。"""
     stem = _safe_translation_stem(req)
-    text_path = PAPER_TRANSLATION_CACHE_DIR / f"{stem}.txt"
-    if text_path.exists() and text_path.stat().st_size > 0:
-        return text_path.read_text(encoding="utf-8")
+    text_path = PAPER_TRANSLATION_CACHE_DIR / f"{stem}.body-v5.txt"
+    if text_path.exists():
+        cached_text = text_path.read_text(encoding="utf-8").strip()
+        if not cached_text:
+            raise ValueError("论文正文缓存为空")
+        return cached_text
 
-    pdf_path = UPLOAD_DIR / f".paper_translation_{stem}.pdf"
-    if not pdf_path.exists() or pdf_path.stat().st_size == 0:
+    pdf_path = UPLOAD_DIR / f".paper_translation_{stem}.body-v5.pdf"
+    if not pdf_path.exists():
         pdf_url = (req.pdf_url or "").strip()
         if not pdf_url.startswith(("http://", "https://")):
-            return (req.abstract or req.text or "").strip()
+            raise ValueError("全文翻译缺少有效 PDF 链接，摘要不能代替正文")
         request = urllib.request.Request(
-            pdf_url,
-            headers={"User-Agent": "Mozilla/5.0 ResearchScholar/1.0"},
+            pdf_url, headers={"User-Agent": "Mozilla/5.0 ResearchScholar/1.0"},
         )
-        with urllib.request.urlopen(request, timeout=45) as response, pdf_path.open("wb") as output:
-            total = 0
-            while True:
-                chunk = response.read(1024 * 1024)
-                if not chunk:
-                    break
-                total += len(chunk)
-                if total > 80 * 1024 * 1024:
-                    raise ValueError("论文 PDF 超过 80 MB，暂不支持在线全文翻译")
-                output.write(chunk)
+        partial_path = pdf_path.with_suffix(".pdf.part")
+        try:
+            with urllib.request.urlopen(request, timeout=45) as response, partial_path.open("wb") as output:
+                total = 0
+                while True:
+                    chunk = response.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    total += len(chunk)
+                    if total > 80 * 1024 * 1024:
+                        raise ValueError("论文 PDF 超过 80 MB，暂不支持在线全文翻译")
+                    output.write(chunk)
+            with partial_path.open("rb") as downloaded:
+                if downloaded.read(5) != b"%PDF-":
+                    raise ValueError("下载内容不是有效的 PDF")
+            partial_path.replace(pdf_path)
+        finally:
+            partial_path.unlink(missing_ok=True)
 
     import pymupdf
 
     pages = []
     with pymupdf.open(str(pdf_path)) as document:
         for page_number, page in enumerate(document, start=1):
-            # 优先采用 blocks 版面分块提取，避免双栏互相穿插
             blocks = page.get_text("blocks")
-            # 过滤非文本块，并按 (y0, x0) 几何版面有序阅读流排序
-            blocks = [b for b in blocks if len(b) >= 5 and b[4].strip()]
-            # 识别双栏：如果 x0 跨度较大，先按栏分组
+            blocks = [b for b in blocks if len(b) >= 7 and b[6] == 0 and b[4].strip()]
             page_blocks_text = []
-            for b in blocks:
-                block_txt = b[4].strip()
-                # 修复连字符折断单词 (如 "algo-\nrithm" -> "algorithm")
-                block_txt = re.sub(r"(\w+)-\n(\w+)", r"\1\2", block_txt)
-                page_blocks_text.append(block_txt)
-            
+            for block in blocks:
+                block_text = re.sub(r"(\w+)-\n(\w+)", r"\1\2", block[4].strip())
+                page_blocks_text.append(block_text)
             page_text = "\n\n".join(page_blocks_text).strip()
             if page_text:
                 pages.append(f"【第 {page_number} 页】\n{page_text}")
+            elif page.get_images() or page.get_drawings():
+                raise ValueError(f"PDF 第 {page_number} 页含图像或图形但无法提取文字，全文提取未完成")
     full_text = "\n\n".join(pages).strip()
     if not full_text:
-        full_text = (req.abstract or req.text or "").strip()
-    if full_text:
-        text_path.write_text(full_text, encoding="utf-8")
+        raise ValueError("PDF 未提取到正文，摘要不能代替全文")
+    text_path.write_text(full_text, encoding="utf-8")
     return full_text
+
+
+def _translation_json(response: Any, required_fields: List[str]) -> Dict[str, Any]:
+    """只有完整结束且字段齐全的模型结果才可作为翻译成功。"""
+    choice = response.choices[0]
+    if choice.finish_reason != "stop":
+        raise ValueError(f"翻译生成未完整结束: {choice.finish_reason}")
+    data = json.loads(choice.message.content)
+    if not isinstance(data, dict) or not all(
+        isinstance(data.get(key), str) and data[key].strip() for key in required_fields
+    ):
+        raise ValueError("翻译结果缺少必需字段或正文为空")
+    return data
 
 
 def _split_translation_chunks(text: str, max_chars: int = 3800) -> List[str]:
@@ -928,14 +1013,15 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     from openai import OpenAI
     from config_utils import get_default_llm_model
 
-    translation_cache_path = PAPER_TRANSLATION_CACHE_DIR / f"{_safe_translation_stem(req)}.json"
-    if translation_cache_path.exists() and translation_cache_path.stat().st_size > 0:
+    translation_cache_path = PAPER_TRANSLATION_CACHE_DIR / f"{_safe_translation_stem(req)}.v5.json"
+    if translation_cache_path.exists():
         try:
             cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
-            if cached.get("version") == 4 and cached.get("full_text_zh"):
+            if cached.get("version") == 5 and cached.get("complete") is True and cached.get("full_text_zh"):
                 return cached
-        except (OSError, json.JSONDecodeError):
-            pass
+            raise ValueError("全文翻译缓存缺少完整成功标记")
+        except (OSError, json.JSONDecodeError) as e:
+            raise ValueError(f"全文翻译缓存读取失败: {e}") from e
 
     api_key = os.getenv("OPENAI_API_KEY")
     base_url = os.getenv("OPENAI_BASE_URL")
@@ -961,10 +1047,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
         temperature=0.2,
         timeout=120,
     )
-    try:
-        summary_data = json.loads(summary_response.choices[0].message.content or "{}")
-    except json.JSONDecodeError:
-        summary_data = {}
+    summary_data = _translation_json(summary_response, ["abstract_zh", "thesis_zh"])
     chunks = _split_translation_chunks(source_text)
     translated_chunks: List[str] = [""] * len(chunks)
 
@@ -993,21 +1076,18 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
                     temperature=0.2,
                     timeout=180,
                 )
-                c = resp.choices[0].message.content or ""
-                try:
-                    t_str = json.loads(c).get("translation", "").strip()
-                except json.JSONDecodeError:
-                    t_str = c.strip()
-                if t_str:
-                    return idx, t_str
+                data = _translation_json(resp, ["translation"])
+                return idx, data["translation"].strip()
             except Exception as e:
                 sleep_sec = 2.0 * (retry + 1)
                 print(f"⚠️ [TranslateChunk Note] 第 {idx}/{len(chunks)} 卷翻译尝试 {retry+1} 异常 ({e})，等待 {sleep_sec}s 重试...")
                 time.sleep(sleep_sec)
-        return idx, f"> ⚠️ 【第 {idx} 卷网络请求超时，已安全呈现原文】\n\n{chunk_content}"
+        raise RuntimeError(f"第 {idx}/{len(chunks)} 卷翻译失败，全文未完成，未用原文替代译文")
 
     # 🚀 并发翻译多个适度分段 (并发 3 线程)，大幅缩减总等待时长，杜绝单次请求超时
     from concurrent.futures import ThreadPoolExecutor
+    if not chunks:
+        raise ValueError("未取得可翻译的论文正文")
     tasks = [(i, c) for i, c in enumerate(chunks, start=1)]
     with ThreadPoolExecutor(max_workers=min(len(chunks), 3)) as pool:
         for idx, trans_text in pool.map(_translate_single_chunk, tasks):
@@ -1015,7 +1095,8 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
     full_text_zh = "\n\n".join(translated_chunks).strip()
     result = {
-        "version": 4,
+        "version": 5,
+        "complete": True,
         "title_zh": req.title,
         "thesis_zh": summary_data.get("thesis_zh", "").strip(),
         "abstract_zh": summary_data.get("abstract_zh", "").strip(),
@@ -1048,7 +1129,7 @@ def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
         temperature=0.3,
         timeout=25,
     )
-    return json.loads(response.choices[0].message.content or "{}")
+    return _translation_json(response, ["title_zh", "thesis_zh", "abstract_zh"])
 
 
 @app.post("/api/radar/translate")

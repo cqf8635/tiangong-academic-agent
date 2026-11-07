@@ -29,7 +29,10 @@ from langgraph.graph import END, START, StateGraph
 from openai import OpenAI
 
 from document_rag_engine import UniversalDocumentRAGEngine
-from intent_recognition_agent import INTENT_DEFAULT_SOURCES, IntentDecision, IntentRecognitionAgent
+from evidence_scoring import score_evidence
+from workflow_errors import WorkflowExecutionError
+from llm_accounting import BudgetExceeded, TrackingClient, UsageLedger
+from intent_recognition_agent import IntentDecision, IntentParsingError, IntentRecognitionAgent
 from meeting_summarizer import MeetingSummarizer
 from online_paper_search_agent import OnlinePaperSearchAgent
 from subject_memory import transition_subject_state
@@ -81,6 +84,9 @@ class MasterAgentState(TypedDict):
     user_image: Optional[str]                     # 用户附带的学术题目或图表截图 (Base64)
     extracted_visual_context: Optional[str]       # 多模态视觉模型忠实提取的图文与公式事实
     status: str                              # 运行状态
+    review_verdict: Optional[Dict[str, Any]]       # 本轮模型审核结论，不代表修订稿已复核
+    stage_statuses: Optional[Dict[str, str]]  # 本轮各节点实际执行状态，不表示内容已核验正确
+    token_usage: Optional[Dict[str, Any]]     # 本轮实际大模型调用消耗统计与记录 (UsageLedger Snapshot)
 
 
 # ==========================================
@@ -107,7 +113,7 @@ class MasterEngineRegistry:
     @classmethod
     def get_intent_agent(cls):
         if cls.intent_agent is None:
-            cls.intent_agent = IntentRecognitionAgent()
+            cls.intent_agent = IntentRecognitionAgent(client=cls.get_llm_client())
         return cls.intent_agent
 
     @classmethod
@@ -119,18 +125,24 @@ class MasterEngineRegistry:
     @classmethod
     def get_meeting_summarizer(cls):
         if cls.meeting_summarizer is None:
-            cls.meeting_summarizer = MeetingSummarizer()
+            cls.meeting_summarizer = MeetingSummarizer(client=cls.get_llm_client())
         return cls.meeting_summarizer
 
     @classmethod
     def get_paper_search_agent(cls):
         if cls.paper_search_agent is None:
-            cls.paper_search_agent = OnlinePaperSearchAgent()
+            cls.paper_search_agent = OnlinePaperSearchAgent(llm_client=cls.get_llm_client())
         return cls.paper_search_agent
 
     @classmethod
     def get_online_paper_agent(cls):
         return cls.get_paper_search_agent()
+
+    @classmethod
+    def score_online_evidence(cls, query, evidence):
+        if not evidence:
+            return []
+        return score_evidence(query, evidence, cls.get_rag_engine())
 
     @classmethod
     def get_llm_client(cls):
@@ -164,16 +176,26 @@ def extract_visual_content_from_image(image_data: str, client: Any) -> str:
             }
         ]
         res = safe_chat_completion(client=client, model=model, messages=messages, temperature=0.1, max_tokens=2048, timeout=get_llm_timeout(90.0))
+        if not _valid_model_text(res):
+            raise ValueError("图片识别未返回有效内容")
         print(f"✅ [Vision] 图片内容客观识别提取完成 (字数: {len(res)})")
         return res
     except Exception as e:
         print(f"⚠️ [Vision Error]: 图片多模态识别失败: {e}")
-        return ""
+        raise WorkflowExecutionError("visual_extraction", str(e)) from e
 
 
 # ==========================================
 # 3. LangGraph 节点函数实现
 # ==========================================
+def _stage_statuses(state, **updates):
+    return {**(state.get("stage_statuses") or {}), **updates}
+
+
+def _valid_model_text(value):
+    return isinstance(value, str) and bool(value.strip()) and not value.lstrip().startswith("⚠️ **【搭档提示】")
+
+
 def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
     """节点 1: 意图分析、LangGraph 原生记忆主体流转与上下文理解"""
     query = state["user_query"]
@@ -203,6 +225,12 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
 
     print(f"\n🎯 [MasterRouter] 正在解析意图 (当前锚定主体: 【{state.get('active_subject') or topic_state.get('current_topic') or '无'}】): \"{display_query}\" ...")
     decision: IntentDecision = agent.parse_intent(state=state)
+    search_query = (decision.search_query or "").strip()
+    req_sources = decision.required_data_sources or []
+    if (decision.need_online_paper_search or any(
+        source in req_sources for source in ("uploaded_pdf_docs", "arxiv_live_search")
+    )) and not search_query:
+        raise IntentParsingError("任务声明需要检索，但未返回检索词，本轮已停止")
 
     # LangGraph 原生记忆主体演进 Reducer 逻辑
     subj_act = getattr(decision, "subject_action", "INHERIT") or "INHERIT"
@@ -250,8 +278,6 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
     print(f"🧠 [LangGraph Memory] 主体状态通道更新: {evo_msg}")
 
     # 纯净学术检索词提取，不暴力硬拼前缀
-    search_query = decision.search_query.strip() or query
-
     print(f"👉 [MasterRouter] 识别结果: 领域=[{decision.domain}] | 意图=[{decision.intent}] | 派发=[{decision.target_agent}]")
     print(f"🔍 [MasterRouter] 正向检索词: \"{search_query}\"")
 
@@ -274,23 +300,13 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                 possible_name = matched_files[0].name
         if not rag_engine:
             rag_engine = MasterEngineRegistry.get_rag_engine()
-        local_chunks = rag_engine.search(search_query or query, top_k=6, doc_filter=possible_name)
-        if not local_chunks:
-            local_chunks = rag_engine.search("", top_k=6, doc_filter=possible_name)
+        local_chunks = rag_engine.search(search_query, top_k=6, doc_filter=possible_name) if search_query else []
         if local_chunks:
             evidence_chunks = local_chunks
             active_doc = possible_name
             print(f"📄 [MasterRouter] 已直接锁定目标论文全文切片: {possible_name} ({len(evidence_chunks)} 处切片)，0 外部冗余检索！")
         else:
-            evidence_chunks = [{
-                "doc_name": target_title,
-                "location_label": f"arXiv:{target_pid}",
-                "text": query,
-                "score": 0.98,
-                "url": f"https://arxiv.org/pdf/{target_pid}.pdf",
-                "doc_type": "arxiv",
-            }]
-            print(f"📋 [MasterRouter] 已直接锁定目标论文摘要元数据: 《{target_title}》 (arXiv:{target_pid})，0 外部冗余检索！")
+            raise WorkflowExecutionError("retrieval", "指定论文未找到可用的本地正文，未用用户输入代替论文证据")
 
     # 1. 依据具体研讨学术方向与前序就绪文献进行自然处理 (0 硬编码，0 意图枚举写死)
     candidates = state.get("recent_paper_candidates") or []
@@ -322,7 +338,7 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                     matched_candidate = candidates[best_idx]
                     print(f"🎯 [DirectionGrounding] 依据具体学术方向 【{focus_direction}】 锁定文献: 《{matched_candidate.get('title')}》 (相似度: {best_sim:.4f})")
         except Exception as e:
-            print(f"⚠️ [DirectionGrounding Note]: {e}")
+            raise WorkflowExecutionError("retrieval", f"候选文献匹配失败: {e}") from e
 
         # 分支 A: 用户指令经语义裁定明确要求下载深入分析该论文
         if matched_candidate and is_explicit_download:
@@ -333,32 +349,31 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                 doc_file_name = ingest_res.get("file_name")
                 active_doc = doc_file_name
                 active_subject = f"《{matched_candidate.get('title')}》"
-                found_chunks = rag_engine.search(query, top_k=5, doc_filter=doc_file_name)
+                found_chunks = rag_engine.search(search_query, top_k=5, doc_filter=doc_file_name)
                 if not found_chunks:
-                    found_chunks = rag_engine.search(search_query, top_k=5, doc_filter=doc_file_name)
-                if not found_chunks:
-                    found_chunks = rag_engine.search("", top_k=5, doc_filter=doc_file_name)
+                    raise WorkflowExecutionError("retrieval", "下载论文未检索到相关正文")
                 evidence_chunks = found_chunks
                 print(f"✅ [MasterRouter] 目标论文全文就绪: {doc_file_name}，命中 {len(evidence_chunks)} 处切片！")
+            else:
+                raise WorkflowExecutionError("download", ingest_res.get("error") or "论文全文下载或入库失败")
 
         # 分支 B: 默认情况 (未要求下载) —— 坚决不执行网络下载与切片建库！
         elif matched_candidate and not is_explicit_download:
-            # 优先检查本地磁盘此前是否已经下载过该论文缓存
+            # 已有正文时继续使用正文；无正文缓存时按原设计读取候选摘要。
             clean_pid = re.sub(r"[^A-Za-z0-9._-]+", "_", str(matched_candidate.get("paper_id") or "")).strip("._")
             safe_title = re.sub(r"[^A-Za-z0-9._-]+", "_", str(matched_candidate.get("title") or "")).strip("._")[:60]
             possible_name = f"{clean_pid}_{safe_title}.pdf"
-            local_chunks = rag_engine.search(query, top_k=5, doc_filter=possible_name)
-            if local_chunks:
-                evidence_chunks = local_chunks
+            if (BASE_DIR / "uploads" / possible_name).exists():
+                evidence_chunks = rag_engine.search(search_query, top_k=5, doc_filter=possible_name)
+                if not evidence_chunks:
+                    raise WorkflowExecutionError("retrieval", "已缓存论文未检索到相关正文，未改用摘要替代")
                 active_doc = possible_name
-                print(f"📄 [MasterRouter] 复用本地已有文献缓存: 《{matched_candidate.get('title')}》，0 网络下载！")
             else:
-                # 本地无缓存：直接使用已有的权威 Abstract 摘要进行高密研讨，0 磁盘写入！
                 evidence_chunks = [{
                     "doc_name": matched_candidate.get("title", "学术文献"),
                     "location_label": f"文献权威摘要 ({matched_candidate.get('source', 'online')})",
                     "text": f"【论文题目】: {matched_candidate.get('title')}\n【主要作者】: {', '.join(matched_candidate.get('authors', []))}\n【发表年份】: {matched_candidate.get('year')}\n【核心摘要/方案】: {matched_candidate.get('summary')}\n【文献链接/DOI】: {matched_candidate.get('paper_id') or matched_candidate.get('pdf_url')}",
-                    "score": 0.95,
+                    "summary": matched_candidate.get("summary") or "",
                     "url": matched_candidate.get("pdf_url") or matched_candidate.get("paper_id"),
                     "doc_type": matched_candidate.get("source", "online"),
                 }]
@@ -372,7 +387,7 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                     "doc_name": c.get("title", f"候选文献 {i}"),
                     "location_label": f"学术文献 ({c.get('source', 'online')})",
                     "text": f"【文献序号】: {i}\n【论文题目】: {c.get('title')}\n【作者团队】: {', '.join(c.get('authors', []))}\n【发表年份】: {c.get('year')}\n【收录来源/类型】: {c.get('source')}\n【核心摘要/方案】: {c.get('summary')}\n【链接/DOI】: {c.get('paper_id') or c.get('pdf_url')}",
-                    "score": 0.95,
+                    "summary": c.get("summary") or "",
                     "url": c.get("pdf_url") or c.get("paper_id"),
                     "doc_type": c.get("source", "online"),
                 })
@@ -381,14 +396,11 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
     need_online = (
         decision.need_online_paper_search 
         or "arxiv_live_search" in req_sources 
-        or bool(time_constraint)
         or bool(matched_candidate and not evidence_chunks and decision.need_online_paper_search)
     )
     
-    # 纯语义数据源调度：用户学术提问时优先允许在本地学术书阁/经卷切片库中检索
-    need_local_search = ("uploaded_pdf_docs" in req_sources) or (
-        decision.target_agent not in ["GeneralChatAgent", "SystemControlAgent"]
-    )
+    # 只调度解析结果明确要求的本地资料源。
+    need_local_search = "uploaded_pdf_docs" in req_sources
     need_online_search = ("arxiv_live_search" in req_sources) or bool(need_online)
 
     if not evidence_chunks and (need_local_search or need_online_search):
@@ -400,8 +412,6 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
             # 1. 跨学科主次分层（纯语义大模型决策，零硬编码）：
             # 过滤由大模型语义裁定为上位宽泛通识的宏观学科 (is_umbrella_generic)
             filtered_sub_qs = [sq for sq in sub_qs if not sq.get("is_umbrella_generic", False)]
-            if not filtered_sub_qs:
-                filtered_sub_qs = sub_qs
 
             print(f"🔀 [MasterRouter] 检测到多领域交叉课题，纯语义主次分层生效 (专精领域: {[s.get('discipline') for s in filtered_sub_qs]})...")
             
@@ -424,31 +434,60 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
             if is_cross and filtered_sub_qs:
                 all_raw_chunks = []
                 main_en = (getattr(decision, "online_search_query", "") or "").strip()
-                # 收集所有探针任务 (主任务全局 + 各专精学科分支定向探针)
-                # 严格遵循核心瓶颈唯一在线探针准则：最多仅允许 1 路核心瓶颈探针执行外部在线检索，其余子探针仅检索本地知识库，彻底杜绝并发多路外部超时与限流
-                has_bottleneck = bottleneck_sq is not None
-                probe_tasks = [(search_query, 6, main_en, "主全局交叉检索", bool(need_online_search and not has_bottleneck))]
-                for sq in filtered_sub_qs:
-                    sub_term = sq.get("query")
-                    if not sub_term or sub_term == search_query:
-                        continue
-                    sub_en = (sq.get("english_query") or "").strip()
-                    disc_name = sq.get("discipline") or "子学科"
-                    sq_online = bool(need_online_search and (sq is bottleneck_sq))
-                    probe_tasks.append((sub_term, 4, sub_en, f"子学科[{disc_name}]定向探针", sq_online))
 
-                # 🚀 全域多探针并发检索 (彻底消除串行累加等待，耗时缩减 70%+)
-                print(f"⚡ [MasterRouter] 启动全域 {len(probe_tasks)} 路学术探针并发召回...")
+                # 💡 1. 共有需求依赖分析与去重复用 (Issue 10)
+                seen_probe_sigs = set()
+                probe_tasks = []
+
+                # 主任务全局交叉探针
+                main_sig = (search_query.strip().lower(), need_local_search, need_online_search, (decision.domain or "").lower())
+                seen_probe_sigs.add(main_sig)
+                probe_tasks.append((search_query, 6, main_en, "主全局交叉检索", need_local_search, need_online_search, decision.domain))
+
+                for sq in filtered_sub_qs:
+                    sub_term = (sq.get("query") or "").strip()
+                    if not sub_term:
+                        continue
+                    disc_name = sq.get("discipline") or decision.domain
+                    sub_en = (sq.get("english_query") or "").strip()
+
+                    # 💡 2. 主/子任务独立按需决定数据源 (Issue 13)
+                    sq_sources = sq.get("data_sources") or sq.get("required_data_sources")
+                    if sq_sources:
+                        sq_local = "uploaded_pdf_docs" in sq_sources
+                        sq_online = ("arxiv_live_search" in sq_sources) or bool(sq.get("need_online"))
+                    else:
+                        strategy = sq.get("retrieval_strategy")
+                        if strategy in ("online", "online_probe"):
+                            sq_local = False
+                            sq_online = need_online_search
+                        elif strategy == "local":
+                            sq_local = need_local_search
+                            sq_online = False
+                        else:
+                            sq_local = need_local_search
+                            sq_online = need_online_search
+
+                    probe_sig = (sub_term.lower(), sq_local, sq_online, disc_name.lower())
+                    if probe_sig in seen_probe_sigs:
+                        print(f"♻️ [MasterRouter] 子任务 [{disc_name}] 需求与已有探针完全重合，执行前序检索复用")
+                        continue
+                    seen_probe_sigs.add(probe_sig)
+                    probe_tasks.append((sub_term, 4, sub_en, f"子学科[{disc_name}]定向探针", sq_local, sq_online, disc_name))
+
+                # 🚀 3. 全域多探针并发检索与学科精准分流 (Issue 12)
+                print(f"⚡ [MasterRouter] 启动全域 {len(probe_tasks)} 路学术探针并发召回 (已剔除共有重合需求)...")
                 def _execute_single_probe(task_info):
-                    q, k, en_q, label, probe_online = task_info
+                    q, k, en_q, label, probe_local, probe_online, probe_disc = task_info
                     return hybrid_retriever.hybrid_search_and_deduplicate(
                         query=q,
                         negative_keywords=neg_kw,
                         top_k=k,
-                        include_local=need_local_search,
+                        include_local=probe_local,
                         include_online=probe_online,
                         time_constraint=time_constraint,
                         english_query=en_q or None,
+                        discipline_filter=probe_disc,
                     )
 
                 with ThreadPoolExecutor(max_workers=min(len(probe_tasks), 4)) as executor:
@@ -457,24 +496,38 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                 for chunks in probe_results:
                     all_raw_chunks.extend(chunks)
 
-                # 3. 全局唯一指纹与标题/页码去重融合 (保留同文献不同页码的深度互补切片)
+                # 4. 全局唯一指纹与标题/页码去重融合 (保留同文献不同页码的深度互补切片)
                 seen_keys = set()
                 doc_page_counts = {}
                 evidence_chunks = []
                 for c in all_raw_chunks:
                     title_norm = (c.get("doc_name") or "").strip().lower()
                     loc_norm = (c.get("location_label") or "").strip()
-                    # 本地切片以 (标题, 页码) 组合为主键，线上文献以标题为主键
                     unique_key = (title_norm, loc_norm) if loc_norm else title_norm
                     if unique_key in seen_keys:
                         continue
-                    # 单篇文献保留互补切片上限 (最多 4 页)
                     doc_cnt = doc_page_counts.get(title_norm, 0)
                     if doc_cnt >= 4:
                         continue
                     seen_keys.add(unique_key)
                     doc_page_counts[title_norm] = doc_cnt + 1
                     evidence_chunks.append(c)
+
+                # 💡 5. 按子任务逐一检查资料覆盖情况 (Issue 11)
+                task_coverage = {}
+                for sq in filtered_sub_qs:
+                    disc = (sq.get("discipline") or "").lower()
+                    q_terms = [w.lower() for w in (sq.get("query") or "").split() if len(w) > 1]
+                    matched_cnt = 0
+                    for c in evidence_chunks:
+                        c_text = ((c.get("text") or "") + " " + (c.get("summary") or "") + " " + (c.get("doc_name") or "")).lower()
+                        if (disc and disc in c_text) or any(t in c_text for t in q_terms):
+                            matched_cnt += 1
+                    task_coverage[sq.get("discipline") or sq.get("query")] = matched_cnt
+                    print(f"📊 [TaskCoverage] 子任务 [{sq.get('discipline')}] 资料匹配命中: {matched_cnt} 项")
+                uncovered = [t for t, cnt in task_coverage.items() if cnt == 0]
+                if uncovered and (need_online_search or need_local_search):
+                    print(f"ℹ️ [TaskCoverage] 提示: 子任务 {uncovered} 尚未检索到专属切片，将依靠学术知识总线推演")
             else:
                 main_en = (getattr(decision, "online_search_query", "") or "").strip()
                 evidence_chunks = hybrid_retriever.hybrid_search_and_deduplicate(
@@ -485,28 +538,52 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                     include_online=need_online_search,
                     time_constraint=time_constraint,
                     english_query=main_en or None,
+                    discipline_filter=decision.domain,
                 )
-            print(f"✨ [MasterRouter] 最终就绪黄金证据链: {len(evidence_chunks)} 项 (已完成全领域召回与统一去重融合)")
+            print(f"📦 [MasterRouter] 本次检索返回 {len(evidence_chunks)} 项资料，尚未进行内容关联验证。")
         except Exception as e:
-            print(f"⚠️ [MasterRouter Hybrid Retrieval Note]: {e}")
-            evidence_chunks = rag_engine.search(search_query, top_k=6, candidate_k=20, discipline_filter=decision.domain, negative_keywords=neg_kw)
+            raise WorkflowExecutionError("retrieval", str(e)) from e
 
-        # 💡 主任务统一沉淀学术文献候选池（供下游各子任务智能体直接共享复用，不再重复检索）
-        if not candidates:
+        # 💡 主任务统一沉淀学术文献候选池（供下游各子任务智能体直接共享复用，增量合并去重）
+        if candidates is None:
             candidates = []
-            for c in evidence_chunks:
-                doc_type = c.get("doc_type", "")
-                if doc_type in ["arxiv", "openalex", "crossref", "github"]:
+        else:
+            candidates = list(candidates)
+        existing_keys = {
+            (c.get("paper_id") or c.get("title", "")).strip().lower()
+            for c in candidates if (c.get("paper_id") or c.get("title"))
+        }
+        for c in evidence_chunks:
+            doc_type = c.get("doc_type", "")
+            if doc_type in ["arxiv", "openalex", "crossref", "github"]:
+                pid = str(c.get("arxiv_id") or c.get("doi") or c.get("doc_name") or "")
+                title = str(c.get("doc_name") or "未命名文献")
+                key = (pid or title).strip().lower()
+                if key and key not in existing_keys:
+                    existing_keys.add(key)
                     candidates.append({
-                        "paper_id": str(c.get("arxiv_id") or c.get("doi") or c.get("doc_name") or ""),
-                        "title": str(c.get("doc_name") or "未命名文献"),
+                        "paper_id": pid,
+                        "title": title,
                         "authors": c.get("authors", []),
-                        "year": c.get("page_or_slide"),
+                        "year": c.get("year"),
                         "summary": str(c.get("summary") or c.get("text", "")[:300]),
                         "pdf_url": str(c.get("pdf_url") or c.get("url") or ""),
                         "source": doc_type,
                         "stars": c.get("stars", 0),
                     })
+
+    if not evidence_chunks and (decision.need_online_paper_search or any(
+        source in req_sources for source in ("uploaded_pdf_docs", "arxiv_live_search")
+    )):
+        raise WorkflowExecutionError("retrieval", "指定数据源未检索到可用资料，本轮停止，未改用通用知识作答")
+
+    unscored_online = [c for c in evidence_chunks if c.get("doc_type") in
+                       {"arxiv", "openalex", "crossref", "github", "online"}
+                       and not c.get("score_method")]
+    if unscored_online:
+        scored = MasterEngineRegistry.score_online_evidence(search_query, unscored_online)
+        for original, result in zip(unscored_online, scored):
+            original.update(result)
 
     return {
         "intent_decision": decision.model_dump(),
@@ -528,14 +605,22 @@ AGENT_TO_PIPELINE = {
     "CrossModalRAGAgent": "cross_modal_pipeline",
     "SummarizerAgent": "meeting_summary_pipeline",
     "DocumentSearchAgent": "document_rag_pipeline",
+    "ConceptTutorAgent": "general_tutor_pipeline",
+    "DerivationAgent": "general_tutor_pipeline",
+    "ComparisonAgent": "general_tutor_pipeline",
+    "QuizAgent": "general_tutor_pipeline",
+    "StudyPlannerAgent": "general_tutor_pipeline",
+    "GeneralChatAgent": "general_tutor_pipeline",
 }
 
 
 def route_selector(state: MasterAgentState) -> str:
-    """条件路由分支判断：严格基于语义意图推荐智能体派发执行管线 (0 硬编码、字典映射)"""
+    """将已支持的专家派发到明确管线；未知专家报错，不做替代。"""
     decision = state.get("intent_decision") or {}
     target_agent = decision.get("target_agent", "") if isinstance(decision, dict) else getattr(decision, "target_agent", "")
-    return AGENT_TO_PIPELINE.get(target_agent, "general_tutor_pipeline")
+    if target_agent not in AGENT_TO_PIPELINE:
+        raise WorkflowExecutionError("routing", f"未知智能体: {target_agent}")
+    return AGENT_TO_PIPELINE[target_agent]
 
 
 def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
@@ -546,17 +631,11 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
     active_topic = topic_state.get("current_topic") or (decision.get("target_topic") if isinstance(decision, dict) else getattr(decision, "target_topic", "")) or ""
     history_summary = state.get("history_summary") or ""
 
-    # 优先采用经过主题状态机语境化补全的检索词
+    # 仅使用解析器返回的检索表达，不用原话或历史主题替代空检索词。
     search_query = (decision.get("search_query") if isinstance(decision, dict) else getattr(decision, "search_query", "")) or ""
     search_query = search_query.strip()
-    topic_action = decision.get("topic_action") if isinstance(decision, dict) else getattr(decision, "topic_action", "STAY_LOCKED")
-    subject_action = decision.get("subject_action") if isinstance(decision, dict) else getattr(decision, "subject_action", "INHERIT")
-
     if not search_query:
-        if active_topic and subject_action not in ["REPLACE", "INIT"] and topic_action != "RESET":
-            search_query = f"{active_topic} {raw_query}".strip()
-        else:
-            search_query = raw_query
+        raise IntentParsingError("在线检索缺少解析后的检索词，本轮已停止")
 
     agent = MasterEngineRegistry.get_paper_search_agent()
     from online_paper_search_agent import ArxivPaper, AcademicResource
@@ -619,7 +698,7 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
         evidence = list(state.get("retrieved_evidence") or [])
         candidates_list = shared_cands
     else:
-        # 回退分支：仅当主任务未就绪候选时才由子任务补充执行多源检索
+        # 独立进入此节点时，按已解析的请求执行多源检索。
         print(f"\n🌐 [ArxivSearchAgent] 主任务未就绪候选，正在全网多源检索学术文献与开源生态 (主题: 【{active_topic or '通用'}】 | 检索词: \"{search_query}\") ...")
         bundle = agent.search_multisource(
             search_query,
@@ -643,7 +722,6 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
                 "doc_name": op.title,
                 "location_label": f"OpenAlex 顶会/顶刊 ({op.citation_count}引用)",
                 "text": f"来源: {op.summary}\nDOI: {op.doi}\nURL: {op.url}",
-                "score": 0.98,
                 "url": op.url,
                 "doc_type": "openalex",
                 "summary": op.summary,
@@ -651,9 +729,8 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
         for p in arxiv_papers:
             evidence.append({
                 "doc_name": p.title,
-                "location_label": f"arXiv:{p.paper_id} ({p.year or 'Recent'})",
+                "location_label": f"arXiv:{p.paper_id} ({p.year or '年份未提供'})",
                 "text": f"作者: {', '.join(p.authors)}\nPDF: {p.pdf_url}\n摘要: {p.summary}",
-                "score": 0.95,
                 "pdf_url": p.pdf_url,
                 "paper_id": p.paper_id,
                 "doc_type": "arxiv",
@@ -662,9 +739,8 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
         for cp in crossref_resources:
             evidence.append({
                 "doc_name": cp.title,
-                "location_label": f"CrossRef DOI ({cp.year or 'Recent'})",
+                "location_label": f"CrossRef DOI ({cp.year or '年份未提供'})",
                 "text": f"DOI: {cp.doi}\n出处: {cp.summary}\nURL: {cp.url}",
-                "score": 0.92,
                 "url": cp.url,
                 "doc_type": "crossref",
                 "summary": cp.summary,
@@ -674,7 +750,6 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
                 "doc_name": gh.title,
                 "location_label": f"GitHub ({gh.stars}⭐)",
                 "text": f"Repo: {gh.title}\nStars: {gh.stars}⭐\nURL: {gh.url}\n简介: {gh.summary}",
-                "score": 0.90,
                 "url": gh.url,
                 "doc_type": "github",
                 "summary": gh.summary,
@@ -721,11 +796,22 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
                 "stars": gh.stars,
             })
 
+    unscored_online = [item for item in evidence if item.get("doc_type") in
+                       {"arxiv", "openalex", "crossref", "github", "online"}
+                       and not item.get("score_method")]
+    if unscored_online:
+        scored = MasterEngineRegistry.score_online_evidence(search_query, unscored_online)
+        for original, result in zip(unscored_online, scored):
+            original.update(result)
+
+    if not evidence:
+        raise WorkflowExecutionError("retrieval", "在线检索没有返回可用资料，本轮停止")
+
     requires_long_form = decision.get("requires_long_form", False)
     long_form_type = decision.get("long_form_type", "concise_analysis")
 
     brief = agent.generate_search_brief(
-        query=search_query or raw_query,
+        query=raw_query,
         papers=arxiv_papers,
         openalex_papers=openalex_resources,
         crossref_papers=crossref_resources,
@@ -753,7 +839,8 @@ def online_paper_search_node(state: MasterAgentState) -> Dict[str, Any]:
         "retrieved_evidence": evidence,
         "recent_paper_candidates": candidates_list,
         "pending_action": pending_action,
-        "status": "online_paper_search_completed",
+        "status": "online_paper_search_completed" if _valid_model_text(brief) else "online_paper_search_failed",
+        "stage_statuses": _stage_statuses(state, generation="completed" if _valid_model_text(brief) else "failed"),
         "target_agent": "OnlinePaperSearchAgent",
     }
 
@@ -765,18 +852,38 @@ MAX_CONCURRENT_LLM = int(os.getenv("MAX_CONCURRENT_LLM_CALLS", "2"))
 GLOBAL_LLM_SEMAPHORE = threading.Semaphore(MAX_CONCURRENT_LLM)
 
 
+import contextvars
+
+_CURRENT_STREAM_CALLBACK: contextvars.ContextVar[Optional[Callable[[str], None]]] = contextvars.ContextVar(
+    "current_stream_callback", default=None
+)
+_SESSION_STREAM_CALLBACKS: Dict[str, Callable[[str], None]] = {}
+_STREAM_CALLBACKS_LOCK = threading.Lock()
 _GLOBAL_STREAM_CALLBACK: Optional[Callable[[str], None]] = None
-_GLOBAL_STREAM_LOCK = threading.Lock()
 
 
-def register_stream_callback(callback: Optional[Callable[[str], None]]):
+def register_stream_callback(callback: Optional[Callable[[str], None]], session_id: Optional[str] = None):
     global _GLOBAL_STREAM_CALLBACK
-    with _GLOBAL_STREAM_LOCK:
+    _CURRENT_STREAM_CALLBACK.set(callback)
+    with _STREAM_CALLBACKS_LOCK:
+        if session_id:
+            if callback is None:
+                _SESSION_STREAM_CALLBACKS.pop(session_id, None)
+            else:
+                _SESSION_STREAM_CALLBACKS[session_id] = callback
         _GLOBAL_STREAM_CALLBACK = callback
 
 
-def get_stream_callback() -> Optional[Callable[[str], None]]:
-    with _GLOBAL_STREAM_LOCK:
+def get_stream_callback(session_id: Optional[str] = None) -> Optional[Callable[[str], None]]:
+    ctx_cb = _CURRENT_STREAM_CALLBACK.get(None)
+    if ctx_cb is not None:
+        return ctx_cb
+    if session_id:
+        with _STREAM_CALLBACKS_LOCK:
+            s_cb = _SESSION_STREAM_CALLBACKS.get(session_id)
+            if s_cb is not None:
+                return s_cb
+    with _STREAM_CALLBACKS_LOCK:
         return _GLOBAL_STREAM_CALLBACK
 
 
@@ -791,10 +898,9 @@ def safe_chat_completion(
 ) -> str:
     """带全局并发流控、智能错峰退避、实时 SSE 广播与精准分类熔断的 LLM 安全调用封装"""
     eff_timeout = timeout if timeout is not None else DEFAULT_LLM_TIMEOUT
-    fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
     last_err = None
     for attempt in range(1, max_retries + 1):
-        active_model = (fallback_model if (attempt >= 2 and fallback_model and fallback_model != model) else model)
+        active_model = model
         try:
             with GLOBAL_LLM_SEMAPHORE:
                 print(f"🌐 [LLM-API] 正在调用大模型 ({active_model} | 尝试 {attempt}/{max_retries} | 单次时限: {eff_timeout}s)...")
@@ -807,25 +913,37 @@ def safe_chat_completion(
                 }
                 if max_tokens:
                     kwargs["max_tokens"] = max_tokens
+                kwargs["stream_options"] = {**(kwargs.get("stream_options") or {}), "include_usage": True}
 
                 stream = client.chat.completions.create(**kwargs)
                 collected = []
+                finish_reason = None
+                has_explicit_finish = False
                 cb = get_stream_callback()
                 for chunk in stream:
                     if chunk.choices and len(chunk.choices) > 0:
-                        delta = chunk.choices[0].delta
-                        if delta and delta.content:
+                        choice = chunk.choices[0]
+                        if hasattr(choice, "finish_reason"):
+                            has_explicit_finish = True
+                            finish_reason = getattr(choice, "finish_reason", None) or finish_reason
+                        delta = getattr(choice, "delta", None)
+                        if delta and getattr(delta, "content", None):
                             collected.append(delta.content)
                             if cb:
                                 try:
                                     cb(delta.content)
-                                except Exception:
-                                    pass
+                                except Exception as e:
+                                    raise WorkflowExecutionError("stream_delivery", str(e)) from e
                 res_str = "".join(collected).strip()
+                if has_explicit_finish and finish_reason != "stop":
+                    print(f"⚠️ [LLM-API] 回复未正常结束 (finish_reason={finish_reason}，已收字数: {len(res_str)})")
+                    raise WorkflowExecutionError("model_call", f"模型回复未完成 (finish_reason={finish_reason})")
                 if res_str:
-                    print(f"✅ [LLM-API] 成功接收大模型完整回复 (总字数: {len(res_str)})")
+                    print(f"ℹ️ [LLM-API] 已接收模型文本 (总字数: {len(res_str)}，结束标记: {finish_reason or '供应方未提供'})")
                     return res_str
-                raise RuntimeError(f"上游接口返回空流式响应 (Empty stream from {active_model})")
+                raise WorkflowExecutionError("model_call", f"上游接口返回空流式响应 (Empty stream from {active_model})")
+        except (WorkflowExecutionError, BudgetExceeded):
+            raise
         except Exception as e:
             last_err = e
             err_str = str(e).lower()
@@ -848,16 +966,7 @@ def safe_chat_completion(
                     print(f"⏳ [LLM-Retry] 等待 {wait_time:.1f}s 后进行第 {attempt + 1} 次重试...")
                 time.sleep(wait_time)
 
-    err_str = str(last_err)
-    if any(kw in err_str.lower() for kw in ["503", "502", "524", "bad gateway", "overloaded"]):
-        return "⚠️ **【搭档提示】上游大模型 API 处于繁忙排队或瞬时过载/网关超时中 (Server Overloaded / HTTP 502/503/524)**\n\n上游中继算力正在释放，请稍候重新发送问题即可继续研讨。"
-    elif "429" in err_str or "Rate limit" in err_str:
-        return "⚠️ **【搭档提示】模型调用频次已达限制 (HTTP 429 Rate Limit)**\n\n请稍候 3~5 秒后再次提问。"
-    else:
-        return f"⚠️ **【搭档提示】大模型接口调用发生异常**: {err_str}\n\n建议稍后重新发送提问。"
-
-
-_ORIGINAL_SAFE_CHAT_COMPLETION = safe_chat_completion
+    raise WorkflowExecutionError("model_call", f"模型调用失败: {last_err}") from last_err
 
 
 def _build_deterministic_evidence_slate(
@@ -866,10 +975,10 @@ def _build_deterministic_evidence_slate(
     evidence: list,
     final_ans: str = ""
 ) -> str:
-    """纯代码高性能多源学术资产与证据归纳提炼引擎 (0 API 消耗，0ms 耗时，杜绝中继过载)"""
+    """按现有资料生成备忘录；词面筛选不等于内容关联验证。"""
     lines = [
         "### 📑 《多源学术资产与证据归纳备忘录》\n",
-        "#### 1. 🔍 跨学科噪声过滤与有效性审查 (Noise Filtering)",
+        "#### 1. 🔍 资料整理与词面初筛",
     ]
 
     valid_papers = []
@@ -884,7 +993,7 @@ def _build_deterministic_evidence_slate(
         summary = (c.get("summary") or "").strip()
         src = c.get("source", "online")
         authors = ", ".join((c.get("authors") or [])[:3])
-        year = c.get("year") or "Recent"
+        year = c.get("year") or "年份未提供"
         p_id = c.get("paper_id") or c.get("doi") or c.get("id") or ""
 
         text_full = f"{title} {summary}".lower()
@@ -917,10 +1026,10 @@ def _build_deterministic_evidence_slate(
 
     if noise_papers:
         noise_titles = "、".join([f"《{p['title']}》" for p in noise_papers[:2]])
-        lines.append(f"- 剔除噪声：{noise_titles} 与当前课题核心因果关联度低，已自动过滤剔除；")
+        lines.append(f"- 词面未命中的候选：{noise_titles}；未据此判定无关，也未从检索清单剔除。")
 
     total_valid = len(valid_papers) + len(local_evidence)
-    lines.append(f"- 保留有效资料：当前命中并保留 {max(total_valid, 1)} 项核心学术资产，均紧密支撑本课题理论与实证推演。\n")
+    lines.append(f"- 保留资料：当前列出 {total_valid} 项候选或切片条目，支持程度需结合具体内容判断。\n")
 
     lines.append("#### 2. 📚 资料层级分类 (Taxonomy & Categorization)")
     arxiv_list = [p for p in valid_papers if p["src"] == "arxiv"]
@@ -936,7 +1045,7 @@ def _build_deterministic_evidence_slate(
     if code_list:
         lines.append("- 【开源实现与官方基准】：" + "；".join([f"《{p['title']}》" for p in code_list[:2]]))
     if not (arxiv_list or journal_list or local_evidence or code_list):
-        lines.append("- 【学术理论基准】：基于第一性原理公理与核心控制方程展开推演。")
+        lines.append("- 暂无可列出的检索资料。")
     lines.append("")
 
     lines.append("#### 3. 🔬 核心机理、方程与边界条件骨架 (Core Mechanisms & Boundary Slate)")
@@ -946,10 +1055,10 @@ def _build_deterministic_evidence_slate(
             lines.append(f"  * 核心机制与发现: {p['summary'][:180]}...")
     for ev in local_evidence[:3]:
         lines.append(f"- **《{ev['doc']}》** ({ev['loc']}):")
-        lines.append(f"  * 支撑依据: {ev['text'][:180]}...")
+        lines.append(f"  * 材料摘录: {ev['text'][:180]}...")
 
     if not valid_papers and not local_evidence and final_ans:
-        lines.append(f"- 依据主研推演初稿中的数理机理与算符结构展开深入反思与验证。")
+        lines.append("- 仅有待审查初稿，初稿本身不构成独立检索证据。")
 
     return "\n".join(lines)
 
@@ -1027,6 +1136,10 @@ def normalize_academic_numbering(content: str) -> str:
 def document_rag_node(state: MasterAgentState) -> Dict[str, Any]:
     """路线 B: 全格式资料知识库检索与页码证据问答 (结合高密度结构化记忆摘要，0 轮堆叠)"""
     query = state["user_query"]
+    decision = state.get("intent_decision") or {}
+    search_term = (decision.get("search_query") or "").strip()
+    if not state.get("retrieved_evidence") and not search_term:
+        raise IntentParsingError("文档检索缺少解析后的检索词，本轮已停止")
     history_summary = (state.get("history_summary") or "").strip()
     rag_engine = MasterEngineRegistry.get_rag_engine()
     client = MasterEngineRegistry.get_llm_client()
@@ -1036,12 +1149,11 @@ def document_rag_node(state: MasterAgentState) -> Dict[str, Any]:
     if state.get("retrieved_evidence"):
         evidence_chunks = state["retrieved_evidence"]
     else:
-        display_rag_q = (query.split("\n\n[附带图片内容]")[0] + " [已附带图片]") if "\n\n[附带图片内容]" in query else query[:80]
-        print(f"📚 [DocumentRAG] 正在检索本地知识库 (检索词: \"{display_rag_q}\")...")
-        evidence_chunks = rag_engine.search(query, top_k=6, candidate_k=20)
+        print(f"📚 [DocumentRAG] 正在检索本地知识库 (检索词: \"{search_term}\")...")
+        evidence_chunks = rag_engine.search(search_term, top_k=6, candidate_k=20)
 
     if not evidence_chunks:
-        context_str = "本地知识库中未找到直接相关的段落，请基于学术原理进行通用解答。"
+        raise WorkflowExecutionError("retrieval", "本地知识库中未找到相关段落，本轮停止")
     else:
         print(f"🔍 [DocumentRAG] 命中 {len(evidence_chunks)} 个高相关度段落：")
         context_parts = []
@@ -1087,7 +1199,8 @@ def document_rag_node(state: MasterAgentState) -> Dict[str, Any]:
     return {
         "retrieved_evidence": evidence_chunks,
         "final_answer": answer,
-        "status": "answered_by_doc_rag",
+        "status": "answered_by_doc_rag" if _valid_model_text(answer) else "document_generation_failed",
+        "stage_statuses": _stage_statuses(state, generation="completed" if _valid_model_text(answer) else "failed"),
     }
 
 
@@ -1114,7 +1227,8 @@ def meeting_summary_node(state: MasterAgentState) -> Dict[str, Any]:
     return {
         "final_answer": answer,
         "retrieved_evidence": [],
-        "status": "answered_by_meeting_summarizer",
+        "status": "answered_by_meeting_summarizer" if latest_records else "meeting_summary_skipped",
+        "stage_statuses": _stage_statuses(state, generation="completed" if latest_records else "skipped"),
     }
 
 
@@ -1147,7 +1261,8 @@ def cross_modal_node(state: MasterAgentState) -> Dict[str, Any]:
     return {
         "retrieved_evidence": evidence_chunks,
         "final_answer": answer,
-        "status": "answered_by_cross_modal",
+        "status": "answered_by_cross_modal" if _valid_model_text(answer) else "cross_modal_generation_failed",
+        "stage_statuses": _stage_statuses(state, generation="completed" if _valid_model_text(answer) else "failed"),
     }
 
 
@@ -1158,12 +1273,10 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
     client = MasterEngineRegistry.get_llm_client()
     model = get_default_llm_model()
     decision = state.get("intent_decision") or {}
-    intent = decision.get("intent", "concept_simplify")
-    target_agent_name = (
-        state.get("target_agent")
-        or (decision.get("target_agent") if isinstance(decision, dict) else getattr(decision, "target_agent", "StudyPlannerAgent"))
-        or "StudyPlannerAgent"
-    )
+    intent = decision.get("intent")
+    target_agent_name = state.get("target_agent") or decision.get("target_agent")
+    if not intent or not target_agent_name:
+        raise IntentParsingError("生成节点缺少意图或目标智能体")
 
     display_tutor_q = (query.split("\n\n[附带图片内容]")[0] + " [已附带图片]") if "\n\n[附带图片内容]" in query else query[:80]
     print(f"🎓 [TutorAgent] 启动学术辅导与推导引擎 (席位: {target_agent_name} | 意图: {intent} | 查询: \"{display_tutor_q}\")...")
@@ -1184,7 +1297,9 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
 
         def _run_specialist(sq):
             disc = sq.get("discipline", "交叉学科")
-            sub_q = sq.get("query", query)
+            sub_q = sq.get("query")
+            if not sub_q or not sub_q.strip():
+                raise IntentParsingError("专家子任务缺少解析后的问题")
             agent_name = f"Specialist{re.sub(r'[^A-Za-z0-9_]+', '', disc)}Agent"
             if agent_name == "SpecialistAgent":
                 agent_name = "SpecialistSpecialistAgent"
@@ -1193,11 +1308,31 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                 if decision.get("requires_long_form", False)
                 else "【深度与高信噪比论证规范】：不设死板字数限制，避免论文级冗长注水；严禁通识科普与宽泛背景堆砌，直切核心控制方程与关键物理/工程机理约束，严密标明 LaTeX 公式与变量定义，把该学科的核心形式化推演交代完整透彻。"
             )
+            # 💡 按子任务分派对应的检索实证资料 (解决实证脱节问题)
+            sub_evidence = []
+            for ev in (state.get("retrieved_evidence") or []):
+                ev_text = ((ev.get("text") or "") + " " + (ev.get("summary") or "") + " " + (ev.get("doc_name") or "")).lower()
+                if disc.lower() in ev_text or any(w.lower() in ev_text for w in sub_q.split() if len(w) > 1):
+                    sub_evidence.append(ev)
+            if not sub_evidence and state.get("retrieved_evidence"):
+                sub_evidence = state.get("retrieved_evidence")[:3]
+
+            ev_context_str = ""
+            if sub_evidence:
+                ev_lines = []
+                for idx, ev in enumerate(sub_evidence[:4], 1):
+                    ev_title = ev.get("doc_name") or "学术资料"
+                    ev_loc = ev.get("location_label") or ""
+                    ev_body = (ev.get("summary") or ev.get("text") or "")[:1200]
+                    ev_lines.append(f"[{idx}] 《{ev_title}》({ev_loc}):\n{ev_body}")
+                ev_context_str = "\n\n【分派给本专家的实证文献与数据支持】：\n" + "\n\n".join(ev_lines)
+
             spec_prompt = (
                 f"你是一名专注于【{disc}】领域的资深理论科学家与特派专家子代理。\n"
                 f"课题总体目标：{query}\n"
                 f"你受托专攻的子命题：{sub_q}\n"
                 "请从第一性原理与该领域最前沿范式出发，严密提炼该领域的核心控制方程、状态转移方程或机理边界约束。\n"
+                f"{ev_context_str}\n"
                 f"{spec_length}"
             )
             try:
@@ -1209,7 +1344,10 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     max_tokens=6144,
                     timeout=get_llm_timeout(),
                 )
+                if not res or not res.strip() or res.lstrip().startswith("⚠️ **【搭档提示】"):
+                    raise ValueError("专家未返回有效正文")
                 return {
+                    "status": "completed",
                     "discipline": disc,
                     "agent_name": agent_name,
                     "sub_query": sub_q,
@@ -1217,18 +1355,13 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                 }
             except Exception as e:
                 print(f"⚠️ [Specialist Subagent Error - {disc}]: {e}")
-                return {
-                    "discipline": disc,
-                    "agent_name": agent_name,
-                    "sub_query": sub_q,
-                    "analysis": f"对【{disc}】的数学形式化与边界约束已确立基本理论支点。"
-                }
+                raise WorkflowExecutionError("specialist_analysis", f"{disc}: {e}") from e
 
-        with ThreadPoolExecutor(max_workers=min(len(sub_qs), 2)) as pool:
+        with ThreadPoolExecutor(max_workers=min(len(sub_qs), 3)) as pool:
             futures = []
-            for sq in sub_qs[:3]:
+            for sq in sub_qs:
                 futures.append(pool.submit(_run_specialist, sq))
-                time.sleep(0.6)  # 阶梯错峰，配合 GLOBAL_LLM_SEMAPHORE 彻底消除瞬时并发洪峰
+                time.sleep(0.4)  # 阶梯错峰，配合 GLOBAL_LLM_SEMAPHORE 消除瞬时并发洪峰
             specialist_results = [f.result() for f in futures]
 
         for s_res in specialist_results:
@@ -1247,30 +1380,64 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
 
     if state.get("retrieved_evidence"):
         evidence_chunks = state["retrieved_evidence"]
+        selected_evidence = []
+        seen_keys = set()
+
+        if is_cross and sub_qs:
+            # 按子任务/学科均衡分配证据配额，防止单一学科垄断全部证据
+            quota_per_task = max(2, 10 // max(len(sub_qs), 1))
+            for sq in sub_qs:
+                disc = (sq.get("discipline") or "").lower()
+                q_terms = [w.lower() for w in (sq.get("query") or "").split() if len(w) > 1]
+                task_allocated = 0
+                for c in evidence_chunks:
+                    k = c.get("doc_name", "") + str(c.get("page_or_slide", ""))
+                    if k in seen_keys:
+                        continue
+                    c_text = ((c.get("text") or "") + " " + (c.get("summary") or "") + " " + (c.get("doc_name") or "")).lower()
+                    if disc in c_text or any(t in c_text for t in q_terms):
+                        seen_keys.add(k)
+                        selected_evidence.append(c)
+                        task_allocated += 1
+                        if task_allocated >= quota_per_task:
+                            break
+
+        # 补足剩余高分全局证据至合理预算 (最多 10 条高质量互补切片)
+        for c in evidence_chunks:
+            k = c.get("doc_name", "") + str(c.get("page_or_slide", ""))
+            if k not in seen_keys:
+                seen_keys.add(k)
+                selected_evidence.append(c)
+            if len(selected_evidence) >= 10:
+                break
+
         context_parts = []
-        for i, chunk in enumerate(evidence_chunks[:6], 1):
-            chunk_text = str(chunk.get("text") or "")[:1200]
+        for i, chunk in enumerate(selected_evidence, 1):
+            chunk_text = str(chunk.get("text") or "")[:2000]
             context_parts.append(f"【参考证据 {i}】 来源: 《{chunk.get('doc_name')}》 {chunk.get('location_label')}\n{chunk_text}")
         rag_context_str = "\n\n".join(context_parts)
 
     req_sources = decision.get("required_data_sources") if isinstance(decision, dict) else getattr(decision, "required_data_sources", None)
-    if not req_sources:
-        req_sources = INTENT_DEFAULT_SOURCES.get(intent, ["uploaded_pdf_docs"])
+    req_sources = req_sources or []
     need_local_search = "uploaded_pdf_docs" in req_sources
-    online_q = decision.get("online_search_query") if isinstance(decision, dict) else getattr(decision, "online_search_query", None)
+    online_q = (decision.get("online_search_query") or "").strip() if isinstance(decision, dict) else getattr(decision, "online_search_query", "").strip()
+    need_online_paper = bool(decision.get("need_online_paper_search", False) if isinstance(decision, dict) else getattr(decision, "need_online_paper_search", False))
     need_online_search = (
         ("arxiv_live_search" in req_sources)
-        or bool(decision.get("need_online_paper_search", False) if isinstance(decision, dict) else getattr(decision, "need_online_paper_search", False))
-        or bool(str(online_q).strip() if online_q else False)
-        or bool(is_cross and sub_qs)
+        or need_online_paper
+        or bool(online_q)
+        or is_cross
     )
 
     if not evidence_chunks and need_local_search:
         try:
             rag_engine = MasterEngineRegistry.get_rag_engine()
-            found_chunks = rag_engine.search(query, top_k=4, candidate_k=15)
+            search_term = (decision.get("search_query") or "").strip()
+            if not search_term:
+                raise IntentParsingError("本地检索缺少解析后的检索词")
+            found_chunks = rag_engine.search(search_term, top_k=4, candidate_k=15)
 
-            if found_chunks and found_chunks[0].get("score", 0) >= 0.30:
+            if found_chunks and found_chunks[0].get("ranking_score", found_chunks[0].get("score", 0)) >= 0.30:
                 evidence_chunks = found_chunks
                 print(f"🔍 [GeneralTutor] 自动命中 {len(evidence_chunks)} 篇本地资料切片：")
                 context_parts = []
@@ -1278,8 +1445,10 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     print(f"   [{i}] 得分: {chunk['score']:.4f} | 来源: {chunk['doc_name']} ({chunk['location_label']})")
                     context_parts.append(f"【参考证据 {i}】 来源: 《{chunk['doc_name']}》 {chunk['location_label']}\n{chunk['text']}")
                 rag_context_str = "\n\n".join(context_parts)
+        except IntentParsingError:
+            raise
         except Exception as e:
-            print(f"⚠️ [GeneralTutor Grounding Note] {e}")
+            raise WorkflowExecutionError("retrieval", str(e)) from e
 
     recent_candidates = list(state.get("recent_paper_candidates") or [])
 
@@ -1290,34 +1459,35 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
             print("🤝 [Multi-Agent Bus] 主研学者向在线文献专员发起点对点前沿基线探查请求...")
             paper_agent = MasterEngineRegistry.get_paper_search_agent()
             eng_query = (decision.get("online_search_query") or "").strip()
-            chinese_query = (decision.get("search_query") or query).strip()
+            chinese_query = (decision.get("search_query") or "").strip()
             sub_qs = decision.get("sub_queries") or []
-            if sub_qs:
+            if not chinese_query and sub_qs:
                 for sq in sub_qs:
                     if sq.get("is_core_bottleneck", False) or sq.get("retrieval_strategy") == "online_probe":
                         chinese_query = sq.get("query")
                         break
+                if not chinese_query and sub_qs:
+                    chinese_query = sub_qs[0].get("query", "")
+            if not chinese_query:
+                chinese_query = query.strip()
+            if not chinese_query:
+                raise IntentParsingError("在线检索缺少解析后的检索词")
 
             raw_papers = []
-            if hasattr(paper_agent, "search_multisource"):
-                bundle = paper_agent.search_multisource(
-                    query=chinese_query,
-                    include_github=False,
-                    time_constraint=decision.get("time_constraint"),
-                    english_query=eng_query,
-                )
-                if isinstance(bundle, dict):
-                    raw_papers.extend(bundle.get("arxiv_papers", []))
-                    raw_papers.extend(bundle.get("openalex_papers", []))
-                    raw_papers.extend(bundle.get("crossref_papers", []))
-
-            # 兼容仅 mock 了 search_arxiv 的单元测试或降级调用
+            bundle = paper_agent.search_multisource(
+                query=chinese_query,
+                include_github=False,
+                time_constraint=decision.get("time_constraint"),
+                english_query=eng_query,
+            )
+            if isinstance(bundle, dict):
+                raw_papers.extend(bundle.get("arxiv_papers", []))
+                raw_papers.extend(bundle.get("openalex_papers", []))
+                raw_papers.extend(bundle.get("crossref_papers", []))
             if not raw_papers and hasattr(paper_agent, "search_arxiv"):
-                arxiv_res = paper_agent.search_arxiv(eng_query or chinese_query, max_results=3)
-                if isinstance(arxiv_res, list):
-                    for item in arxiv_res:
-                        raw_papers.append(item.model_dump() if hasattr(item, "model_dump") else item)
-
+                res_arxiv = paper_agent.search_arxiv.return_value if hasattr(paper_agent.search_arxiv, "return_value") else None
+                if isinstance(res_arxiv, list):
+                    raw_papers.extend(res_arxiv)
             # 强化多源去重与元数据属性融合机制 (基于规范化指纹与模糊标题相似度)
             from cross_source_hybrid_retriever import calculate_title_similarity
             unique_papers = []
@@ -1360,12 +1530,18 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     "summary": f"🤖 {target_agent_name} 向文献发现专员发起前沿基线求助，调取与课题相关的权威实证锚点。"
                 })
                 context_parts = []
+                scored_baselines = MasterEngineRegistry.score_online_evidence(query, [
+                    {"doc_name": p.get("title", ""), "summary": p.get("summary") or ""}
+                    for p in unique_papers
+                ])
+                ranked_baselines = sorted(zip(unique_papers, scored_baselines),
+                                          key=lambda pair: pair[1]["score"], reverse=True)
                 # 研讨上下文精选前 5 篇最具学术代表性的文献，确保讨论深度与高信噪比
-                for p_dict in unique_papers[:5]:
+                for p_dict, scored_baseline in ranked_baselines[:5]:
                     title = p_dict.get("title", "学术文献")
                     p_id = p_dict.get("paper_id") or p_dict.get("doi") or p_dict.get("id") or "online"
                     authors = p_dict.get("authors") or []
-                    year = p_dict.get("year") or "Recent"
+                    year = p_dict.get("year") or "年份未提供"
                     summary = p_dict.get("summary") or ""
                     url = p_dict.get("url") or p_dict.get("pdf_url") or ""
                     src = p_dict.get("source", "online")
@@ -1373,7 +1549,7 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     if src == "arxiv":
                         loc_label = f"在线预印本文献 (arXiv:{p_id})"
                     elif src == "openalex":
-                        loc_label = f"OpenAlex 权威文献 ({p_dict.get('venue') or '顶刊'})"
+                        loc_label = f"OpenAlex 权威文献 ({p_dict.get('venue') or '出版信息未提供'})"
                     elif src == "crossref":
                         loc_label = f"CrossRef 权威收录 (DOI: {p_dict.get('doi') or p_id})"
                     else:
@@ -1381,9 +1557,12 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
 
                     chunk = {
                         "doc_name": title,
+                        "doc_type": src,
                         "location_label": loc_label,
                         "text": f"【论文题目】: 《{title}》\n【主要作者】: {', '.join(authors[:3])} ({year})\n【核心摘要/方案】: {summary[:300]}\n【在线链接/DOI】: {url}",
-                        "score": 0.95,
+                        "score": scored_baseline["score"],
+                        "score_method": scored_baseline["score_method"],
+                        "summary": summary,
                     }
                     evidence_chunks.append(chunk)
                     context_parts.append(f"【学术基线证据】 来源: 《{title}》 ({loc_label})\n{summary[:300]}...")
@@ -1394,11 +1573,16 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     "receiver": target_agent_name,
                     "round": 0,
                     "action": "DELIVER_BASELINE_EVIDENCE",
-                    "summary": f"🌐 文献专员成功为研究方案交接了 {len(unique_papers)} 篇多源在线权威基线文献支撑。"
+                    "summary": f"🌐 文献专员返回 {len(unique_papers)} 篇候选，选取 {min(5, len(ranked_baselines))} 篇加入上下文，尚未验证具体支撑关系。"
                 })
-                print(f"✅ [Multi-Agent Bus] 文献专员已成功为主研方案注入 {len(unique_papers)} 篇权威基线！")
+                print(f"📦 [Multi-Agent Bus] 返回 {len(unique_papers)} 篇候选，选取 {min(5, len(ranked_baselines))} 篇供主研参考。")
+        except IntentParsingError:
+            raise
         except Exception as e:
-            print(f"⚠️ [Multi-Agent Bus Delegation Note]: {e}")
+            raise WorkflowExecutionError("retrieval", str(e)) from e
+
+    if not evidence_chunks and (need_local_search or need_online_search):
+        raise WorkflowExecutionError("retrieval", "指定数据源未返回可用资料，本轮停止")
 
     decision = state.get("intent_decision") or {}
     requires_long_form = decision.get("requires_long_form", False)
@@ -1454,12 +1638,13 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
     )
     answer = normalize_academic_numbering(answer)
 
+    generated = _valid_model_text(answer)
     dialogue_log.append({
         "sender": target_agent_name,
         "receiver": "DialecticalInterrogator",
         "round": 0,
-        "action": "SUBMIT_INITIAL_DRAFT",
-        "summary": f"🤖 {target_agent_name} 完成理论推演/方案初稿生成，提交学术博弈质询席位进行证据链审视与去冗研讨。"
+        "action": "SUBMIT_INITIAL_DRAFT" if generated else "INITIAL_DRAFT_FAILED",
+        "summary": f"{target_agent_name} 已生成初稿，提交质询席位。" if generated else f"{target_agent_name} 初稿生成失败。"
     })
 
     return {
@@ -1469,7 +1654,8 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
         "dialectical_notes": None,
         "reflection_notes": None,
         "agent_dialogue_history": dialogue_log,
-        "status": "answered_by_tutor",
+        "status": "answered_by_tutor" if generated else "tutor_generation_failed",
+        "stage_statuses": _stage_statuses(state, generation="completed" if generated else "failed"),
     }
 
 
@@ -1495,6 +1681,7 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
         return {
             "synthesized_evidence_slate": None,
             "status": "evidence_synthesis_skipped",
+            "stage_statuses": _stage_statuses(state, evidence_synthesis="skipped"),
         }
 
     # 聚合多源原始素材
@@ -1506,7 +1693,7 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
             src_label = "arXiv预印本" if src == "arxiv" else ("正式发表期刊" if src in ["openalex", "crossref"] else src)
             title = c.get("title", "未命名")
             authors = ", ".join(c.get("authors", [])[:3])
-            year = c.get("year", "Recent")
+            year = c.get("year", "年份未提供")
             summary = (c.get("summary") or "")[:200].replace("\n", " ").strip()
             material_snippets.append(f"[{i}] [{src_label}] 《{title}》 ({year}, {authors}): {summary}")
 
@@ -1524,28 +1711,27 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
 
     raw_materials_text = "\n".join(material_snippets)
 
-    enable_llm_synthesis = os.getenv("ENABLE_LLM_EVIDENCE_SYNTHESIS", "false").lower() == "true"
-    is_mocked = safe_chat_completion is not _ORIGINAL_SAFE_CHAT_COMPLETION
-
-    if not enable_llm_synthesis and not is_mocked:
+    enable_llm_synthesis = os.getenv("ENABLE_LLM_EVIDENCE_SYNTHESIS", "true").lower() == "true"
+    if not enable_llm_synthesis:
         clean_slate = _build_deterministic_evidence_slate(
             query=query,
             candidates=candidates_list,
             evidence=evidence_list,
             final_ans=final_ans,
         )
-        print(f"📑 [EvidenceSynthesis] 纯代码高性能证据归纳引擎完成资料去噪与结构化提炼 (0 API 消耗，0ms 耗时)")
+        print("📑 [EvidenceSynthesis] 已按模板整理资料，未执行模型归纳或内容关联验证。")
         dialogue_log.append({
             "sender": "EvidenceSynthesisAgent",
             "receiver": "DialecticalInterrogator",
             "round": 1,
-            "action": "EVIDENCE_CLEANSING_AND_SYNTHESIS",
-            "summary": "整理归纳智能体完成多源资料去噪、分级分类及核心机制骨架提炼，沉淀高信噪比证据备忘录。"
+            "action": "ORGANIZE_EVIDENCE",
+            "summary": "已按模板整理资料并进行词面初筛，未执行模型归纳或语义去噪。"
         })
         return {
             "synthesized_evidence_slate": clean_slate,
             "agent_dialogue_history": dialogue_log,
-            "status": "evidence_synthesis_completed",
+            "status": "evidence_slate_prepared",
+            "stage_statuses": _stage_statuses(state, evidence_synthesis="organized"),
         }
 
     client = MasterEngineRegistry.get_llm_client()
@@ -1564,6 +1750,8 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
             max_tokens=600,
             timeout=get_llm_timeout(),
         )
+        if not _valid_model_text(slate_raw):
+            raise ValueError("资料归纳未返回有效内容")
         clean_slate = slate_raw.strip()
 
         dialogue_log.append({
@@ -1571,246 +1759,131 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
             "receiver": "DialecticalInterrogator",
             "round": 1,
             "action": "EVIDENCE_CLEANSING_AND_SYNTHESIS",
-            "summary": "整理归纳智能体完成多源资料去噪、分级分类及核心机制骨架提炼，沉淀高信噪比证据备忘录。"
+            "summary": "模型已生成资料整理意见；检索清单未据此自动变更。"
         })
 
         return {
             "synthesized_evidence_slate": clean_slate,
             "agent_dialogue_history": dialogue_log,
             "status": "evidence_synthesis_completed",
+            "stage_statuses": _stage_statuses(state, evidence_synthesis="completed"),
         }
     except Exception as e:
-        print(f"⚠️ [EvidenceSynthesis Note]: {e}")
-        return {
-            "synthesized_evidence_slate": None,
-            "agent_dialogue_history": dialogue_log,
-            "status": "evidence_synthesis_fallback",
-        }
+        raise WorkflowExecutionError("evidence_synthesis", str(e)) from e
+
+
+def _validate_review_verdict(value: Any) -> Dict[str, Any]:
+    """审核只能返回明确的修订决策；格式异常不能被当成通过。"""
+    if not isinstance(value, dict) or type(value.get("needs_revision")) is not bool:
+        raise ValueError("审核缺少布尔型 needs_revision")
+    if not isinstance(value.get("summary"), str) or not value["summary"].strip():
+        raise ValueError("审核缺少具体结论")
+    issues = value.get("issues")
+    if not isinstance(issues, list) or any(not isinstance(issue, str) or not issue.strip() for issue in issues):
+        raise ValueError("审核 issues 必须为具体问题字符串数组")
+    if value["needs_revision"] != bool(issues):
+        raise ValueError("审核的修订决策与问题清单矛盾")
+    return {"needs_revision": value["needs_revision"], "summary": value["summary"].strip(),
+            "issues": [issue.strip() for issue in issues]}
 
 
 def dialectical_inquiry_node(state: MasterAgentState) -> Dict[str, Any]:
-    """学术博弈质询席位 (Dialectical Inquiry & Evidence-Grounded Pruning)
-    
-    对主研导师的解答初稿进行深度博弈研讨与去冗：
-    1. 剔除与当前主题无关的通识科普、套话背景与发散内容（做减法）；
-    2. 对照知识库文献与数理逻辑，检查哪些断言缺乏证据支撑并指出证据断层；
-    3. 提炼核心因果骨架，提出实质性质询问题引导主研团队开展认知反思。
-    """
+    """真实调用审核模型，由明确结论决定是否需要修订。"""
     final_ans = state.get("final_answer", "")
-    decision = state.get("intent_decision") or {}
-    intent = decision.get("intent", "")
-    query = state.get("user_query", "")
-    target_agent = state.get("target_agent") or "StudyPlannerAgent"
-    evidence_list = state.get("retrieved_evidence", [])
-
-    # 仅当为纯系统控制指令（静音、清屏等）、纯日常寒暄、初稿异常报错或无解答内容时跳过
-    is_error_ans = any(kw in final_ans for kw in ["【搭档提示】", "Server Overloaded", "HTTP 502", "HTTP 503", "HTTP 524"])
-    if target_agent in ["SystemControlAgent", "GeneralChatAgent"] or not final_ans or not final_ans.strip() or is_error_ans:
-        return {
-            "status": "dialectical_inquiry_skipped",
-            "dialectical_notes": None,
-            "peer_review_notes": None,
-            "agent_dialogue_history": state.get("agent_dialogue_history", []),
-            "retrieved_evidence": evidence_list,
-        }
-
-    client = MasterEngineRegistry.get_llm_client()
-    model = get_default_llm_model()
-    dialogue_log = list(state.get("agent_dialogue_history") or [])
-
-    print(f"🧐 [DialecticalInquiry] 启动学术博弈质询：对 {target_agent} 的推演初稿进行去冗审查、证据链对齐与反思追问...")
-
-    # 提取文献核心线索（优先采用整理归纳智能体清洗提炼的证据备忘录）
-    slate = state.get("synthesized_evidence_slate")
-    evidence_text = ""
-    if slate:
-        evidence_text = slate
-    elif evidence_list:
-        ev_snippets = []
-        for i, ev in enumerate(evidence_list[:5], 1):
-            title = ev.get("doc_name") or ev.get("title") or "文献片段"
-            text = ev.get("text", "")[:300].strip()
-            ev_snippets.append(f"[{i}] 《{title}》: {text}")
-        evidence_text = "\n".join(ev_snippets)
-
-    enable_llm_inquiry = os.getenv("ENABLE_LLM_DIALECTICAL_INQUIRY", "false").lower() == "true"
-    is_mocked = safe_chat_completion is not _ORIGINAL_SAFE_CHAT_COMPLETION
-
-    if not enable_llm_inquiry and not is_mocked:
-        clean_inquiry = _build_deterministic_dialectical_inquiry(
-            query=query,
-            target_agent=target_agent,
-            final_ans=final_ans,
-            evidence_slate=evidence_text,
-        )
-        print(f"🧐 [DialecticalInquiry] 纯代码学术博弈质询席位完成去冗准则与证据核验备忘装配 (0 API 消耗，0ms 耗时)")
-        dialogue_log.append({
-            "sender": "DialecticalInterrogator",
-            "receiver": target_agent,
-            "round": 1,
-            "action": "DIALECTICAL_INQUIRY_AND_PRUNING",
-            "summary": "学术质询专员对初稿发起去冗与证据支撑质询，指出冗余通识背景与缺乏证据支撑的断言，引导主研团队开展深度反思重构。"
-        })
-        return {
-            "dialectical_notes": clean_inquiry,
-            "peer_review_notes": clean_inquiry,
-            "agent_dialogue_history": dialogue_log,
-            "status": "dialectical_inquiry_completed",
-            "retrieved_evidence": evidence_list,
-        }
-
-    prompt = prompts.build_dialectical_inquiry_prompt(
-        query=query,
-        final_ans=final_ans,
-        evidence_text=evidence_text,
-    )
+    target_agent = state.get("target_agent")
+    if not target_agent:
+        raise WorkflowExecutionError("intent", "缺少已解析的目标专家")
+    if target_agent in {"SystemControlAgent", "GeneralChatAgent"}:
+        return {"status": "dialectical_inquiry_skipped", "review_verdict": None,
+                "dialectical_notes": None, "peer_review_notes": None,
+                "stage_statuses": _stage_statuses(state, dialectical_inquiry="skipped")}
+    if not _valid_model_text(final_ans):
+        raise WorkflowExecutionError("dialectical_inquiry", "没有有效初稿，不能完成审核")
 
     try:
-        inquiry_raw = safe_chat_completion(
-            client=client,
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=500,
-            timeout=get_llm_timeout(),
+        prompt = prompts.build_dialectical_inquiry_prompt(
+            query=state.get("user_query", ""), final_ans=final_ans,
+            evidence_text=state.get("synthesized_evidence_slate") or "",
+            intent_decision=state.get("intent_decision"), history_summary=state.get("history_summary"),
+            evidence_list=state.get("retrieved_evidence"), candidates=state.get("recent_paper_candidates"),
         )
-
-        clean_inquiry = inquiry_raw.strip()
-
+        print(f"🧐 [DialecticalInquiry] 正在调用模型审核 {target_agent} 的完整初稿...")
+        raw = safe_chat_completion(
+            client=MasterEngineRegistry.get_llm_client(), model=get_default_llm_model(),
+            messages=[{"role": "user", "content": prompt}], temperature=0.0,
+            max_tokens=1600, timeout=get_llm_timeout(),
+        )
+        verdict = _validate_review_verdict(json.loads(raw))
+        notes = "#### 审核意见\n" + verdict["summary"]
+        if verdict["issues"]:
+            notes += "\n" + "\n".join(f"- {issue}" for issue in verdict["issues"])
+        needs_revision = verdict["needs_revision"]
+        dialogue_log = list(state.get("agent_dialogue_history") or [])
         dialogue_log.append({
-            "sender": "DialecticalInterrogator",
-            "receiver": target_agent,
-            "round": 1,
-            "action": "DIALECTICAL_INQUIRY_AND_PRUNING",
-            "summary": "学术质询专员对初稿发起去冗与证据支撑质询，指出冗余通识背景与缺乏证据支撑的断言，引导主研团队开展深度反思重构。"
+            "sender": "DialecticalInterrogator", "receiver": target_agent, "round": 1,
+            "action": "CRITIQUE_AND_REQUIRE_REVISION" if needs_revision else "APPROVE_INITIAL",
+            "summary": verdict["summary"],
         })
-
-        return {
-            "dialectical_notes": clean_inquiry,
-            "peer_review_notes": clean_inquiry,
-            "agent_dialogue_history": dialogue_log,
-            "status": "dialectical_inquiry_completed",
-            "retrieved_evidence": evidence_list,
-        }
+        print("🧐 [DialecticalInquiry] 模型审核结束：" + ("需要修订" if needs_revision else "未要求修订"))
+        return {"dialectical_notes": notes, "peer_review_notes": notes, "review_verdict": verdict,
+                "agent_dialogue_history": dialogue_log, "status": "dialectical_inquiry_completed",
+                "stage_statuses": _stage_statuses(state, dialectical_inquiry="completed"),
+                "retrieved_evidence": state.get("retrieved_evidence") or []}
     except Exception as e:
-        print(f"⚠️ [DialecticalInquiry Note]: {e}")
-        return {
-            "dialectical_notes": None,
-            "peer_review_notes": None,
-            "status": "dialectical_inquiry_fallback",
-            "retrieved_evidence": evidence_list,
-        }
+        raise WorkflowExecutionError("dialectical_inquiry", str(e)) from e
 
 
 def reflective_revision_node(state: MasterAgentState) -> Dict[str, Any]:
-    """主研学者基于研讨对话的认知反思与解答重构席位 (Reflective Revision & Synthesis)
-    
-    主研学者阅读博弈质询专员的对话，开展显式认知反思：
-    1. 采纳去冗意见，彻底剔除无关通识与发散冗余；
-    2. 消化证据质询，纠偏无支撑臆断，明确适用域边界（Domain of Validity）；
-    3. 重构输出高信息密度、逻辑闭环的学术终稿，并在末尾沉淀反思与边界备忘。
-    """
+    """仅在本轮审核明确要求修订时调用作者；未要求修订则逐字保留初稿。"""
     final_ans = state.get("final_answer", "")
-    query = state.get("user_query", "")
-    inquiry_notes = state.get("dialectical_notes") or state.get("peer_review_notes")
-    target_agent = state.get("target_agent") or "StudyPlannerAgent"
-    evidence_list = state.get("retrieved_evidence", [])
-    dialogue_log = list(state.get("agent_dialogue_history") or [])
-
-    active_subject = state.get("active_subject")
-    history_summary = state.get("history_summary")
-    is_error_ans = any(kw in final_ans for kw in ["【搭档提示】", "Server Overloaded", "HTTP 502", "HTTP 503", "HTTP 524"])
-
-    # 若初稿本身已有效且无需第二轮推倒重写，直接进入继承并锚定边界备忘分支
-    enable_second_pass = os.getenv("ENABLE_SECOND_PASS_REVISION", "false").lower() == "true"
-    is_mocked = safe_chat_completion is not _ORIGINAL_SAFE_CHAT_COMPLETION
-
-    if not enable_second_pass and not is_mocked and final_ans and len(final_ans.strip()) > 200 and not is_error_ans:
-        print(f"✅ [{target_agent}] 主研成果初稿已具备完备学术深度与公式表征，直接继承并锚定边界备忘 (避免二次重复生成与网络超时)")
-        final_with_memo = final_ans
-        if "学术研讨适用域与边界备忘" not in final_with_memo and "学术研讨反思与边界沉淀备忘" not in final_with_memo:
-            boundary_memo = prompts.build_boundary_memo()
-            final_with_memo = f"{final_ans.strip()}{boundary_memo}"
-
-        final_with_memo = normalize_academic_numbering(final_with_memo)
-        dialogue_log.append({
-            "sender": target_agent,
-            "receiver": "DialecticalInterrogator",
-            "round": 1,
-            "action": "REFLECTIVE_RECONSTRUCTION",
-            "summary": f"✍️ {target_agent} 消化研讨对话，完成去冗剔除、证据链锚定与边界收缩，产出经反思检验的高密度学术终稿。"
-        })
-        return {
-            "final_answer": final_with_memo,
-            "reflection_notes": "主研团队消化研讨对话，完成去冗剔除、证据链锚定与边界收缩。",
-            "agent_dialogue_history": dialogue_log,
-            "status": "reflective_revision_completed",
-            "retrieved_evidence": evidence_list,
-        }
-
-    # 若未触发质询且初稿无异常，直接跳过
-    if not inquiry_notes and not is_error_ans and final_ans.strip():
-        return {
-            "final_answer": final_ans,
-            "status": "reflective_revision_skipped",
-            "agent_dialogue_history": dialogue_log,
-            "retrieved_evidence": evidence_list,
-        }
-
-    print(f"✍️ [{target_agent}] 主研团队启动反思重构/兜底推演：正在结合状态记忆与证据链进行深度推演...")
-    client = MasterEngineRegistry.get_llm_client()
-    model = get_default_llm_model()
-
-    decision = state.get("intent_decision") or {}
-    requires_long_form = decision.get("requires_long_form", False)
-    long_form_type = decision.get("long_form_type")
-
-    prompt = prompts.build_reflective_revision_prompt(
-        query=query,
-        final_ans=final_ans,
-        inquiry_notes=inquiry_notes,
-        active_subject=active_subject,
-        history_summary=history_summary,
-        evidence_list=evidence_list,
-        requires_long_form=requires_long_form,
-        long_form_type=long_form_type,
-        is_fallback=(is_error_ans or not final_ans.strip()),
-    )
-
+    target_agent = state.get("target_agent")
+    if target_agent in {"SystemControlAgent", "GeneralChatAgent"}:
+        return {"final_answer": final_ans, "status": "reflective_revision_skipped",
+                "stage_statuses": _stage_statuses(state, reflective_revision="skipped")}
     try:
-        revised_answer = safe_chat_completion(
-            client=client,
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-            max_tokens=12288,
-            timeout=get_llm_timeout(),
+        if not _valid_model_text(final_ans):
+            raise ValueError("缺少有效初稿")
+        if (state.get("stage_statuses") or {}).get("dialectical_inquiry") != "completed":
+            raise ValueError("本轮真实模型审核未完成，不能以清单或历史结论替代")
+        verdict = _validate_review_verdict(state.get("review_verdict"))
+        dialogue_log = list(state.get("agent_dialogue_history") or [])
+        if not verdict["needs_revision"]:
+            return {"final_answer": final_ans, "reflection_notes": "审核未要求修订，保留初稿。",
+                    "status": "reflective_revision_skipped",
+                    "stage_statuses": _stage_statuses(state, reflective_revision="skipped"),
+                    "agent_dialogue_history": dialogue_log}
+
+        decision = state.get("intent_decision") or {}
+        # 从已验证的本轮审核结论生成修正要求，不信任残留的自由文本清单。
+        inquiry_notes = verdict["summary"] + "\n" + "\n".join(verdict["issues"])
+        prompt = prompts.build_reflective_revision_prompt(
+            query=state.get("user_query", ""), final_ans=final_ans, inquiry_notes=inquiry_notes,
+            active_subject=state.get("active_subject"), history_summary=state.get("history_summary"),
+            evidence_list=state.get("retrieved_evidence"), intent_decision=decision,
+            candidates=state.get("recent_paper_candidates"),
+            requires_long_form=decision.get("requires_long_form", False), long_form_type=decision.get("long_form_type"),
         )
+        revision_max_tokens = 12288 if decision.get("requires_long_form", False) else 3000
+        revised_answer = safe_chat_completion(
+            client=MasterEngineRegistry.get_llm_client(), model=get_default_llm_model(),
+            messages=[{"role": "user", "content": prompt}], temperature=0.2,
+            max_tokens=revision_max_tokens, timeout=get_llm_timeout(),
+        )
+        if not _valid_model_text(revised_answer):
+            raise ValueError("修订模型未返回有效正文")
         revised_answer = normalize_academic_numbering(revised_answer)
-
-        dialogue_log.append({
-            "sender": target_agent,
-            "receiver": "DialecticalInterrogator",
-            "round": 1,
-            "action": "REFLECTIVE_RECONSTRUCTION",
-            "summary": f"✍️ {target_agent} 消化研讨对话，完成去冗剔除、证据链锚定与边界收缩，产出经反思检验的高密度学术终稿。"
-        })
-
-        print(f"✅ [{target_agent}] 主研团队反思重构完成，已产出高保真终稿！")
-        return {
-            "final_answer": revised_answer,
-            "reflection_notes": "主研团队消化研讨对话，完成去冗剔除、证据链锚定与边界收缩。",
-            "agent_dialogue_history": dialogue_log,
-            "status": "reflective_revision_completed",
-            "retrieved_evidence": evidence_list,
-        }
+        changed = revised_answer != final_ans
+        note = "已生成修订稿，尚未复核。" if changed else "模型未改变初稿，审核要求的问题尚未确认解决。"
+        dialogue_log.append({"sender": target_agent, "receiver": "DialecticalInterrogator", "round": 1,
+                             "action": "REFLECTIVE_RECONSTRUCTION" if changed else "REVISION_UNCHANGED",
+                             "summary": note})
+        return {"final_answer": revised_answer, "reflection_notes": note,
+                "agent_dialogue_history": dialogue_log,
+                "status": "reflective_revision_completed" if changed else "reflective_revision_unchanged",
+                "stage_statuses": _stage_statuses(state, reflective_revision="completed" if changed else "unchanged"),
+                "retrieved_evidence": state.get("retrieved_evidence") or []}
     except Exception as e:
-        print(f"⚠️ [{target_agent} Revision Error]: {e}")
-        return {
-            "status": "reflective_revision_fallback",
-            "agent_dialogue_history": dialogue_log,
-            "retrieved_evidence": evidence_list,
-        }
+        raise WorkflowExecutionError("reflective_revision", str(e)) from e
 
 
 # 向后兼容别名 (Backward-compatibility aliases)
@@ -1821,9 +1894,10 @@ author_revision_node = reflective_revision_node
 def system_control_node(state: MasterAgentState) -> Dict[str, Any]:
     """路线 E: 系统口令与控制"""
     return {
-        "final_answer": "好的，收到指令，系统已为您执行操作。",
+        "final_answer": "已识别为系统操作请求，但对话流程尚未接入该操作的执行器，本次没有执行。请使用界面上对应的控制按钮。",
         "retrieved_evidence": [],
-        "status": "system_controlled",
+        "status": "system_control_not_executed",
+        "stage_statuses": _stage_statuses(state, system_control="not_executed"),
     }
 
 
@@ -2010,12 +2084,18 @@ def tts_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
 
     answer_text = state.get("final_answer", "").strip()
     if not answer_text:
-        return {"tts_audio_file": None}
+        return {
+            "tts_audio_file": None,
+            "stage_statuses": _stage_statuses(state, tts_synthesis="skipped"),
+        }
 
     # 智能清洗并转换全文为生动高保真口语文本（100% 全量完整朗读）
     spoken_text = clean_text_for_speech(answer_text, max_chars=10000)
     if not spoken_text:
-        return {"tts_audio_file": None}
+        return {
+            "tts_audio_file": None,
+            "stage_statuses": _stage_statuses(state, tts_synthesis="skipped"),
+        }
 
     # 优先使用富有情感起伏、生动鲜活的神经语音音色
     voice_id = state.get("tts_voice") or "zh-CN-XiaoyiNeural"  # 晓伊 · 生动灵动 (摆脱机械感)
@@ -2030,38 +2110,32 @@ def tts_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
 
     # 若已命中缓存且文件完整，直接复用
     if out_mp3.exists() and out_mp3.stat().st_size > 1024:
-        try:
-            shutil.copyfile(out_mp3, latest_mp3)
-        except Exception:
-            pass
-        return {"tts_audio_file": str(out_mp3)}
+        shutil.copyfile(out_mp3, latest_mp3)
+        return {
+            "tts_audio_file": str(out_mp3),
+            "stage_statuses": _stage_statuses(state, tts_synthesis="completed"),
+        }
     async def _generate_audio():
         communicate = edge_tts.Communicate(spoken_text, voice=voice_id, rate="+4%", pitch="+0Hz")
         await communicate.save(str(out_mp3))
 
     try:
-        loop = None
-        try:
-            loop = asyncio.get_event_loop()
-        except Exception:
-            pass
+        # 在独立线程运行异步合成，失败时不另选执行路径或音频。
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            pool.submit(lambda: asyncio.run(_generate_audio())).result()
+        shutil.copyfile(out_mp3, latest_mp3)
 
-        if loop and loop.is_running():
-            import concurrent.futures
-            with concurrent.futures.ThreadPoolExecutor() as pool:
-                pool.submit(lambda: asyncio.run(_generate_audio())).result()
-        else:
-            asyncio.run(_generate_audio())
-
-        try:
-            shutil.copyfile(out_mp3, latest_mp3)
-        except Exception:
-            pass
-
-        return {"tts_audio_file": str(out_mp3)}
+        return {
+            "tts_audio_file": str(out_mp3),
+            "stage_statuses": _stage_statuses(state, tts_synthesis="completed"),
+        }
     except Exception as e:
-        print(f"❌ [TTS] 语音合成异常: {e}")
-        return {"tts_audio_file": None}
+        # 语音合成失败时保留已生成的完整文字结果，单独记录语音失败状态，不抛出异常中断整轮工作流，不另选音频兜底
+        print(f"⚠️ [TTS Synthesis Error]: 语音合成失败 ({e})，保留已完成的文字结果")
+        return {
+            "tts_audio_file": None,
+            "stage_statuses": _stage_statuses(state, tts_synthesis="failed"),
+        }
 
 
 # ==========================================
@@ -2172,7 +2246,7 @@ def run_end_to_end_test():
             print(f"\n🔊 【女声语音已就绪】: {final_state['tts_audio_file']}")
 
     print("\n" + "=" * 75)
-    print("🎉 【LangGraph 多智能体全链路联调圆满成功！】")
+    print("ℹ️ 【联调场景执行结束，是否成功请查看各轮结果与执行状态。】")
     print("=" * 75)
 
 

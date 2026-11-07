@@ -1,8 +1,170 @@
 {
   "query_expression": "cat:eess.IV",
   "total_fetched": 25,
-  "total_results": 32062,
+  "total_results": 32068,
   "papers": [
+    {
+      "paper_id": "2611.08441v1",
+      "title": "Edge-Assisted Crowdsensing for Explainable Cyclist Safety Perception",
+      "authors": [
+        "Hongsen Cao",
+        "Chia-Yen Chiang",
+        "Mona Jaber",
+        "Meihui Wang",
+        "Yasmin Fathy"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:33:58Z",
+      "summary": "Cyclist fatality rates remain high despite policy support for active travel, and autonomous vehicles add complexity to mixed traffic. Neither crash statistics nor multi-model detection pipelines scale to continuous monitoring of perceived safety along a route. We present an edge-assisted crowdsensing system: handlebar cameras supply street-level frames, a vision-language model (VLM) turns each frame into structured traffic attributes through a single prompt, and an explainable boosting machine (EBM) combines them with OpenStreetMap road infrastructure and on-bike kinematics to predict a crowdsourced 1-9 safety score. Extraction belongs at the network edge: the fastest self-hosted model needs 2.49 s per frame and scoring takes 0.4 ms on a CPU. On 1,362 annotated frames from two London routes, the EBM regressor reaches 72.2 percent binary accuracy and a mean absolute error of 1.011 under five-fold cross-validation. It is within one accuracy point of black-box ensembles. Its per-feature shape functions give exact attribution: physical lane separation is worth +0.97 rating points, a painted lane +0.70 and a construction site -0.65. Planners can therefore price an infrastructure change in rating points, and the results enter cost-benefit analysis directly. We also report inter-annotator agreement (alpha = 0.4695), an attribute audit, and a sensitivity analysis linking attribute error to accuracy. With re-encoding, a 20 s sampling interval serves 1,000 riders at 54 Mbit/s at a cost of 1.4 accuracy points, making continuous monitoring practical.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08441v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08360v1",
+      "title": "OraRefer: Segmentation-Guided Multi-Photograph Fusion for Oral Cancer Screening with Guaranteed Patient-Level Sensitivity",
+      "authors": [
+        "Rupam Mukherjee",
+        "Mehakdeep Singh",
+        "Shirin Dasgupta",
+        "Subhamoy Mandal"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T17:39:50Z",
+      "summary": "Oral cancer and the oral potentially malignant disorders (OPMD) that can precede it are visible on the oral mucosa, which makes smartphone photographs a promising tool for screening. Deep learning models for this task classify individual photographs. However, screening refers patients, not photographs: a patient is usually photographed several times, and the referral decision must miss no more than a set share of patients with disease. We propose OraRefer, a patient-level screening model that reads each photograph with a segmentation-guided foundation model that conditions its class decision on the predicted lesion, combines all photographs of a patient with risk factors, and refers through a threshold with a finite-sample sensitivity guarantee. The model localizes the mouth itself, so inference needs no annotation. On 3000 photographs of 714 patients, patient-level fusion reaches an AUROC of 0.919 and outperforms attention-based multiple-instance learning. At a 90% sensitivity target, OraRefer detects 95% of patients with OPMD or cancer and misses 3 of 61 patients with cancer, at a specificity of 0.610. Because the threshold is calibrated without retraining, each clinic can set its own guaranteed operating point on a local calibration sample.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08360v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08154v1",
+      "title": "Interpretable Multimodal MRI-Clinical Fusion for Functional Outcome Prediction After Acute Ischemic Stroke",
+      "authors": [
+        "Sina Raeisadigh",
+        "Henning Müller",
+        "Abderrahmane Hedjoudje"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T15:14:58Z",
+      "summary": "This study evaluates the added prognostic value of day-1 multimodal MRI for predicting three-month functional outcome after acute ischemic stroke (AIS). Sixty-six AIS patients with ADC, DWI, FLAIR, and clinical data were analyzed. Three-dimensional pretrained ResNet embeddings were extracted from each MRI modality, reduced using fold-isolated principal component analysis, and combined with structured clinical variables and ADC-derived lesion biomarkers. Linear support vector machines were evaluated using eight-fold stratified group cross-validation across MRI modality combinations. Clinical-only modeling achieved strong performance (AUC = $0.899 \\pm 0.151$), while MRI-only models showed limited discrimination (AUC $\\approx$ $0.67$-$0.73$). Among multimodal configurations, FLAIR-clinical fusion achieved the highest mean cross-validated performance (AUC = $0.948 \\pm 0.061$), followed by ADC-clinical fusion (AUC = $0.941 \\pm 0.094$). Full ADC-DWI-FLAIR fusion did not consistently outperform single-modality clinical fusion. Feature-importance analysis identified age, NIHSS subscores, ADC lesion burden, and learned FLAIR representations as key contributors, while qualitative FLAIR activation maps showed responses over lesion-like regions. These findings suggest that compact day-1 FLAIR and ADC representations provide complementary prognostic information beyond clinical variables and support interpretable, data-efficient outcome prediction in AIS.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08154v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "5 pages, 2 figures, 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07690v1",
+      "title": "Simulation of Refraction Through Voxel Volumes",
+      "authors": [
+        "Rainier Mobley",
+        "Jean Michel Létang",
+        "Max Langer"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T09:15:53Z",
+      "summary": "Ray tracing in X-ray science has typically been limited to descriptions where refraction occurs only at interfaces, ignoring the refraction occurring due to the continuous variations in index of refraction in the bulk of a material, as are common in biological samples like bone. We propose a method to simulate X-ray images directly on voxel grids using curved rays. We first validate this method compared to a model with an analytical solution, and then investigate the effects of voxel size, interpolation choice, and illumination to grid alignment on a few simulated test objects. From these investigations, we make several recommendations to guide simulations using these techniques.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07690v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.optics",
+      "categories": [
+        "physics.optics",
+        "eess.IV",
+        "physics.comp-ph"
+      ],
+      "category_names_zh": [
+        "physics.optics (光学与光子学)",
+        "eess.IV (图像与视频处理)",
+        "physics.comp-ph (计算物理学)"
+      ],
+      "comment": "16 pages, 10 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.07135v1",
+      "title": "Finite Element Elastographic Analysis of Kidney MRI for Computational Assessment of Chronic Kidney Disease",
+      "authors": [
+        "A. Bhattacharjee",
+        "M. M. Rahman",
+        "A. Srivastava",
+        "E. H. Bhuiyan"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T21:03:26Z",
+      "summary": "Background and Objective: Bridging kidney MRI with patient-specific computational biomechanics may enable accurate, noninvasive assessment of chronic kidney disease. To develop a finite element method (FEM)-based computational elastography framework for estimating renal biomechanical properties from conventional kidney MRI and to evaluate its ability to differentiate chronic kidney disease (CKD) from healthy controls. Methods: Kidney segmentation masks from healthy control and CKD subjects were converted into triangulated surface meshes, and watertight surfaces were tetrahedralized to create volumetric FEM meshes. Kidney tissue was modeled as a nearly incompressible Kelvin-Voigt viscoelastic material. Harmonic wave propagation simulations were performed using FEM, followed by Helmholtz-based elastographic inversion to estimate complex shear modulus distributions. Derived biomechanical parameters were used for CKD classification using machine learning models. Results: FEM-derived stiffness estimates showed consistency with stiffness ranges previously reported in human renal MRE studies and also showed measurable differences between healthy and CKD groups. Machine learning models trained on FEM-derived features achieved classification performance up to 86.26% cross-validation accuracy with an AUC of 0.92. Conclusion: FEM-derived elastographic parameters showed potential for distinguishing CKD from healthy tissue and may provide an alternative for renal biomechanical assessment without dedicated MRE acquisition.",
+      "pdf_url": "https://arxiv.org/pdf/2611.07135v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "Original research article",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.06992v1",
+      "title": "Task-Aware Bitrate Thresholds for Codec-Robust Ultrasound Segmentation",
+      "authors": [
+        "Alireza Siyavashi",
+        "Arman Shirzad",
+        "Christian Herglotz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-04T18:06:16Z",
+      "summary": "Remote robot surgery and tele-ultrasound increasingly rely on real-time streaming under strict bandwidth constraints, making lossy compression unavoidable. Since the receiving end of these clinical pipelines is increasingly a machine rather than a human observer, codec selection must be guided by downstream task accuracy rather than perceptual fidelity. We evaluate three widely deployed codecs, H.264/AVC, HEVC, and AV1, on prostate ultrasound segmentation, reporting task-aware compression performance with region overlap (Dice) and boundary accuracy (HD95) as the quality metrics. To compare codecs fairly, we match their operating points at a common perceptual-quality (SSIM) level. We establish, per codec, the lowest bitrate that preserves acceptable segmentation accuracy, reporting the 5th-percentile Dice alongside the mean to expose worst-case degradation. All three codecs preserve segmentation quality (mean Dice $\\geq$ 0.84) down to approximately 0.07-0.20 bits per voxel (bpv). Below this point, AV1's accuracy declines gradually, while H.264's drops sharply. As a result, H.264 needs 82% more bitrate than AV1 to reach the same region-overlap accuracy (Dice), and 104.7% more to reach the same boundary accuracy (HD95).",
+      "pdf_url": "https://arxiv.org/pdf/2611.06992v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "It is already accepted at IEEE Visual Communications and Image Processing Conference",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.06791v1",
       "title": "A Frame-Level View and Image-Quality Annotation Tool for Fetal Echocardiography: Comparison with Spreadsheet Annotation",
@@ -509,167 +671,6 @@
       "comment": "18 pages, 8 figures, 6 tables, Submitted to IEEE Journal of Biomedical and Health Informatics",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03502v1",
-      "title": "Toward Artifact-Free Dermoscopy: Characterization of ISIC 2019 Image Defects for Deep Learning Applications",
-      "authors": [
-        "Victoria Wegley",
-        "Joshua Hoog",
-        "Tristan Crawford",
-        "Keith Miller",
-        "William Fons"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T17:40:08Z",
-      "summary": "The International Skin Imaging Collaboration (ISIC) archive offers the largest publicly available collection of dermoscopic images for skin lesion analysis. However, the ISIC 2019 dataset suffers from several acquisition artifacts such as hair occlusions, vignetting, surgical ink markings, and ruler scales, all of which compromise its utility in deep learning workflows by introducing non-biological visual structures. To address these limitations, we present a rigorously annotated version of ISIC 2019 that includes binary masks for key artifact types. Ink marks and vignetting were annotated through systematic manual review and iterative refinement using professional image editing software. For hair and ruler artifacts, we implemented a semi-automatic pipeline based on our previously developed deep learning architecture, ChimeraNet. Automated predictions were then manually corrected as needed for precision. The resulting dataset supports both the development of our own melanoma detection model and broader community research requiring artifact-mitigated dermoscopic images.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03502v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "9 pages, pre journal publication",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03465v1",
-      "title": "HIVE-Diff: High Frame Rate HDR Video Reconstruction from a Single LDR Frame and Events",
-      "authors": [
-        "Caixin Wang",
-        "Qingrui Wang",
-        "Jie Zhang",
-        "Ralph Etienne-Cummings"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T17:08:05Z",
-      "summary": "High frame rate HDR video is important in applications such as autonomous driving and scientific imaging, where rapid motion and extreme illumination often occur simultaneously. Conventional frame cameras face a trade-off between temporal resolution and dynamic range, while event cameras provide complementary high-speed brightness-change measurements over a wide illumination range. These properties have motivated event-based HDR reconstruction, with existing methods broadly following event-only and hybrid event-frame paradigms. Event-only HDR reconstruction, however, suffers from brightness and color drift due to the lack of absolute intensity references. Hybrid event-frame methods alleviate this ambiguity using low-dynamic-range (LDR) frames as anchors, but most perform one-to-one HDR reconstruction at available LDR timestamps. In this work, we investigate single-reference HDR temporal expansion, reconstructing N HDR frames from one LDR reference and events instead of N aligned LDR observations. We develop HIVE-Diff, an event-conditioned video diffusion framework that decomposes the task into event-guided temporal generation and HDR content completion. Because paired real HDR-event data are scarce, we train on synthetic data and adapt the model to real event domains using LDR-event sequences as proxy supervision with teacher-student distillation. Experiments on synthetic and multiple real-world datasets demonstrate strong reconstruction quality and robust real-data adaptation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03465v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV",
-        "cs.CV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)",
-        "cs.CV (计算机视觉与模式识别 (CV))"
-      ],
-      "comment": "Accepted to WACV 2027 (Applications Track). 8 pages main paper + 8 pages supplementary material (included as appendix), 12 figures, 5 tables. Code: https://github.com/caixinw4-afk/hive-diff",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03419v1",
-      "title": "Scaling global tractography with ExaTract: from large cohorts to ultra-high-resolution datasets",
-      "authors": [
-        "Simon Legeay",
-        "Felix Matuschke",
-        "Bastien Herlin",
-        "Jan André Reuter",
-        "Christophe Destrieux"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T16:42:34Z",
-      "summary": "Global tractography offers a theoretical framework for reconstructing white matter connectivity from diffusion MRI by jointly inferring all streamlines and their consistency with the diffusion signal and underlying anatomical priors. However, its sequential nature and log-linear complexity make it computationally prohibitive at the scales demanded by neuroimaging, from large population cohorts such as the Human Connectome Project (HCP) to ex vivo ultra-high-field acquisitions at mesoscopic resolution. In this work, we present ExaTract, a parallelized spin-glass tractography framework designed for high-performance computing (HPC) architectures. Implemented as an open-source MPI+Kokkos application, ExaTract partitions the tractography domain into spatially overlapping regions processed across distributed memory nodes, with regular synchronization of boundary modifications to preserve global convergence guarantees. We validate ExaTract on both in vivo and ex vivo diffusion MRI data: the complete HCP dataset demonstrates population-scale throughput, while the high-resolution Chenonceau dataset provides the first mesoscopic structural connectome derived from global tractography.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03419v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV",
-        "cs.DC",
-        "math.NA"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)",
-        "cs.DC (分布式计算与云计算)",
-        "math.NA (数值分析与科学计算)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03396v1",
-      "title": "Extended Field-of-View Passive mmWave Imaging Using Implicit Neural Representations",
-      "authors": [
-        "Sanjaya Herath",
-        "Matthew R. Ziemann",
-        "Christopher A. Metzler"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T16:30:13Z",
-      "summary": "We introduce a self-supervised learning-based framework for expanding the field-of-view (FoV) of passive real-aperture millimeter wave (mmWave) imaging systems. Our framework exploits aliasing artifacts/grating lobes---which are an inherent part of mmWave image formation---to expand FoV. Specifically, we recognize that removing aliasing artifacts can be cast as an underdetermined deconvolution problem and that in solving this problem, one can expand the system's FoV. We solve this deconvolution problem and expand the system's FoV by enforcing temporal regularity with time-varying Implicit Neural Representations (INRs). We demonstrate the effectiveness of our approach through extensive simulations and real-world experiments with Phase Sensitive Innovation's (PSI) state-of-the-art electro-optical modulation based passive mmWave imaging system.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03396v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03390v1",
-      "title": "Progressive Multi-Scale Super-Resolution via Cascaded Bicubic Anchors and Inter-Scale Mutual Refinement",
-      "authors": [
-        "Chun-An Lin",
-        "Yu-Chia Chang",
-        "Chi-Mao Fan",
-        "Yen-Chieh Ouyang",
-        "Tsung-Jung Liu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T16:28:38Z",
-      "summary": "Super-resolution networks are trained for one magnification factor, so several output resolutions require several models. We propose PMS-SR, a progressive single-input multiple-output network that produces x2, x4, and x8 results in one forward pass, with a Transformer backbone on the low-resolution grid. In Stage 1, each scale is predicted as a residual over the detached bicubic upsampling of the previous scale's prediction. With Dirac and zero initialization, training starts exactly from the bicubic cascade, and each head adds only the band the previous scale lacks. In Stage 2, inter-scale mutual refinement couples the scales in both directions through space-to-depth feedback, deformable alignment, and per-pixel fusion, so x8 features refine the x2 output. Trained on DF2K, the 7.95M-parameter model achieves a higher PSNR than every compared multi-scale method at x4 and x8 on all five standard benchmarks. At x8, it outperforms the x8-specific DRN-L on all of them, leads all compared methods on Urban100, and is within 0.13 dB of the best result elsewhere. Against three single-scale SwinIR-M models, PMS-SR uses 22% of the parameters, runs 2.9x faster on BSD100 inputs, and its outputs agree 6.7-12.4 dB more closely. Code and pretrained models will be released at https://github.com/julian135707/PMS-SR upon acceptance.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03390v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "cs.LG",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "cs.LG (机器学习 (ML))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "14 pages, 7 figures, 7 tables. Submitted to an IEEE journal. Code and pretrained models will be released at https://github.com/julian135707/PMS-SR upon acceptance",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.03359v1",
-      "title": "Air-Scan-Based Point-Spread-Function Estimation for Megavoltage CT with Flat-Panel Detectors",
-      "authors": [
-        "Seemeen Karimi",
-        "Joseph Bendahan",
-        "K. Aditya Mohan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-02T16:09:24Z",
-      "summary": "Accurate spatial-resolution characterization of flat-panel detectors at megavoltage energies is difficult due to long-tailed cross-talk. Conventional measurements at high energy using line-pair gauges or knife-edge phantoms require expensive, carefully fabricated objects and precise alignment, and despite these, scatter from the phantom, detector, and imaging room can further confound the measurement. We present a method for estimating the detector point spread function (PSF) from the mean noise power spectrum (NPS) calculated from repeated radiographs in air. The approach is mathematically equivalent to an autocovariance-based method but is more practical for long-tailed PSFs. We validate the method using simulated air data and Monte Carlo N-particle (MCNP6) calculations of energy deposition in a flat-panel detector. We show that deconvolving the experimental PSF increases the accuracy of transmission radiographs of step wedges. The method requires no phantom or alignments and is straightforward to reproduce.",
-      "pdf_url": "https://arxiv.org/pdf/2611.03359v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "This has been presented at a conference, proceedings are pending",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -681,17 +682,27 @@
     {
       "code": "cs.CV",
       "name_zh": "计算机视觉与模式识别 (CV)",
-      "count": 11
+      "count": 12
     },
     {
       "code": "physics.optics",
       "name_zh": "光学与光子学",
-      "count": 2
+      "count": 3
     },
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
       "count": 2
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
+      "count": 2
+    },
+    {
+      "code": "physics.comp-ph",
+      "name_zh": "计算物理学",
+      "count": 1
     },
     {
       "code": "cs.HC",
@@ -702,22 +713,7 @@
       "code": "eess.SP",
       "name_zh": "信号处理 (Signal Processing)",
       "count": 1
-    },
-    {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 1
-    },
-    {
-      "code": "cs.DC",
-      "name_zh": "分布式计算与云计算",
-      "count": 1
-    },
-    {
-      "code": "math.NA",
-      "name_zh": "数值分析与科学计算",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-06T09:26:35.753920"
+  "snapshot_synced_at": "2026-11-07T08:35:41.405642"
 }

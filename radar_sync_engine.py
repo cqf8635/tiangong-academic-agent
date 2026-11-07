@@ -59,7 +59,7 @@ class RadarSyncEngine:
                     data = json.load(f)
                     return data
             except Exception as e:
-                logger.warning(f"读取雷达本地快照失败 ({cache_f}): {e}")
+                raise RuntimeError(f"读取雷达快照失败: {e}") from e
         return None
 
     def save_snapshot(self, major: str, sub_key: str, data: Dict[str, Any]):
@@ -69,7 +69,7 @@ class RadarSyncEngine:
             with open(cache_f, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
         except Exception as e:
-            logger.warning(f"写入雷达快照失败 ({cache_f}): {e}")
+            raise RuntimeError(f"写入雷达快照失败: {e}") from e
 
     def sync_core_majors_now(self):
         """执行一次全量核心大类与重点子学科同步 (具备智能新鲜度检测与合规防限流机制)"""
@@ -81,7 +81,7 @@ class RadarSyncEngine:
                 break
 
             # 避让检测：若检测到前台用户在活跃检索，后台同步主动挂起让行
-            while getattr(self.paper_searcher, "is_user_active", lambda w=30.0: False)(30.0) and not self._stop_event.is_set():
+            while self.paper_searcher.is_user_active(30.0) and not self._stop_event.is_set():
                 logger.info("[天工雷达] 检测到前台用户正在检索交互，后台同步主动礼让避让 15 秒...")
                 time.sleep(15)
 
@@ -106,7 +106,7 @@ class RadarSyncEngine:
                     if self._stop_event.is_set():
                         break
 
-                    while getattr(self.paper_searcher, "is_user_active", lambda w=30.0: False)(30.0) and not self._stop_event.is_set():
+                    while self.paper_searcher.is_user_active(30.0) and not self._stop_event.is_set():
                         logger.info("[天工雷达] 检测到前台用户正在检索交互，后台同步主动礼让避让 15 秒...")
                         time.sleep(15)
 
@@ -124,7 +124,7 @@ class RadarSyncEngine:
                             self.save_snapshot(major, sub, sub_res)
                         time.sleep(4.0)  # 严格遵循 arXiv 合规间隔
             except Exception as e:
-                logger.warning(f"[天工雷达] 学科 [{major}] 同步受阻: {e}")
+                raise RuntimeError(f"学科 [{major}] 同步失败，本轮同步未完成: {e}") from e
 
         self._last_sync_timestamp = time.time()
         logger.info("[天工雷达] 每日文献同步完成，本地快照已更新完毕")

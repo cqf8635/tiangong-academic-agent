@@ -101,128 +101,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hubStatusText) hubStatusText.textContent = text;
   }
 
-  function highlightGraphPipelineStep(stepIdx) {
-    if (hubCoordinator) hubCoordinator.classList.add('active-node');
-
-    if (stepIdx === 0) {
-      // 0. 主调度中枢解析意图
-      resetGraphNodes();
-      setHubStatus('规划路径中');
-      setOrbitNode(1, 'running', '🎯 意图解析中');
-    } else if (stepIdx === 1) {
-      // 1. 感知交叉学科，派生特派专家与知识检索
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'running', '🌐 全网文献发现');
-      setOrbitNode(3, 'running', '⚡ 经卷知识对齐');
-      setHubStatus('双路文献与专家检索');
-    } else if (stepIdx === 2) {
-      // 2. 证据整理归纳席位去噪清洗与机制骨架提炼
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'running', '📑 证据清洗与归纳');
-      setHubStatus('跨源证据清洗归纳');
-    } else if (stepIdx === 3) {
-      // 3. 专家并行推导数理公式
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
-      setOrbitNode(4, 'running', '🔬 特派专家数理推导');
-      setHubStatus('特派专家推演中');
-    } else if (stepIdx === 4) {
-      // 4. 学术质询席位审视去冗
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
-      setOrbitNode(4, 'running', '🧐 质询专员去冗审度');
-      setHubStatus('博弈质询·去冗提纯');
-    } else if (stepIdx === 5) {
-      // 5. 主研反思重构终稿
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
-      setOrbitNode(4, 'running', '✍️ 主研反思·重构终稿');
-      setHubStatus('终版反思重构中');
-    } else if (stepIdx === 6) {
-      // 6. 研讨闭环，生成脉络与导图
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
-      setOrbitNode(4, 'active', '✅ 数理方案终审闭环');
-      setOrbitNode(6, 'running', '🗺️ 提炼脉络与导图');
-      setHubStatus('提炼全景思维导图');
-    } else if (stepIdx >= 7) {
-      // 7. 音画呈现与共识交付
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
-      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
-      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
-      setOrbitNode(4, 'active', '✅ 数理方案终审闭环');
-      setOrbitNode(6, 'active', '✅ 导图脉络就绪');
-      setOrbitNode(7, 'running', '🔊 音画呈现准备中');
-      setHubStatus('协同共识交付中');
-    }
+  function highlightGraphPipelineStep() {
+    // 接口返回前没有节点进度事件，等待时间不能证明任何阶段已执行。
+    resetGraphNodes();
+    setHubStatus('正在处理请求');
   }
 
   function highlightGraphFromResult(data) {
     if (!data) return;
+    resetGraphNodes();
+    const stages = data.stage_statuses || {};
+    const generated = stages.generation === 'completed' || stages.reflective_revision === 'completed';
 
-    // 1. 意图拆解节点必然已完成
-    setOrbitNode(1, 'active', '✅ 意图解耦完成');
+    if (stages.intent_parsing === 'failed') {
+      setOrbitNode(1, 'idle', '意图解析失败');
+    } else if (data.intent_decision && data.intent_decision.intent !== 'error') {
+      setOrbitNode(1, 'active', '✅ 已返回意图解析');
+    } else {
+      setOrbitNode(1, 'idle', '暂无意图解析结果');
+    }
 
-    // 2 & 3. 检查文献与经卷证据
     const evidence = data.retrieved_evidence || [];
-    let hasOnline = false;
-    let hasLocal = false;
+    let onlineCount = 0;
+    let localCount = 0;
     evidence.forEach(e => {
-      const src = (e.source || '').toLowerCase();
-      if (src === 'arxiv' || src === 'openalex' || src === 'crossref' || src === 'doaj' || src === 'online') {
-        hasOnline = true;
-      } else {
-        hasLocal = true;
-      }
+      const sources = [e.doc_type, e.source, ...(e.sources_merged || [])]
+        .filter(Boolean).map(src => String(src).toLowerCase());
+      if (sources.some(src => ['arxiv', 'openalex', 'crossref', 'doaj', 'online', 'github', 'fused_academic'].includes(src))) onlineCount++;
+      if (e.is_local_indexed || sources.some(src => ['local', 'local_pdf', 'pdf', 'pptx', 'docx', 'txt'].includes(src))) localCount++;
     });
+    setOrbitNode(2, onlineCount ? 'active' : 'idle', onlineCount ? `返回在线资料 ${onlineCount} 条` : '本轮无在线资料');
+    setOrbitNode(3, localCount ? 'active' : 'idle', localCount ? `返回本地资料 ${localCount} 条` : '本轮无本地资料');
 
-    if (hasOnline) {
-      setOrbitNode(2, 'active', `✅ 锁定文献 ${evidence.length} 篇`);
-    } else {
-      setOrbitNode(2, 'idle', '等待任务');
-    }
+    let reviewLabel = '暂无执行状态记录';
+    let reviewActive = false;
+    if (stages.reflective_revision === 'failed') reviewLabel = '修订未完成';
+    else if (stages.reflective_revision === 'completed') {
+      reviewLabel = '修订稿已生成，尚未复核';
+      reviewActive = true;
+    } else if (stages.reflective_revision === 'unchanged') reviewLabel = '修订未改变初稿，问题待确认';
+    else if (stages.dialectical_inquiry === 'failed') reviewLabel = '模型质询未完成';
+    else if (stages.dialectical_inquiry === 'completed') {
+      reviewLabel = data.review_verdict?.needs_revision === false ? '模型审核未要求修订'
+        : data.review_verdict?.needs_revision === true ? '模型审核要求修订' : '已生成审核意见，未记录修订决策';
+      reviewActive = true;
+    } else if (stages.dialectical_inquiry === 'checklist') reviewLabel = '仅生成待审查清单';
+    else if (stages.dialectical_inquiry === 'skipped') reviewLabel = '未执行模型质询';
+    else if (stages.reflective_revision === 'skipped') reviewLabel = '未执行模型修订';
+    setOrbitNode(4, reviewActive ? 'active' : 'idle', reviewLabel);
 
-    if (hasLocal) {
-      setOrbitNode(3, 'active', '✅ 经卷证据已对齐');
-    } else {
-      setOrbitNode(3, 'idle', '等待任务');
-    }
-
-    // 4. 数理推演与学术导师
     const targetAgent = data.target_agent || '';
-    const dialogue = data.agent_dialogue_history || [];
-    const hasDerivation = targetAgent.includes('Planner') || targetAgent.includes('Tutor') || targetAgent.includes('Derivation') || dialogue.length > 0;
-    if (hasDerivation) {
-      setOrbitNode(4, 'active', '✅ 数理反思重构闭环');
-    }
-
-    // 5. 跨模态课件对齐
     if (targetAgent.includes('CrossModal') || targetAgent.includes('PPT')) {
-      setOrbitNode(5, 'active', '✅ 课件声画对齐');
-    } else {
-      setOrbitNode(5, 'idle', '等待任务');
+      setOrbitNode(5, generated && evidence.length ? 'active' : 'idle',
+        generated && evidence.length ? '已返回课件候选' : '暂无课件匹配结果');
+    }
+    if (data.mindmap_markdown) setOrbitNode(6, 'active', '已生成内容导图');
+    else if (targetAgent.includes('Meeting') || targetAgent.includes('Summarizer')) {
+      setOrbitNode(6, generated ? 'active' : 'idle', generated ? '已生成会议摘要' : '会议摘要未生成');
     }
 
-    // 6. 流水纪要与导图
-    if (data.mindmap_markdown || targetAgent.includes('Summarizer')) {
-      setOrbitNode(6, 'active', '✅ 脉络导图已沉淀');
-    } else {
-      setOrbitNode(6, 'idle', '等待任务');
-    }
-
-    // 7. 音画呈现与语音播报
-    if (data.audio_url) {
-      setOrbitNode(7, 'running', '🔊 正在语音学术播报');
-      setHubStatus('羽若协同播报中', true);
-    } else {
-      setOrbitNode(7, 'active', '✅ 成果交付完毕');
-      setHubStatus('研讨闭环就绪', false);
-    }
+    if (data.audio_url) setOrbitNode(7, 'active', '语音已生成');
+    else setOrbitNode(7, generated ? 'active' : 'idle', generated ? '回答已返回' : '暂无生成成果');
+    const hasFailure = Object.values(stages).includes('failed');
+    setHubStatus(hasFailure ? '部分步骤未完成' : generated ? '回答已返回' : '请求已返回', false);
   }
 
   function highlightGraphStep(stepName, targetAgent = null) {
@@ -244,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'MeetingAgent': 6,
       };
       const nNum = nodeMap[targetAgent] || 4;
-      setOrbitNode(1, 'active', '✅ 意图已解耦');
       setOrbitNode(nNum, 'running', `⚡ ${targetAgent || 'Agent'} 执行中`);
       setHubStatus(`执行: ${targetAgent || 'Agent'}`);
     } else if (stepName === 'TTS') {
@@ -386,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {
       console.error('Failed to load sessions:', e);
+      throw e;
     }
   }
 
@@ -516,32 +457,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!mdText) return '';
     let res = String(mdText);
 
-    if (window.katex) {
+    {
       // 1. 转换标准 LaTeX 行内定界符 \( ... \)
       res = res.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
         try {
-          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
-        } catch (_) { return match; }
+          return renderMathSource(formula.trim(), false);
+        } catch (error) { throw error; }
       });
 
       // 2. 转换标准行内公式 $ ... $
       res = res.replace(/(?<!\\)\$([^\$\n]+)\$/g, (match, formula) => {
         try {
-          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
-        } catch (_) { return match; }
+          return renderMathSource(formula.trim(), false);
+        } catch (error) { throw error; }
       });
 
       // 3. 转换导图节点中以括号包裹的显式 LaTeX 表达式 (如 (\sqrt{d_k})、(\mathbf{M}\in\mathbb{R}^{T\times T}))
       res = res.replace(/（([^）\n]*?\\[a-zA-Z]+[^）\n]*?)）/g, (match, formula) => {
         try {
-          return `（${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })}）`;
-        } catch (_) { return match; }
+          return `（${renderMathSource(formula.trim(), false)}）`;
+        } catch (error) { throw error; }
       });
 
       res = res.replace(/\(([^)\n]*?\\[a-zA-Z]+[^)\n]*?)\)/g, (match, formula) => {
         try {
-          return `(${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })})`;
-        } catch (_) { return match; }
+          return `(${renderMathSource(formula.trim(), false)})`;
+        } catch (error) { throw error; }
       });
     }
 
@@ -560,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (svgEl && svgEl._markmapInstance) {
           try {
             svgEl._markmapInstance.fit();
-          } catch (_) {}
+          } catch (error) { throw error; }
         }
       };
 
@@ -584,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return svgEl._markmapInstance;
     } catch (e) {
-      console.warn('Markmap render notice:', e);
+      throw e;
     }
   }
 
@@ -652,7 +593,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (currentMindmapScope === 'book') {
       if (turnSelectWrap) turnSelectWrap.style.display = 'none';
-      const docName = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
+      const docName = currentActiveDocumentName;
+      if (!docName) throw new Error('未选择书籍，无法加载全书导图');
       const cleanDocName = docName.replace(/\.[^/.]+$/, '');
       if (titleEl) titleEl.textContent = `《${cleanDocName}》全景知识树`;
       if (badgeEl) badgeEl.textContent = '📚 全书宏观结构';
@@ -660,11 +602,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!currentFullBookMindmap || currentFullBookMindmapDoc !== docName) {
         try {
           const resp = await fetch(`/api/documents/${encodeURIComponent(docName)}/mindmap`);
+          if (!resp.ok) throw new Error('书籍导图接口失败');
           const data = await resp.json();
+          if (!data.mindmap_markdown) throw new Error('未返回书籍导图');
           currentFullBookMindmap = data.mindmap_markdown;
           currentFullBookMindmapDoc = docName;
         } catch (e) {
-          console.error('Failed to load book mindmap:', e);
+          throw new Error(`书籍导图加载失败：${e.message}`);
         }
       }
       currentActiveMarkdown = currentFullBookMindmap;
@@ -745,19 +689,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function prepareCleanExportSvg(targetSvg) {
     if (!targetSvg) return null;
 
-    let width = 1600;
-    let height = 1000;
-    let vx = -80, vy = -80, vw = 1600, vh = 1000;
-
-    try {
-      const bbox = targetSvg.getBBox();
-      if (bbox && bbox.width > 0 && bbox.height > 0) {
-        vw = Math.max(Math.ceil(bbox.width) + 160, 1200);
-        vh = Math.max(Math.ceil(bbox.height) + 160, 800);
-        vx = Math.floor(bbox.x) - 80;
-        vy = Math.floor(bbox.y) - 80;
-      }
-    } catch (_) {}
+    const bbox = targetSvg.getBBox();
+    if (!bbox || bbox.width <= 0 || bbox.height <= 0) {
+      throw new Error('思维导图尺寸无效，无法导出');
+    }
+    const vw = Math.max(Math.ceil(bbox.width) + 160, 1200);
+    const vh = Math.max(Math.ceil(bbox.height) + 160, 800);
+    const vx = Math.floor(bbox.x) - 80;
+    const vy = Math.floor(bbox.y) - 80;
 
     const svgClone = targetSvg.cloneNode(true);
     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -776,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. 将 Markmap 的 <foreignObject> 转为标准原生 SVG <text>
     // 彻底根治: 
-    // a) 浏览器 Canvas/Image 加载含 foreignObject 的 SVG 报安全错误导致 PNG 导出失败并被动回退为 SVG;
+    // a) 浏览器 Canvas/Image 对含 foreignObject 的 SVG 有安全限制，导出失败时明确报错;
     // b) 桌面看图软件 (Linux Loupe / eog / macOS Preview) 无法解析 foreignObject 导致文字完全隐形.
     const cloneFos = Array.from(svgClone.querySelectorAll('foreignObject'));
     const sourceFos = Array.from(targetSvg.querySelectorAll('foreignObject'));
@@ -812,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (compStyle.color) color = compStyle.color;
           if (compStyle.fontSize) fontSize = compStyle.fontSize;
           if (compStyle.fontWeight) fontWeight = compStyle.fontWeight;
-        } catch (_) {}
+        } catch (error) { throw error; }
       }
 
       const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -868,15 +807,17 @@ document.addEventListener('DOMContentLoaded', () => {
       downloadBlob(blob, filename.endsWith('.svg') ? filename : `${filename}.svg`);
     } catch (err) {
       console.error('Export SVG error:', err);
-      const mdBlob = new Blob([currentActiveMarkdown], { type: 'text/markdown;charset=utf-8' });
-      downloadBlob(mdBlob, filename.replace(/\.(svg|png)$/, '.md'));
+      alert(`SVG 导出失败: ${err.message}`);
     }
   }
 
   async function exportSVGToPNG(svgEl, filename = '学术知识思维导图.png') {
     if (!currentActiveMarkdown) {
-      const targetDoc = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
-      await loadAndRenderBookMindmap(targetDoc);
+      if (!currentActiveDocumentName) {
+        alert('请先选择书籍或发起研讨提问');
+        return;
+      }
+      await loadAndRenderBookMindmap(currentActiveDocumentName);
     }
     if (!currentActiveMarkdown) {
       alert('请先在左侧选择书籍或发起研讨提问以生成思维导图');
@@ -910,25 +851,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pngBlob) {
               downloadBlob(pngBlob, filename.endsWith('.png') ? filename : `${filename}.png`);
             } else {
-              downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
+              alert('PNG 导出失败：未生成图像数据');
             }
             (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
           }, 'image/png');
         } catch (e) {
-          console.error('Canvas export error, fallback to SVG:', e);
-          downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
+          console.error('PNG 导出失败:', e);
+          alert(`PNG 导出失败：${e.message}`);
           (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
         }
       };
       img.onerror = (e) => {
-        console.error('Image load error on SVG blob, fallback to SVG:', e);
-        downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
+        console.error('PNG 图像加载失败:', e);
+        alert('PNG 导出失败：图像加载失败');
         (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
       };
       img.src = blobUrl;
     } catch (err) {
-      console.error('Export PNG failed, downloading SVG:', err);
-      exportSVGToFile(svgEl, filename.replace(/\.png$/, '.svg'));
+      console.error('PNG 导出失败:', err);
+      alert(`PNG 导出失败：${err.message}`);
     }
   }
 
@@ -973,6 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return data.session;
     } catch (e) {
       console.error('创建新会话失败:', e);
+      throw e;
     }
   }
 
@@ -996,6 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
       userInput.style.height = 'auto';
     }
     stopTTS();
+    resetGraphNodes();
 
     // 严密重置当前会话的思维导图轮次列表与索引，彻底杜绝跨会话轮次串味污染
     sessionTurnsMindmaps = [];
@@ -1057,9 +1000,6 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             agentTurnCounter++;
             let mindmapMd = msg.mindmap_markdown;
-            if (!mindmapMd && msg.content && (msg.content.includes('##') || msg.content.includes('###') || msg.content.length > 80)) {
-              mindmapMd = autoExtractMindmapFromAnswer(msg.content, lastUserQuery || '研讨知识脉络精析');
-            }
             if (mindmapMd && mindmapMd.trim() && mindmapMd.includes('\n')) {
               turnCounter++;
               const turnTitle = sanitizeTopicTitle(lastUserQuery || `第 ${turnCounter} 轮研讨精要`);
@@ -1081,7 +1021,9 @@ document.addEventListener('DOMContentLoaded', () => {
               topicTitle: lastUserQuery,
               agent_dialogue_history: msg.agent_dialogue_history || [],
               synthesized_evidence_slate: msg.synthesized_evidence_slate,
-              dialectical_notes: msg.dialectical_notes
+              dialectical_notes: msg.dialectical_notes,
+              review_verdict: msg.review_verdict,
+              stage_statuses: msg.stage_statuses || {}
             }, agentTurnCounter);
 
             // 追踪当前会话中最新一轮智能体的检索证据，绝不残留早期轮次文献
@@ -1093,6 +1035,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         updateEvidencePanel(latestEvidence);
+        const lastAgentMessage = [...session.messages].reverse().find(msg => msg.sender === 'agent');
+        if (lastAgentMessage) highlightGraphFromResult(lastAgentMessage);
       }
 
       currentActiveTurnIndex = Math.max(0, sessionTurnsMindmaps.length - 1);
@@ -1274,39 +1218,71 @@ document.addEventListener('DOMContentLoaded', () => {
     setAssistantState('THINKING');
     highlightGraphStep('ROUTING');
 
-    // 在聊天流中插入实时思考与检索状态气泡
+    // 在聊天流中插入实时动态思考与研讨状态指示器
     const thinkingId = 'thinking-' + Date.now();
     const thinkingDiv = document.createElement('div');
     thinkingDiv.id = thinkingId;
     thinkingDiv.className = 'message-bubble agent thinking-bubble';
     thinkingDiv.innerHTML = `
       <div class="msg-identity" aria-hidden="true"><img src="img/agent_avatar.jpg?v=2026" alt="羽若" class="msg-avatar-img"></div>
-      <div class="msg-card" style="display: flex; align-items: center; gap: 10px;">
-        <span class="dot pulse-jade"></span>
-        <span id="${thinkingId}-text" style="font-size: 0.82rem; color: var(--color-pine-jade); font-weight: 700;">🔍 羽若正在解析研讨意图并分析内容...</span>
+      <div class="msg-card thinking-card">
+        <div class="thinking-spinner-wrap">
+          <svg class="thinking-spinner-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2" opacity="0.25" />
+            <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+          <span class="thinking-sparkle-center">✨</span>
+        </div>
+        <div class="thinking-text-group">
+          <div class="thinking-status-row">
+            <span id="${thinkingId}-text" class="thinking-phase-text">🧭 正在解析学术意图与知识脉络</span>
+            <span class="thinking-dots">
+              <span class="dot-bounce"></span>
+              <span class="dot-bounce"></span>
+              <span class="dot-bounce"></span>
+            </span>
+          </div>
+          <div class="thinking-sub-tip">正在调用领域多智能体协同研讨，请稍候...</div>
+        </div>
       </div>
     `;
     chatFeed.appendChild(thinkingDiv);
     chatFeed.scrollTop = chatFeed.scrollHeight;
 
-    const thinkingSteps = [
-      '🔍 主调度中枢 (MasterRouter) 正在解析学术意图并规划执行管线...',
-      '🧬 正在感知交叉学科命题，并行派生特派专家子代理推演底层机理...',
-      '📑 证据整理归纳席位 (Evidence Synthesis) 正在跨源去噪清洗与提炼机制论据...',
-      '📚 课题主研导师 (Lead Author) 正在组织理论推导与 LaTeX 数理公式...',
-      '🧐 学术质询席位 (Dialectical Interrogator) 正在审视论据链与去冗提纯...',
-      '✍️ 主研团队正在吸收质询意见，开展认知反思并重构方案终稿...',
-      '⚖️ 研讨闭环成稿中，正在生成高密度学术成果与思维导图...',
-      '🗺️ 正在合成最终多智能体共识方案、思维导图与高保真语音播报...'
+    const thinkingStages = [
+      '🧭 正在解析学术意图与知识脉络',
+      '🔍 正在靶向检索高相关学术文献与知识切片',
+      '🧠 主研学者正在严密推导核心机理与数理公式',
+      '🧐 学术审稿专员正在交叉核验证据与学术规约',
+      '✍️ 正在反思重构并凝练高信噪比技术成果'
     ];
-    let stepIdx = 0;
-    highlightGraphPipelineStep(0);
-    const thinkingTimer = setInterval(() => {
-      stepIdx = (stepIdx + 1) % thinkingSteps.length;
-      const tSpan = document.getElementById(`${thinkingId}-text`);
-      if (tSpan) tSpan.textContent = thinkingSteps[stepIdx];
-      highlightGraphPipelineStep(stepIdx);
-    }, 4500);
+    let stageIndex = 0;
+    const tickerInterval = setInterval(() => {
+      const textEl = document.getElementById(`${thinkingId}-text`);
+      if (!textEl) {
+        clearInterval(tickerInterval);
+        return;
+      }
+      textEl.classList.add('fade-out');
+      setTimeout(() => {
+        stageIndex = (stageIndex + 1) % thinkingStages.length;
+        const currentEl = document.getElementById(`${thinkingId}-text`);
+        if (currentEl) {
+          currentEl.textContent = thinkingStages[stageIndex];
+          currentEl.classList.remove('fade-out');
+          currentEl.classList.add('fade-in');
+          setTimeout(() => currentEl.classList.remove('fade-in'), 250);
+        }
+      }, 250);
+    }, 3200);
+
+    const cleanupThinking = () => {
+      if (tickerInterval) clearInterval(tickerInterval);
+      const placeholder = document.getElementById(thinkingId);
+      if (placeholder) placeholder.remove();
+    };
+
+    highlightGraphPipelineStep();
 
     try {
       const resp = await fetch('/api/chat', {
@@ -1324,9 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await resp.json();
 
-      clearInterval(thinkingTimer);
-      const placeholder = document.getElementById(thinkingId);
-      if (placeholder) placeholder.remove();
+      cleanupThinking();
 
       // 拓扑图执行节点根据后端实际执行情况精确高亮
       highlightGraphFromResult(data);
@@ -1363,13 +1337,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } catch (err) {
-      const placeholder = document.getElementById(thinkingId);
-      if (placeholder) placeholder.remove();
+      cleanupThinking();
 
       appendAgentMessage({
         final_answer: `⚠️ **[研讨请求发生异常]**: ${err.message}\n\n请检查网络或稍后重新发送。`,
         intent_decision: { intent: 'error' },
-        target_agent: 'ErrorFallback',
+        target_agent: '',
       });
       setAssistantState('IDLE');
       resetGraphNodes();
@@ -1401,22 +1374,22 @@ document.addEventListener('DOMContentLoaded', () => {
         imgHtml = `<img src="${imageUrl}" alt="附带截图" class="user-msg-image-thumb" onclick="openImageModal('${imageUrl}', '学者附带截图')" />`;
       }
       let userHtml = `<p>${escapeHtml(text)}</p>`;
-      if (window.katex && /(\$[^$\n]+\$|（[^）\n]*?\\[a-zA-Z]+[^）\n]*?）|\([^)\n]*?\\[a-zA-Z]+[^)\n]*?\))/.test(text)) {
+      if (/(\$[^$\n]+\$|（[^）\n]*?\\[a-zA-Z]+[^）\n]*?）|\([^)\n]*?\\[a-zA-Z]+[^)\n]*?\))/.test(text)) {
         const rendered = text
           .replace(/（([^）\n]*?\\[a-zA-Z]+[^）\n]*?)）/g, (m, f) => {
             try {
-              return `（${window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false })}）`;
-            } catch (_) { return m; }
+              return `（${renderMathSource(f.trim(), false)}）`;
+            } catch (error) { throw error; }
           })
           .replace(/\(([^)\n]*?\\[a-zA-Z]+[^)\n]*?)\)/g, (m, f) => {
             try {
-              return `(${window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false })})`;
-            } catch (_) { return m; }
+              return `(${renderMathSource(f.trim(), false)})`;
+            } catch (error) { throw error; }
           })
           .replace(/\$([^$\n]+)\$/g, (m, f) => {
             try {
-              return window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false });
-            } catch (_) { return m; }
+              return renderMathSource(f.trim(), false);
+            } catch (error) { throw error; }
           });
         userHtml = `<p>${rendered}</p>`;
       }
@@ -1460,87 +1433,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (bookPrefix) return `${bookPrefix}知识架构精要`;
     return '研讨核心脉络导图';
-  }
-
-  function autoExtractMindmapFromAnswer(answerMd, topicTitle = '当前研讨核心脉络') {
-    const cleanTitle = sanitizeTopicTitle(topicTitle);
-    if (!answerMd) return `# 🧠 ${cleanTitle}\n- 暂无导图内容`;
-    const lines = [`# 🧠 ${cleanTitle}`];
-    const rawLines = answerMd.split('\n');
-    let inCode = false;
-    let currentSection = null;
-
-    for (const raw of rawLines) {
-      const line = raw.trim();
-      if (!line) continue;
-      if (line.startsWith('```')) {
-        inCode = !inCode;
-        continue;
-      }
-      if (inCode) continue;
-
-      // 彻底排除表格数据行
-      if (line.startsWith('|') || line.includes('| ---') || (line.split('|').length > 2)) {
-        continue;
-      }
-
-      if (line.startsWith('$$') || line.startsWith('\\[') || line.startsWith('\\]')) {
-        continue;
-      }
-
-      const mHead = line.match(/^(#{1,5})\s+(.+)$/);
-      if (mHead) {
-        const hashes = mHead[1];
-        let txt = mHead[2].trim().replace(/[：:;；。]+$/, '');
-        const level = Math.min(hashes.length, 3) + 1;
-        lines.push(`${'#'.repeat(level)} ${txt}`);
-        currentSection = txt;
-        continue;
-      }
-
-      const mBold = line.match(/^\*\*([0-9\.\s一二三四五六七八九十]*[^*]+)\*\*/);
-      if (mBold && (line.length < 60 || mBold[1].trim() === line.replace(/^\*+|\*+$/g, '').trim())) {
-        let txt = mBold[1].trim().replace(/[：:;；。]+$/, '');
-        if (/^[0-9一二三四五六七八九十]+[\.、\s]/.test(txt)) {
-          lines.push(`## ${txt}`);
-        } else if (/^[0-9]+\.[0-9]+/.test(txt)) {
-          lines.push(`### ${txt}`);
-        } else {
-          lines.push(`## ${txt}`);
-        }
-        currentSection = txt;
-        continue;
-      }
-
-      const mList = line.match(/^([-\*]|\d+[\.、])\s+(.+)$/);
-      if (mList) {
-        let itemTxt = mList[2].trim().replace(/[;；。]+$/, '');
-        if (itemTxt.includes('|')) continue;
-        if (itemTxt.length < 80) {
-          if (!currentSection) {
-            lines.push('## 核心要点概览');
-            currentSection = '核心要点概览';
-          }
-          lines.push(`- ${itemTxt}`);
-        }
-        continue;
-      }
-
-      if (/(核心|关键|定义|公式|推导|结论|定位|出处)/.test(line) && line.length < 60 && !line.startsWith('<') && !line.includes('|')) {
-        const cleanShort = line.replace(/[;；。]+$/, '');
-        if (!currentSection) {
-          lines.push('## 核心要点概览');
-          currentSection = '核心要点概览';
-        }
-        lines.push(`- ${cleanShort}`);
-      }
-    }
-
-    if (lines.length <= 1) {
-      lines.push('## 核心要点概览');
-      lines.push(`- ${cleanTitle}`);
-    }
-    return lines.join('\n');
   }
 
   function appendAgentMessage(data, turnIndex = null) {
@@ -1604,9 +1496,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let mindmapMd = data.mindmap_markdown;
-    if (!mindmapMd && data.final_answer && (data.final_answer.includes('##') || data.final_answer.includes('###') || data.final_answer.length > 80)) {
-      mindmapMd = autoExtractMindmapFromAnswer(data.final_answer, data.topicTitle || '研讨知识脉络精析');
-    }
 
     let mindmapBtnHtml = '';
     if (mindmapMd && mindmapMd.trim() && mindmapMd.includes('\n')) {
@@ -1629,6 +1518,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let roundBadge = `<span style="display:inline-block; font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #e0f2fe; color: #0369a1; font-weight: 700; margin-right: 4px;">R${item.round !== undefined ? item.round : 0}</span>`;
         if (item.action === 'EVIDENCE_CLEANSING_AND_SYNTHESIS') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #ccfbf1; color: #0f766e; font-weight: 700; margin-right: 4px;">📑 整理归纳</span>`;
+        } else if (item.action && item.action.endsWith('_FAILED')) {
+          actionBadge = `<span style="color: #991b1b; font-weight: 700;">⚠️ 未完成</span>`;
+        } else if (item.action === 'PREPARE_REVIEW_CHECKLIST') {
+          actionBadge = `<span style="color: #92400e; font-weight: 700;">📋 待审查清单</span>`;
+        } else if (item.action === 'REVISION_UNCHANGED') {
+          actionBadge = '<span style="color: #92400e; font-weight: 700;">修订未改变初稿</span>';
+        } else if (item.action === 'RETAIN_DRAFT') {
+          actionBadge = `<span style="color: #475569; font-weight: 700;">📄 保留初稿</span>`;
+        } else if (item.action === 'ORGANIZE_EVIDENCE') {
+          actionBadge = `<span style="color: #0f766e; font-weight: 700;">📑 模板整理</span>`;
         } else if (item.action === 'DELIVER_DISCIPLINARY_FOUNDATION') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fef3c7; color: #92400e; font-weight: 700; margin-right: 4px;">🔬 学科奠基</span>`;
         } else if (item.action === 'REQUEST_BASELINE_PAPERS') {
@@ -1640,7 +1539,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (item.action === 'CRITIQUE_AND_REQUIRE_REVISION' || item.action === 'DIALECTICAL_INQUIRY_AND_PRUNING') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fee2e2; color: #991b1b; font-weight: 700; margin-right: 4px;">🧐 辩证质询</span>`;
         } else if (item.action === 'APPROVE_INITIAL') {
-          actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #d1fae5; color: #065f46; font-weight: 700; margin-right: 4px;">✅ 初审通过</span>`;
+          actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #d1fae5; color: #065f46; font-weight: 700; margin-right: 4px;">审核未要求修订</span>`;
         } else if (item.action === 'SUBMIT_REVISED_DRAFT' || item.action === 'REFLECTIVE_RECONSTRUCTION') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fef3c7; color: #b45309; font-weight: 700; margin-right: 4px;">✍️ 反思重构</span>`;
         } else if (item.action === 'CONSENSUS_ACCEPTED') {
@@ -1664,7 +1563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       multiAgentTrackHtml = `
         <details class="multi-agent-track-details" style="margin-top: 8px; font-size: 0.74rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 6px 10px;">
           <summary style="cursor: pointer; font-weight: 700; color: #15803d; user-select: none; display: flex; align-items: center; gap: 6px;">
-            <span>👥 查看多智能体闭环研讨辩论与合议轨迹 (${data.agent_dialogue_history.length} 次席位交互)</span>
+            <span>👥 查看多智能体执行记录 (${data.agent_dialogue_history.length} 次席位交互)</span>
           </summary>
           <ul style="margin: 8px 0 0 0; padding-left: 0; list-style: none;">
             ${items}
@@ -1787,9 +1686,10 @@ document.addEventListener('DOMContentLoaded', () => {
               {left: '$', right: '$', display: false},
               {left: '\\(', right: '\\)', display: false}
             ],
-            throwOnError: false
+            throwOnError: true,
+            errorCallback: (message, error) => { throw error; }
           });
-        } catch (_) {}
+        } catch (error) { throw error; }
       }
     }
 
@@ -1832,14 +1732,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   }
 
-  async function playTTS(url, textFallback = null, triggerBtn = null) {
+  async function playTTS(url, speechText = null, triggerBtn = null) {
     let targetUrl = url;
 
     // 若该条历史消息未生成独立音频或为旧版公共链接，动态调取按需合成
-    if ((!targetUrl || targetUrl === '/api/audio/latest') && textFallback) {
+    if ((!targetUrl || targetUrl === '/api/audio/latest') && speechText) {
       try {
         // 过滤规则二：彻底过滤 Emoji 图标与机器人/意图标签
-        const cleanSpeechText = textFallback
+        const cleanSpeechText = speechText
           .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
           .replace(/🤖\s*[\w_]+/g, '')
           .replace(/🎯\s*意图[：:]\s*[\w_]+/g, '')
@@ -1851,13 +1751,15 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: cleanSpeechText, voice: getCurrentVoice() }),
         });
+        if (!res.ok) throw new Error('语音合成接口失败');
         const d = await res.json();
+        if (!d.audio_url) throw new Error('语音合成未返回音频');
         if (d.audio_url) {
           targetUrl = d.audio_url;
           if (triggerBtn) triggerBtn.dataset.url = d.audio_url;
         }
       } catch (e) {
-        console.error('Synthesize fallback error:', e);
+        throw new Error(`语音合成失败：${e.message}`);
       }
     }
 
@@ -1931,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', () => {
     globalAudio.onerror = (e) => {
       console.warn('Audio playback error:', e);
       setAssistantState('IDLE');
-      setOrbitNode(7, 'active', '✅ 成果已交付');
+      setOrbitNode(7, 'error', '❌ 语音播放失败');
       setHubStatus('可调度', false);
       if (window.digitalAvatar && typeof window.digitalAvatar.stopSpeaking === 'function') {
         window.digitalAvatar.stopSpeaking();
@@ -1945,7 +1847,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await globalAudio.play();
     } catch (e) {
-      console.log('Autoplay restriction or pause:', e);
+      console.error('语音播放失败:', e);
+      alert(`语音播放失败: ${e.message}`);
       if (triggerBtn) {
         triggerBtn.textContent = '🔊 播放搭档语音';
         triggerBtn.disabled = false;
@@ -2074,6 +1977,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {
       console.error('Failed to load documents:', err);
+      throw err;
     }
   }
 
@@ -2171,9 +2075,10 @@ document.addEventListener('DOMContentLoaded', () => {
             {left: '$', right: '$', display: false},
             {left: '\\(', right: '\\)', display: false}
           ],
-          throwOnError: false
+          throwOnError: true,
+            errorCallback: (message, error) => { throw error; }
         });
-      } catch (_) {}
+      } catch (error) { throw error; }
     }
   }
 
@@ -2219,7 +2124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const resp = await fetch('/api/meetings/summarize', { method: 'POST' });
         if (!resp.ok) {
-          const errorData = await resp.json().catch(() => ({}));
+          const errorData = await resp.json();
           throw new Error(errorData.detail || '会议纪要生成失败');
         }
         const data = await resp.json();
@@ -2263,50 +2168,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const voiceCaptureMode = document.getElementById('voice-capture-mode');
   let isMeetingRecording = false;
 
-  async function toggleMeetingRecording() {
-    isMeetingRecording = !isMeetingRecording;
-    const sidebarText = btnToggleMeetingRecord ? btnToggleMeetingRecord.querySelector('.record-text') : null;
+  let meetingRecordRequestPending = false;
 
-    if (isMeetingRecording) {
-      if (btnToggleMeetingRecord) btnToggleMeetingRecord.classList.add('recording');
-      if (sidebarText) sidebarText.textContent = '录音中 (点击结束)';
-      if (btnHeaderRecord) {
-        btnHeaderRecord.classList.add('active');
-        btnHeaderRecord.style.color = '#dc2626';
-        btnHeaderRecord.style.borderColor = '#f87171';
-      }
-      if (headerRecordText) headerRecordText.textContent = '录制中 (点击停止)';
-      if (headerRecordIcon) headerRecordIcon.textContent = '🔴';
-      const captureMode = voiceCaptureMode ? voiceCaptureMode.value : 'mic';
-      if (voiceCaptureMode) voiceCaptureMode.disabled = true;
+  function updateMeetingRecordingUI(recording, captureMode) {
+    isMeetingRecording = recording;
+    const sidebarText = btnToggleMeetingRecord?.querySelector('.record-text');
+    if (btnToggleMeetingRecord) btnToggleMeetingRecord.classList.toggle('recording', recording);
+    if (sidebarText) sidebarText.textContent = recording ? '录音中 (点击结束)' : '开启会议录音';
+    if (btnHeaderRecord) {
+      btnHeaderRecord.classList.toggle('active', recording);
+      btnHeaderRecord.style.color = recording ? '#dc2626' : '';
+      btnHeaderRecord.style.borderColor = recording ? '#f87171' : '';
+    }
+    if (headerRecordText) headerRecordText.textContent = recording ? '录制中 (点击停止)' : '开启会议录制';
+    if (headerRecordIcon) headerRecordIcon.textContent = recording ? '🔴' : '🎙️';
+    if (voiceCaptureMode) voiceCaptureMode.disabled = recording;
+    if (recording) {
       const modeLabel = captureMode === 'system' ? '系统声音（腾讯会议/视频）' : '麦克风';
-      setAssistantState('LISTENING', `已开启${modeLabel}监听，实时流水转写中...`);
-      try {
-        await fetch('/api/voice/start', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: captureMode }),
-        });
-      } catch (e) {
-        console.error('Failed to start voice perception:', e);
-      }
+      setAssistantState('LISTENING', `已请求${modeLabel}监听，等待实时转写...`);
     } else {
-      if (btnToggleMeetingRecord) btnToggleMeetingRecord.classList.remove('recording');
-      if (sidebarText) sidebarText.textContent = '开启会议录音';
-      if (btnHeaderRecord) {
-        btnHeaderRecord.classList.remove('active');
-        btnHeaderRecord.style.color = '';
-        btnHeaderRecord.style.borderColor = '';
-      }
-      if (headerRecordText) headerRecordText.textContent = '开启会议录制';
-      if (headerRecordIcon) headerRecordIcon.textContent = '🎙️';
-      if (voiceCaptureMode) voiceCaptureMode.disabled = false;
       setAssistantState('IDLE');
-      try {
-        await fetch('/api/voice/stop', { method: 'POST' });
-      } catch (e) {
-        console.error('Failed to stop voice perception:', e);
+    }
+  }
+
+  async function toggleMeetingRecording() {
+    if (meetingRecordRequestPending) return;
+    meetingRecordRequestPending = true;
+    try {
+      const nextRecording = !isMeetingRecording;
+      const captureMode = voiceCaptureMode?.value;
+      if (!['mic', 'system'].includes(captureMode)) throw new Error('未选择有效音源');
+      const response = await fetch(nextRecording ? '/api/voice/start' : '/api/voice/stop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: nextRecording ? JSON.stringify({ mode: captureMode }) : undefined,
+      });
+      const data = await response.json();
+      if (!response.ok || data.is_recording !== nextRecording) {
+        throw new Error(data.detail || '录音状态未确认');
       }
+      updateMeetingRecordingUI(nextRecording, captureMode);
+    } catch (error) {
+      alert(`会议录音操作失败: ${error.message}`);
+    } finally {
+      meetingRecordRequestPending = false;
     }
   }
 
@@ -2334,6 +2239,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        if (data.type === 'error') {
+          updateMeetingRecordingUI(false);
+          alert(`实时语音已停止: ${data.message}`);
+          return;
+        }
         if (data.type === 'speech' && data.text) {
           appendStreamLog(data.timestamp, data.source, data.text);
           // 若开启了语音输入，将识别到的文本填入输入框，保留给用户确认和微调，不自动发送
@@ -2345,7 +2255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.setSelectionRange(userInput.value.length, userInput.value.length);
           }
         }
-      } catch (e) {}
+      } catch (error) { throw error; }
     };
     ws.onclose = () => setTimeout(connectVoiceWebSocket, 3000);
   }
@@ -2467,6 +2377,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } catch (err) {
           console.error('Whisper 转录网络/服务异常:', err);
+          alert(`转录失败: ${err.message}`);
           setAssistantState('IDLE');
         } finally {
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
@@ -2506,7 +2417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localMediaRecorder && localMediaRecorder.state !== 'inactive') {
       try {
         localMediaRecorder.stop();
-      } catch (e) {}
+      } catch (error) { throw error; }
     }
   }
 
@@ -2716,8 +2627,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function openMindmapFullscreen() {
     if (!currentActiveMarkdown) {
-      const targetDoc = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
-      await loadAndRenderBookMindmap(targetDoc);
+      if (!currentActiveDocumentName) {
+        alert('请先选择书籍或发起研讨提问');
+        return;
+      }
+      await loadAndRenderBookMindmap(currentActiveDocumentName);
     }
     if (!currentActiveMarkdown) {
       alert('请先选择书籍或发起研讨提问');
@@ -2817,60 +2731,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!math) return '';
     // 规范化双反斜杠转义
     math = math.replace(/\\\\([a-zA-Z{}()\[\]])/g, '\\$1');
-    if (window.katex) {
-      try {
-        return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false });
-      } catch (_) { /* Fall through to symbol map */ }
-    }
-    const symbols = {
-      le: '≤', leq: '≤', ge: '≥', geq: '≥', times: '×', cdot: '·',
-      pm: '±', mp: '∓', to: '→', rightarrow: '→', leftarrow: '←',
-      in: '∈', notin: '∉', approx: '≈', neq: '≠', ne: '≠',
-      sum: '∑', prod: '∏', alpha: 'α', beta: 'β', gamma: 'γ',
-      delta: 'δ', theta: 'θ', lambda: 'λ', mu: 'μ', sigma: 'σ',
-      pi: 'π', ell: 'ℓ', hat: '^', mathbf: '', mathcal: '', mathbb: '',
-      Sigma: 'Σ', Pi: 'Π', Omega: 'Ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ',
-      Lambda: 'Λ', Xi: 'Ξ', Phi: 'Φ', Psi: 'Ψ', nu: 'ν', chi: 'χ', tau: 'τ',
-      rho: 'ρ', phi: 'ϕ', psi: 'ψ', omega: 'ω', eta: 'η', zeta: 'ζ',
-      xi: 'ξ', kappa: 'κ', epsilon: 'ε', infty: '∞', partial: '∂',
-      nabla: '∇', hbar: 'ℏ', int: '∫', langle: '⟨', rangle: '⟩',
-    };
-    const readable = math
-      .replace(/\\(?:mathrm|mathbf|mathit|operatorname|text|mathbb|mathcal)\s*\{([^}]*)\}/g, '$1')
-      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)')
-      .replace(/\\([a-zA-Z]+)/g, (_, command) => symbols[command] || command)
-      .replace(/[{}]/g, '');
-    return `<span class="formula-fallback" data-math-source="${escapeHtml(math)}" data-math-display="${displayMode ? 'true' : 'false'}">${escapeHtml(readable)}</span>`;
-  }
-
-  // KaTeX 异步就绪后自动重水合兜底数学节点
-  function rehydrateMathFallbacks() {
-    if (!window.katex || typeof document === 'undefined') return;
-    document.querySelectorAll('.formula-fallback').forEach(el => {
-      const src = el.getAttribute('data-math-source');
-      const disp = el.getAttribute('data-math-display') === 'true';
-      if (src) {
-        try {
-          const rendered = window.katex.renderToString(src, { displayMode: disp, throwOnError: false, trust: false });
-          const temp = document.createElement('span');
-          temp.innerHTML = rendered;
-          el.replaceWith(temp.firstElementChild || temp);
-        } catch (_) {}
-      }
-    });
-  }
-
-  if (typeof window !== 'undefined') {
-    window.addEventListener('load', () => {
-      setTimeout(rehydrateMathFallbacks, 200);
-      setTimeout(rehydrateMathFallbacks, 1200);
-    });
-    const katexWatchTimer = setInterval(() => {
-      if (window.katex) {
-        rehydrateMathFallbacks();
-        clearInterval(katexWatchTimer);
-      }
-    }, 250);
+    if (!window.katex) throw new Error('公式渲染引擎未加载');
+    return window.katex.renderToString(math, { displayMode, throwOnError: true, trust: false });
   }
 
   // 通用文本与公式混合渲染器（用于文献标题、卡片摘要、标签与检索结果）
@@ -3273,7 +3135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
     } catch (e) {
-      console.warn('Export chart failed:', e);
+      alert(`图表导出失败: ${e.message}`);
     }
   };
 
@@ -3299,7 +3161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      console.warn('Export figure failed:', e);
+      alert(`流程图导出失败: ${e.message}`);
     }
   };
 
@@ -3371,11 +3233,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         } catch (err) {
-          console.warn('Mermaid single node render error:', err);
+          node.textContent = `流程图渲染失败: ${err.message}`;
+          node.classList.add('render-error');
         }
       }
     } catch (error) {
-      console.warn('Mermaid flowchart rendering skipped:', error);
+      throw error;
     }
   }
 
@@ -3404,9 +3267,9 @@ document.addEventListener('DOMContentLoaded', () => {
         rawText = rawText.replace(/^```[a-zA-Z]*\n?/, '').replace(/\n?```$/, '').trim();
         let config = JSON.parse(rawText);
 
-        if (!config || typeof config !== 'object') return;
-        if (!config.type) config.type = 'bar';
-        if (!config.data) config.data = {};
+        if (!config || typeof config !== 'object' || !config.type || !config.data) {
+          throw new Error('图表缺少类型或数据，无法渲染');
+        }
         if (!config.options) config.options = {};
 
         // 智能为 datasets 补充雅致的学术配色
@@ -3434,8 +3297,10 @@ document.addEventListener('DOMContentLoaded', () => {
         new window.Chart(canvas.getContext('2d'), config);
       } catch (e) {
         console.warn('Academic chart parsing/rendering error:', e);
-        const panel = box.querySelector('.chart-raw-json-panel');
-        if (panel) panel.style.display = 'block';
+        const message = document.createElement('p');
+        message.className = 'render-error';
+        message.textContent = `图表渲染失败: ${e.message}`;
+        box.appendChild(message);
       }
     });
   }
@@ -3447,6 +3312,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadSystemConfig() {
     try {
       const resp = await fetch('/api/config');
+      if (!resp.ok) throw new Error('配置接口失败');
       if (resp.ok) {
         const cfg = await resp.json();
         const pill = document.getElementById('pill-model-name');
@@ -3456,7 +3322,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (_) {
-      // 降级使用通用文案，无需报错
+      const pill = document.getElementById('pill-model-name');
+      if (pill) pill.textContent = '模型配置加载失败';
     }
   }
 

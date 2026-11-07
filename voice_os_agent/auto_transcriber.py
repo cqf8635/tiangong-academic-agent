@@ -34,7 +34,6 @@ ENV_PATH = PROJECT_ROOT / ".env"
 load_dotenv(ENV_PATH)
 
 MODEL_DIR = resolve_whisper_path(PROJECT_ROOT)
-SPEAKER_MONITOR = get_default_monitor_source()
 TEMP_WAV = BASE_DIR / "auto_temp.wav"
 
 
@@ -151,8 +150,8 @@ def live_stream_transcribe(
                                 current_display_text = partial_text
                                 sys.stdout.write(f"\r🎙️  [实时字幕] {current_display_text}   ")
                                 sys.stdout.flush()
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            raise RuntimeError(f"实时转录失败: {e}") from e
 
                 elif is_speaking:
                     audio_buffer.extend(raw_chunk)
@@ -176,8 +175,7 @@ def live_stream_transcribe(
                         sys.stdout.write(f"\r✅ 【确定识别】: {final_text}\n\n")
                         sys.stdout.flush()
                 except Exception as e:
-                    sys.stdout.write(f"\r[转录错误]: {e}\n\n")
-                    sys.stdout.flush()
+                    raise RuntimeError(f"最终转录失败: {e}") from e
             else:
                 # 杂音或时长过短，清除行
                 if is_speaking:

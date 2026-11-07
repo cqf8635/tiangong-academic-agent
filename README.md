@@ -37,7 +37,7 @@ TianGong adopts an **on-premise hybrid neural architecture**: only reasoning cal
 | Function | Model | Default Local Path | Key Characteristics |
 | :--- | :--- | :--- | :--- |
 | **Dense/Sparse Embedding** | `BAAI/bge-m3` | `./models/embedding` | 1024-dim multi-granularity vector representation; 100% local, 0 external API cost |
-| **Cross-Encoder Reranker** | `BAAI/bge-reranker-v2-m3` | `./models/reranker` | Deep semantic relevance scoring; equipped with auto-fallback to cosine metric |
+| **Cross-Encoder Reranker** | `BAAI/bge-reranker-v2-m3` | `./models/reranker` | Deep semantic relevance scoring; scoring errors stop the request |
 | **Speech-to-Text (ASR)** | `whisper-large-v3` | `./models/whisper-large-v3` | High-fidelity offline voice transcription; lab meeting recordings stay strictly confidential |
 
 ---

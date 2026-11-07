@@ -44,29 +44,31 @@ class MeetingSummaryReport(BaseModel):
 
 
 class MeetingSummarizer:
-    def __init__(self):
+    def __init__(self, client: Optional[Any] = None):
         self.api_key = os.getenv("OPENAI_API_KEY")
         self.base_url = os.getenv("OPENAI_BASE_URL")
         self.model = get_default_llm_model()
 
-        if not self.api_key or not self.base_url:
-            raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
-
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        if client is not None:
+            self.client = client
+        else:
+            if not self.api_key or not self.base_url:
+                raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
+            self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def _read_records(self, record_path: Path) -> List[Dict[str, Any]]:
         """读取 JSONL 格式的流水日志"""
         records = []
         if not record_path.exists():
-            return records
+            raise FileNotFoundError(record_path)
 
         with open(record_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     try:
                         records.append(json.loads(line.strip()))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        raise ValueError(f"会议记录 JSONL 解析失败: {e}") from e
         return records
 
     def summarize_session(
@@ -79,15 +81,13 @@ class MeetingSummarizer:
         对长会议/讲座流水执行分段 Map-Reduce 归纳与待办抽取
         """
         path = Path(record_path)
-        records = self._read_records(path)
-
+        if path.suffix.lower() in {".txt", ".md"}:
+            text_content = path.read_text(encoding="utf-8").strip()
+            records = [{"text": text_content}] if text_content else []
+        else:
+            records = self._read_records(path)
         if not records:
-            # 兼容纯文本输入
-            if path.exists():
-                text_content = path.read_text(encoding="utf-8")
-                records = [{"index": 1, "timestamp": "00:00:00", "source": "input", "text": text_content}]
-            else:
-                raise FileNotFoundError(f"未找到记录文件: {path}")
+            raise ValueError("会议记录为空，无法生成摘要")
 
         print(f"📊 [MeetingSummarizer] 正在处理会话流水: {path.name} (共 {len(records)} 句发言)...")
 
@@ -105,11 +105,17 @@ class MeetingSummarizer:
                         model=self.model,
                         messages=[{"role": "user", "content": prompt}],
                         temperature=0.0,
+                        max_tokens=2048,
                         timeout=get_llm_timeout(60.0),
                     )
-                    map_summaries.append(f"【切片 {idx} 摘要】: " + resp.choices[0].message.content)
-                except Exception:
-                    map_summaries.append(chunk_text)
+                    if getattr(resp.choices[0], "finish_reason", None) != "stop":
+                        raise ValueError("模型响应未完整结束，本阶段未完成")
+                    content = resp.choices[0].message.content
+                    if not content or not content.strip():
+                        raise ValueError("分段摘要为空")
+                    map_summaries.append(f"【切片 {idx} 摘要】: " + content)
+                except Exception as e:
+                    raise RuntimeError(f"会议第 {idx} 段摘要失败，未进入全局归纳: {e}") from e
             combined_context = "\n\n".join(map_summaries)
         else:
             combined_context = "\n".join([f"[{r.get('timestamp')}] {r.get('text')}" for r in records])
@@ -126,9 +132,12 @@ class MeetingSummarizer:
             ],
             response_format={"type": "json_object"},
             temperature=0.0,
+            max_tokens=4096,
             timeout=get_llm_timeout(90.0),
         )
 
+        if getattr(response.choices[0], "finish_reason", None) != "stop":
+            raise ValueError("模型响应未完整结束，本阶段未完成")
         raw_json = response.choices[0].message.content
         data = json.loads(raw_json)
         report = MeetingSummaryReport(**data)
