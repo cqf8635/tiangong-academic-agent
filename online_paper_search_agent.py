@@ -598,37 +598,47 @@ class OnlinePaperSearchAgent:
         )
 
         resources = []
-        try:
-            with urllib.request.urlopen(req, timeout=12) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            items = data.get("message", {}).get("items", [])
-            for it in items:
-                title = (it.get("title") or [""])[0]
-                if not title:
+        data = None
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(req, timeout=12) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                break
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(0.4 * (attempt + 1))
                     continue
-                year = None
-                date_parts = it.get("created", {}).get("date-parts", [[]])
-                if date_parts and date_parts[0]:
-                    year = date_parts[0][0]
-                doi = it.get("DOI", "")
-                authors = [
-                    f"{a.get('given', '')} {a.get('family', '')}".strip()
-                    for a in it.get("author", [])
-                ]
-                container = (it.get("container-title") or [""])[0]
-                summary = f"发表期刊/会议: 《{container}》 | DOI: {doi}" if container else f"DOI: {doi}"
-                resources.append(AcademicResource(
-                    id=doi or title,
-                    title=title,
-                    authors=authors[:4],
-                    year=year,
-                    source="crossref",
-                    summary=summary,
-                    url=f"https://doi.org/{doi}" if doi else "",
-                    doi=doi
-                ))
-        except Exception as e:
-            raise RuntimeError(f"CrossRefSearch Note: {e}") from e
+                raise RuntimeError(f"CrossRefSearch Note: {e}") from e
+
+        if not data:
+            return resources
+
+        items = data.get("message", {}).get("items", [])
+        for it in items:
+            title = (it.get("title") or [""])[0]
+            if not title:
+                continue
+            year = None
+            date_parts = it.get("created", {}).get("date-parts", [[]])
+            if date_parts and date_parts[0]:
+                year = date_parts[0][0]
+            doi = it.get("DOI", "")
+            authors = [
+                f"{a.get('given', '')} {a.get('family', '')}".strip()
+                for a in it.get("author", [])
+            ]
+            container = (it.get("container-title") or [""])[0]
+            summary = f"发表期刊/会议: 《{container}》 | DOI: {doi}" if container else f"DOI: {doi}"
+            resources.append(AcademicResource(
+                id=doi or title,
+                title=title,
+                authors=authors[:4],
+                year=year,
+                source="crossref",
+                summary=summary,
+                url=f"https://doi.org/{doi}" if doi else "",
+                doi=doi
+            ))
         return resources
 
     def search_openalex(
@@ -676,54 +686,64 @@ class OnlinePaperSearchAgent:
         )
 
         resources = []
-        try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            for it in data.get("results", []):
-                title = it.get("title") or ""
-                if not title:
+        data = None
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as he:
+                if he.code == 429:
+                    _OPENALEX_COOLDOWN_UNTIL = time.time() + 180.0
+                raise RuntimeError(f"OpenAlex 检索失败: {he}") from he
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(0.4 * (attempt + 1))
                     continue
-                year = it.get("publication_year")
-                doi = it.get("doi") or ""
-                cited = it.get("cited_by_count", 0)
-                venue = ((it.get("primary_location") or {}).get("source") or {}).get("display_name") or "出版信息未提供"
-                authorships = it.get("authorships", [])
-                authors = [
-                    a.get("author", {}).get("display_name", "")
-                    for a in authorships if a.get("author", {}).get("display_name")
-                ]
-                # 提取最佳开放获取全文 PDF 链接 (优先提取真实开放仓储地址)
-                pdf_url = ""
-                best_oa = it.get("best_oa_location") or {}
-                if best_oa.get("pdf_url"):
-                    pdf_url = best_oa["pdf_url"]
-                else:
-                    for loc in it.get("locations", []):
-                        if loc.get("is_oa") and loc.get("pdf_url"):
-                            pdf_url = loc["pdf_url"]
-                            break
-                if not pdf_url:
-                    pdf_url = doi or str(it.get("id", ""))
+                raise RuntimeError(f"OpenAlex 检索失败: {e}") from e
 
-                summary = f"🏛️ 出版信息: 《{venue}》 | 📊 被引: {cited} 次 | DOI: {doi}"
-                resources.append(AcademicResource(
-                    id=doi or str(it.get("id", title)),
-                    title=title,
-                    authors=authors[:4],
-                    year=year,
-                    source="openalex",
-                    summary=summary,
-                    url=pdf_url,
-                    doi=doi,
-                    citation_count=cited,
-                    venue=venue
-                ))
-        except urllib.error.HTTPError as he:
-            if he.code == 429:
-                _OPENALEX_COOLDOWN_UNTIL = time.time() + 180.0
-            raise RuntimeError(f"OpenAlex 检索失败: {he}") from he
-        except Exception as e:
-            raise RuntimeError(f"OpenAlex 检索失败: {e}") from e
+        if not data:
+            return resources
+
+        for it in data.get("results", []):
+            title = it.get("title") or ""
+            if not title:
+                continue
+            year = it.get("publication_year")
+            doi = it.get("doi") or ""
+            cited = it.get("cited_by_count", 0)
+            venue = ((it.get("primary_location") or {}).get("source") or {}).get("display_name") or "出版信息未提供"
+            authorships = it.get("authorships", [])
+            authors = [
+                a.get("author", {}).get("display_name", "")
+                for a in authorships if a.get("author", {}).get("display_name")
+            ]
+            # 提取最佳开放获取全文 PDF 链接 (优先提取真实开放仓储地址)
+            pdf_url = ""
+            best_oa = it.get("best_oa_location") or {}
+            if best_oa.get("pdf_url"):
+                pdf_url = best_oa["pdf_url"]
+            else:
+                for loc in it.get("locations", []):
+                    if loc.get("is_oa") and loc.get("pdf_url"):
+                        pdf_url = loc["pdf_url"]
+                        break
+            if not pdf_url:
+                pdf_url = doi or str(it.get("id", ""))
+
+            summary = f"🏛️ 出版信息: 《{venue}》 | 📊 被引: {cited} 次 | DOI: {doi}"
+            resources.append(AcademicResource(
+                id=doi or str(it.get("id", title)),
+                title=title,
+                authors=authors[:4],
+                year=year,
+                source="openalex",
+                summary=summary,
+                url=pdf_url,
+                doi=doi,
+                citation_count=cited,
+                venue=venue
+            ))
         return resources
 
     def search_semanticscholar(self, query: str, max_results: int = 3) -> List[AcademicResource]:

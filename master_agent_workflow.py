@@ -1476,7 +1476,7 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
             raw_papers = []
             bundle = paper_agent.search_multisource(
                 query=chinese_query,
-                include_github=False,
+                include_github=True,
                 time_constraint=decision.get("time_constraint"),
                 english_query=eng_query,
             )
@@ -1484,6 +1484,7 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                 raw_papers.extend(bundle.get("arxiv_papers", []))
                 raw_papers.extend(bundle.get("openalex_papers", []))
                 raw_papers.extend(bundle.get("crossref_papers", []))
+                raw_papers.extend(bundle.get("github_repos", []))
             if not raw_papers and hasattr(paper_agent, "search_arxiv"):
                 res_arxiv = paper_agent.search_arxiv.return_value if hasattr(paper_agent.search_arxiv, "return_value") else None
                 if isinstance(res_arxiv, list):
@@ -1552,6 +1553,8 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                         loc_label = f"OpenAlex 权威文献 ({p_dict.get('venue') or '出版信息未提供'})"
                     elif src == "crossref":
                         loc_label = f"CrossRef 权威收录 (DOI: {p_dict.get('doi') or p_id})"
+                    elif src == "github":
+                        loc_label = f"GitHub 官方开源实现"
                     else:
                         loc_label = f"在线学术文献 ({src})"
 

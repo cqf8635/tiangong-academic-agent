@@ -182,7 +182,7 @@ INTENT_DEFINITIONS = [
         "name": "学术论文/专著书籍/教材讲义/技术文档全景解读与细节考据",
         "description": "在上传的 PDF 论文、学术专著书籍、教材讲义、技术报告、课件PPT，或当前会话已检索就绪的文献资产池（recent_paper_candidates）中查找证据、筛选分类、提取章节段落，或者请求对某篇论文/专著书籍/课件进行全文概述、背景介绍、方法拆解、方案构思或核心贡献总结",
         "agent": "DocumentSearchAgent",
-        "sources": ["uploaded_pdf_docs", "recent_paper_candidates"],
+        "sources": ["uploaded_pdf_docs", "recent_paper_candidates", "arxiv_live_search"],
     },
     {
         "intent": "content_summarize",
@@ -203,7 +203,7 @@ INTENT_DEFINITIONS = [
         "name": "多方案/概念对比分析",
         "description": "请求对比两个或多个理论、方法、模型、技术路线或语言现象的区别与优缺点",
         "agent": "ComparisonAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs"],
+        "sources": ["general_science_knowledge", "uploaded_pdf_docs", "arxiv_live_search"],
     },
     {
         "intent": "quiz_generate",
@@ -229,7 +229,7 @@ INTENT_DEFINITIONS = [
             "总结文献或安排学习先后顺序。适用于任意学科。"
         ),
         "agent": "StudyPlannerAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs"],
+        "sources": ["general_science_knowledge", "uploaded_pdf_docs", "arxiv_live_search"],
     },
     {
         "intent": "voice_system_control",
@@ -240,8 +240,8 @@ INTENT_DEFINITIONS = [
     },
     {
         "intent": "arxiv_paper_search",
-        "name": "ArXiv 线上最新学术文献检索与前沿综述",
-        "description": "请求在线实时检索 arXiv、SOTA 前沿论文库中最新的研究论文、论文作者、发表年份及 Abstract 摘要并整理学术综述",
+        "name": "多源学术文献与开源前沿检索",
+        "description": "请求在线实时检索 arXiv、OpenAlex、CrossRef、GitHub 等全球学术库中最新的研究论文、权威期刊、开源复现代码及 Abstract 摘要并整理学术综述",
         "agent": "OnlinePaperSearchAgent",
         "sources": ["arxiv_live_search"],
     },

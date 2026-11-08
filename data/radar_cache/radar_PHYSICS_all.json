@@ -1,6 +1,6 @@
 {
-  "query_expression": "(cat:math-ph* OR cat:gr-qc* OR cat:hep* OR cat:nucl* OR cat:astro-ph* OR cat:physics* OR cat:nlin* OR cat:cond-mat* OR cat:quant-ph*)",
-  "total_fetched": 25,
+  "query_expression": "(cat:cond-mat* OR cat:astro-ph* OR cat:quant-ph* OR cat:gr-qc* OR cat:hep* OR cat:nlin* OR cat:physics* OR cat:nucl* OR cat:math-ph*)",
+  "total_fetched": 35,
   "total_results": 1627469,
   "papers": [
     {
@@ -649,28 +649,294 @@
       "comment": "34 pages, 15 figures, LA-UR-26-24582",
       "journal_ref": null,
       "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08405v1",
+      "title": "Synaptic Multi-Weight Wafer-Scale Domain Wall Magnetic Tunnel Junctions Driven by Spin Orbit Torque",
+      "authors": [
+        "Nicholas Zogbi",
+        "Domenico Giuliano",
+        "Vaishnavi Kateel",
+        "Van Dai Nguyen",
+        "Jyotirmoy Chatterjee"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:13:45Z",
+      "summary": "Spintronic synaptic devices based on magnetic random access memory (MRAM) are a rapidly evolving class within the analog neuromorphic architecture. However, obtaining the multi-weight or analog behavior desired for improved neural network inference accuracy in scaled MRAM remains a challenge. In this study, we demonstrate and tune up to eight distinct resistance levels in 300 mm wafer-scale magnetic tunnel junction artificial synapses driven by spin orbit torque. By varying the applied in-plane field, multi-weight resistance states emerge through domain wall nucleation and pinning. These multi-weight states appear stochastically and can be addressed with an iterative programming algorithm to program a specific resistance. Electromagnetic simulations indicate the multiple states are due to domain wall nucleation mediated by in-plane field and applied voltage. Implementation of the measured multi-weight devices in a neural network yields a 96.1% inference accuracy using the MNIST dataset if all devices provide the same number of multi-weight states. When experimental device-to-device variation is included, the accuracy is 48.6%. Overall, this work demonstrates a route towards multi-weight artificial synapse MRAM, establishing a path towards scalable neuromorphic systems based on spintronics.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08405v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.mes-hall",
+      "categories": [
+        "cond-mat.mes-hall"
+      ],
+      "category_names_zh": [
+        "cond-mat.mes-hall (介观与霍尔效应)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08402v1",
+      "title": "A physics-based-preconditioned quasi-Newton solver for energy- and momentum-conserving implicit hybrid particle-in-cell simulations",
+      "authors": [
+        "Prabhat Kumar",
+        "Luis Chacón",
+        "William J. White",
+        "Lujain Almarhabi",
+        "Stephen E. Clark"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:12:22Z",
+      "summary": "Explicit hybrid particle-in-cell (PIC) schemes, with kinetic ions and fluid electrons, accumulate numerical heating over long simulations and are unstable to finite-grid instabilities. Energy-conserving implicit integration removes heating and instabilities, but may be inefficient due to the need of nonlinear iteration. We present a fast quasi-Newton solver for an implicit hybrid-PIC formulation. The nonlinear residual employs the electric field and electron pressure as nonlinear unknowns, and nonlinearly eliminates particles. The formulation is strictly energy conserving and, on Cartesian meshes, also momentum conserving. The nonlinear iteration is efficiently performed with a quasi-Newton solver that replaces the true Jacobian with an approximate one without spoiling conservation properties upon convergence. The approximate Jacobian replaces the particle ion linear response with an analytical mass matrix that is local and requires minimal storage. This approximate Jacobian is efficiently inverted with a physics-based multigrid preconditioner, adapted from Hall MHD. We verify the scheme linearly with whistler, kinetic Alfvén, and cylindrical normal modes, and nonlinearly with the GEM reconnection challenge. On GEM, explicit integration needs a forty-times-smaller time step, and nine times the wall-clock time, to reach an energy conservation comparable to that of the implicit solver. We apply the method to the simulation of a three-dimensional field-reversed configuration formation by external coils.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08402v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.comp-ph",
+      "categories": [
+        "physics.comp-ph"
+      ],
+      "category_names_zh": [
+        "physics.comp-ph (计算物理学)"
+      ],
+      "comment": "6 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08401v1",
+      "title": "Spectral Regimes of Truncated sinc-Power and Pulse-Train Kernels: Edge Exponents, Per-Edge Plunges, and the Landau-Widom Limit",
+      "authors": [
+        "Unnikrishna Pillai"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:11:38Z",
+      "summary": "A signal band-limited to one rectangular band and observed through a finite window is the classical concentration problem of Slepian, Landau, Pollak, and Widom. The eigenvalues of the operator cluster near one and near zero, separated by a transition called the plunge. The plunge width grows like the logarithm of the window length, with a universal coefficient of one over pi squared set by the band-edge jump. This paper follows the clusters and the plunge as the band is deformed. An elementwise power of the kernel smooths the band edge, and the plunge gives way to a power-law edge with exponent one less than the power. Disjoint copies of the band widen the plunge in proportion to the number of band edges, as the multiple-interval theorem of Landau and Widom implies, so the coefficient is a per-edge constant. Shrinking each band to a line gives the classical finite-rank operator. Overlapping bands give a multilevel staircase, and a self-similar band gives a cluster hierarchy governed by the Cantor dimension. At the smooth edge, rescaled eigenvalues do not collapse onto one curve. The edge descriptor passes from a constant to an exponent to an integer to a fractal dimension. For the single band, classical results place all eigenfilter zeros on the unit circle, with more of them inside the band as the order rises, so the dominant eigenvectors act as lowpass filters.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08401v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "math-ph",
+        "math.CA",
+        "math.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "math-ph (数学物理与严格推演)",
+        "math.CA (经典分析与常微分方程)",
+        "math.SP (谱理论)"
+      ],
+      "comment": "26 pages, 10 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08396v1",
+      "title": "Recalibration-Aware Optimization of ZEFOZ Operating Points in $^{167}\\mathrm{Er}^{3+}:\\mathrm{Y}_2\\mathrm{SiO}_5$ for Quantum Memories",
+      "authors": [
+        "Shashank Srivastava"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:08:14Z",
+      "summary": "Erbium-doped solids like $^{167}\\mathrm{Er}^{3+}:\\mathrm{Y}_2\\mathrm{SiO}_5$ have properties that make them suitable for quantum-network memories, however, their unquenched effective electronic spin causes rapid magnetic decoherence. Operating at Zero First-Order Zeeman (ZEFOZ) points allows us to mitigate this, where we evaluate the ZEFOZ landscape for Site-2 $^{167}\\mathrm{Er}^{3+}$ by incorporating a full-Hessian spin-Hamiltonian treatment with the anisotropic magnetic-field covariance derived from the native $^{89}\\mathrm{Y}$ crystal lattice directly. Operating-point screening criteria were adopted to devise a Pareto-optimal frontier of four transition pairs to balance modeled Y-only magnetic pure-dephasing lifetimes ($T_{φ,Y}^{(2)}$) against microwave control authority. The $ε_{14}\\leftrightarrowε_{15}$ transition exhibits the longest modeled Y-bath-induced quadratic pure-dephasing time, $T_{φ,Y}^{(2)}>2.2\\times10^5~\\mathrm{s}$, while the $ε_{12}\\leftrightarrowε_{13}$ transition stood out, achieving a Rabi frequency coefficient of $1.248 \\times 10^5~\\mathrm{Hz/mT}$. An assumption-based Hamiltonian-uncertainty analysis demonstrates that while uncompensated deviations shift the ZEFOZ condition away from its nominal magnetic-field coordinate, the shifted operating points can be recovered via numerical vector-field recalibration. The Pareto-optimal coordinates were mathematically recovered for all sampled Hamiltonian perturbations, and the $84.1^{\\mathrm{st}}$-percentile field relocations ranged from $10.95$ to $27.97~\\mathrm{mT}$. The intended operation near $10~\\mathrm{mK}$ must be taken into account for the suppression of Er-induced spectral diffusion through electronic-spin polarization, while the extended Y-bath pure-dephasing timescales also remain conditional on the adopted temporal-correlation model.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08396v1.pdf",
+      "source": "arxiv",
+      "primary_category": "quant-ph",
+      "categories": [
+        "quant-ph"
+      ],
+      "category_names_zh": [
+        "quant-ph (量子力学、量子通信与量子计算)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08395v1",
+      "title": "Extensions to the Navier-Stokes-Fourier Equations for Rarefied Transport: Entropy Variable Formulation, Heat Transfer and Dispersion of a Non-Linear Entropy Stable Closure",
+      "authors": [
+        "Frimpong A. Baidoo",
+        "Narayana R. Aluru",
+        "Thomas J. R. Hughes",
+        "Michael R. A. Abdelmalik"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:07:38Z",
+      "summary": "We assess the non-linear version of the Entropy Stable Extension to the Navier-Stokes-Fourier equations which were originally derived in arXiv:2407.17334. Using an identity for the derivative of the inverse of linearized collision operator, we show that the Entropy Stable Extension takes the form of a fourth-order quasi-cubic system of equations when written in entropy variables. Furthermore, we find that the quasi-linear contributions to the extension retain the highest order derivative contributions and the entropy stability of the full extension. This quasi-linear approximation is applied to the stationary heat transfer between parallel plates where we find that a specification of the boundary conditions that interpolates between the continuum and collisions limits can yield temperature profiles that better agree with DSMC predictions than Navier-Stokes-Fourier equations with Smoluchowski boundary conditions, while also giving a heat flux prediction that better agrees with the Sherman-Lees heat flux than the Navier-Stokes-Fourier prediction. We conclude with a brief study of dispersion of plane waves according to the linearized equations in one dimension where we show that all frequency modes are stable and relate this to entropy stability.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08395v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn"
+      ],
+      "category_names_zh": [
+        "physics.flu-dyn (流体动力学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08388v1",
+      "title": "Top-Quark Pair Production and Decay in Extended Higgs Sectors",
+      "authors": [
+        "Andrea Banfi",
+        "Alexander Lind",
+        "Jonas M. Lindert",
+        "Vishakha Lingadahally"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:05:15Z",
+      "summary": "Extensions of the Higgs sector in the Standard Model address outstanding questions like the first-order electroweak phase transition and also present a rich collider phenomenology. The two-Higgs-doublet model is a minimal extension of the Standard Model with an extra complex $SU(2)_L$ doublet, and consists of an extra scalar, a pseudoscalar and a pair of charged Higgs bosons along with a Standard-Model-like Higgs boson. We present a modified version of the hvq library of the POWHEG-BOX-V2 event generator interfaced with the OpenLoops 2 amplitude generator to obtain predictions for top-quark pair production at NLO accuracy, including top-quark decays with full spin correlations in a framework that extends the SM Higgs sector with an extra heavy scalar and a pseudoscalar. The interference effects between the scalar and pseudoscalar signals, and the Standard Model QCD background are implemented. We include parton showers and hadronisation, and take detector effects into consideration. The status of our work and plans to extend it to future collider projects are discussed.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08388v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-ph",
+      "categories": [
+        "hep-ph"
+      ],
+      "category_names_zh": [
+        "hep-ph (高能物理 - 唯象学)"
+      ],
+      "comment": "6 pages, 2 figures. Prepared for submission to Proceedings of Science (PoS) for the 43rd International Conference on High Energy Physics (ICHEP 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08387v1",
+      "title": "Algorithmic Construction of Vector-Valued Modular Forms and Application to an $A_4\\times\\mathbb{Z}_4$-invariant Model of Leptons",
+      "authors": [
+        "Q. Bonnefoy",
+        "M. Rausch de Traubenberg",
+        "V. Saulquin"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:04:52Z",
+      "summary": "We present an algorithmic procedure that constructs the Vector-Valued Modular Forms (VVMFs) of finite modular groups, as well as its implementation in a companion code. The usual method consists in building the first few VVMFs, whose tensor products then generate the others. We address the difficulty of systematically finding the minimal set of VVMFs that suffices to produce all higher-weight ones, and we propose a method to identify it that makes use of the Burnside-Brauer theorem. For any given group, whose basic group-theoretic and representation-theoretic description is provided by the user, the code determines the minimal set of VVMFs, explicitly builds it using general results of the theory of such functions, then performs the tensor products that generate any other VVMF. Importantly, it automatically takes into account all caveats that might arise during the study of new groups. Our approach reproduces the known results for the finite modular groups explored in the recent phenomenological literature on modular flavor symmetries, and works for additional groups which we tested. We illustrate our algorithm and the working of our code by studying a model of leptons based on the unexplored finite modular group $A_4\\times\\mathbb{Z}_4$.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08387v1.pdf",
+      "source": "arxiv",
+      "primary_category": "hep-ph",
+      "categories": [
+        "hep-ph",
+        "hep-th"
+      ],
+      "category_names_zh": [
+        "hep-ph (高能物理 - 唯象学)",
+        "hep-th (高能物理 - 理论 (场论/弦论))"
+      ],
+      "comment": "Companion code available at https://github.com/vsaulquin/Algorithmic-construction-of-VVMFs",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08385v1",
+      "title": "Anisotropy lifts topological protection of transport in pumped spin chains",
+      "authors": [
+        "Mainak Pal"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:04:21Z",
+      "summary": "We investigate the prospect of topological spin pumping and transport in a dimerized spin-$\\frac{1}{2}$ anisotropic XY chain with tunable in-plane anisotropy. Through a Jordan-Wigner transformation, the system maps onto an extended Rice-Mele-type fermionic model whose momentum-space band structure exhibits gapped regions characterized by nonzero Chern numbers ($\\pm 1$) as well as trivial and gapless regimes. Conventional momentum-space analysis therefore predicts quantized Thouless-type spin pumping in parts of the Chern number diagram. However, real-space time evolution under open boundary conditions reveals that the spin transport is generally not quantized away from the isotropic limit. In the anisotropic regime, eigen-energy states within the transporting subspace hybridize during the driving cycle, leading to a transport that depends on details of the driving protocol. Quantized pumping and transport survive only in the isotropic limit, where the Hamiltonian reduces to decoupled Rice-Mele sectors and the transported spin component is conserved. Our results demonstrate that momentum-space topological invariants alone do not guarantee quantized spin transport in anisotropic spin chains. More broadly, they show that the conventional Thouless-pumping framework does not straightforwardly extend to situations where the transported quantity is not conserved, highlighting the importance of real-space diagnostics in topological transport phenomena.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08385v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.mes-hall",
+      "categories": [
+        "cond-mat.mes-hall",
+        "cond-mat.str-el"
+      ],
+      "category_names_zh": [
+        "cond-mat.mes-hall (介观与霍尔效应)",
+        "cond-mat.str-el (强关联电子系统)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08384v1",
+      "title": "Space of Geometric Gibbs Measures: Uniqueness, Ergodicity, and Teichmüller Complex Manifold Structure",
+      "authors": [
+        "Yunping Jiang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T18:01:23Z",
+      "summary": "Building on our previous work, in which geometric Gibbs measures were introduced to complete the space of classical Gibbs measures under the Teichmüller metric, we establish the uniqueness of geometric Gibbs measures in this paper. This result completes the construction of a Teichmüller complex manifold structure on the space of all geometric Gibbs measures. Using the welding technique, we uncover a connection between geometric Gibbs measures and harmonic measures on dynamical quasicircles. This connection allows us to establish asymptotic conformal rigidity for these dynamical quasicircles. Finally, we establish a foundation for the systematic study of the ergodic properties of geometric Gibbs measures.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08384v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.DS",
+      "categories": [
+        "math.DS",
+        "math-ph",
+        "math.CV"
+      ],
+      "category_names_zh": [
+        "math.DS (动力系统)",
+        "math-ph (数学物理与严格推演)",
+        "math.CV (复变函数与多复变)"
+      ],
+      "comment": "47",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08382v1",
+      "title": "When Can Pulsar Timing Distinguish a Propagation Mass from a Weak Longitudinal Background?",
+      "authors": [
+        "Kun Zhou",
+        "Jin Li"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T17:59:53Z",
+      "summary": "A weak longitudinal background can imitate the angular response of a gravitational-wave propagation mass. We quantify this ambiguity in a compressed Gaussian experiment constructed from the NANOGrav 15-year timing data. At a false-alarm probability of $10^{-3}$, allowing a weak longitudinal component in a massless background costs at least 16.29 percentage points of optimal rejection power for a specified source in a 20-pulsar subarray. Expanding the array to 40 pulsars at the same background level recovers at least 7.62 points. In a separate low-background experiment, we allow the same continuous range of longitudinal amplitudes at zero and positive mass. Across that range and three injected background levels, one test rejects zero mass with at least 97.38\\% power at either of two masses separated by 1.08\\%. With false assignment limited to $10^{-3}$ at the other mass, the power to identify either mass is at most 1.584\\%. A cutoff can thus be identifiable before its position within a frequency cell can be resolved.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08382v1.pdf",
+      "source": "arxiv",
+      "primary_category": "gr-qc",
+      "categories": [
+        "gr-qc"
+      ],
+      "category_names_zh": [
+        "gr-qc (引力、黑洞与时空物理)"
+      ],
+      "comment": "4 pages, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
     }
   ],
   "sub_distribution": [
     {
       "code": "quant-ph",
       "name_zh": "量子力学、量子通信与量子计算",
-      "count": 8
+      "count": 9
     },
     {
       "code": "cond-mat.str-el",
       "name_zh": "强关联电子系统",
-      "count": 5
+      "count": 6
     },
     {
       "code": "hep-ph",
       "name_zh": "高能物理 - 唯象学",
+      "count": 6
+    },
+    {
+      "code": "math-ph",
+      "name_zh": "数学物理与严格推演",
       "count": 4
     },
     {
       "code": "physics.optics",
       "name_zh": "光学与光子学",
       "count": 4
+    },
+    {
+      "code": "hep-th",
+      "name_zh": "高能物理 - 理论 (场论/弦论)",
+      "count": 3
+    },
+    {
+      "code": "gr-qc",
+      "name_zh": "引力、黑洞与时空物理",
+      "count": 3
     },
     {
       "code": "astro-ph.EP",
@@ -680,11 +946,6 @@
     {
       "code": "astro-ph.IM",
       "name_zh": "天文仪器与方法",
-      "count": 2
-    },
-    {
-      "code": "math-ph",
-      "name_zh": "数学物理与严格推演",
       "count": 2
     },
     {
@@ -698,13 +959,13 @@
       "count": 2
     },
     {
-      "code": "hep-th",
-      "name_zh": "高能物理 - 理论 (场论/弦论)",
+      "code": "physics.flu-dyn",
+      "name_zh": "流体动力学",
       "count": 2
     },
     {
-      "code": "gr-qc",
-      "name_zh": "引力、黑洞与时空物理",
+      "code": "cond-mat.mes-hall",
+      "name_zh": "介观与霍尔效应",
       "count": 2
     },
     {
@@ -748,9 +1009,35 @@
       "count": 1
     },
     {
-      "code": "physics.flu-dyn",
-      "name_zh": "流体动力学",
+      "code": "physics.comp-ph",
+      "name_zh": "计算物理学",
+      "count": 1
+    },
+    {
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 1
+    },
+    {
+      "code": "math.CA",
+      "name_zh": "经典分析与常微分方程",
+      "count": 1
+    },
+    {
+      "code": "math.SP",
+      "name_zh": "谱理论",
+      "count": 1
+    },
+    {
+      "code": "math.DS",
+      "name_zh": "动力系统",
+      "count": 1
+    },
+    {
+      "code": "math.CV",
+      "name_zh": "复变函数与多复变",
       "count": 1
     }
-  ]
+  ],
+  "snapshot_synced_at": "2026-11-08T15:47:24.458256"
 }

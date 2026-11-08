@@ -33,7 +33,7 @@ def build_intent_system_prompt(intents_desc: str, current_date: str) -> str:
 先完整理解当前输入，再选择已有意图、主体动作与数据源，最后生成精简检索词。复用 extracted_entities 记录以下信息，不增加状态机制：
 - objects：关键对象，保留原有名称；relations：对象之间的关系及方向；conditions：应用场景、限定条件和排除要求。
 - goal：用户要得到什么结果；actions：用户要求完成哪些动作，多个要求分别保留，不能只保留其中一个。
-- method：用户明确要求怎么做，包括指定方法、资料范围、步骤或输出形式；未指定时填 null，不自行添加研究方法或工作量。
+- method：用户明确指定的研究方法、数据来源、推演步骤或输出形式；未指定时填 null。
 - time_expression：用户原有时间表达；未提及则填 null。其余未提及的信息使用空列表或 null，不补造对象、关系、条件与任务。
 对象、关系、条件和时间尽量沿用原话；goal 与 actions 可以简洁归纳。只有明确的指代才结合历史补全，当前明确表达优先于历史主题、聚焦文献与检索候选。
 
@@ -75,10 +75,19 @@ def build_intent_system_prompt(intents_desc: str, current_date: str) -> str:
 
 【数据源按需声明准则 (required_data_sources)】：
 根据用户任务的真实需求动态声明所需数据源（可参考各意图定义的关联数据源）：
-- `"attached_image_content"`：提问附带图片且任务针对该图片内容展开时声明；
-- `"uploaded_pdf_docs"`：任务需要结合本地知识库中已上传的学术专著、教材讲义、论文或技术文档等切片资产进行研讨、考据或推导时声明；若任务完全自包含且无须外部文献支撑（如单纯公式方程化简、纯代码语法纠错或纯习题求解），则不声明；
-- `"arxiv_live_search"`：任务需要在线实时检索最新学术论文时声明；
-- `"general_science_knowledge"`：任务依赖通用学科知识与数理第一性原理逻辑展开时声明。
+- "attached_image_content"：提问附带图片且任务针对该图片内容展开时声明；
+- "uploaded_pdf_docs"：任务需要结合本地知识库中已上传的学术专著、教材讲义、论文或技术文档等切片资产进行研讨、考据或推导时声明；若任务完全自包含且无须外部文献支撑（如单纯公式方程化简、纯代码语法纠错或纯习题求解），则不声明；
+- "arxiv_live_search"：任务探讨具体学术对象的前沿演进、后续迭代、对比辨析或需要跨源学术文献与开源实现证据支撑时声明（底层融合 arXiv、OpenAlex、CrossRef、GitHub 多源检索矩阵）；
+- "general_science_knowledge"：任务依赖通用学科知识与数理第一性原理逻辑展开时声明。
+
+【联网检索触发准则 (need_online_paper_search)】：
+1. **无需联网 (need_online_paper_search: false)**：
+   - 任务属于基础通识概念辨析、纯数理公式方程化简与第一性原理推导，或纯习题演算；
+   - 明确针对前序已就绪的候选文献池（recent_paper_candidates）进行横向对比、挑选或总结（is_candidate_selection: true）；
+   - 任务完全自包含或已由本地上传文档（uploaded_pdf_docs）充分覆盖，无须外部补充。
+2. **触发联网 (need_online_paper_search: true)**：
+   - 用户明确提出检索最新文献、权威期刊或开源代码实现；
+   - 用户探讨具体学术研究对象（如某一理论模型、实验方案、实证方法、开源项目）的前沿进展、后续迭代演化或横向对比，且当前无现成切片资产时，必须声明 "arxiv_live_search"，并将 need_online_paper_search 设为 true，生成对应的精简英文检索词 online_search_query。
 
 【文献下载与全篇资产控制】：
 - `need_download_fulltext`: 若用户在提问中明确要求下载或获取某在线候选论文的全文并建库深度研读，设为 true；否则一律为 false。
@@ -102,7 +111,7 @@ def build_intent_system_prompt(intents_desc: str, current_date: str) -> str:
 当前系统基准日期：{current_date}。
 1. 本地检索不按发表时间筛选；time_constraint 仅用于在线检索。先区分时间是在限定在线文献的发表范围，还是描述研究对象、书中事件或会议待办。仅在任务需要在线检索，且发表范围有依据确定年份时填入 time_constraint（格式: {{"has_time_constraint": true, "start_year": int, "end_year": int, "sort_by_date": bool}}）。相对当前日期的范围以系统基准日期推算。
 2. 相对某对象的先后关系保留在 relations 与 time_expression；若上下文没有可靠的对象年份，不猜测起始年份。没有可确定的发表时间范围时 time_constraint 填 null。
-3. 是否联网按任务实际资料需求判断，不能仅因出现日期就联网；未指定时间时不擅自补充年份或时间窗口。
+3. time_constraint 仅用于规范有明确年份范围的在线检索；若用户仅表达相对先后关系（如某工作之后）且无绝对年份，保留在 time_expression，不擅自臆测具体年份窗口。
 
 【学术检索词提炼与中英精准翻译准则 (Academic Query Extraction & Translation)】：
 1. `search_query`：依据抽取结果生成精简的正向检索表达，保留定位对象及区分研究方向所必需的技术短语；理解完整不等于把全部抽取内容拼进查询。去除客套与解释，不随意丢弃关键对象或改变关系。
@@ -139,7 +148,7 @@ JSON 字段格式要求：
   "framework_reference": {{"doc_name": "参考文档名", "usage": "structure_only", "note": "仅参考结构框架"}},
   "negative_constraints": ["明确排除的负向主题词汇"],
   "need_online_paper_search": false,
-  "online_search_query": "arXiv 英文检索词 (如需联网)",
+  "online_search_query": "英文学术检索词 (如需联网探查)",
   "need_download_fulltext": false,
   "is_candidate_selection": false,
   "requires_long_form": false,
