@@ -1073,18 +1073,39 @@ class OnlinePaperSearchAgent:
             fut_crossref = executor.submit(self.search_crossref, effective_query, limit_per_source, eff_time_constraint)
             fut_github = executor.submit(self.search_github, effective_query, 2) if include_github else None
 
-            # 任一请求失败均明确上报，不用其他来源伪装为全源成功。
-            arxiv_papers = fut_arxiv.result(timeout=15) if fut_arxiv else []
-            openalex_papers = fut_openalex.result(timeout=15)
-            crossref_papers = fut_crossref.result(timeout=15)
-            github_repos = fut_github.result(timeout=15) if fut_github else []
+            # 多源弹性容灾：各渠道独立容错，避免任一偶发网络超时掀翻全源已检索成果
+            source_errors = []
+            def _get_res(fut, name):
+                if fut is None:
+                    return []
+                try:
+                    return fut.result(timeout=15) or []
+                except TimeoutError as te:
+                    err = TimeoutError(f"{name} 接口响应超时 (15s)")
+                    source_errors.append((name, err))
+                    print(f"⚠️ [MultiSourceSearch] 渠道 [{name}] 响应超时 (15s)")
+                    return []
+                except Exception as e:
+                    source_errors.append((name, e))
+                    print(f"⚠️ [MultiSourceSearch] 渠道 [{name}] 检索异常: {e}")
+                    return []
+
+            arxiv_papers = _get_res(fut_arxiv, "arXiv")
+            openalex_papers = _get_res(fut_openalex, "OpenAlex")
+            crossref_papers = _get_res(fut_crossref, "CrossRef")
+            github_repos = _get_res(fut_github, "GitHub")
+
+        total = len(arxiv_papers) + len(openalex_papers) + len(crossref_papers) + len(github_repos)
+        if total == 0 and source_errors:
+            first_err = source_errors[0][1]
+            raise first_err
 
         return {
             "arxiv_papers": [p.model_dump() for p in arxiv_papers],
             "openalex_papers": [p.model_dump() for p in openalex_papers],
             "crossref_papers": [p.model_dump() for p in crossref_papers],
             "github_repos": [r.model_dump() for r in github_repos],
-            "total_found": len(arxiv_papers) + len(openalex_papers) + len(crossref_papers) + len(github_repos)
+            "total_found": total
         }
 
     def _parse_atom_feed(self, xml_bytes: bytes) -> List[ArxivPaper]:

@@ -440,7 +440,7 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                 probe_tasks = []
 
                 # 主任务全局交叉探针
-                main_sig = (search_query.strip().lower(), need_local_search, need_online_search, (decision.domain or "").lower())
+                main_sig = (search_query.strip().lower(), (main_en or "").strip().lower(), need_local_search, need_online_search)
                 seen_probe_sigs.add(main_sig)
                 probe_tasks.append((search_query, 6, main_en, "主全局交叉检索", need_local_search, need_online_search, decision.domain))
 
@@ -468,9 +468,9 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                             sq_local = need_local_search
                             sq_online = need_online_search
 
-                    probe_sig = (sub_term.lower(), sq_local, sq_online, disc_name.lower())
+                    probe_sig = (sub_term.lower(), sub_en.lower(), sq_local, sq_online)
                     if probe_sig in seen_probe_sigs:
-                        print(f"♻️ [MasterRouter] 子任务 [{disc_name}] 需求与已有探针完全重合，执行前序检索复用")
+                        print(f"♻️ [MasterRouter] 子任务 [{disc_name}] 检索词与前序探针完全一致，直接复用检索成果")
                         continue
                     seen_probe_sigs.add(probe_sig)
                     probe_tasks.append((sub_term, 4, sub_en, f"子学科[{disc_name}]定向探针", sq_local, sq_online, disc_name))
@@ -490,11 +490,27 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                         discipline_filter=probe_disc,
                     )
 
+                from concurrent.futures import as_completed
+                probe_results = []
+                probe_errors = []
                 with ThreadPoolExecutor(max_workers=min(len(probe_tasks), 4)) as executor:
-                    probe_results = list(executor.map(_execute_single_probe, probe_tasks))
+                    fut_to_task = {executor.submit(_execute_single_probe, pt): pt for pt in probe_tasks}
+                    for fut in as_completed(fut_to_task):
+                        pt = fut_to_task[fut]
+                        try:
+                            chunks = fut.result()
+                            if chunks:
+                                probe_results.append(chunks)
+                        except Exception as pe:
+                            err_str = str(pe) or pe.__class__.__name__
+                            probe_errors.append(f"{pt[3]}: {err_str}")
+                            print(f"⚠️ [MasterRouter] {pt[3]} 探针异常 ({err_str})，继续合并其他探针成果...")
 
                 for chunks in probe_results:
                     all_raw_chunks.extend(chunks)
+
+                if not all_raw_chunks and probe_errors:
+                    raise WorkflowExecutionError("retrieval", f"在线检索失败: {'; '.join(probe_errors)}")
 
                 # 4. 全局唯一指纹与标题/页码去重融合 (保留同文献不同页码的深度互补切片)
                 seen_keys = set()
