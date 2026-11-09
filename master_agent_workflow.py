@@ -1320,9 +1320,9 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
             if agent_name == "SpecialistAgent":
                 agent_name = "SpecialistSpecialistAgent"
             spec_length = (
-                "【篇幅与成果体裁规范】：当前任务属于长篇成果撰写，请详实输出该学科的核心控制方程、推导依据与完整边界条件。"
+                "【篇幅与成果体裁规范】：当前任务属于系统化长篇成果撰写，请详实输出该学科的核心机理、论证依据与完整边界条件。"
                 if decision.get("requires_long_form", False)
-                else "【深度与高信噪比论证规范】：不设死板字数限制，避免论文级冗长注水；严禁通识科普与宽泛背景堆砌，直切核心控制方程与关键物理/工程机理约束，严密标明 LaTeX 公式与变量定义，把该学科的核心形式化推演交代完整透彻。"
+                else "【深度与高信噪比论证规范】：不设死板字数限制，紧凑推进因果逻辑链条；省去泛化背景垫话，直击该学科在【做什么、怎么做、什么结果】层面的核心机理、推演依据与边界约束，交代完整透彻。"
             )
             # 💡 按子任务分派对应的检索实证资料 (解决实证脱节问题)
             sub_evidence = []
