@@ -685,7 +685,7 @@ class TianGongRadarController {
       const btnFullTrans = document.getElementById(`btn-full-trans-${paper.paper_id}`);
       const fullTransBox = document.getElementById(`full-trans-box-${paper.paper_id}`);
       const renderFullData = (data) => {
-        let rawZh = (data.full_text_zh || "").replace(/\\\\/g, "\\").trim();
+        let rawZh = (data.full_text_zh || "").trim();
 
         // 1. 智能预处理：美化页码标记，使其成为明显的学术分页隔断徽章
         rawZh = rawZh.replace(/(?:^|\n+)【第\s*(\d+)\s*页】/g, "\n\n---\n**📜 【第 $1 页】**\n\n");
@@ -963,6 +963,7 @@ class TianGongRadarController {
           throwOnError: false,
           errorCallback: (message, error) => { console.warn('Radar math render warning:', message); },
           ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+          ignoredClasses: ["katex", "katex-html", "katex-display", "math-display-wrap"],
         });
       } catch (e) {
         console.warn('Radar math render exception:', e);

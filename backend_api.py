@@ -919,6 +919,16 @@ def _safe_translation_stem(req: RadarTranslateRequest) -> str:
     return safe or hashlib.sha256(identity.encode("utf-8")).hexdigest()[:20]
 
 
+def _sanitize_academic_text(text: str) -> str:
+    """清理学术文本与 PDF 提取文字中的异常控制字符与字体编码缺陷"""
+    if not text:
+        return ""
+    text = re.sub(r"[\x00-\x1f]*bbda", r"\\lambda", text)
+    text = re.sub(r"[\x00-\x1f]+([a-zA-Z]+)", r"\\\1", text)
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", text)
+    return text
+
+
 def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
     """提取真实 PDF 正文；摘要不能代替全文，旧版替代内容缓存不再复用。"""
     stem = _safe_translation_stem(req)
@@ -972,7 +982,7 @@ def _extract_paper_pdf_text(req: RadarTranslateRequest) -> str:
                 pages.append(f"【第 {page_number} 页】\n{page_text}")
             elif page.get_images() or page.get_drawings():
                 raise ValueError(f"PDF 第 {page_number} 页含图像或图形但无法提取文字，全文提取未完成")
-    full_text = "\n\n".join(pages).strip()
+    full_text = _sanitize_academic_text("\n\n".join(pages).strip())
     if not full_text:
         raise ValueError("PDF 未提取到正文，摘要不能代替全文")
     text_path.write_text(full_text, encoding="utf-8")
@@ -1018,6 +1028,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
         try:
             cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
             if cached.get("version") == 5 and cached.get("complete") is True and cached.get("full_text_zh"):
+                cached["full_text_zh"] = _sanitize_academic_text(cached["full_text_zh"])
                 return cached
             raise ValueError("全文翻译缓存缺少完整成功标记")
         except (OSError, json.JSONDecodeError) as e:
@@ -1058,7 +1069,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 【排版与数学公式严格规范（必须遵守）】：
 1. 标准学术 Markdown 排版：一级章节使用 # 标题，二级小节使用 ## 标题，段落与段落之间保留空行。
 2. 修复 PDF 破碎断行：自动合并被 PDF 分栏或换行打断的不完整句子，还原为结构清晰、通畅连贯的自然学术段落；图表内的零散标签适度整理或以列表呈现，保持段落语义完整连贯。
-3. 规范数学符号与公式（核心）：所有数学变量、符号、行内公式统一使用标准 LaTeX 并包裹在 $...$ 中（如 $H = 3.8$, $c'$, $c^{{\\sharp}}$, $\\mathcal{{H}}$）；独立块级大公式使用 $$...$$ 单独成段包裹；公式内部严格使用半角标点，严禁将中文全角标点（如。、，）置于公式内部；多行公式（如 aligned）跨换行时若使用大括号，推荐使用 \\Big 或在换行前用 \\right. 补齐闭合，确保排版引擎无损渲染。
+3. 规范数学符号与公式（核心）：所有数学变量、符号、行内公式统一使用标准 LaTeX 并严格包裹在 $...$ 中（如 $H = 3.8$, $c'$, $c^{{\\sharp}}$, $\\mathcal{{H}}$, $\\hat{{V}}_I(t)$, $\\mathcal{{L}}_I(t)$, $\\hat{{\\rho}}_I(t)$, $\\lambda_{{\\min}}$）；严禁遗漏 $ 导致裸 LaTeX 代码混入汉字正文；独立块级大公式使用 $$...$$ 单独成段包裹；公式内部严格使用半角标点，严禁将中文全角标点（如。、，）置于公式内部；多行公式（如 aligned）跨换行时若使用大括号，推荐使用 \\Big 或在换行前用 \\right. 补齐闭合，确保排版引擎无损渲染。
 4. 保持学术严谨与专有名词：保留专业缩写、算法代码、文献引用标号（如 [1]、[2]）和页码标记（如【第 X 页】）；中英混合时保留技术术语与专有名词（如 Transformer, LoRA, BRIDGE, BOS 等）原词输出，不强行直译。
 
 论文标题：{req.title}
@@ -1093,7 +1104,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
         for idx, trans_text in pool.map(_translate_single_chunk, tasks):
             translated_chunks[idx - 1] = trans_text
 
-    full_text_zh = "\n\n".join(translated_chunks).strip()
+    full_text_zh = _sanitize_academic_text("\n\n".join(translated_chunks).strip())
     result = {
         "version": 5,
         "complete": True,

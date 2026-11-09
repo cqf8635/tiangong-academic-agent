@@ -2730,6 +2730,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let math = String(source || '').trim();
     if (!math) return '';
 
+    // 0. 清理非打印控制字符并修复 PDF 字体编码缺陷 (如 \x03bbda -> \lambda, \x00varepsilon -> \varepsilon)
+    math = math.replace(/[\x00-\x1f]*bbda/g, '\\lambda')
+               .replace(/[\x00-\x1f]+([a-zA-Z]+)/g, '\\$1')
+               .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '');
+
     // 1. 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
     math = math.replace(/\\\\([a-zA-Z]+)/g, '\\$1');
 
@@ -2801,6 +2806,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = `___MATH_INL_${mathTokens.length}___`;
       const content = dollarContent !== undefined ? dollarContent : parenContent;
       mathTokens.push({ id, content, display: false });
+      return id;
+    });
+
+    // 2.5 智能捕获文本中遗漏 $ 包裹的裸 LaTeX 行内公式与符号
+    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\s]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\s]|$))/g;
+    src = src.replace(bareLatexRegex, (match, formula) => {
+      let f = formula.trim();
+      if (!f || f.includes('___MATH_') || !/\\[a-zA-Z]+/.test(f)) return match;
+      if (f.startsWith('$') && f.endsWith('$')) return match;
+      const id = `___MATH_INL_${mathTokens.length}___`;
+      mathTokens.push({ id, content: f, display: false });
       return id;
     });
 
@@ -2887,6 +2903,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatMarkdown(text) {
     if (!text) return '';
     let src = String(text);
+
+    // 0. 清理非打印控制字符（如 PDF 字体提取残留的 \x00 等异常字节）
+    src = src.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '');
 
     // 1. 提取多行代码块 ```lang ... ```
     const codeBlocks = [];
@@ -2984,6 +3003,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = `@@MATHBLOCK_${mathBlocks.length}@@`;
       const content = dollarContent !== undefined ? dollarContent : parenContent;
       mathBlocks.push(renderMathSource(content, false));
+      return id;
+    });
+
+    // 3.5 智能捕获并渲染正文中遗漏 $ 的裸 LaTeX 数学公式与符号 (如 \hat{V}_I(t), \mathcal{L}_I(t), \hat{\rho}_I(t) 等)
+    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\s]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\s]|$))/g;
+    src = src.replace(bareLatexRegex, (match, formula) => {
+      let f = formula.trim();
+      if (!f || f.includes('@@MATHBLOCK') || f.includes('@@CODEBLOCK') || f.includes('@@INLINECODE')) return match;
+      if (!/\\[a-zA-Z]+/.test(f)) return match;
+      if (f.startsWith('$') && f.endsWith('$')) return match;
+      const id = `@@MATHBLOCK_${mathBlocks.length}@@`;
+      mathBlocks.push(renderMathSource(f, false));
       return id;
     });
 
