@@ -2729,8 +2729,44 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderMathSource(source, displayMode = false) {
     let math = String(source || '').trim();
     if (!math) return '';
-    // 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
+
+    // 1. 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
     math = math.replace(/\\\\([a-zA-Z]+)/g, '\\$1');
+
+    // 2. 净化公式内部的全角中文标点（全角句号/逗号会导致 KaTeX 解析中断变为红字）
+    math = math.replace(/。/g, '.')
+               .replace(/，/g, ',')
+               .replace(/；/g, ';')
+               .replace(/：/g, ':')
+               .replace(/、/g, ',')
+               .replace(/（/g, '(')
+               .replace(/）/g, ')');
+
+    // 3. 智能修复多行公式 (aligned / align / cases / matrix) 跨换行 \\ 导致的 \left 与 \right 跨行断开问题
+    if (math.includes('\\\\')) {
+      const lines = math.split(/\\\\/);
+      const fixedLines = [];
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        const lefts = (line.match(/\\left(?![a-zA-Z])/g) || []).length;
+        const rights = (line.match(/\\right(?![a-zA-Z])/g) || []).length;
+        const diff = lefts - rights;
+        if (diff > 0) {
+          // 当前行有未闭合的 \left，在行末换行前补上隐式 \right.
+          line = line + '\\right.'.repeat(diff);
+        } else if (diff < 0) {
+          // 当前行有孤立的 \right，在对齐符 & 或首个符号后补上隐式 \left.
+          const needed = -diff;
+          const m = line.match(/^(\s*(?:&|\+|-)?\s*)/);
+          const prefix = m ? m[1] : '';
+          const rest = line.slice(prefix.length);
+          line = prefix + '\\left.'.repeat(needed) + rest;
+        }
+        fixedLines.push(line);
+      }
+      math = fixedLines.join('\\\\');
+    }
+
     if (!window.katex) {
       return displayMode ? `<div class="katex-error">$$${escapeHtml(math)}$$</div>` : `<span class="katex-error">$${escapeHtml(math)}$</span>`;
     }
