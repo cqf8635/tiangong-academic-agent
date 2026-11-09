@@ -1882,7 +1882,7 @@ def reflective_revision_node(state: MasterAgentState) -> Dict[str, Any]:
             candidates=state.get("recent_paper_candidates"),
             requires_long_form=decision.get("requires_long_form", False), long_form_type=decision.get("long_form_type"),
         )
-        revision_max_tokens = 12288 if decision.get("requires_long_form", False) else 3000
+        revision_max_tokens = 12288 if decision.get("requires_long_form", False) else 8192
         revised_answer = safe_chat_completion(
             client=MasterEngineRegistry.get_llm_client(), model=get_default_llm_model(),
             messages=[{"role": "user", "content": prompt}], temperature=0.2,
