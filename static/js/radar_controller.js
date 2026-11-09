@@ -960,12 +960,12 @@ class TianGongRadarController {
             { left: "\\(", right: "\\)", display: false },
             { left: "\\[", right: "\\]", display: true },
           ],
-          throwOnError: true,
-          errorCallback: (message, error) => { throw error; },
+          throwOnError: false,
+          errorCallback: (message, error) => { console.warn('Radar math render warning:', message); },
           ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
         });
       } catch (e) {
-        throw e;
+        console.warn('Radar math render exception:', e);
       }
     };
 

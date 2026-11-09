@@ -1686,10 +1686,10 @@ document.addEventListener('DOMContentLoaded', () => {
               {left: '$', right: '$', display: false},
               {left: '\\(', right: '\\)', display: false}
             ],
-            throwOnError: true,
-            errorCallback: (message, error) => { throw error; }
+            throwOnError: false,
+            errorCallback: (message, error) => { console.warn('Badge math render warning:', message); }
           });
-        } catch (error) { throw error; }
+        } catch (error) { console.warn('Badge math error:', error); }
       }
     }
 
@@ -2075,10 +2075,10 @@ document.addEventListener('DOMContentLoaded', () => {
             {left: '$', right: '$', display: false},
             {left: '\\(', right: '\\)', display: false}
           ],
-          throwOnError: true,
-            errorCallback: (message, error) => { throw error; }
+          throwOnError: false,
+          errorCallback: (message, error) => { console.warn('Evidence math render warning:', message); }
         });
-      } catch (error) { throw error; }
+      } catch (error) { console.warn('Evidence math error:', error); }
     }
   }
 
@@ -2729,10 +2729,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderMathSource(source, displayMode = false) {
     let math = String(source || '').trim();
     if (!math) return '';
-    // 规范化双反斜杠转义
-    math = math.replace(/\\\\([a-zA-Z{}()\[\]])/g, '\\$1');
-    if (!window.katex) throw new Error('公式渲染引擎未加载');
-    return window.katex.renderToString(math, { displayMode, throwOnError: true, trust: false });
+    // 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
+    math = math.replace(/\\\\([a-zA-Z]+)/g, '\\$1');
+    if (!window.katex) {
+      return displayMode ? `<div class="katex-error">$$${escapeHtml(math)}$$</div>` : `<span class="katex-error">$${escapeHtml(math)}$</span>`;
+    }
+    try {
+      return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false });
+    } catch (e) {
+      console.warn('KaTeX render fallback:', e, math);
+      return displayMode ? `<div class="katex-error">$$${escapeHtml(math)}$$</div>` : `<span class="katex-error">$${escapeHtml(math)}$</span>`;
+    }
   }
 
   // 通用文本与公式混合渲染器（用于文献标题、卡片摘要、标签与检索结果）
@@ -2740,7 +2747,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!text) return '';
     let src = String(text);
     // 规范化双反斜杠转义与连字符
-    src = src.replace(/\\\\([a-zA-Z()\[\]{}])/g, '\\$1').replace(/\\([-_])/g, '$1');
+    src = src.replace(/\\\\([a-zA-Z]+)/g, '\\$1').replace(/\\([-_])/g, '$1');
     const mathTokens = [];
 
     // 1. 提取 display math: $$...$$, \\[...\\]
@@ -2806,7 +2813,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 行内代码与嵌入数学公式的智能渲染器 (解决标签中包裹公式反斜杠未渲染问题)
   function renderInlineCode(rawCode) {
     if (!rawCode) return '';
-    let code = String(rawCode).replace(/\\\\([a-zA-Z()\[\]{}])/g, '\\$1').replace(/\\([-_])/g, '$1').trim();
+    let code = String(rawCode).replace(/\\\\([a-zA-Z]+)/g, '\\$1').replace(/\\([-_])/g, '$1').trim();
 
     // 1. 显式定界符包裹的纯公式: `\[\mathbb{C}P^{N-1}\]`, `\(\theta\)`, `$\theta$`
     if (/^\\\[([\s\S]*?)\\\]$/.test(code)) {
