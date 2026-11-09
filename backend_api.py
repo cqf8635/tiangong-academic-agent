@@ -1109,7 +1109,7 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
 def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
     from openai import OpenAI
-    from config_utils import get_default_llm_model
+    from config_utils import get_default_llm_model, get_llm_timeout
 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
@@ -1122,14 +1122,24 @@ def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
 
 论文英文标题：{req.title}
 论文英文摘要：{(req.abstract or req.text or "").strip()}"""
-    response = client.chat.completions.create(
-        model=get_default_llm_model(),
-        messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_object"},
-        temperature=0.3,
-        timeout=25,
-    )
-    return _translation_json(response, ["title_zh", "thesis_zh", "abstract_zh"])
+    
+    timeout_val = get_llm_timeout(100.0)
+    last_err = None
+    for retry in range(3):
+        try:
+            response = client.chat.completions.create(
+                model=get_default_llm_model(),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+                temperature=0.3,
+                timeout=timeout_val,
+            )
+            return _translation_json(response, ["title_zh", "thesis_zh", "abstract_zh"])
+        except Exception as e:
+            last_err = e
+            if retry < 2:
+                time.sleep(2.0 * (retry + 1))
+    raise RuntimeError(f"精译请求异常: {last_err}")
 
 
 @app.post("/api/radar/translate")
