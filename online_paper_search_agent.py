@@ -44,6 +44,7 @@ ARXIV_MAX_RETRIES = int(os.getenv("ARXIV_MAX_RETRIES", "1"))
 ARXIV_MIN_INTERVAL = float(os.getenv("ARXIV_MIN_INTERVAL", "3.2"))
 ARXIV_CACHE_TTL = float(os.getenv("ARXIV_CACHE_TTL", "900"))
 ARXIV_EMPTY_CACHE_TTL = float(os.getenv("ARXIV_EMPTY_CACHE_TTL", "60"))
+MULTI_SOURCE_TIMEOUT = float(os.getenv("MULTI_SOURCE_TIMEOUT", "45"))
 ARXIV_CACHE_MAX_ENTRIES = 64
 _ARXIV_CACHE: "OrderedDict[tuple[str, int], tuple[float, List['ArxivPaper']]]" = OrderedDict()
 _ARXIV_CACHE_LOCK = threading.Lock()
@@ -1095,11 +1096,11 @@ class OnlinePaperSearchAgent:
                 if fut is None:
                     return []
                 try:
-                    return fut.result(timeout=15) or []
+                    return fut.result(timeout=MULTI_SOURCE_TIMEOUT) or []
                 except TimeoutError as te:
-                    err = TimeoutError(f"{name} 接口响应超时 (15s)")
+                    err = TimeoutError(f"{name} 接口响应超时 ({MULTI_SOURCE_TIMEOUT:.0f}s)")
                     source_errors.append((name, err))
-                    print(f"⚠️ [MultiSourceSearch] 渠道 [{name}] 响应超时 (15s)")
+                    print(f"⚠️ [MultiSourceSearch] 渠道 [{name}] 响应超时 ({MULTI_SOURCE_TIMEOUT:.0f}s)")
                     return []
                 except Exception as e:
                     source_errors.append((name, e))
