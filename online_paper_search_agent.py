@@ -14,6 +14,7 @@ import os
 import re
 import random
 import socket
+import ssl
 import threading
 import time
 import urllib.error
@@ -129,15 +130,30 @@ class ArxivScheduler:
                 time.sleep(wait_for)
 
             try:
-                with urllib.request.urlopen(req, timeout=timeout) as resp:
-                    data = resp.read()
-                self.record_success()
-                return data
-            except urllib.error.HTTPError:
-                raise
-            except (TimeoutError, urllib.error.URLError, socket.timeout) as e:
-                self.record_timeout()
-                raise
+                last_err = None
+                for attempt in range(3):
+                    try:
+                        with urllib.request.urlopen(req, timeout=timeout) as resp:
+                            data = resp.read()
+                        self.record_success()
+                        return data
+                    except urllib.error.HTTPError as e:
+                        last_err = e
+                        if e.code == 429:
+                            raise
+                        if attempt < 2 and e.code in (500, 502, 503, 504):
+                            time.sleep(2.0 * (attempt + 1))
+                            continue
+                        raise
+                    except (TimeoutError, urllib.error.URLError, socket.timeout, ConnectionResetError, ssl.SSLError) as e:
+                        last_err = e
+                        if attempt < 2:
+                            time.sleep(2.0 * (attempt + 1))
+                            continue
+                        self.record_timeout()
+                        raise
+                if last_err:
+                    raise last_err
             finally:
                 # 无论成功还是抛出异常，均在网络完全断开/读取结束时记录时刻
                 self._last_completed_at = time.monotonic()

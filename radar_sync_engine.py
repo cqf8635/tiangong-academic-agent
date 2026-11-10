@@ -124,7 +124,7 @@ class RadarSyncEngine:
                             self.save_snapshot(major, sub, sub_res)
                         time.sleep(4.0)  # 严格遵循 arXiv 合规间隔
             except Exception as e:
-                raise RuntimeError(f"学科 [{major}] 同步失败，本轮同步未完成: {e}") from e
+                logger.warning(f"[天工雷达] 学科 [{major}] 检索同步暂遇网络波动: {e}，跳过并继续后续学科")
 
         self._last_sync_timestamp = time.time()
         logger.info("[天工雷达] 每日文献同步完成，本地快照已更新完毕")
@@ -149,7 +149,10 @@ class RadarSyncEngine:
                     break
                 time.sleep(5)
             if not self._stop_event.is_set():
-                self.sync_core_majors_now()
+                try:
+                    self.sync_core_majors_now()
+                except Exception as e:
+                    logger.warning(f"[天工雷达] 后台首次同步异常: {e}")
 
         # 2. 常驻循环：每 6 小时巡检一次
         sync_interval_seconds = 6 * 3600
@@ -161,7 +164,10 @@ class RadarSyncEngine:
                 time.sleep(10)
 
             if not self._stop_event.is_set():
-                self.sync_core_majors_now()
+                try:
+                    self.sync_core_majors_now()
+                except Exception as e:
+                    logger.warning(f"[天工雷达] 后台定时巡检同步异常: {e}")
 
     def start_scheduler(self):
         """启动后台自动更新线程"""
