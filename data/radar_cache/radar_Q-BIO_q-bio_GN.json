@@ -1,8 +1,256 @@
 {
   "query_expression": "cat:q-bio.GN",
   "total_fetched": 25,
-  "total_results": 4027,
+  "total_results": 4037,
   "papers": [
+    {
+      "paper_id": "2611.11796v1",
+      "title": "Publications as benchmarks: auditing AI agents on spatial transcriptomics alignment",
+      "authors": [
+        "Yiqun T. Chen",
+        "Jan Matthias",
+        "Jianing Yao",
+        "Hongyu Eric Zhao",
+        "Stephanie C. Hicks"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T02:53:11Z",
+      "summary": "AI agents are increasingly automating data analysis, but responsible adoption requires reliable performance evaluation, which is costly in specialized scientific domains. We introduce a framework that translates scientific publications into auditable benchmarks for AI agents and demonstrate its use on spatial transcriptomics alignment tasks. Across 121 tasks, 16 baseline methods, and six AI agents, the best agents (GPT-6-Astra and Gemini-4-Argon) matched or outperformed all baselines on 80% of tasks, often using surprisingly simple heuristics. Agent performance was robust to prompting and access to pre-installed packages. Benchmark construction also uncovered errors in prior work and shortcuts in current evaluation metrics. Finally, we show that agent-generated solutions can be distilled into a reusable program that ranks in the top 10% of baseline methods on unseen data. Our framework offers a scalable way to evaluate AI agents in specialized scientific domains by leveraging and stress-testing existing papers and metrics.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11796v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.AI",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.AI (通用人工智能 (AI))",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11745v1",
+      "title": "Reproducible quantum clustering for single-cell transcriptome atlases",
+      "authors": [
+        "Henry Han"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T01:31:50Z",
+      "summary": "Current single-cell clustering pipelines discard most genes and can yield inconsistent clusters across random seeds. We introduce KQE-2, a training-free hybrid quantum-classical framework for reproducible whole-transcriptome clustering. KQE-2 maps cells into entanglement-free quantum states, enabling exact feature evaluation on classical hardware and direct checks on a quantum processor. Theoretically, we prove that removing entanglement is necessary and sufficient to bound single-qubit feature variance locally. Practically, while retraining scVI shifted 14% of cells and altered rare-type markers and drug targets, KQE-2 delivered identical biology across runs. On standard highly variable genes, the quantum encoding alone raised accuracy on a developing cortex from 0.61 to 0.79. KQE-2 scales to 11.4 million nuclei on one server, outperforming the compared methods on eight of ten complete atlases (and within the best method's run-to-run range on two), and leads on six even under standard downstream clustering.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11745v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "28 pages; 5 figures and 1 table in the main text; 5 Extended Data figures, 5 Extended Data tables; Supplementary Information with 2 figures and 15 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11217v1",
+      "title": "scBIG++: Learning Across Genes and Cells to Predict Single-Cell Perturbation Responses",
+      "authors": [
+        "Jiafa Ruan",
+        "Zican Qiao",
+        "Zongxin Yang",
+        "Ruijie Quan",
+        "Yi Yang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-08T08:08:31Z",
+      "summary": "Predicting single-cell transcriptional responses to genetic and chemical interventions supports gene-function discovery and regulatory analysis. Existing studies often focus only on highly variable genes, restricting the expression changes available for downstream analysis. Cells exposed to the same intervention can also show heterogeneous expression responses, with coordinated gene programs active to different degrees. We propose scBIG++, a full-gene perturbation prediction framework that models this heterogeneity by connecting expression-adaptive gene modules with population-conditioned generation. To preserve shared gene structure while accommodating cellular variation, Gene-Relation Clustering organizes genes into common windows, within which Dynamic SoftSub learns expression-dependent submodule memberships. This shared organization enables Set-GCAE to exchange information about corresponding gene groups across control cells, placing individual representations in their source-population context. The cell representations initialize a latent flow, while their pooled summary and the perturbation representation condition response generation. Generated states are decoded into expression profiles covering all assayed protein-coding genes retained after preprocessing, supporting comprehensive analysis of perturbation-induced expression changes. Experiments across six genetic and chemical settings spanning 6,539--19,451 genes demonstrate competitive perturbation-effect recovery and full-gene expression reconstruction under unseen targets and combinations, cross-cell-line transfer, and held-out compounds. Our implementation is available at https://github.com/ttruan2426-dot/scBIG.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11217v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11118v1",
+      "title": "When gene summaries reveal the answers: Gene Ontology circularity in gene embedding benchmarks",
+      "authors": [
+        "Jiawei Wu",
+        "Huishu Wang",
+        "Junlin Chen",
+        "Hongyi Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-08T04:05:52Z",
+      "summary": "A gene summary can contain the very annotations used to evaluate an embedding of its text. The Alliance of Genome Resources converts Gene Ontology (GO) annotations into sentences, which NCBI Gene displays and GenePT includes in its input. These summaries covered 6,172 of 19,256 human protein-coding genes (32.1%), including 58% of genes with one to ten linked publications. We embedded the same corpus with and without the generated summaries and refitted a function-prediction probe on each version. Among genes with one to ten publications, removal reduced the reported per-gene area under the receiver operating characteristic curve (AUROC) by 0.078 with a linear probe (95% bootstrap interval 0.072-0.084) and by 0.033 with a multilayer perceptron. These estimates use a historical GO scorer that mishandled ties. The original predictions are unavailable for rescoring. A simple TF-IDF encoder also benefited from the summaries, as did models evaluated only on experimental annotations. Replacing generated summaries with UniProt function descriptions recovered much of the lost performance despite little verbatim overlap. UniProt also curates many of the evaluation labels. In mouse and yeast, we found a similar dependence on the source of the description. We introduce GeneProv to compare encoders on matched text and to examine how representation rankings change across GO recovery, non-GO endpoints and co-essentiality.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11118v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "31 pages, including supplementary material. GeneProv benchmark and leaderboard: https://hwang595.github.io/gene-embedding-exposure/",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10386v1",
+      "title": "Pruning DNA Sequence",
+      "authors": [
+        "Faias Satter",
+        "Shaker Islam",
+        "Aminul Islam"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T01:42:12Z",
+      "summary": "Data pruning can substantially reduce training cost by removing examples that contribute little additional learning signal, but it has not been studied for DNA language-model pretraining. We introduce Sequence Pruning (SP), a dynamic pruning framework that removes genomic sequences as they become easy for the model to predict. SP uses per-sequence pretraining accuracy computed directly from the model's forward pass, requiring no separate scoring model or additional pass over the corpus. We evaluate SP across five pretraining settings spanning two corpora, three model families, and both MLM and CLM objectives, with downstream evaluation on five genomic benchmarks. SP reduces pretraining data processing by up to 96% while largely preserving downstream performance. At moderate savings, pruning improves performance by up to 1.2 MCC points over full-data pretraining; at the highest savings, pretraining uses only 4% of the baseline GPU hours with little performance loss. SP also outperforms the dynamic pruning methods InfoBatch and BPAS across most comparisons. Beyond accuracy, our framework supports alternative criteria such as perplexity and EL2N, although accuracy yields the strongest downstream performance at matched savings. These results show that genomic pretraining does not require repeatedly processing all available sequences and that dynamic sequence-level pruning can substantially improve its data and computational efficiency. Code is available at https://github.com/FaiasPromit/pruning-dna-sequence.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10386v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "23 pages, 7 figures, 18 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10207v1",
+      "title": "Synaptic Dendritic Neuron Model (scDNM) for Cell Type Classification in Single-Cell RNA Sequencing Data",
+      "authors": [
+        "Deniz Karapınar",
+        "Gaurav Choudhary",
+        "Melih Agraz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T20:51:22Z",
+      "summary": "Cell type classification in single-cell RNA sequencing (scRNA-seq) data is challenging because of high dimensionality, sparsity, and transcriptionally similar cell types. We developed scDNM, an adaptation of the dendritic neuron model incorporating learnable synaptic thresholds, a supervised gene pool, staged training, and ensemble prediction. Six binary classification tasks were constructed from the Paul15, PBMC3k, and Nestorowa datasets. All models were evaluated using leakage-free nested cross-validation, with feature selection, scaling, and hyperparameter tuning performed independently of the outer test folds. scDNM ranked first in three of six tasks (including one tie) and achieved the best mean accuracy rank (2.00), followed by XGBoost (2.75), Random Forest (3.33), logistic regression (3.33), and SVM (3.58). In a six-class PBMC3k experiment, scDNM achieved 95.997% accuracy and 0.944 macro-F1, compared with 94.243% and 0.914 for SingleR. Garnett returned only Unknown labels and was treated as a zero-coverage technical outcome. Ablation analysis supported the contributions of dendrites and synaptic thresholds. However, XGBoost achieved higher mean binary-task accuracy (96.20% versus 95.32% for scDNM), and across-task rank differences were not statistically significant. These findings demonstrate that scDNM is competitive for scRNA-seq cell type classification, although broader independent validation is required.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10207v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.09533v1",
+      "title": "Pangenome Peeling: Decomposing Weighted Adjacencies into Path-Forest Genomes",
+      "authors": [
+        "Alitzel López Sánchez",
+        "Jiazhen Leng",
+        "Natasha Ivanova",
+        "Lingling Jin",
+        "David Sankoff"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T14:45:32Z",
+      "summary": "One aspect of pangenome analysis that has received little attention is the recovery of the individual genomes that gave rise to a pangenome graph. While substantial effort has focused on constructing pangenomes from collections of genomes, the inverse problem remains largely unexplored: given a pangenome represented as a set of weighted adjacencies, can we reconstruct the constituent linear genomes that underlie it? Thus we introduce the pangenome peeling problem, which seeks to decompose a weighted adjacency graph into a collection of linear genomes whose combined adjacencies reproduce the observed edge weights. This problem is particularly relevant when considering ancestral pangenomes, where the graph structure may be known or inferred, but the underlying genomes are not. As a first step toward addressing this problem, we formally define pangenome peeling and derive a lower bound on the minimum number of genomes required to explain a given weighted adjacency graph. We then present two reconstruction methods: one based on the sequential addition of edges and a second based on extracting maximum-spanning-tree structures. Both methods produce genome collections that exactly explain the input adjacency data. To evaluate the recovered sets of genomes, we compare them to the set of input genomes using a maximum-weight matching framework based on the double-cut-and-join distance with indels. Here the maximum-spanning tree approach is superior, producing sets of constituent genomes close to the simulations while the sequential addition of edges approach yields constituent genomes increasingly divergent from the input as genomes sizes increase.",
+      "pdf_url": "https://arxiv.org/pdf/2611.09533v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.DM",
+      "categories": [
+        "cs.DM",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.DM (离散数学)",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "This is an extended version of the article of the same name submitted to the RECOMB 2027 conference",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.09429v1",
+      "title": "Navigating Selection Bias in Genome-wide Association Studies (GWAS)",
+      "authors": [
+        "Ciarrah-Jane S Barry",
+        "Tahereh Gholipourshahraki",
+        "Zoltán Kutalik",
+        "Bjarni J Vilhjálmsson",
+        "Esben Agerbo"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T13:00:13Z",
+      "summary": "Selection bias arises when inclusion in a genetic study depends on traits, or causes of traits, that are associated with genotype. It is present in volunteer-based biobanks, case-control designs and studies of disease progression, and genome-wide association study (GWAS) summary statistics from affected samples can propagate this bias into post-GWAS analyses, such as polygenic scores (PGS), Mendelian randomization (MR) and genetic correlation analyses. Despite this broad potential impact, selection bias is sometimes ignored in genetic studies. Many methods exist to detect and correct it, but they rely on different assumptions and require specific data. We organise ten methods applicable to GWAS by the decisions an analyst faces: whether to diagnose or correct, which data are available (individual-level or summary-level), and which form of selection is operating (non-representative participation, case-control ascertainment, index events, sex-differential participation or survival to recruitment). For each method, we describe its principle and assumptions, and we compare methods addressing the same form of selection by their assumptions, data requirements and limitations. A companion GitHub repository implements nine methods in R, prepares input for the external SPREG software, and provides worked examples on simulated data with known true effects for each form of selection, one of which we present in full. An interactive tool supports method selection. We conclude with recommendations for bias-aware study design, sensitivity analysis and reporting.",
+      "pdf_url": "https://arxiv.org/pdf/2611.09429v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "q-bio.GN",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "q-bio.GN (基因组学与生物信息)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "44 pages, 3 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08853v1",
+      "title": "Synchronized Optimal Transport Reconstructs Coupled Transcriptomic and Chromatin Dynamics",
+      "authors": [
+        "Jingfeng Wang",
+        "Yanxiang Zhao",
+        "Qing Nie",
+        "Zixuan Cang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T01:19:41Z",
+      "summary": "Single-cell RNA and ATAC data collected across developmental stages provide time-course snapshots of transcriptional and regulatory states. Since sequencing is destructive, trajectories between these snapshots must be inferred from independently sampled cell populations. Existing approaches typically infer continuous dynamics in a single modality or integrate RNA and ATAC in a shared representation. Here we present Cross-Omics Aligned Trajectory Inference (COATI), which extends unbalanced synchronized dynamical optimal transport to time-dependent cross-modal maps for reconstructing coupled trajectories in distinct RNA and ATAC state spaces. We evaluated COATI on synthetic benchmarks and four developmental datasets using held-out-stage reconstruction and lineage analyses. COATI improved reconstruction of cell populations at held-out stages, including recovery of chromatin-state heterogeneity within cell types, and better preserved developmental lineage relationships. The unbalanced formulation allows the inference of population mass changes, which were shown to associate with DNA-replication programs at early stages and lineage-maturation programs later in development. The coupled trajectories enabled analysis of lineage-specific transcriptional and chromatin changes and their temporal relationships during development. Lineage responses inferred by COATI agreed with independent CRISPR perturbation results, and the inferred regulatory patterns were consistent with independent epigenetic data.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08853v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.08086v1",
       "title": "MUSS: A Multi-scale and Sequence-based Model for Single-cell Gene Regulation",
@@ -440,245 +688,6 @@
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36361v1",
-      "title": "HELICS: Biobank-scale Conditional Synthetic Genome Generation via Latent Flow Matching",
-      "authors": [
-        "Ahmad Abdel-Azim",
-        "Xihong Lin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T22:25:36Z",
-      "summary": "Individual-level genotype data underpin genetic discovery, disease-risk modeling, and therapeutic development, yet many critical settings remain data-limited, including underrepresented ancestries, rare or imbalanced disease cohorts, and restricted-access biobanks. Conditional synthetic genome generation would support privacy-aware benchmarking, simulation, and data augmentation, but requires learning an ultra-high-dimensional discrete distribution over hundreds of thousands to tens of millions of correlated single-nucleotide polymorphisms (SNPs), or sites of DNA variation. We introduce HELICS: High-fidelity gEneration via Latent Interpolant Conditional Synthesis, a phasing-free latent flow matching framework for genome-wide SNP-level generation from biobank-scale genotype data. HELICS tokenizes chromosomes with convolutional autoencoders, reducing >600K SNPs to 4,096 continuous latent tokens, and trains a transformer parameterized conditional flow matching model over the concatenated multi-chromosome latent representation. Trained on over 417K genomes in the UK Biobank, HELICS generates genome-wide common-variant synthetic cohorts without haplotype phasing and achieves stronger fidelity to real genotypes than existing haplotype-based simulators, including high allele-frequency agreement in external evaluation and superior preservation of local and long-range SNP correlation structure. Conditioning on ancestry and genetic liability summaries enables targeted generation across genetic risk profiles; in perturbation analyses, by increasing the conditioned disease trait liability, HELICS induces SNP-level dosage changes in generated genomes that are highly correlated with published association weights. HELICS provides a scalable generative modeling framework for SNP-level genome data and a path toward conditional synthetic cohorts for data-limited genetic studies.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36361v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "NeurIPS 2026",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36344v1",
-      "title": "Enhancing Clinical Classifier Robustness with Deep Representation Learning Based OOD Detection on DNA Methylation Data",
-      "authors": [
-        "Md Zahangir Alom",
-        "Quynh T. Tran",
-        "Breuer Alexandar",
-        "Brent A. Orr"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T22:11:07Z",
-      "summary": "DNA methylation (DNAM) array-based tumor classification is a powerful clinical diagnostic tool, but models trained on fixed reference cohorts can produce faulty predictions for tumor types not represented in the training distribution. We propose an end-to-end deep representation learning-based out-of-distribution (OOD) detection framework for DNAm array data. Deep neural network (DNN) classifiers were trained on public sarcoma (SARC) (GSE140686) and brain tumor (BT) (GSE90496) cohorts, and feature vectors were extracted from bottleneck layers. Five OOD methods, including 1dimension (1D)-Subspace Analysis (1D-SSA), K-Nearest Neighbors (KNN), Ridge Regression, Mahalanobis Distance (MD), and Sum of Squared Distances (SSD), were explored with 200 and 500-dimensional embeddings. Spectral discrepancy was used to discriminate in-distribution (IND) from OOD samples. Performance was measured via cross-validation, holdout samples, and an independent clinical dataset. 1D-SSA was the most effective approach. In the sarcoma-IND/brain tumor-OOD setting, the framework achieved an AUROC of 0.975 and True Negative Rate (TNR)@95TPR of 0.930, and an AUROC of 0.9569 and TNR@95TPR of 0.8660 for the brain tumor-IND/sarcoma-OOD setting. On the independent clinical test set, the method yielded a mean AUROC of 0.976, a DE of 0.032, an FPR@95TPR of 0.065, and a TNR@95TPR of 0.935. These results show deep representation-based OOD detection as a practical quality-control layer for clinical-grade methylation-based tumor classification systems.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36344v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.AI",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "11 pages, 8 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.33960v1",
-      "title": "Benchmarking miRNA Target Prediction Methods",
-      "authors": [
-        "Congliang Jin",
-        "Weibo Niu",
-        "Zhexing Wen",
-        "Zhaohui S Qin",
-        "Ximing Ran"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-25T00:23:22Z",
-      "summary": "Background: MicroRNAs (miRNAs) regulate gene expression by binding to target mRNAs. Although many tools predict miRNA-target interactions, predictions show limited concordance, and benchmarks relying on curated databases may be biased by overlap with tool-development data. Methods: We benchmarked seven tools (TargetScan, miRDB, miRmap, DIANA-microT, RNA22, miRWalk, and mirDIP) across approximately 59.7 million candidate miRNA-mRNA pairs. Each pair received an evidence-graded reference score (0-3) combining validated interactions from miRTarBase and TarBase with expression-derived evidence from paired miRNA-seq and mRNA-seq data in an induced pluripotent stem cell (iPSC) cohort of 22q11.2 deletion syndrome and control lines. Performance was evaluated using Type I error, statistical power, and false discovery proportion (FDP). Robustness was assessed by increasing reference-score stringency (truth signal) and including progressively lower-confidence predictions (model signal). Optimal cutoffs maximized Youden's J statistic. Results: Rankings were largely consistent across settings. TargetScan and miRDB maintained Type I error rates below 0.05, with TargetScan showing the lowest FDP, but both had limited power. mirDIP achieved the highest power at the cost of the highest Type I error rate. At optimal cutoffs, mirDIP best balanced sensitivity and specificity (Youden's J = 0.566), followed by DIANA-microT (J = 0.481); miRWalk and RNA22 had FDPs near the random-prediction baseline. No tool was optimal across all metrics; tool and cutoff selection should reflect whether sensitivity or specificity is prioritized.\"\"\"",
-      "pdf_url": "https://arxiv.org/pdf/2610.33960v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "Accepted for presentation at the 2026 IEEE International Conference on Bioinformatics and Biomedicine (BIBM 2026)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.31816v1",
-      "title": "TAPESTRY: an interactive resource for exploring tumor-enriched splice junctions in pediatric brain tumors",
-      "authors": [
-        "Patricia J. Sullivan",
-        "Ryan J. Corbett",
-        "Chao Di",
-        "Alex Sickler",
-        "Aylar Babaei"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-22T18:53:50Z",
-      "summary": "TAPESTRY (https://tapestry.rokitalab.com) is a database and web application for exploring recurrent tumor-enriched splice junctions (TEJs) in pediatric brain tumors, cancers that carry few protein-coding mutations and therefore few mutation-derived neoantigens. However, TEJs represent a much larger source of neoantigens as potential therapeutic targets in these tumors. TAPESTRY catalogs 45,430 recurrent TEJs across 19 histologies, identified in 1,962 RNA-seq specimens (including 1,272 independent primary tumors) from the Pediatric Brain Tumor Atlas and compared to four normal brain reference cohorts comprising adult, pediatric, developmental and cell-type-resolved tissue. Each junction is classified as tumor-specific or oncofetal; annotated for splice-event type, coding consequence, novelty relative to GENCODE v39 and overlap with Pfam and UniProt protein domains; and scored for recurrence within each histology. Users can search by gene or splicing event and filter results by histology, junction class, and annotation. Users can also generate gene-level expression heatmaps across cohorts, junction-level expression boxplots, and transcript and exon diagrams, and download all tables and figures. A documented REST API supports programmatic access, and all source code is openly available. By making tumor-selective and developmentally reactivated splicing events searchable and interpretable, TAPESTRY supports the prioritization of splice-derived targets for antibody-based, cell-based and vaccine immunotherapies in pediatric brain and central nervous system tumors.",
-      "pdf_url": "https://arxiv.org/pdf/2610.31816v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.31454v1",
-      "title": "Benchmarking Recent Single-Cell Synthetic Data Generation Methods on the OneK1K Dataset",
-      "authors": [
-        "Buse Giledereli",
-        "Basar Temiz",
-        "Amirreza Sattarzadeh Khanehbargh"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-22T15:49:27Z",
-      "summary": "Synthetic single-cell RNA-seq data generation offers a promising route for privacy-aware biomedical data sharing, but donor-linked datasets require careful balancing of biological utility and privacy risk. In this work, we benchmark synthetic generation methods for the CAMDA 2026 ELSA Health Privacy Challenge using the donor-split OneK1K dataset, comparing scGFT, scLDM, and Cell2Sentence across statistical fidelity, downstream biological preservation, and membership inference vulnerability. Because full-transcriptome generation is computationally demanding, we focus generative modeling on highly variable genes and evaluate alternative strategies for reconstructing non-HVG expression. Our results show that non-HVG handling is a central determinant of privacy: directly copying non-HVG values leads to severe leakage, whereas Poisson-based reconstruction substantially reduces membership inference risk. We further find that scGFT and scLDM better preserve biological structure than an independent Poisson baseline, while maintaining near-random privacy profiles under appropriate configurations. These findings highlight the importance of evaluating synthetic single-cell data beyond marginal similarity alone, emphasizing robustness, interpretability, and privacy-conscious design choices throughout preprocessing, generation, and post-processing.",
-      "pdf_url": "https://arxiv.org/pdf/2610.31454v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": "6 pages, presented at CAMDA 2026 ELSA Health Privacy Challenge",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05410v1",
-      "title": "Rethinking One Gene, One Token: Transcriptome-Aware Tokenization for Single-Cell Foundation Models",
-      "authors": [
-        "Jiaqi Xiong",
-        "Jiaying Li",
-        "Yu Zheng",
-        "Xiang Zhou",
-        "Ziteng Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-21T08:29:29Z",
-      "summary": "Single-cell foundation models typically treat each gene as a token, which is both costly and wasteful. A cell can express thousands of genes, so one token per gene makes self-attention expensive, yet many of these genes are detected at low levels and carry too little signal to deserve a token of their own. Genes that are expressed together could instead share a token, leaving separate tokens for genes that stand out. We introduce scTAT (Transcriptome-Aware Tokenization), which pairs a gene-set vocabulary with a per-cell tokenizer. The vocabulary holds overlapping gene sets that recur with stable relative expression across the pretraining corpus. Using these sets raises two difficulties. First, which genes should share a token depends on the cell, whereas existing multi-gene tokens fix the grouping in advance. Second, gene sets of different sizes must be compared with single genes on a common scale. The tokenizer therefore decides per cell, letting gene sets and single genes compete for token positions under an expression score normalized by the square root of set size. Training still reconstructs individual genes, so predictions stay at gene resolution. In frozen-embedding cell-type annotation, scTAT matches the strongest one-gene-per-token model with half the token budget. Its advantage over one-gene-per-token models at the same budget grows as the budget shrinks and the tokenizer assigns more positions to gene sets. Encoding the same genes with gene-set tokens also nearly halves the Transformer's matrix-multiplication cost. These results show that a token need not hold exactly one gene: when the tokenizer decides per cell which genes share a token, a fixed budget covers more of each transcriptome at no cost in annotation accuracy.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05410v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.28853v1",
-      "title": "An autoencoder outperforms two transformers on prediction of gene expression from chromatin accessibility",
-      "authors": [
-        "Jesse G. Meyer"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-20T19:27:47Z",
-      "summary": "Models that predict RNA abundance from chromatin accessibility are rarely compared under the same features, targets and metrics. We built one benchmark on 126,604 paired single-nucleus profiles from 19 human studies with a shared vocabulary of 50,000 peaks and 3,185 genes, ten 5x2 cross-validation folds and one scoring target, and compared seven implemented pipelines and two reference predictors across 70 trained runs; each pipeline keeps its own input normalisation and native training target. The scButterfly-B pipeline, built on dual variational autoencoders, outperformed every transformer pipeline, including an autoregressive Perceiver model (Omic Translator) and a support-free reformulation of Cisformer, on per-gene and within-cell Spearman correlation in all sixty paired fold comparisons, with 3.8 times shorter training. Transformer pipelines come within 0.02-0.04 on within-cell profile shape but lag by 0.10-0.24 on per-gene correlation. On two withheld cell types per-gene correlation is low; controls show the podocyte values are typical of within-type correlation for seen cell types of the same size, whereas Paneth values match a cell-agnostic shuffle for every Omic Translator arm. Within the transformer family, prespecified ablations show the Perceiver encoder was worth +0.0439 in within-donor per-gene correlation over full self-attention, a chromosome-aware genomic attention prior reduced it by 0.0096 (exact donor-level sign-flip test, Holm-adjusted p = 1.2e-4), and decoder output order had no detectable effect. A training-mean profile reaches 0.314 within-cell correlation with no input and a constant at the true expressed-gene positions reaches 0.996 per-gene correlation, so oracle-support protocols are reported only as diagnostics. Code, results and an audited release are provided.",
-      "pdf_url": "https://arxiv.org/pdf/2610.28853v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05405v1",
-      "title": "VenusGenome: Genome-Aware Masked Autoencoding for Microbial Genome Representation Learning",
-      "authors": [
-        "Zhang Liang",
-        "Zhang Yukun",
-        "Tan Yang",
-        "Jiang Fan",
-        "Zhong Bozitao"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-20T09:40:01Z",
-      "summary": "Genomic-context models have shown that contextualizing protein embeddings can improve predictions of microbial function. We observe that a gene's protein embedding is partially predictable from the embeddings of neighboring genes in the genome, motivating high-ratio masking that requires reconstruction from sparser genomic context. Genomic modeling must also distinguish biological relationships from assembly conventions, since the ordering of separate contigs does not imply adjacency and strand labels depend on the reference orientation. We therefore introduce VenusGenome, a gene-resolution masked autoencoder that combines visible-only encoding with genome-aware attention incorporating contig boundaries, relative strand orientations, and gene positions. We pretrain this model on a curated corpus of over 1.7 million microbial genome assemblies from isolate and metagenomic sources, using frozen protein embeddings as gene-level inputs. Across genome-level phenotype prediction and gene-level tasks, the resulting frozen representations achieve the highest mean performance among the evaluated models on nine of eleven primary metrics. An exploratory gene-input perturbation analysis further links representation sensitivity to experimentally measured fitness defects. Ablations support the contribution of genome-aware attention and show the benefits of masked autoencoding over BERT-style masked modeling, with further gains from higher masking ratios.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05405v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "cs.AI",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.27647v1",
-      "title": "BARRR: Bidimensional Augmented Reduced Rank Regression for Multi-View Multi-Cohort Data",
-      "authors": [
-        "Jiuzhou Wang",
-        "Eric F. Lock"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-20T05:06:27Z",
-      "summary": "Bidimensional data integration across multiple cohorts (i.e., sample groups) and views (i.e., sources or modalities) is crucial in biomedical research to derive holistic insights from heterogeneous datasets. However, most existing integrative methods focus on a single dimension, such as multi-view integration across distinct sources or multi-cohort integration across distinct sample groups. Existing approaches for bidimensional integration are scarce and predominantly unsupervised, overlooking the valuable insights offered by covariates. To address this gap, we introduce the Bidimensional Augmented Reduced Rank Regression (baRRR) method. Our approach models covariate-related and unrelated effects concurrently, while also decomposing effect levels (global, partially shared, and individual) across both dimensions. Extensive simulations demonstrate the advantages of our method with respect to signal recovery, outcome prediction, and missing data imputation. We apply our approach to data from The Cancer Genome Atlas (TCGA), using somatic mutations as covariates to inform patterns of variability across different omics platforms and cancer types. These studies highlight its potential as a robust and adaptable tool for integrative analysis in biomedical research.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27647v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ME",
-      "categories": [
-        "stat.ME",
-        "q-bio.GN",
-        "stat.AP",
-        "stat.ML"
-      ],
-      "category_names_zh": [
-        "stat.ME (统计推断与方法学)",
-        "q-bio.GN (基因组学与生物信息)",
-        "stat.AP (应用统计学)",
-        "stat.ML (机器学习统计基础)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -690,7 +699,7 @@
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
-      "count": 8
+      "count": 9
     },
     {
       "code": "cs.LG",
@@ -700,7 +709,27 @@
     {
       "code": "q-bio.QM",
       "name_zh": "生物医学定量方法",
-      "count": 5
+      "count": 6
+    },
+    {
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
+      "count": 1
+    },
+    {
+      "code": "cs.DM",
+      "name_zh": "离散数学",
+      "count": 1
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 1
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 1
     },
     {
       "code": "cs.CL",
@@ -726,22 +755,7 @@
       "code": "cs.IR",
       "name_zh": "信息检索与推荐系统",
       "count": 1
-    },
-    {
-      "code": "stat.ME",
-      "name_zh": "统计推断与方法学",
-      "count": 1
-    },
-    {
-      "code": "stat.AP",
-      "name_zh": "应用统计学",
-      "count": 1
-    },
-    {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-08T15:48:55.779212"
+  "snapshot_synced_at": "2026-11-10T18:02:13.314767"
 }

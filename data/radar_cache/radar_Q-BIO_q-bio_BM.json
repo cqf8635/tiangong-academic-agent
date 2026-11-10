@@ -1,8 +1,188 @@
 {
   "query_expression": "cat:q-bio.BM",
   "total_fetched": 25,
-  "total_results": 6971,
+  "total_results": 6978,
   "papers": [
+    {
+      "paper_id": "2611.12000v1",
+      "title": "HyPLM Technical Report",
+      "authors": [
+        "Haowei Lin",
+        "Cai Zhou",
+        "Xiangxin Zhou"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T07:37:34Z",
+      "summary": "Protein language models (PLMs) are standard tools for variant-effect prediction, protein annotation and design, but the compute needed to train and serve them keeps growing. We present HyPLM-Flash, an efficient and open PLM trained by Hyra 2.0, the research agent developed by our team. HyPLM-Flash is a 650-million-parameter masked language model trained on 726 billion tokens, 0.73 times the data of ESM-2 650M and a fifth to an eighth of the data of E1-600M and ESM C 600M. It runs on an inference engine with fused kernels and INT8 matrix multiplication, embedding about 130,000 residues per second on a single NVIDIA H20 GPU, 1.9 to 2.7 times faster than other 600M-class encoders. In a matched evaluation against 28 public checkpoints on 32 tasks, HyPLM-Flash reaches a ProteinGym zero-shot Spearman correlation of 0.409, statistically tied with ESM-2 650M, ESM C 600M and E1-600M, and the highest organismal-fitness score among self-supervised single-sequence models. It gives the best long-range contact precision of all models evaluated, including ESM-2 15B and ESM C 6B, and a lower masked-residue loss than ESM-2 650M, ESM C 600M and E1-600M on held-out sequences and on recently released PDB chains. Matching state-of-the-art accuracy at a fraction of the training and inference cost, HyPLM-Flash sets a new Pareto frontier for protein language models. We have released the model weights and the inference engine at https://github.com/Tencent-Hunyuan/hyra-results/tree/main.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12000v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11997v1",
+      "title": "HyInv Technical Report",
+      "authors": [
+        "Haowei Lin",
+        "Cai Zhou",
+        "Xiangxin Zhou"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T07:26:20Z",
+      "summary": "Inverse folding designs amino-acid sequences for a given protein backbone, and screening needs many candidates that are both diverse and well folded. We present HyInv, a 1.96-million-parameter backbone-conditioned graph network with an encoder-decoder architecture, trained by Hyra 2.0, the research agent developed by our team: pretrained with random-order autoregressive sequence modeling, followed by structure-reward reinforcement learning. At inference, a grouped draft-and-rewrite sampler that uses separate draft and rewrite temperatures improves refolding TM-score at matched diversity. An optimized implementation with BF16 numerics designs 128 sequences for a 402-residue backbone in 50.6 ms on a single NVIDIA H20 GPU, about 52 times faster than the reference sampler, and an exact FP32 path that returns the reference sequences is 8.7 times faster. Across five benchmark datasets and seven dataset-predictor combinations, HyInv reaches a higher average scTM than all ten external baselines at comparable or higher sequence diversity, with large margins over ProteinMPNN and ProteinZero V2. The same default setting supports de novo backbones, pocket-constrained libraries, enzyme redesign with the catalytic site kept, and loop redesign. We have released our code and model at https://github.com/Tencent-Hunyuan/Hyra-results/tree/main/AI4Science/hyinv.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11997v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11958v1",
+      "title": "OriDynamics: Towards a World Model for Biomolecular Dynamics",
+      "authors": [
+        "Jiahao Yang",
+        "Dong Liu",
+        "Hongliang Li",
+        "Ji Chen",
+        "Yuehua Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T06:20:58Z",
+      "summary": "Biomolecular recognition and regulation depend on atomic interactions that change as molecular partners fluctuate and adopt alternative conformations. Modeling these processes requires ensembles that capture both conformational diversity and coordinated atomic fluctuations between interacting molecules. Here we present OriDynamics, a unified framework for all-atom ensemble generation across protein monomers and complexes with small molecules or protein partners. OriDynamics introduces a latent ensemble decomposition that couples broad conformational exploration in a compact structural latent space with local all-atom sampling around generated proposals. Ensemble-level supervision constrains mean positions, fluctuation amplitudes and joint coordinate covariance to capture coordinated atomic variability within and between molecular partners. Across benchmarks of proteins and their complexes, OriDynamics demonstrates superior overall performance in conformational coverage, atomic fluctuation fidelity and interaction geometry compared with leading baselines. Application studies further demonstrate recovery of alternative functional conformations and partner-dependent changes in conformational ensembles alongside sampling of configurations associated with ligand dissociation. These capabilities provide a foundation for a biomolecular world model that represents accessible molecular states and their dependence on interaction context.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11958v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "29 pages, 6 main figures and 5 supplementary figures. Includes supplementary information",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10725v1",
+      "title": "Symmetry-Induced Conservation Laws, Three-Channel Attribution, and Solid-Phase Recycling in Prebiotic Enantiomeric Excess Amplification",
+      "authors": [
+        "Zeyu Jia",
+        "Anlin Gong",
+        "Bingmei Wu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T13:38:03Z",
+      "summary": "Enantiomeric excess ($\\mathrm{ee}$) is the primary observable used to quantify chiral amplification across prebiotic chemistry, asymmetric autocatalysis, and multiphase crystallization. Because $\\mathrm{ee} = Δ/ M$ is the ratio of net chiral excess $Δ= L - D$ to total chiral mass $M = L + D$, identical increases in $\\mathrm{ee}$ can arise either by generating net chiral excess through parity-breaking reactions or by depleting total chiral mass through symmetric phase or oligomer partitioning. Here we establish a pathwise conservation law and a model-free three-channel attribution identity for $\\mathbb{Z}_2$-symmetric reaction networks. In any closed network without autocatalytic feedback or epimerization, net chiral excess is conserved along every stochastic trajectory ($Δ(t) = Δ(0)$), locking liquid-phase amplification to cumulative mass loss ($\\mathrm{ee}_f = \\mathrm{ee}_0 M_0 / M_f$). Re-analyzing seven experimental systems shows that standalone phase removal (Channel R) loses $91.7\\%$--$98.9\\%$ of chiral solute into racemic sediment in closed batches and washes out under open racemic inflow. Coupling eutectic partitioning (Channel R) with solid/solution racemization recycling (Channel B) converts the precipitated solid into homochiral product ($96.5\\%$ recoverable homochiral crystal mass at $96.5\\%$ total and $100.0\\%$ solid $\\mathrm{ee}$), whereas coupling evaporative concentration with liquid-phase autocatalysis crosses the open-flow bifurcation threshold against continuous racemic dilution ($81.9\\%$ homochiral yield at $92.9\\%$ active chiral $\\mathrm{ee}$). We further establish non-crossing parity invariants for dual-monomer networks, derive a closed-form wet--dry amplification law, and resolve a one-dimensional identifiability ridge in chiral mineral adsorption via antipodal crystal-pair protocols.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10725v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "36 pages, 18 figures (7 main + 11 supplementary), 11 tables; includes combined Supplementary Material and 13 ancillary Python reproducibility scripts in anc/",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10424v1",
+      "title": "Efficient and Accurate Zero Shot Generation of Symmetric Protein Complexes",
+      "authors": [
+        "Rory Gao",
+        "Yuanzhou Chen",
+        "Prajit Rajkumar",
+        "Wei Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T02:59:07Z",
+      "summary": "Symmetric organization is a fundamental principle of biomolecular complex assembly. The same principle underlies engineered applications, from vaccine platforms to nanomaterials, making symmetric de novo generation a core capability for computational protein design. We establish a theoretical foundation equating generation of an assembly with underlying symmetry group $G$ to generation within a quotient space over $G$. This directly allows $\\mathrm{SE}(3)$-equivariant models to generate symmetric structures with minimal distribution shift. With this insight we introduce ZeUS ($\\textbf{Ze}$ro-shot $\\textbf{U}$nified $\\textbf{S}$ymmetrization), a framework that converts any pretrained $\\mathrm{SE}(3)$-equivariant backbone generative model into an efficient generator of symmetric assemblies with no retraining. ZeUS operates on a single $\\textit{canonical subunit}$ and utilizes $\\textit{phantom subunits}$ to preserve internal model operations, reducing memory and runtime cost by $\\mathcal{O}(|G|)$ for finite groups $G$, compared to a full-complex forward pass. We implement ZeUS for IPA-based models (FrameDiff, FoldFlow) and axial-attention-based RFdiffusion, showing high generation efficiency with minimal degradation to generation quality. We then apply ZeUS to generate symmetric complexes of over $10{,}000$ residues with exact, untruncated attention, a scale previously intractable with any model.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10424v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "Published as a conference paper at NeurIPS 2026",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08832v1",
+      "title": "Protein B-factor modeling with local magnitude",
+      "authors": [
+        "Wanying Bi",
+        "Jian Liu",
+        "Hongsong Feng"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T00:39:33Z",
+      "summary": "Topological magnitude characterizes the effective size and spatial organization of metric spaces, offering a geometric approach with potential applications in molecular biology and materials science. Previous work has demonstrated its utility in modeling protein flexibility from structure, but global magnitude weighting requires dense linear systems whose computational cost increases with protein size. We introduce a local magnitude representation that retains residue-level structural information through nearest-neighbor environments. The construction is well posed and geometrically invariant, with central weighting distinguished from scalar neighborhood magnitude. Across 364 proteins, the mean within-protein fitting Pearson correlation coefficient (PCC) increases from 0.725 for global magnitude to 0.728 for local magnitude. Blind-prediction experiments on 345 proteins combine each representation with identical auxiliary descriptors and evaluate random forests and gradient boosting under three validation protocols. Local features improve the primary PCC in all six model--protocol comparisons, with a maximum absolute increase of 0.008 in protein-level ten-fold gradient boosting. For a fixed feature bank, local factorization costs $O(Nk^3)$ compared with $O(N^3)$ for global factorization, where $N$ is the number of C$_α$ atoms and $k$ the neighborhood size. Timing measurements show a computational advantage of local magnitude on large structures. Within the tested single-seed configuration and distinct global and local scale banks, these results support local magnitude as a compact representation that preserves useful B-factor information while reducing feature-extraction costs for large proteins.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08832v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08696v1",
+      "title": "Hybrid Quantum-Classical Annealing for Protein Side-Chain Optimization: A Feasibility Study",
+      "authors": [
+        "Valeria B. C. Visani",
+        "Simone Reale",
+        "Alfonso Gautieri",
+        "Elisabetta Di Nitto"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-05T20:52:29Z",
+      "summary": "Hybrid quantum-classical annealing solvers are moving from research laboratories toward industrial use, but their advantage over classical optimization appears to be confined to a narrow class of problems. A recent systematic benchmark of the D-Wave hybrid solver against industry-leading classical solvers, across several classes of optimization problems, found it to be most competitive on binary quadratic programs, while noting that few industrial problems take this form. Therefore, identifying real-world industrial problems that can be modeled with this structure is a key challenge. We propose protein side-chain optimization, a core step of computational protein design, as one of these problems: it is natively a binary quadratic program, and its application context requires pools of low-energy solutions, which annealers naturally return. In this feasibility study, we test whether the competitiveness of the hybrid solver against industry-leading classical solvers extends to this problem. On 40 instances derived from 20 experimentally determined protein structures with up to about 200 amino acids and 2000 binary variables, we compare the results achieved with a hybrid solver, run for 5 seconds, against those of the commercial solver Gurobi, run for 10 seconds, 1000 seconds, and 4 hours. The hybrid solver reaches the certified optimum whenever one is available, matches Gurobi's performance on smaller instances, and outperforms it on larger instances, finding lower-energy solutions. These results show that the competitiveness of the hybrid solver on binary quadratic programs, so far observed only on a synthetic benchmark, extends to a real-world problem. This motivates comparisons with classical heuristics specific to protein side-chain optimization.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08696v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.ET",
+      "categories": [
+        "cs.ET",
+        "q-bio.BM",
+        "quant-ph"
+      ],
+      "category_names_zh": [
+        "cs.ET (新兴计算技术与量子体系)",
+        "q-bio.BM (生物分子结构与动力学)",
+        "quant-ph (量子力学、量子通信与量子计算)"
+      ],
+      "comment": "5 pages, 1 figure",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.08354v1",
       "title": "Kinetic models of a K channel with 2 stage voltage sensor activation and an opening step",
@@ -496,188 +676,6 @@
       "comment": "27 pages, 9 figures, 5 tables",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37606v1",
-      "title": "A unified coarse-grained neural network potential for the dynamics of biomolecular complexes",
-      "authors": [
-        "Antonio Mirarchi",
-        "Stephen E. Farr",
-        "Adrià Peréz",
-        "Gianni De Fabritiis"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T17:37:10Z",
-      "summary": "The behavior of biomolecular complexes is governed by chemically specific interactions and often involves rare events that atomistic molecular dynamics struggle to capture within accessible timescales. Here we introduce AMARO v2.0, a coarse-grained neural network potential that retains all heavy atoms and treats solvent implicitly. Hydrogen-aware bead types and total-charge conditioning provide a shared representation for proteins, drug-like molecules, and their complexes, including ternary protein-protein-ligand systems. The model preserves folded proteins and captures key features of protein conformational free-energy landscapes. Across 262 complexes spanning 11 targets, the learned potential retains most ligand poses, although quaternary structure reorientation is observed for the HIF2A ternary complex. In targeted case studies, AMARO v2.0 distinguishes the two protonation states of trypsin-benzamidine and reaches the crystal binding pose in 3.3-fold more trajectories than all-atom molecular mechanics at a fixed estimated GPU-time budget. The same framework also recovers a reference binding pose in TYK2 and supports binding free-energy estimation for both trypsin-benzamidine and TYK2-EJM31, although the resulting values are more energetically favorable than the experimental references. SHP2 and CDK8 systems expose remaining limitations in binding-pose recovery and site specificity, respectively. Together, these results support AMARO v2.0 as a shared heavy-atom potential for biomolecular complex dynamics.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37606v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37410v1",
-      "title": "Accurate structural modelling of protein-glycan recognition with GlycoWeave",
-      "authors": [
-        "Huifeng Zhao",
-        "Jintu Zhang",
-        "Yifei Xiao",
-        "Youqiao Qian",
-        "Silong Zhai"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T15:27:09Z",
-      "summary": "Protein-glycan recognition underlies diverse biological processes, yet accurate prediction of protein-glycan complex structures remains challenging owing to the chemical diversity, conformational flexibility and sparse experimental structural coverage of glycans. Here we present GlycoWeave, a glycan-specific diffusion framework that integrates chemically constrained conformational sampling, multiscale molecular representations and multi-source learning. By operating in internal-coordinate space, GlycoWeave preserves glycan connectivity and stereochemistry while efficiently exploring bound conformations. A heterogeneous equivariant network couples atom-level interaction geometry with monosaccharide-level structural context, whereas multi-source, multi-head training integrates experimental complexes with structures refined using classical and quantum mechanics-informed potentials. On a benchmark of 698 protein-glycan complexes, GlycoWeave achieves a 71.9% Top-25 high-quality success rate, compared with 19.2% for AlphaFold 3, while requiring only 0.34 s per sampled pose. GlycoWeave further preserves glycan structural validity, recovers native protein-glycan interactions and reproduces linkage-specific conformational preferences, maintaining high accuracy across diverse glycan architectures and protein environments. These results establish GlycoWeave as an accurate, efficient and chemically faithful framework for modelling protein-glycan recognition. GlycoWeave is freely available at https://cadd.zju.edu.cn/glycoweave.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37410v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.35204v2",
-      "title": "mdRNAcat: A Molecular Dynamics RNA Catalog of REST2 Conformational Ensembles",
-      "authors": [
-        "Anton E. Dorn",
-        "Emile de Bruyn",
-        "Fabrice von der Lehr",
-        "Philipp Knechtges",
-        "Stefan Kesselheim"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-26T10:56:24Z",
-      "summary": "Learning molecular models of RNA requires simulation data that capture conformational variability and provide consistent physical training signals. Here, we introduce mdRNAcat, a curated dataset of all-atom molecular dynamics (MD) simulations of 48 RNA systems selected to promote sequence diversity. Each system is simulated using replica-exchange with solute scaling (REST2), with 32 Hamiltonian states and production lengths of 200-300 ns per state. The dataset provides atomic coordinates, instantaneous forces, and forces reevaluated under the unscaled reference Hamiltonian, together with structural annotations and replica-exchange metadata. Coordinates and forces are available at 1 ps intervals for the reference state and 100 ps intervals across all states in a standardized HDF5 format. We characterize conformational sampling, exchange behavior, base pairing, and sugar-pucker distributions to document the properties of the simulated ensembles. mdRNAcat provides a reusable resource for developing and evaluating data-driven RNA models, including coarse-grained force fields.",
-      "pdf_url": "https://arxiv.org/pdf/2610.35204v2.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM",
-        "cs.LG",
-        "physics.bio-ph"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)",
-        "cs.LG (机器学习 (ML))",
-        "physics.bio-ph (生物物理)"
-      ],
-      "comment": "24 pages, 9 figures. Dataset and accompanying resources available on Hugging Face under the HelmholtzAI-FZJ organization",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.33809v1",
-      "title": "MechGate: combining mechanism-derived measures of permeation and efflux to screen small molecule drugs targeting Escherichia coli",
-      "authors": [
-        "Lang Qin",
-        "Jagath C Rajapakse"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-24T17:14:30Z",
-      "summary": "Most antibiotic molecules must cross the cell membrane and escape efflux pumps before hitting their targets. For de novo antibiotic design, very few of the in-silico-generated drug molecules can successfully pass these two steps. Existing evaluations of generated molecules do not separate these steps. Therefore, we introduce MechGate, a mechanism-resolved screening tool evaluating small drug molecules against E. coli, measuring permeation, efflux and antibacterial activity. After SMILES input, five measures are reported side by side: two for permeation via porins, one for permeation via the phospholipid membrane, one for efflux and one for activity. Each measure is read on its own, so a molecule that fails can be traced to the step that stops it. All features are taken from papers that state their mechanism rather than selected by importance ranking. On an external set of marketed antibacterials the measures give a precision of 0.789 to 0.873 against baselines near 0.44, and combining them the way the mechanism predicts raises precision to 0.92. We also find that the four public source libraries are separable from one another using physicochemical features alone; every measure here therefore draws both classes from a single library. All code is open-source and requires no commercial software.",
-      "pdf_url": "https://arxiv.org/pdf/2610.33809v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "35 pages, 4 figures, 3 tables, including supplementary material",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.33195v1",
-      "title": "Agent-guided epitope excision enables economical de novo binder design",
-      "authors": [
-        "Jun W. Kim",
-        "Artiom Myaskovsky",
-        "Oscar Donosa",
-        "Lawrence Chan",
-        "Jamie Rogers"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-23T18:42:14Z",
-      "summary": "De novo protein design campaigns remain bottlenecked by the inference compute time required to generate and rank candidates, limiting wider functional exploration. Here, we introduce and evaluate an epitope excision approach that truncates targets to local interface windows to accelerate both backbone diffusion and structure prediction. Across 15 targets and 3,666 designs, excised windows closely reproduced full-target binding interfaces (median CαRMSD of 0.37 Å) and made it practical to design binders against the 719-residue extracellular domain of fibroblast activation protein alpha (FAP) by cutting RFdiffusion and AlphaFold3 GPU time by ~ 88% in one of the epitopes. Pairing this workflow with an agentic optimization loop allowed the system to autonomously identify catalytic-site targeting strategies. Under a fixed compute budget, a human-in-the-loop (HITL) workflow raised the computational hit rate from 5.06% to 9.33% while further cutting GPU hours by ~ 42%. We also found that omitting target multiple sequence alignments during refolding roughly substantially increased the apparent yield. Wet-lab validation with yeast display identified nanomolar binders from the generated designs with the HITL and the fully autonomous agent (human-out-of-the-loop, HOOTL) arms recovering more enriched designs than the PI-alone baseline. Together, target excision and agent-guided search offer a practical way to scale de novo binder design to large, therapeutically relevant proteins.",
-      "pdf_url": "https://arxiv.org/pdf/2610.33195v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": "Co-corresponding authors: Jun W. Kim and Annalisa Pawlosky. 24 pages, 6 main figures, 1 main table, 5 supporting figures, 1 supporting table",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.32779v1",
-      "title": "Computational De Novo Design of Miniprotein Candidate Neutralizers Targeting the IL-23 Cytokine Subunit p19",
-      "authors": [
-        "Raghav Paladugu",
-        "Fardina Fathmiul Alam"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-23T15:26:49Z",
-      "summary": "Interleukin-23 (IL-23) drives T-helper-17 inflammation underlying inflammatory bowel disease and psoriasis; anti-p19 antibodies are clinically effective but large, costly, and injectable. De novo miniproteins are an attractive alternative, yet published designs target the IL-23 receptor; the IL-23 cytokine itself has not been addressed. A further obstacle is that the standard confidence score (ipTM) tracks construct length rather than interface quality. We computationally design miniprotein binders against the IL-23R-binding face of p19 (PDB 3DUH) and score every design with ipSAE, a length-robust interface metric derived from AlphaFold-initial-guess predicted aligned error. A conventional RFdiffusion/ProteinMPNN/ColabFold pipeline yields no reliable predicted interface across 972 designs (best ipSAE 0.30), and a scoring artifact, in which single-sequence ColabFold under-rates binder pLDDT by approximately 56 points, explains an earlier misleading \"binders do not fold\" signal. An interface-optimized hallucination method (BindCraft), scored identically, yields 42 of 50 designs above ipSAE 0.60 (best 0.804). An AlphaFold-independent geometric check reproduces the conventional failure: no top-ranked conventional design reaches the buried area or interface hydrogen-bond count of the weakest lead. Five all-alpha-helical leads (72-104 residues) collectively engage all six targeted hotspots; two dock within the intact p40/p19 heterodimer and all show favorable Rosetta energetics. A p40-alone counter-screen returns ipSAE 0.00 for all five, indicating no spurious p40 interface. To our knowledge, these are the first computationally proposed de novo miniprotein candidates designed to occlude the IL-23R-binding face of IL-23 p19. All results require experimental validation.",
-      "pdf_url": "https://arxiv.org/pdf/2610.32779v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "Accepted as a short paper at the 2026 IEEE International Conference on Bioinformatics and Biomedicine (BIBM 2026)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.32620v1",
-      "title": "What Transfers Across Protein Pockets? Experience Reuse in Molecular Optimization for Agentic Structure-Based Drug Design",
-      "authors": [
-        "Zaifei Yang",
-        "Weiyu Chen",
-        "Yaqing Wang",
-        "James Kwok"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-23T13:38:42Z",
-      "summary": "LLM agents optimize a ligand in a protein pocket by editing it step by step and docking each edit. Recent agents first spend extra dockings probing the complex with controlled edits; guidance induced from these probes is reported to help more than the chemical knowledge the model already carries. The probes are then discarded with the instance that produced them, so the obvious next step is to keep them in an experience base, letting a new pocket inherit what earlier ones already paid for. Such a base is read through a \\emph{key}: the record properties under which past edits are pooled and a new one is looked up. Using the full log of one such run over the CrossDocked2020 test-set pockets, we ask whether its keys recur on a pocket the base has never seen and still separate improving from worsening edits. \\crchange{Using} the contacts at the site being edited, the action, and the round as \\crchange{a} key, the base separates them sharply. Within our analysis, this separation is largely explained by how much the edit changed the molecule's size, the action, and the round, none of which describes the target. That is not because the target is irrelevant: naming it outright separates them several times more sharply. For a pocket absent from the base, transfer must rely on a description rather than its identity. Among the exact-match descriptions we evaluate, the more specific ones rarely recur, whereas the coarser ones provide little separation; the signals that do transfer primarily describe the edit and the molecule it produced rather than the target. Under the representations and lookup scheme studied here, an experience base may be more useful for prioritizing an agent's own proposals for docking than for directly prescribing what to build.",
-      "pdf_url": "https://arxiv.org/pdf/2610.32620v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -694,16 +692,16 @@
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
-      "count": 4
-    },
-    {
-      "code": "physics.bio-ph",
-      "name_zh": "生物物理",
       "count": 3
     },
     {
       "code": "cond-mat.soft",
       "name_zh": "软凝聚态物理",
+      "count": 2
+    },
+    {
+      "code": "physics.bio-ph",
+      "name_zh": "生物物理",
       "count": 2
     },
     {
@@ -715,6 +713,16 @@
       "code": "cs.CE",
       "name_zh": "计算工程、金融与科学计算",
       "count": 2
+    },
+    {
+      "code": "cs.ET",
+      "name_zh": "新兴计算技术与量子体系",
+      "count": 1
+    },
+    {
+      "code": "quant-ph",
+      "name_zh": "量子力学、量子通信与量子计算",
+      "count": 1
     },
     {
       "code": "math-ph",
@@ -747,5 +755,5 @@
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-08T15:48:45.679988"
+  "snapshot_synced_at": "2026-11-10T18:02:02.839643"
 }

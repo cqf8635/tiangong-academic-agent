@@ -399,8 +399,10 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
         or bool(matched_candidate and not evidence_chunks and decision.need_online_paper_search)
     )
     
-    # 只调度解析结果明确要求的本地资料源。
-    need_local_search = "uploaded_pdf_docs" in req_sources
+    # 纯语义数据源调度：用户学术提问且有检索词时优先允许在本地学术书阁/经卷切片库中检索
+    need_local_search = ("uploaded_pdf_docs" in req_sources) or (
+        bool(search_query) and decision.target_agent not in ["GeneralChatAgent", "SystemControlAgent"]
+    )
     need_online_search = ("arxiv_live_search" in req_sources) or bool(need_online)
 
     if not evidence_chunks and (need_local_search or need_online_search):
@@ -1435,7 +1437,11 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
 
     req_sources = decision.get("required_data_sources") if isinstance(decision, dict) else getattr(decision, "required_data_sources", None)
     req_sources = req_sources or []
-    need_local_search = "uploaded_pdf_docs" in req_sources
+    search_term = (decision.get("search_query") or "").strip() if isinstance(decision, dict) else (getattr(decision, "search_query", None) or "").strip()
+    target_agent = decision.get("target_agent") if isinstance(decision, dict) else getattr(decision, "target_agent", "")
+    need_local_search = ("uploaded_pdf_docs" in req_sources) or (
+        bool(search_term) and target_agent not in ["GeneralChatAgent", "SystemControlAgent"]
+    )
     online_q = (decision.get("online_search_query") or "").strip() if isinstance(decision, dict) else getattr(decision, "online_search_query", "").strip()
     need_online_paper = bool(decision.get("need_online_paper_search", False) if isinstance(decision, dict) else getattr(decision, "need_online_paper_search", False))
     need_online_search = (

@@ -1,8 +1,196 @@
 {
   "query_expression": "cat:q-fin.RM",
   "total_fetched": 25,
-  "total_results": 3146,
+  "total_results": 3153,
   "papers": [
+    {
+      "paper_id": "2611.11803v1",
+      "title": "Diversified-Risk-Perception Risk Measures and Portfolio Selection",
+      "authors": [
+        "Yang Liu",
+        "Yuhao Liu",
+        "Jiani Shen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T03:06:01Z",
+      "summary": "Traditional risk measures generally rely on a single probability model, potentially overlooking information from alternative models and leading to biased risk assessments. This limitation cannot be addressed by asset diversification alone in risk management. In this paper, we propose a Diversified-Risk-Perception (DRP) risk measure framework that integrates asset diversification and risk model diversification to provide a more comprehensive assessment of market risk while reducing reliance on any single model. First, we introduce a flexible exponential aggregation function to evaluate the risk of a portfolio, which accounts for the contributions of all loss components while placing greater emphasis on large losses. Second, we incorporate multiple risk models in the risk measure and optimize their weights based on their perceptions on the risk assessments. As a specific example, we introduce DRP expected shortfall (DRP-ES), establish its theoretical properties, and derive bounds quantifying its sensitivity to model parameters. Empirical experiments in the U.S., Chinese A-share, and South Korean stock markets show that trading strategies based on the DRP-ES achieve higher Sharpe ratios and lower maximum drawdowns than market benchmarks across different periods. Compared with asset diversification strategies based on individual probability models, the DRP strategy exhibits more stable and robust performance across different markets and periods. These findings suggest that the DRP framework can adapt to changing market conditions and improve the stability and effectiveness of portfolio risk management.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11803v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10972v1",
+      "title": "JUBILEE: A Benchmark Environment for Off-Policy Evaluation in Debt Collections",
+      "authors": [
+        "Diego Silva Prado",
+        "Tiago Amaral Penteado de Jesus",
+        "Bruno Caldas de Souza",
+        "Cristiano Bevitori Maffia De Oliveira"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T21:21:20Z",
+      "summary": "Off-policy evaluation (OPE) estimates the value a candidate decision policy would achieve, using only data logged by the policy already in production. In debt collections, unrecorded factors can influence both actions and outcomes. This paper presents JUBILEE, a benchmark environment built around a debt-collections simulator that generates million-loan panels with competing risks, rare recovery events, and hidden factors driving both outcomes and assignment. The evaluation includes an 80-run comparison of tabular and gradient-boosted estimators under two synthetic outcome mechanisms and a 190-run parameter grid. Independent policy simulations provide reference values with estimated Monte Carlo uncertainty for a synthetic reward score and for simulated cash. With hidden factors influencing action assignment, several tabular methods agree closely while underestimating the field-visit policy's score, an error that also appears with boosted models. Intervals from tabular doubly robust estimation usually contain the reference without hidden assignment dependence but mostly miss it when that dependence is present. Estimates from randomized decisions do not show the same large error, although their limited precision leaves policy choice uncertain. The decision consequences depend on how policy value is defined. The field-visit policy ranks last under the score and first under simulated cash, which excludes channel costs. Under cash, log-based estimators miss this best candidate in nearly every run with hidden assignment dependence in the paired study. JUBILEE supports reproducible study of these failure modes under specified collections mechanisms.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10972v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.RM (风险管理与控制)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "28 pages, 3 figures, 35 tables. Code: https://github.com/alpha-synthesis/jubilee. Data: https://doi.org/10.5281/zenodo.24008544",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10956v1",
+      "title": "Risk-Sensitive Reinforcement Learning for an Options Market Maker: An Empirical Study with Real S&P 500 Options",
+      "authors": [
+        "Jacky Chen",
+        "Ing-Haw Cheng",
+        "John Hull",
+        "Landis Li",
+        "Zissis Poulos"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T20:41:35Z",
+      "summary": "Options market makers absorb client order flow and must hedge the resulting inventory risk under trading frictions. We study whether an option hedging reinforcement learning (RL) agent trained on historical market data outperforms three alternatives in tail-risk protection: (i) traditional delta hedging, (ii) simple hedge-ratio rules, and (iii) the same agent trained in simulated markets. Most RL hedging agents are trained in model-generated markets that do not capture the crashes and volatility regimes present in real data. We introduce an empirical replay environment using S&P 500 option data from 1996 to 2017 and compare against a matched geometric Brownian motion (GBM) environment, a stochastic-volatility (SABR) simulator, and a hybrid that values historical paths with Black-Scholes, all sharing the same portfolio mechanics, stochastic arrivals, costs, and test period. We train a distributional Twin Delayed Deep Deterministic Policy Gradient (TD3) agent and evaluate it out of sample over 2018-2023. The agent trained on empirical data reduces Conditional Value-at-Risk (CVaR) tail loss by 3.1% compared to delta hedging and outperforms every hedge-ratio rule chosen during the training period and every alternative training environment. The reduction reaches 8.9% in volatile and falling markets, but reverses to a cost of 7-10% in rising markets. Empirical training induces a state-dependent short net delta: the policy under-hedges negative-delta books, most strongly after prices have fallen. This tilt disappears with GBM training and is weaker with SABR or hybrid training. These findings suggest that exposure to historical market dynamics can materially change a tail-risk hedging policy, although the evidence rests on a single test path and the edge is regime-conditional.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10956v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG",
+        "q-fin.CP"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.LG (机器学习 (ML))",
+        "q-fin.CP (计算金融与量化模拟)"
+      ],
+      "comment": "9 pages, 2 figures, 5 tables. Authors listed alphabetically by last name",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10607v1",
+      "title": "Worst-Case Contagion in Financial Networks: MILP Clearing and Robust Loss Analysis",
+      "authors": [
+        "G. C. Calafiore",
+        "M. Della Rossa",
+        "A. Proskurnikov"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T09:21:58Z",
+      "summary": "We study worst-case contagion losses in financial networks with interbank liabilities and common exposures to marketable assets. Existing linear-programming approaches provide exact stress-test values only within an insolvency-resilience margin, where all institutions remain solvent with respect to the external sector. We show that this margin is computed exactly by a finite family of linear programs, one per vertex of the uncertainty ball, whereas a single linear program based on the componentwise worst deterioration of external resources yields only a certified lower bound. We extend this framework beyond that margin in three directions. First, we derive an exact mixed-integer linear programming (MILP) formulation for the maximal clearing vector under arbitrary signed external net positions, providing a clearing oracle for robust stress testing when insolvency can occur. Second, we develop certified bounds on the worst-case loss beyond the margin, including insolvency-pattern enumeration, scenario lower bounds, fixed-pattern dual upper bounds, localized certificates, and a regime-generation procedure with monotone gap certificates. Third, we analyze the worst-case loss curve as a function of the perturbation radius. For $\\ell_1$ and $\\ell_\\infty$ price-perturbation sets, the curve is convex, nondecreasing and piecewise linear up to the margin, with breakpoints generated by switches in worst-case shock directions, LP bases, and bank-level activity patterns. Beyond the margin, it remains nondecreasing and piecewise affine, but convexity may fail, the curve may jump upward, and the worst case need not be attained. The framework provides a certifiable MILP/LP methodology for parametric stress testing and interpretable diagnostics identifying the banks responsible for changes in systemic loss.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10607v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "cs.CE",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "cs.CE (计算工程、金融与科学计算)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10333v1",
+      "title": "Objective Diversification of Dynamic Hedging",
+      "authors": [
+        "Brian Sing Fan Chan",
+        "Carlin Chun Fai Chu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T00:03:55Z",
+      "summary": "A hedging objective reflects the risk preference of the hedger, so the conventional approach is to estimate the hedge ratio directly under the chosen objective. This paper asks whether that estimate should be used alone. We construct five objective-specific rolling hedge-ratio estimators---minimum variance, least absolute deviation (LAD), downside semivariance, lower-tail quantile, and Expected Shortfall (ES)---from the same historical stock--market returns, and combine the resulting estimates under a fixed final evaluation objective. Separate multi-output ExtraTrees models predict the within-stock-date ranks of the five candidates under MSE, LAD, downside semivariance, and 10\\% quantile loss. The design uses pre-specified 60-, 90-, 120-, and 180-day windows with objective-matched rolling estimators as benchmarks. Adaptive weighting improves the corresponding loss in all sixteen objective--window comparisons. Equal weighting, which uses the same objective-specific hedge ratios without state variables or learned reweighting, already improves downside and quantile hedging. The results therefore suggest that estimates generated under other objectives can be useful even when the final hedging preference and evaluation objective are fixed, while adaptive weighting can provide a further improvement.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10333v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.ST",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.RM",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "q-fin.ST (统计金融学与高频数据)",
+        "q-fin.RM (风险管理与控制)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.09213v1",
+      "title": "Joint modelling of financial cost and carbon footprint in motor insurance claims: a BINAR(1) decision framework for circular auto parts adoption",
+      "authors": [
+        "Charles Minier",
+        "Stéphane Loisel",
+        "Renata Alcoforado"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T09:31:50Z",
+      "summary": "Motor insurance claims management increasingly faces a dual objective: controlling claim costs while reducing greenhouse-gas emissions associated with vehicle repair decisions. This paper proposes a bivariate, discrete-time modelling framework that links the dynamics of financial claims and repair-related carbon footprint inspired by a BINAR(1) dependence structure, allowing for temporal persistence, cross-dependence and a positive/negative correlation between the two dimensions. Using externally sourced emission factors and cost information for replacement parts, we operationalise the carbon footprint of claims under two repair pathways: new parts versus circular-economy reused parts (PIEC). We then conduct scenario analyses in which the acceptance rate of reused parts varies, and we quantify the joint implications for expected monetary outlays and CO 2 -equivalent emissions. Results show that higher PIEC acceptance can simultaneously reduce expected emissions and average claim cost, and the magnitude of the joint benefit depends on the dependence structure and persistence captured by the BINAR(1) process. The proposed framework provides a transparent, reproducible tool for insurers to evaluate repair-policy levers and to align claims operations with decarbonisation targets while retaining an explicit stochastic risk perspective.",
+      "pdf_url": "https://arxiv.org/pdf/2611.09213v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "math.PR"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "math.PR (概率论与随机过程)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.08968v1",
+      "title": "Portfolio-aware scenario transfer of reserve movements: evidence from Lloyd's syndicates",
+      "authors": [
+        "Colin Priest"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T04:28:54Z",
+      "summary": "A claims-development movement on one portfolio may not transfer directly as a stress to another size. We estimate how to transfer such scenarios between portfolio sizes, using 632 syndicate-years from 117 Lloyd's syndicates over 2015-2024. The measured movement is the change in gross claims estimates on selected older underwriting cohorts, divided by opening gross claims outstanding plus reserves taken on in the year whose development it includes; it is not a pure measure of opening-reserve deterioration. Its dispersion falls materially with reserve size, and a size-based scale predicts held-out syndicates far better than a single market scale. But the transferred upper tail understates the smallest books: in the smallest reserve-size quartile, six of 158 held-out observations exceeded the transferred 99.5th percentile, against 0.79 expected, from three syndicates. Square-root scaling has descriptively lower held-out pinball loss at 99% and 99.5%, though more misses among the largest books. For a GBP 500m portfolio the transferred empirical 99.5th percentile is 0.34 of reserves (95% credible interval, conditional on the fitted model, 0.23-0.52), against 0.67 in the raw market pool. Both are Syndicate 5820's 2016 movement. The contribution is inspectable scenario comparability, not a calibrated capital quantile or a next-year forecast.",
+      "pdf_url": "https://arxiv.org/pdf/2611.08968v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.RM",
+      "categories": [
+        "q-fin.RM",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "q-fin.RM (风险管理与控制)",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": "29 pages, 5 figures, 16 tables. The online supplement (52 pages) and an interactive transfer tool (a self-contained HTML file) are in the ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.07110v1",
       "title": "Credibility Clustering for Experience Rating: An Automated Approach to Risk Group Allocation in Group Life Insurance",
@@ -461,205 +649,6 @@
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.32614v1",
-      "title": "Risk Adequacy and Anti-Discrimination in Insurance Pricing: Classification, Aggregation, and Transfers",
-      "authors": [
-        "Wiebke Hansen",
-        "Stefan Weber",
-        "Mario Wüthrich"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-23T13:34:15Z",
-      "summary": "Insurance tariffs must reconcile risk-based pricing, portfolio coverage, and anti-discrimination requirements. We introduce a framework in which tariffs are constructed through classification, aggregation of benchmark risk prices within classes, and balanced transfers, and are evaluated by several distinct criteria. This yields a multi-objective tariff-design problem whose attainable objective set and Pareto frontier describe the resulting trade-offs. Risk adequacy is measured by the discrepancy between charged premiums and individual benchmark risk prices. Portfolio coverage is assessed through the capital required to make aggregate claims net of premium income acceptable. Anti-discrimination is examined through differences in protected-group composition across tariff classes and through premium effects experienced by protected groups. We analyze the trade-offs among these criteria and prove mathematical results characterizing their relationships: (i) the inferential threshold for perfect risk adequacy with finitely many benchmark-price levels; (ii) lower bounds on risk inadequacy under stricter inferential constraints; (iii) exact changes in risk inadequacy and inferential disparity when classes are merged, and dynamic programming for scalarized optimization over consecutive benchmark-price classes; (iv) attainable protected-group total premium effects and their minimum risk inadequacy costs under balanced transfers; (v) a sharp lower bound linking inferential disparity to the risk inadequacy required under a bound on protected-group premium-effect dispersion; and (vi) conditions for portfolio-coverage improvement and its additional risk inadequacy cost at fixed protected-group total premium effects. A numerical motor-insurance study illustrates the results.",
-      "pdf_url": "https://arxiv.org/pdf/2610.32614v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.RM",
-      "categories": [
-        "q-fin.RM",
-        "q-fin.MF"
-      ],
-      "category_names_zh": [
-        "q-fin.RM (风险管理与控制)",
-        "q-fin.MF (数理金融学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.31038v1",
-      "title": "Multichoice Modeling: Exploring Decision Configuration Space under Uncertainty",
-      "authors": [
-        "Mariia Kozlova",
-        "Roman Stepanov",
-        "Alexander Walzer",
-        "Andrea Saltelli"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-22T10:16:34Z",
-      "summary": "Decision support has become sophisticated at exploring uncertainty, but much less so at representing the architecture of the decision itself. As a result, the decision space is often narrowed before uncertainty is analyzed, leaving interactions among choices and the effects of alternatives they imply largely invisible. This paper introduces multichoice modeling, a framework for making large decision configuration spaces explicit and computationally explorable under uncertainty. Drawing on the logic of rugged landscapes, we conceptualize such problems as contingent performance landscapes, where interdependent choices generate configuration-specific outcomes whose value changes across uncertain futures. The computational framework combines multidimensional decision and uncertainty spaces in a single simulation. Further, variance-based sensitivity analysis is used for identifying influential choices, and conditional distribution analysis for comparing configuration-specific performance profiles. We demonstrate the framework through three case studies: a manufacturing process upgrade, M&A strategy, and mortgage design. By contrasting conventional uncertainty-only analysis with multichoice modeling, the cases show how opening the decision configuration space can reveal unexpected complementarities, near-best configurations with different risk profiles, and strategies that were not apparent as alternatives at the outset.",
-      "pdf_url": "https://arxiv.org/pdf/2610.31038v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-fin.RM",
-        "stat.CO"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-fin.RM (风险管理与控制)",
-        "stat.CO (计算统计与马尔可夫链)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.29652v2",
-      "title": "Distributions or Quantiles? A Convex Variational Theory of Worst-Case Risk",
-      "authors": [
-        "Jianjun Gao",
-        "Jonathan Yu-Meng Li",
-        "Zhen Wang",
-        "Yang Zhang"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-21T12:34:06Z",
-      "summary": "Worst-case risk evaluation is central to finance and operations research, yet existing analytical results remain fragmented and largely confined to ambiguity sets with specific structures. Using spectral risk measures as the underlying class, we develop a convex variational theory that unifies these analyses and extends them to richer ambiguity models. The theory rests on a representation principle: use the quantile or distribution formulation that preserves convexity of the full ambiguity set. In both representations, the resulting optimality conditions provide a systematic route to identify the worst-case law and determine its risk value. This approach recovers classical central-moment bounds and yields closed-form or semi-closed-form solutions for practically motivated models involving Wasserstein ambiguity with tail stress, two-sided expected shortfall (ES) bands, asymmetric partial moments, geometric-moment bounds, and exponential- or Gaussian-reference Kullback--Leibler (KL) neighborhoods. Beyond these analytical results, the same theory yields projection-based algorithms with fixed-grid convergence under the stated assumptions. In a high-dimensional portfolio application, we establish an exact projection identity for mean-anchored joint KL ambiguity under a Gaussian reference. The resulting standardized worst-case ES coefficient applies to every portfolio, reducing robust portfolio selection to an exact second-order cone program after a single calibration.",
-      "pdf_url": "https://arxiv.org/pdf/2610.29652v2.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.RM",
-      "categories": [
-        "q-fin.RM",
-        "q-fin.MF"
-      ],
-      "category_names_zh": [
-        "q-fin.RM (风险管理与控制)",
-        "q-fin.MF (数理金融学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.27214v2",
-      "title": "Deep catastrophic-risk-aware reinforcement learning",
-      "authors": [
-        "Carlos Octavio Pérez Mendoza",
-        "Frédéric Godin"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T19:44:22Z",
-      "summary": "Estimating extreme risk in reinforcement learning becomes increasingly difficult as the confidence level increases, since only a small number of observations contribute to empirical estimates of Conditional Value-at-Risk (CVaR). In this paper, we extend an Extreme Value Theory (EVT) approach for CVaR optimization to high-dimensional neural-network policies. Using a peaks-over-threshold representation and method-of-moments estimation, we obtain a differentiable tail-risk objective and show that, conditional on the selected threshold, its finite-sample gradient can be computed directly through automatic differentiation. We first validate the approach in a controlled experiment with a known optimal solution and then investigate its performance in a deep-hedging problem with rare extreme market movements. Our results show similar hedging behavior for EVT- and empirical-CVaR-trained policies under normal conditions, while EVT-trained policies exhibit lower hedging losses under the extreme-scenario evaluation across the training sample sizes considered. These results suggest that EVT can provide a practical alternative for training neural policies when the observations relevant to extreme risk are scarce.",
-      "pdf_url": "https://arxiv.org/pdf/2610.27214v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.26797v1",
-      "title": "Teacher Supervision, Fixed Representations and Calibration: Exact Risk Calculations for Candidate-Scoring Decision Models",
-      "authors": [
-        "Agus Sudjianto",
-        "Denis Burakov"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T17:42:24Z",
-      "summary": "Candidate-scoring decision models return a probability distribution over a presented set of answers. Public documentation of one such system, Jev, and of an open counterpart, JevAny, describes three training ingredients that determine what these probabilities estimate: soft targets from larger models, a frozen pretrained backbone and temperature calibration. We analyze each ingredient in Gaussian surrogates where the finite-sample risk can be computed exactly. A student trained on teacher targets inherits the teacher's bias, which more student data does not remove and agreement with the teacher does not reveal. A fixed representation lowers the risk only below an explicit sample-size threshold. In a probit model the exact recalibration map is a temperature scaling, which removes all excess risk only when the teacher's coefficient has the correct direction and otherwise leaves a residual that calibration diagnostics do not detect. Under Luce's choice axiom, candidate scores are coherent across refinements of an event if and only if they aggregate by log-sum-exp. On 231,521 credit card complaints from the Consumer Financial Protection Bureau, where the decision is whether a complaint ends in monetary relief, a student trained on a logistic teacher's probabilities ends at the teacher's decision cost while a student trained on outcomes goes 8% below it, a 30B model read zero-shot remains worse than the teacher after recalibration, and that model departs from the coherence condition by 17.5 decibans. Pretrained representations reduce the labeled data required and calibration corrects the scale of the probabilities, but neither corrects a biased teacher, so the probabilities have to be checked against realized outcomes.",
-      "pdf_url": "https://arxiv.org/pdf/2610.26797v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ML",
-      "categories": [
-        "stat.ML",
-        "cs.CL",
-        "cs.LG",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "stat.ML (机器学习统计基础)",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "cs.LG (机器学习 (ML))",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": "18 pages, 3 figures, 4 tables. Code in ancillary files",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.26746v1",
-      "title": "Probability-Weighting Functions for Normal Tempered-Stable Laws: Orthogonal Channels and Information-Theoretic Indices",
-      "authors": [
-        "Akash Deep",
-        "Bhathiya Divelgama",
-        "A. Alexandre Trindade",
-        "W. Brent Lindquist",
-        "Svetlozar T. Rachev"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T17:10:20Z",
-      "summary": "A probability-weighting function (PWF) maps objective probabilities into decision weights. We construct PWFs from changes in the distribution of returns rather than from a parametric family: with prior and posterior return distributions $F_{prior}$ and $F_{post}$, the PWF is $w(p) = F_{post}(F_{prior}^{-1}(p))$. Both distributions are normal tempered-stable (NTS), and the posterior differs from the prior along one of three channels, each isolated with the variance held fixed: scale, skewness and tail thickness. Around a symmetric benchmark with excess kurtosis 3, a 40% change in scale moves cumulative probabilities by up to 7 to 8 percentage points, a skewness of $\\pm 0.5$ by 2 percentage points, and a change of $\\pm 0.3$ in the tail index by about 2 percentage points. The three channels leave distinct signatures: the deviation $w(p) - p$ changes sign once, twice and three times, respectively. Three information-theoretic indices (a Fisher-normalized logit shift, a signed Jensen-Shannon divergence and a log-odds elasticity) summarize the distortions and avoid the endpoint singularity of the classical ratio $(w(p)-p)/[p(1-p)]$. Applied to NTS parameters calibrated to S&P 500 ETF daily returns over 2015-2025, the same channels produce distortions of 2 to 7 percentage points. Code that reproduces every figure and number in the paper is provided.",
-      "pdf_url": "https://arxiv.org/pdf/2610.26746v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.MF",
-      "categories": [
-        "q-fin.MF",
-        "q-fin.RM",
-        "q-fin.ST"
-      ],
-      "category_names_zh": [
-        "q-fin.MF (数理金融学)",
-        "q-fin.RM (风险管理与控制)",
-        "q-fin.ST (统计金融学与高频数据)"
-      ],
-      "comment": "25 pages, 14 figures. Code reproducing every figure and number: https://github.com/akashdeepo/NTS_PWF",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.26324v2",
-      "title": "The Control Layer Behind Rule-Following Agents Trading Across Market Conditions",
-      "authors": [
-        "Saad Naja",
-        "Nasser Odtallah",
-        "Jake Van-Praag",
-        "Sarah May"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-19T13:01:10Z",
-      "summary": "Trading discipline often fails people. Our study tested whether four AI trading agents followed their strategies and risk rules. Offering traders the evidence and an agent evaluation toolkit to separate luck from following the rules, before giving agents meaningful autonomy or capital. Our study analysed 2,627 closed positions from 12 February to 27 August 2026 across the same asset universe and execution conditions. Most positions were simulated against live prices with a 0.09% round-trip fee; 18% involved real Hyperliquid orders. Each position declared a strategy, stop and target, with a limit of five open positions per agent. The fleet finished net positive after fees. Rule adherence was high across all four agents, including the unprofitable one. Profitability tracked how often agents won relative to their break-even win rates. Institutional-style controls ran by default and contained losses through a 29% market drawdown and recovery, with documented exceptions. The discipline held for all four agents. Agents kept 97.5% of gross loss within declared stops, and typical losses closed at declared levels. Declared risk remained stable after losses and broadly stable across calm and volatile months. Twenty-three of 24 runs respected the position limit; logs identify the exception's size and duration. The same live data produced different results across assigned strategies. The trade-log tests can be rerun from the published trade snapshot; regime tests also require the published Bitcoin prices and regime labels. Section 3.5 specifies the stop-breach tolerance. These trade-level results are not account-level returns or proof of a lasting edge. Our study provides an evaluation toolkit to help traders distinguish rule-following from luck before committing capital. For anyone considering allocating capital to agents to trade, discipline should be the entry test, not the only test.",
-      "pdf_url": "https://arxiv.org/pdf/2610.26324v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "cs.MA",
-        "q-fin.RM",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "cs.MA (多智能体系统 (Multiagent))",
-        "q-fin.RM (风险管理与控制)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "47 pages, 0 figures, 16 numbered tables. Includes a trading-agent evaluation toolkit and checklist. V2 Updated boilerplate and added Hygentra product information to section 2.1",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -669,14 +658,14 @@
       "count": 25
     },
     {
-      "code": "q-fin.MF",
-      "name_zh": "数理金融学",
-      "count": 6
-    },
-    {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 5
+      "count": 4
+    },
+    {
+      "code": "math.PR",
+      "name_zh": "概率论与随机过程",
+      "count": 4
     },
     {
       "code": "q-fin.PM",
@@ -684,13 +673,28 @@
       "count": 4
     },
     {
-      "code": "math.PR",
-      "name_zh": "概率论与随机过程",
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
       "count": 3
     },
     {
-      "code": "stat.AP",
-      "name_zh": "应用统计学",
+      "code": "q-fin.MF",
+      "name_zh": "数理金融学",
+      "count": 3
+    },
+    {
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 2
+    },
+    {
+      "code": "q-fin.CP",
+      "name_zh": "计算金融与量化模拟",
+      "count": 2
+    },
+    {
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
       "count": 2
     },
     {
@@ -699,18 +703,13 @@
       "count": 2
     },
     {
-      "code": "q-fin.TR",
-      "name_zh": "交易策略与市场微观结构",
-      "count": 2
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 1
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 2
-    },
-    {
-      "code": "cs.CE",
-      "name_zh": "计算工程、金融与科学计算",
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
       "count": 1
     },
     {
@@ -724,35 +723,10 @@
       "count": 1
     },
     {
-      "code": "q-fin.CP",
-      "name_zh": "计算金融与量化模拟",
-      "count": 1
-    },
-    {
-      "code": "stat.CO",
-      "name_zh": "计算统计与马尔可夫链",
-      "count": 1
-    },
-    {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
-      "count": 1
-    },
-    {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
-      "count": 1
-    },
-    {
-      "code": "q-fin.ST",
-      "name_zh": "统计金融学与高频数据",
-      "count": 1
-    },
-    {
-      "code": "cs.MA",
-      "name_zh": "多智能体系统 (Multiagent)",
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-08T15:49:11.428085"
+  "snapshot_synced_at": "2026-11-10T18:02:29.125405"
 }
