@@ -920,11 +920,11 @@ def _safe_translation_stem(req: RadarTranslateRequest) -> str:
 
 
 def _sanitize_academic_text(text: str) -> str:
-    """清理学术文本与 PDF 提取文字中的异常控制字符与字体编码缺陷"""
+    """清理学术文本与 PDF 提取文字中的异常控制字符与字体编码缺陷（严格排除 \\n, \\r, \\t 等排版换行符）"""
     if not text:
         return ""
-    text = re.sub(r"[\x00-\x1f]*bbda", r"\\lambda", text)
-    text = re.sub(r"[\x00-\x1f]+([a-zA-Z]+)", r"\\\1", text)
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]*bbda", r"\\lambda", text)
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]+([a-zA-Z]+)", r"\\\1", text)
     text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", text)
     return text
 

@@ -2730,9 +2730,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let math = String(source || '').trim();
     if (!math) return '';
 
-    // 0. 清理非打印控制字符并修复 PDF 字体编码缺陷 (如 \x03bbda -> \lambda, \x00varepsilon -> \varepsilon)
-    math = math.replace(/[\x00-\x1f]*bbda/g, '\\lambda')
-               .replace(/[\x00-\x1f]+([a-zA-Z]+)/g, '\\$1')
+    // 0. 清理非打印控制字符并修复 PDF 字体编码缺陷 (严格排除 \n, \r, \t 等多行公式排版换行符)
+    math = math.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]*bbda/g, '\\lambda')
+               .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]+([a-zA-Z]+)/g, '\\$1')
                .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '');
 
     // 1. 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
@@ -2809,8 +2809,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return id;
     });
 
-    // 2.5 智能捕获文本中遗漏 $ 包裹的裸 LaTeX 行内公式与符号
-    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\s]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\s]|$))/g;
+    // 2.5 智能捕获文本中遗漏 $ 包裹的裸 LaTeX 行内公式与符号 (限定单行内匹配，严禁跨换行吞噬)
+    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\t ]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\t \r\n]|$))/g;
     src = src.replace(bareLatexRegex, (match, formula) => {
       let f = formula.trim();
       if (!f || f.includes('___MATH_') || !/\\[a-zA-Z]+/.test(f)) return match;
@@ -3006,8 +3006,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return id;
     });
 
-    // 3.5 智能捕获并渲染正文中遗漏 $ 的裸 LaTeX 数学公式与符号 (如 \hat{V}_I(t), \mathcal{L}_I(t), \hat{\rho}_I(t) 等)
-    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\s]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\s\\{}"`'"'"']*)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\s]|$))/g;
+    // 3.5 智能捕获并渲染正文中遗漏 $ 的裸 LaTeX 数学公式与符号 (限定单行内匹配，严禁跨换行吞噬)
+    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\t ]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\t \r\n]|$))/g;
     src = src.replace(bareLatexRegex, (match, formula) => {
       let f = formula.trim();
       if (!f || f.includes('@@MATHBLOCK') || f.includes('@@CODEBLOCK') || f.includes('@@INLINECODE')) return match;
