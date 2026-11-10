@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const actionItemsList = document.getElementById('action-items-list');
   const evidencePanelList = document.getElementById('evidence-list') || document.getElementById('evidence-panel-list');
+  const evidenceTurnBar = document.getElementById('evidence-turn-bar');
+  const evidenceTurnSelect = document.getElementById('evidence-turn-select');
+  const evidenceTurnCountBadge = document.getElementById('evidence-turn-count-badge');
+  const evidenceCurrentTitle = document.getElementById('evidence-current-title');
+  const evidenceSubLabel = document.getElementById('evidence-sub-label');
   const streamLogs = document.getElementById('stream-logs');
   const globalAudio = document.getElementById('global-tts-audio');
 
@@ -298,9 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
-    updateEvidencePanel([]);
-    showMindmapEmptyState();
     sessionTurnsMindmaps = [];
+    sessionTurnsEvidence = [];
+    currentActiveTurnIndex = 0;
+    currentActiveEvidenceTurnIndex = 0;
+    updateEvidenceTurnUI();
+    showMindmapEmptyState();
     currentFullBookMindmap = '';
     currentActiveDocumentName = '';
     if (userInput) {
@@ -423,10 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentActiveMarkdown = '';
   let currentActiveDocumentName = '';
   
-  // 多层次多轮问答导图管理体系
+  // 多层次多轮问答导图与研讨证据管理体系
   let sessionTurnsMindmaps = []; // Array of { turnIndex: number, title: string, markdown: string, docName: string }
+  let sessionTurnsEvidence = []; // Array of { turnIndex: number, title: string, evidences: Array, docName: string }
   let currentMindmapScope = 'current'; // 'current' | 'book' | 'session'
   let currentActiveTurnIndex = 0;
+  let currentActiveEvidenceTurnIndex = 0;
 
   function showMindmapEmptyState() {
     const placeholder = document.getElementById('mindmap-empty-placeholder');
@@ -940,9 +950,11 @@ document.addEventListener('DOMContentLoaded', () => {
     stopTTS();
     resetGraphNodes();
 
-    // 严密重置当前会话的思维导图轮次列表与索引，彻底杜绝跨会话轮次串味污染
+    // 严密重置当前会话的思维导图与研讨证据轮次列表与索引，彻底杜绝跨会话轮次串味污染
     sessionTurnsMindmaps = [];
+    sessionTurnsEvidence = [];
     currentActiveTurnIndex = 0;
+    currentActiveEvidenceTurnIndex = 0;
     currentMindmapScope = 'current';
 
     // 严密更新侧边栏高亮
@@ -979,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         chatFeed.appendChild(welcomeDiv);
-        updateEvidencePanel([]);
+        updateEvidenceTurnUI();
         // 空白对话：默认呈现虚席占位，不展示图谱
         showMindmapEmptyState();
       } else {
@@ -999,12 +1011,20 @@ document.addEventListener('DOMContentLoaded', () => {
             appendMessage('user', textContent, userTurnCounter, msg.image_url || null);
           } else {
             agentTurnCounter++;
+            const turnTitle = sanitizeTopicTitle(lastUserQuery || `第 ${agentTurnCounter} 轮研讨精要`);
+            const evs = (msg.retrieved_evidence && Array.isArray(msg.retrieved_evidence)) ? msg.retrieved_evidence : [];
+            sessionTurnsEvidence.push({
+              turnIndex: agentTurnCounter,
+              title: turnTitle,
+              evidences: evs,
+              docName: (evs[0] && evs[0].doc_name) ? evs[0].doc_name : currentActiveDocumentName
+            });
+
             let mindmapMd = msg.mindmap_markdown;
             if (mindmapMd && mindmapMd.trim() && mindmapMd.includes('\n')) {
               turnCounter++;
-              const turnTitle = sanitizeTopicTitle(lastUserQuery || `第 ${turnCounter} 轮研讨精要`);
               sessionTurnsMindmaps.push({
-                turnIndex: turnCounter,
+                turnIndex: agentTurnCounter,
                 title: turnTitle,
                 markdown: mindmapMd,
                 docName: (msg.retrieved_evidence && msg.retrieved_evidence[0]) ? msg.retrieved_evidence[0].doc_name : currentActiveDocumentName
@@ -1015,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', () => {
               final_answer: msg.content,
               intent_decision: msg.intent_decision,
               target_agent: msg.target_agent,
-              retrieved_evidence: msg.retrieved_evidence || [],
+              retrieved_evidence: evs,
               mindmap_markdown: mindmapMd,
               audio_url: msg.audio_url,
               topicTitle: lastUserQuery,
@@ -1027,14 +1047,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, agentTurnCounter);
 
             // 追踪当前会话中最新一轮智能体的检索证据，绝不残留早期轮次文献
-            latestEvidence = (msg.retrieved_evidence && Array.isArray(msg.retrieved_evidence)) ? msg.retrieved_evidence : [];
+            latestEvidence = evs;
             if (latestEvidence.length > 0 && latestEvidence[0].doc_name) {
               currentActiveDocumentName = latestEvidence[0].doc_name;
             }
           }
         });
 
-        updateEvidencePanel(latestEvidence);
+        if (sessionTurnsEvidence.length > 0) {
+          currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
+        }
+        updateEvidenceTurnUI();
         const lastAgentMessage = [...session.messages].reverse().find(msg => msg.sender === 'agent');
         if (lastAgentMessage) highlightGraphFromResult(lastAgentMessage);
       }
@@ -1207,7 +1230,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const welcomeCard = chatFeed.querySelector('.welcome-scroll-card, .empty-hint');
     if (welcomeCard) welcomeCard.remove();
 
-    const currentTurnNum = sessionTurnsMindmaps.length + 1;
+    const currentTurnNum = Math.max(
+      chatFeed.querySelectorAll('.message-bubble.agent').length,
+      sessionTurnsEvidence.length,
+      sessionTurnsMindmaps.length
+    ) + 1;
     appendMessage('user', query, currentTurnNum, attachedImg);
 
     // 清空输入与预览
@@ -1305,9 +1332,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // 拓扑图执行节点根据后端实际执行情况精确高亮
       highlightGraphFromResult(data);
 
+      const evs = (data.retrieved_evidence && Array.isArray(data.retrieved_evidence)) ? data.retrieved_evidence : [];
+      const turnTitle = sanitizeTopicTitle(query || data.query || `第 ${currentTurnNum} 轮研讨`);
+      sessionTurnsEvidence.push({
+        turnIndex: currentTurnNum,
+        title: turnTitle,
+        evidences: evs,
+        docName: (evs[0] && evs[0].doc_name) ? evs[0].doc_name : currentActiveDocumentName
+      });
+      currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
+
       appendAgentMessage(data, currentTurnNum);
 
-      updateEvidencePanel(data.retrieved_evidence || []);
+      updateEvidenceTurnUI();
 
       if (data.mindmap_markdown) {
         renderAnswerMindmap(data.mindmap_markdown, query || data.query || '当前研讨深度导图');
@@ -1398,6 +1435,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="msg-identity" aria-hidden="true"><img src="img/user_avatar.jpg?v=2026_neutral_v1" alt="学者" class="msg-avatar-img"></div>
         <div class="msg-card">${imgHtml}${userHtml}</div>
       `;
+      msgDiv.addEventListener('click', (e) => {
+        if (e.target.closest('button, a, input, select, textarea, img')) return;
+        if (turnIndex) {
+          switchActiveTurn(turnIndex, false);
+        }
+      });
     }
     chatFeed.appendChild(msgDiv);
     chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -1657,11 +1700,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    msgDiv.addEventListener('click', (e) => {
+      if (e.target.closest('button, a, input, select, textarea, .evidence-badge, .msg-action-chip, details, .evidence-img-box')) return;
+      if (turnIndex) {
+        switchActiveTurn(turnIndex, false);
+      }
+    });
+
     // 绑定证据标签点击事件：点击切片标签直接联动右侧证据面板
     msgDiv.querySelectorAll('.evidence-badge').forEach((tag) => {
       tag.style.cursor = 'pointer';
       tag.title = '点击在右侧查看该切片详情与原图快照';
-      tag.addEventListener('click', () => {
+      tag.addEventListener('click', (e) => {
+        e.stopPropagation();
         // 激活右侧“证据与页码” Tab
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -1671,7 +1722,9 @@ document.addEventListener('DOMContentLoaded', () => {
           evTabBtn.classList.add('active');
           evTabContent.classList.add('active');
         }
-        if (data.retrieved_evidence) {
+        if (turnIndex) {
+          switchActiveTurn(turnIndex, false);
+        } else if (data.retrieved_evidence) {
           updateEvidencePanel(data.retrieved_evidence);
         }
       });
@@ -2025,9 +2078,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }, duration);
   };
 
-  function updateEvidencePanel(evidences) {
+  function highlightActiveTurnBubble(turnIndex) {
+    document.querySelectorAll('.message-bubble.turn-highlight-active').forEach(el => {
+      el.classList.remove('turn-highlight-active');
+    });
+    if (!turnIndex) return;
+    const targetAgent = document.getElementById(`chat-turn-agent-${turnIndex}`);
+    const targetUser = document.getElementById(`chat-turn-user-${turnIndex}`);
+    if (targetAgent) targetAgent.classList.add('turn-highlight-active');
+    if (targetUser) targetUser.classList.add('turn-highlight-active');
+  }
+
+  function switchActiveTurn(turnIndex, shouldScroll = false) {
+    if (!turnIndex) return;
+
+    // 1. 同步证据面板
+    const evIdx = sessionTurnsEvidence.findIndex(e => e.turnIndex === turnIndex);
+    if (evIdx >= 0) {
+      currentActiveEvidenceTurnIndex = evIdx;
+      updateEvidenceTurnUI();
+    }
+
+    // 2. 同步思维导图
+    const mapIdx = sessionTurnsMindmaps.findIndex(t => t.turnIndex === turnIndex);
+    if (mapIdx >= 0) {
+      currentActiveTurnIndex = mapIdx;
+      currentMindmapScope = 'current';
+      updateMindmapScopeUI();
+    }
+
+    // 3. 高亮对话气泡
+    highlightActiveTurnBubble(turnIndex);
+    if (shouldScroll) {
+      scrollToChatTurn(turnIndex);
+    }
+  }
+
+  function updateEvidenceTurnUI() {
+    if (!sessionTurnsEvidence || sessionTurnsEvidence.length === 0) {
+      if (evidenceTurnBar) evidenceTurnBar.style.display = 'none';
+      if (evidenceCurrentTitle) evidenceCurrentTitle.textContent = '最新检索证据切片 (Grounding)';
+      if (evidenceSubLabel) evidenceSubLabel.textContent = 'BGE-M3 + BGE-Reranker 重排定位';
+      updateEvidencePanel([], null);
+      return;
+    }
+
+    if (currentActiveEvidenceTurnIndex < 0) currentActiveEvidenceTurnIndex = 0;
+    if (currentActiveEvidenceTurnIndex >= sessionTurnsEvidence.length) {
+      currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
+    }
+
+    const activeTurn = sessionTurnsEvidence[currentActiveEvidenceTurnIndex];
+
+    if (evidenceTurnBar) {
+      evidenceTurnBar.style.display = (sessionTurnsEvidence.length > 1) ? 'flex' : 'none';
+    }
+
+    if (evidenceTurnSelect) {
+      evidenceTurnSelect.innerHTML = sessionTurnsEvidence.map((t, idx) => {
+        const countDesc = (t.evidences && t.evidences.length > 0) ? `${t.evidences.length} 条引证` : '先验推演';
+        return `<option value="${idx}" ${idx === currentActiveEvidenceTurnIndex ? 'selected' : ''}>[第 ${t.turnIndex} 轮] ${t.title} (${countDesc})</option>`;
+      }).join('');
+    }
+
+    if (evidenceTurnCountBadge) {
+      const count = (activeTurn && activeTurn.evidences) ? activeTurn.evidences.length : 0;
+      evidenceTurnCountBadge.textContent = count > 0 ? `${count} 条切片` : '先验推演';
+    }
+
+    if (evidenceCurrentTitle && activeTurn) {
+      evidenceCurrentTitle.textContent = `第 ${activeTurn.turnIndex} 轮依据：${activeTurn.title}`;
+    }
+    if (evidenceSubLabel && activeTurn) {
+      const count = (activeTurn.evidences) ? activeTurn.evidences.length : 0;
+      if (count > 0) {
+        evidenceSubLabel.textContent = `本轮共调取并引用 ${count} 条文献切片 · 精确至段落与页码`;
+      } else {
+        evidenceSubLabel.textContent = `本轮研讨依据先验理论与第一性原理推演 · 未调取外部切片`;
+      }
+    }
+
+    updateEvidencePanel(activeTurn ? activeTurn.evidences : [], activeTurn);
+    highlightActiveTurnBubble(activeTurn ? activeTurn.turnIndex : null);
+  }
+
+  function updateEvidencePanel(evidences, activeTurn = null) {
     if (!evidences || evidences.length === 0) {
-      evidencePanelList.innerHTML = '<div class="empty-hint">🎋 当前轮次研讨依据先验理论与第一性原理推演，暂无引用的外部切片。<br><span style="font-size:0.75rem;color:var(--color-ink-muted);">若研讨结合专著教材或文献考据，将在此处实时联动段落快照与精确页码。</span></div>';
+      const turnLabel = activeTurn ? `第 ${activeTurn.turnIndex} 轮研讨` : '当前轮次研讨';
+      evidencePanelList.innerHTML = `<div class="empty-hint">🎋 【${turnLabel}】依据先验理论与第一性原理推演，暂无引用的外部切片。<br><span style="font-size:0.75rem;color:var(--color-ink-muted);">若研讨结合专著教材或文献考据，将在此处实时联动段落快照与精确页码。</span></div>`;
       return;
     }
     evidencePanelList.innerHTML = evidences.map((ev, i) => {
@@ -2055,7 +2193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
       return `
-        <div class="evidence-card">
+        <div class="evidence-card" data-doc="${escapeHtml(docName)}" data-loc="${escapeHtml(locLabel)}">
           <div class="evidence-card-header">
             [${i + 1}] 《${formatMathInText(docName)}》 ${escapeHtml(locLabel)}${scoreText}
           </div>
@@ -2526,7 +2664,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 绑定问答轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次)
+  // 绑定问答导图轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次及证据依据)
   const mindmapTurnSelect = document.getElementById('mindmap-turn-select');
   if (mindmapTurnSelect) {
     mindmapTurnSelect.addEventListener('change', async (e) => {
@@ -2534,10 +2672,21 @@ document.addEventListener('DOMContentLoaded', () => {
       currentMindmapScope = 'current';
       await updateMindmapScopeUI();
 
-      // 双向联动：右侧切换轮次时，左侧对话区自动平滑滚动并呼吸高亮对应轮次
+      // 双向联动：右侧切换轮次时，左侧对话区自动平滑滚动并呼吸高亮对应轮次，同时同步证据依据面板
       const selectedTurnObj = sessionTurnsMindmaps[currentActiveTurnIndex];
       const targetTurnIndex = selectedTurnObj ? selectedTurnObj.turnIndex : (currentActiveTurnIndex + 1);
-      scrollToChatTurn(targetTurnIndex);
+      switchActiveTurn(targetTurnIndex, true);
+    });
+  }
+
+  // 绑定证据依据轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次及思维导图)
+  if (evidenceTurnSelect) {
+    evidenceTurnSelect.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.value, 10) || 0;
+      currentActiveEvidenceTurnIndex = idx;
+      const targetTurnObj = sessionTurnsEvidence[idx];
+      const targetTurnIndex = targetTurnObj ? targetTurnObj.turnIndex : (idx + 1);
+      switchActiveTurn(targetTurnIndex, true);
     });
   }
 

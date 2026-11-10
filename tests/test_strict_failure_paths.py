@@ -16,7 +16,7 @@ from meeting_summarizer import MeetingSummarizer
 
 def backend_functions(tmp_path):
     path = Path(__file__).resolve().parents[1] / 'backend_api.py'
-    names = {'_safe_translation_stem', '_extract_paper_pdf_text', '_translation_json'}
+    names = {'_safe_translation_stem', '_extract_paper_pdf_text', '_translation_json', '_sanitize_academic_text'}
     definitions = [node for node in ast.parse(path.read_text()).body
                    if isinstance(node, ast.FunctionDef) and node.name in names]
     future = ast.ImportFrom(module='__future__', names=[ast.alias(name='annotations')], level=0)
