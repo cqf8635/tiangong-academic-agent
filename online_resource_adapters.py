@@ -12,9 +12,11 @@ import os
 import re
 from concurrent.futures import ThreadPoolExecutor
 from html.parser import HTMLParser
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import parse_qs, quote_plus, urlsplit
 from urllib.request import Request, urlopen
+
+from config_utils import resolve_retrieval_time_constraint, retrieval_date_bounds
 
 
 class _DuckDuckGoParser(HTMLParser):
@@ -219,7 +221,33 @@ def _clean_html_text(raw: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
+def _parse_year(raw: Any) -> Optional[int]:
+    m = re.search(r"\b(19\d{2}|20\d{2})\b", str(raw or ""))
+    return int(m.group(1)) if m else None
+
+
+def _resolve_web_date_bounds(time_constraint: Optional[Dict[str, Any]]) -> Optional[Tuple[str, str]]:
+    if not time_constraint:
+        return None
+    return retrieval_date_bounds(resolve_retrieval_time_constraint(time_constraint))
+
+
+def _within_date_bounds(item: Dict[str, Any], bounds: Optional[Tuple[str, str]]) -> bool:
+    if not bounds:
+        return True
+    start_date, end_date = bounds
+    published_at = str(item.get("published_at") or "").strip()
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", published_at):
+        return start_date <= published_at <= end_date
+    year = item.get("year")
+    if isinstance(year, int):
+        return int(start_date[:4]) <= year <= int(end_date[:4])
+    return True
+
+
+def _search_huggingface_papers(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
     url = f"https://huggingface.co/api/papers/search?q={quote_plus(query)}&limit={max(1, min(limit, 15))}"
     request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
     with urlopen(request, timeout=6) as response:
@@ -238,6 +266,8 @@ def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
         keywords = [str(k).strip() for k in (paper.get("ai_keywords") or []) if str(k).strip()]
         upvotes = paper.get("upvotes")
         comments = raw_item.get("numComments")
+        pub_raw = str(raw_item.get("publishedAt") or paper.get("publishedAt") or "")[:10]
+        year_int = _parse_year(pub_raw)
         meta_parts = []
         if upvotes is not None:
             meta_parts.append(f"upvotes={upvotes}")
@@ -253,6 +283,8 @@ def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
             "url": f"https://huggingface.co/papers/{paper_id}",
             "summary": body,
             "arxiv_id": paper_id,
+            "year": year_int,
+            "published_at": pub_raw or None,
             "source": "web",
             "provider": "huggingface_papers",
             "location_label": "Hugging Face Papers 社区讨论",
@@ -262,10 +294,13 @@ def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
-def _search_quanta_magazine(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_quanta_magazine(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
+    date_params = f"&after={bounds[0]}T00:00:00&before={bounds[1]}T23:59:59" if bounds else ""
     url = (
         "https://www.quantamagazine.org/wp-json/wp/v2/posts"
-        f"?search={quote_plus(query)}&per_page={max(1, min(limit, 5))}&_fields=title,link,excerpt,date"
+        f"?search={quote_plus(query)}&per_page={max(1, min(limit, 5))}&_fields=title,link,excerpt,date{date_params}"
     )
     request = Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; ResearchAssistant/1.0)"})
     with urlopen(request, timeout=6) as response:
@@ -278,12 +313,15 @@ def _search_quanta_magazine(query: str, limit: int) -> List[Dict[str, Any]]:
         link = str(item.get("link") or "").strip()
         excerpt = _clean_html_text((item.get("excerpt") or {}).get("rendered") or "")
         date_str = str(item.get("date") or "")[:10]
+        year_int = _parse_year(date_str)
         if not title or not link:
             continue
         summary = f"[Quanta Magazine {date_str}] {excerpt}".strip() if date_str else excerpt
         results.append({
             "title": title,
             "url": link,
+            "year": year_int,
+            "published_at": date_str or None,
             "summary": summary,
             "source": "web",
             "provider": "quanta_magazine",
@@ -294,7 +332,9 @@ def _search_quanta_magazine(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
-def _search_wikipedia(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_wikipedia(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
     url = (
         "https://en.wikipedia.org/w/api.php?action=query&list=search"
         f"&srsearch={quote_plus(query)}&srlimit={max(1, min(limit, 4))}&format=json"
@@ -322,7 +362,9 @@ def _search_wikipedia(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
-def _search_europe_pmc(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_europe_pmc(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
     url = (
         "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
         f"?query={quote_plus(query)}&format=json&pageSize={max(1, min(limit, 4))}"
@@ -338,6 +380,7 @@ def _search_europe_pmc(query: str, limit: int) -> List[Dict[str, Any]]:
         doi = str(item.get("doi") or "").strip()
         journal = str(item.get("journalTitle") or "").strip()
         year = str(item.get("pubYear") or "").strip()
+        year_int = _parse_year(year)
         if not title:
             continue
         if pmcid:
@@ -353,6 +396,7 @@ def _search_europe_pmc(query: str, limit: int) -> List[Dict[str, Any]]:
             "title": title,
             "url": item_url,
             "doi": doi or None,
+            "year": year_int,
             "summary": f"[Europe PMC {meta}] {title}".strip() if meta else title,
             "source": "web",
             "provider": "europe_pmc",
@@ -363,8 +407,11 @@ def _search_europe_pmc(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
-def _search_inspire_hep(query: str, limit: int) -> List[Dict[str, Any]]:
-    url = f"https://inspirehep.net/api/literature?q={quote_plus(query)}&size={max(1, min(limit, 4))}"
+def _search_inspire_hep(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
+    sort_param = "&sort=mostrecent" if bounds else ""
+    url = f"https://inspirehep.net/api/literature?q={quote_plus(query)}&size={max(1, min(limit, 5))}{sort_param}"
     request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
     with urlopen(request, timeout=6) as response:
         payload = json.loads(response.read(1_500_000).decode("utf-8", errors="replace"))
@@ -382,12 +429,15 @@ def _search_inspire_hep(query: str, limit: int) -> List[Dict[str, Any]]:
         arxiv_id = str(eprints[0].get("value") if eprints and isinstance(eprints[0], dict) else "").strip() or None
         cites = meta.get("citation_count")
         date_str = str(meta.get("earliest_date") or meta.get("preprint_date") or "")[:10]
+        year_int = _parse_year(date_str)
         tags = [p for p in (date_str, f"cites={cites}" if cites is not None else "", f"arXiv:{arxiv_id}" if arxiv_id else "") if p]
         prefix = f"[INSPIRE-HEP {' | '.join(tags)}]" if tags else "[INSPIRE-HEP]"
         results.append({
             "title": title,
             "url": f"https://inspirehep.net/literature/{hit_id}",
             "arxiv_id": arxiv_id,
+            "year": year_int,
+            "published_at": date_str if re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str) else None,
             "summary": f"{prefix} {abstract or title}".strip(),
             "source": "web",
             "provider": "inspire_hep",
@@ -398,7 +448,9 @@ def _search_inspire_hep(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
-def _search_zbmath(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_zbmath(
+    query: str, limit: int, bounds: Optional[Tuple[str, str]] = None
+) -> List[Dict[str, Any]]:
     url = (
         "https://api.zbmath.org/v1/document/_search"
         f"?search_string={quote_plus(query)}&results_per_page={max(1, min(limit, 3))}"
@@ -422,10 +474,12 @@ def _search_zbmath(query: str, limit: int) -> List[Dict[str, Any]]:
                 review_text = _clean_html_text(c.get("text"))
                 break
         year = str(item.get("year") or "").strip()
+        year_int = _parse_year(year)
         prefix = f"[zbMATH {year}]" if year else "[zbMATH]"
         results.append({
             "title": title,
             "url": f"https://zbmath.org/{doc_id}",
+            "year": year_int,
             "summary": f"{prefix} {review_text or title}".strip(),
             "source": "web",
             "provider": "zbmath",
@@ -462,18 +516,23 @@ def _search_duckduckgo_html(query: str, limit: int) -> List[Dict[str, Any]]:
     return results
 
 
-def search_web(query: str, limit: int = 8) -> List[Dict[str, Any]]:
+def search_web(
+    query: str, limit: int = 8, time_constraint: Optional[Dict[str, Any]] = None
+) -> List[Dict[str, Any]]:
     """Three-tier multidisciplinary web & paper commentary discovery:
     1) Optional Tavily / SearXNG API (if configured),
-    2) Zero-config multidisciplinary commentary pool (Quanta Magazine, Wikipedia, Europe PMC, HF Papers),
+    2) Zero-config multidisciplinary commentary pool (INSPIRE-HEP, Quanta Magazine, HF Papers, zbMATH, Europe PMC, Wikipedia),
     3) Isolated DuckDuckGo HTML fallback.
     """
     limit = max(1, min(limit, 15))
+    bounds = _resolve_web_date_bounds(time_constraint)
     combined: List[Dict[str, Any]] = []
     seen_urls = set()
 
     def _append_unique(items: List[Dict[str, Any]]) -> None:
         for item in items:
+            if not _within_date_bounds(item, bounds):
+                continue
             url = str(item.get("url") or "").strip()
             if not url or url in seen_urls:
                 continue
@@ -504,7 +563,7 @@ def search_web(query: str, limit: int = 8) -> List[Dict[str, Any]]:
         )
         layer2_lists: List[List[Dict[str, Any]]] = []
         with ThreadPoolExecutor(max_workers=len(layer2_providers)) as executor:
-            futures = [executor.submit(fn, query, per_source) for fn in layer2_providers]
+            futures = [executor.submit(fn, query, per_source, bounds) for fn in layer2_providers]
             for fut in futures:
                 try:
                     items = fut.result(timeout=7)

@@ -610,6 +610,7 @@ class CrossSourceHybridRetriever:
                 cards.append(UnifiedEvidenceCard(
                     doc_name=result.get("title", "网页检索结果"), doc_type="web",
                     text=result.get("summary", ""), score=0.72,
+                    year=result.get("year"),
                     location_label=loc_label,
                     section=sec_label,
                     pdf_url=result.get("url"), summary=result.get("summary", ""),

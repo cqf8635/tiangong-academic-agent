@@ -275,3 +275,52 @@ def test_search_web_multidisciplinary_sources_quanta_wiki_epmc(monkeypatch):
     quanta_item = next(r for r in results if r["provider"] == "quanta_magazine")
     assert quanta_item["evidence_level"] == "web_commentary"
     assert "<p>" not in quanta_item["summary"]
+
+
+def test_search_web_respects_time_constraint_and_keeps_undated_encyclopedia(monkeypatch):
+    monkeypatch.delenv("TAVILY_API_KEY", raising=False)
+    monkeypatch.delenv("SEARXNG_URL", raising=False)
+    seen_urls = []
+
+    def fake_urlopen(request, timeout=10):
+        url = request.full_url
+        seen_urls.append(url)
+        if "inspirehep.net" in url:
+            return _Response(json.dumps({
+                "hits": {
+                    "hits": [
+                        {
+                            "id": "1997001",
+                            "metadata": {
+                                "titles": [{"title": "Old 1997 Proceedings"}],
+                                "earliest_date": "1997-07-09",
+                            },
+                        },
+                        {
+                            "id": "2025001",
+                            "metadata": {
+                                "titles": [{"title": "Recent 2025 Quantum Study"}],
+                                "earliest_date": "2025-05-01",
+                            },
+                        },
+                    ]
+                }
+            }).encode("utf-8"))
+        if "en.wikipedia.org" in url:
+            return _Response(json.dumps({
+                "query": {"search": [{"title": "Quantum mechanics", "snippet": "Core theory."}]}
+            }).encode("utf-8"))
+        return _Response(b"[]")
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", fake_urlopen)
+    results = search_web(
+        "quantum mechanics",
+        limit=6,
+        time_constraint={"start_date": "2024-01-01", "end_date": "2026-11-14"},
+    )
+    titles = [r["title"] for r in results]
+    assert "Old 1997 Proceedings" not in titles
+    assert "Recent 2025 Quantum Study" in titles
+    assert "Quantum mechanics" in titles
+    assert any("inspirehep.net" in u and "sort=mostrecent" in u for u in seen_urls)
+    assert any("quantamagazine.org" in u and "after=2024-01-01T00:00:00" in u for u in seen_urls)

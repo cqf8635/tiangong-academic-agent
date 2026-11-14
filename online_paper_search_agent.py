@@ -1220,7 +1220,7 @@ class OnlinePaperSearchAgent:
             if include_web or include_datasets:
                 from online_resource_adapters import search_datasets, search_web
                 web_query = effective_query or query
-                fut_web = executor.submit(search_web, web_query, limit_per_source) if include_web else None
+                fut_web = executor.submit(search_web, web_query, limit_per_source, time_constraint) if include_web else None
                 fut_datasets = executor.submit(search_datasets, web_query, limit_per_source) if include_datasets else None
             else:
                 fut_web = fut_datasets = None
