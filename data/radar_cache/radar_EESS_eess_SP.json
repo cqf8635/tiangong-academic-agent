@@ -1,495 +1,44 @@
 {
   "query_expression": "cat:eess.SP",
   "total_fetched": 25,
-  "total_results": 43412,
+  "total_results": 43490,
   "papers": [
     {
-      "paper_id": "2611.09789v1",
-      "title": "On PMU Adequacy for Wideband Dynamics Tracking Beyond Attenuation Assumptions",
+      "paper_id": "2611.14439v1",
+      "title": "Cascading Contingency Analysis of Modern Power Systems Using a Stochastic Hybrid Systems Framework",
       "authors": [
-        "Chetan Mishra",
-        "Luigi Vanfretti",
-        "Jaime Delaree Jr. and",
-        "Kevin D. Jones"
+        "Masoud H. Nazari",
+        "Hamid Varmazyari"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T17:45:33Z",
-      "summary": "Recent work highlights the inadequacy of standard synchrophasors in capturing high-frequency grid dynamics, including data center oscillations, primarily due to filtering and windowing attenuation during phasor estimation. This letter shows how synchrophasor ambient data spectrum itself contains information on attenuation, which provides a way to identify critically impacted measurements and potentially estimate and undo the effect. Results are shown for synthetic data as well as actual synchrophasor estimates from digital fault recorders (DFRs) within the Dominion Energy system.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09789v1.pdf",
+      "published_at": "2026-11-10T18:11:28Z",
+      "summary": "This paper presents a cascading contingency analysis and risk assessment framework that incorporates probabilistic mode transitions motivated by stochastic hybrid system (SHS) concepts together with power-flow-based stress evaluation. A two-stage modeling approach is adopted in which sensitivity-based analysis is first used to identify candidate cascading transitions, followed by DC power flow re-evaluation to accurately capture post-contingency stress redistribution, islanding behavior, and load shedding. A probabilistic propagation model is constructed using mode-dependent transition probabilities derived from line loading conditions. A Cascading Risk Index (CRI) is introduced to quantify the expected load shedding accumulated over cascade progression. Case studies on the IEEE 39-bus system demonstrate that the proposed framework captures diverse cascading routes under multiple initiating outages and identifies critical propagation patterns that are not revealed by N-1/N-2 screening. The results highlight the importance of SHS modeling in assessing cascading risk and providing a scalable framework for resilience evaluation in modern power systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14439v1.pdf",
       "source": "arxiv",
-      "primary_category": "eess.SP",
+      "primary_category": "eess.SY",
       "categories": [
+        "eess.SY",
         "eess.SP"
       ],
       "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
         "eess.SP (信号处理 (Signal Processing))"
       ],
-      "comment": null,
+      "comment": "This paper was accepted at the 2026 North American Power Symposium (NAPS)",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09763v1",
-      "title": "Link-Level Performance Comparison of 5G Beamforming: Reciprocity-Based SVD vs. Codebook-Based Precoding",
+      "paper_id": "2611.14267v1",
+      "title": "Achieving Robust Channel Estimation Neural Networks on Doppler effects by Designed Training Data",
       "authors": [
-        "S. M. Haider Ali Shuvo",
-        "Seda Dogan-Tusha",
-        "Monisha Ghosh"
+        "Dianxin Luan",
+        "John Thompson"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T17:26:46Z",
-      "summary": "Downlink (DL) precoding in mid-band MIMO relies on uplink (UL) sounding reference signals (SRS) with reciprocity-based singular value decomposition (SVD) or channel state information reference signals (CSI-RS) with codebook-based precoding matrix indicator (PMI) feedback. Although SVD precoding offers unquantized beamforming, it depends on a channel estimate from SRS transmitted at the limited user equipment (UE) power, whereas Type-I PMI is quantized but derived from a high-power CSI-RS based channel estimate. In this paper, we compare SRS-SVD and CSIRS-PMI for single-user MIMO through an end-to-end, 3GPP-compliant link-level simulation at 3.75 GHz with 100 MHz bandwidth, using a 192 antenna element gNB mapped into 32 ports, the 3GPP Release 19 UE antenna model, and ray-traced (RT) channels in Manhattan and Chicago. We show that neither scheme is uniformly superior: CSIRS-PMI serves weak and shadowed users better and reduces outage, whereas SRS-SVD achieves higher spectral efficiency (SE) and enables more multi-layer transmission for users with strong channels. The results on the Clustered Delay Line (CDL)-C statistical channel also confirm this crossover. We further show that by utilizing a simple logistic regression based on the received power of the standard CSI reference signal (CSI-RSRP) and the channel quality indicator (CQI), the gNB can select the optimal transmission scheme with around 90% accuracy, achieving an SE that closely approaches an ideal per-user selection.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09763v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.NI",
-      "categories": [
-        "cs.NI",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "cs.NI (计算机网络与互联网通信)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "7 pages, 8 figures. Submitted to IEEE ICC 2027",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09687v1",
-      "title": "Payload-Blind Bistatic Delay-Doppler Sensing with Phase-Injected Chirps in CE-OFDM",
-      "authors": [
-        "Gustavo P. Gonçalves",
-        "Henrique L. Senger",
-        "Bruno S. Chang",
-        "Giuseppe Thadeu Freitas de Abreu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:34:43Z",
-      "summary": "Constant-envelope orthogonal frequency-division multiplexing (CE-OFDM) preserves a unit-magnitude sample envelope, but its Hermitian-symmetric structure makes dedicated sensing pilots costly, and additive pilots disrupt this envelope. We show that injecting a known chirp, here a Zadoff-Chu (ZC) sequence, into the CE-OFDM phase enables payload-blind bistatic delay-Doppler sensing without dedicated sensing frames or an explicit pilot power split: the residual carrier, given by the ensemble mean under the adopted payload model, becomes an implicit superimposed pilot for a receive-only node. A Doppler-aligned receiver integrates this reference coherently across frames while the payload residual averages down. In contrast, phase-domain injected training (PIT) frame averaging, designed for quasi-static channel estimation, loses about 32 dB for the simulated target with 16 averaged frames. Closed-form approximations characterize the payload-induced floor, known-cell detection probability and direct-path tolerance. In the noise-limited simulations, the receiver incurs a 2.8 dB detection gap relative to a payload-aware matched filter without interference cancellation and matches a dedicated-pilot benchmark of equal reference energy without its 53% frame overhead.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09687v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09653v1",
-      "title": "A Phase-Balanced Differential Rydberg-Atom Quantum Receiver for Weak GNSS Signal Detection",
-      "authors": [
-        "A. K. Mandal",
-        "F. Zhang",
-        "J. H. Mikkelsen",
-        "M. Shen"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:02:36Z",
-      "summary": "This paper proposes a phase-balanced differential Rydberg atomic quantum receiver (DRAQR) for weak-signal recovery, using local-oscillator phase control to reinforce differential signal responses and a shared squeezed-reservoir model to correlate inter-cell quantum projection noise (QPN) and photon shot noise (PSN). An analytical model incorporating QPN, PSN, intrinsic thermal noise (ITN), and inter-cell correlations quantifies signal-to-noise ratio (SNR) gain, outage-constrained minimum detectable power, and bit-error rate (BER) for square $M$-QAM. For the evaluated settings, SNR gain reaches approximately $10$~dB as PSN correlation approaches unity, with BER decreasing as correlation increases. Under Rician fading, at a $0$-dB threshold SNR and maximum outage probability of $0.1$, the minimum detectable power decreases from $-146.95$~dBm at $K=1.155$ to $-159.98$~dBm at $K=2.4$. Analytical results are validated against Monte-Carlo simulations over $150{,}000$ data runs per point for receiver-performance plots.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09653v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "6 pages, 10 figures, submitted to IEEE ICC 2027 (in review)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09619v1",
-      "title": "Beyond Feasibility: Efficient and Robust On-Device Localization with UWB Concurrent Transmissions",
-      "authors": [
-        "Enrico Soprana",
-        "Michael Stocker",
-        "Davide Vecchia",
-        "Matteo Trobinger",
-        "Carlo Alberto Boano"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:38:53Z",
-      "summary": "Concurrent transmissions (CTX) enable an ultra-wideband (UWB) tag to range to, or self-localize from, multiple nodes with a single frame reception, significantly improving update rate and energy efficiency compared to traditional approaches. Prior work demonstrated the concept feasibility via prototypes whose real-world applicability is however hindered by many limitations, notably including their inability to directly execute on UWB tags and to cope with interfering UWB signals. We address these limitations in two ways. First, we redesign the core CTX techniques to enable a fast and efficient execution on resource-constrained MCUs without sacrificing accuracy. Second, we leverage the new features in the IEEE 802.15.4z standard to achieve robustness to interference from other UWB devices and enable tags to dynamically select which anchors to use, two crucial and unexplored capabilities in CTX-based systems. We quantitatively evaluate our approach experimentally in two real-world testbeds with different characteristics. We first analyze our new techniques individually, offering an in-depth discussion of design choices and performance trade-offs. Then, we embed all our techniques into a CTX-based system enabling a tag to self-localize entirely on-device, unlocking gains up to 44% in runtime and 85% in energy efficiency compared to traditional approaches.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09619v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "cs.NI",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "cs.NI (计算机网络与互联网通信)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "Submitted to the IEEE Transactions on Mobile Computing",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09591v1",
-      "title": "Multi-Mode Pinching-Antenna-Based OFDM Systems: A Robust Design Perspective",
-      "authors": [
-        "Hao Liang",
-        "Xidong Mu",
-        "Mingzhe Chen",
-        "Hyundong Shin",
-        "Michail Matthaiou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:23:20Z",
-      "summary": "A robust transmission framework is proposed for a multi-mode pinching-antenna (MPA)-based orthogonal frequency-division multiplexing (OFDM) system under both channel state information (CSI) errors and PA positioning errors. A physical model is first developed based on the multi-mode coupled-mode equations (CMEs), which characterizes the frequency-dependent guided-mode propagation and the coupling among guided modes and PAs over the OFDM band. Based on this model, a worst-case sum-rate maximization problem is formulated to jointly optimize the baseband beamformer and the intended PA positions under CSI and PA positioning errors, subject to user quality-of-service (QoS) and transmit-power constraints. To solve the resulting non convex problem, the worst-case CSI is exactly obtained for any given PA positions by solving trust-region subproblems, while the PA positioning errors are handled by grid-based and second-order approximation-based scenario constructions. Then, an alternating optimization (AO) algorithm is developed, where the baseband beamformer and the intended PA positions are updated via the weighted minimum mean-square error (WMMSE) method and successive convex approximation (SCA), respectively. Both subproblems are solved efficiently by exploiting the Karush--Kuhn--Tucker (KKT) conditions. Numerical results show that the proposed robust design outperforms the non-robust and conventional robust benchmarks with the same multi-mode architecture in terms of both worst-case sum rate and QoS satisfaction. They also demonstrate that the proposed robust design satisfies the QoS requirements of all users more reliably than the baselines that consider either CSI errors or PA positioning errors.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09591v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "13 pages, 8 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09576v1",
-      "title": "Expert Spindles in the Wild: Enriched Supervision for a Dense Detector",
-      "authors": [
-        "Olivier Pallanca",
-        "Alexis Bollengier",
-        "Abel Díaz Berenguer",
-        "Hichem Sahli",
-        "André Anjos"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:12:42Z",
-      "summary": "Sleep spindles are a hallmark of healthy NREM sleep whose frequency, amplitude, density, duration and topography vary with brain maturation, age and disease. Their manual annotation is impractical and variable between scorers, yet the public references used to train automatic detectors cover these characteristics only partially: stage N2 only, a single central derivation, or short pre-selected segments. Measuring duration and density requires dense detectors that learn event boundaries from annotated onsets and offsets, and therefore inherit the protocol under which those boundaries were scored. We introduce Expert Spindles in the Wild (ESW), a stage-agnostic expert spindle annotation set covering 19 complete MASS-SS2 recordings ($\\approx$150 h of continuous EEG, 29,819 events). A sleep neurophysiologist annotated the recordings using the full EEG montage, blinded to sleep-stage labels and prior spindle annotations. On the 15 nights shared with historical scorers, ESW recovers 92.7% of E1 and 73.7% of E2 events, while recovering 81.6% of the MODA expert-consensus events on the common excerpts. Despite stage-blind annotation, 99.0% of ESW events occur in N2/N3. Used to train a fixed dense detector on a frozen SleepFM encoder, ESW reaches an event-level $F_1$ of 0.680 on 166 unseen MODA subjects, compared with 0.635 for E2 ($ΔF_1$ = +0.045, paired-bootstrap 95% CI [0.024, 0.065]). ESW is thus useful supervision for cross-dataset detection, and closer annotation-level agreement with the MODA consensus did not translate into better transfer performance in this experiment. The annotations are released under the MASS data-use terms (https://doi.org/10.5281/zenodo.23894975).",
-      "pdf_url": "https://arxiv.org/pdf/2611.09576v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "5 pages, 1 figure, 2 tables. Submitted to IEEE ISBI 2027 (under review)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09544v1",
-      "title": "Sparse Array-Inspired Frame Structure Design for 5G NR ISAC",
-      "authors": [
-        "Haisu Wu",
-        "Hong Ren",
-        "Cunhua Pan",
-        "Yuqing Chen",
-        "Ruizhe Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T14:53:30Z",
-      "summary": "Integrated sensing and communication (ISAC) has emerged as a promising paradigm for future wireless networks. However, the extensive occupation of time-frequency resources for sensing limits the communication capacity. To address the resource conflict, this paper proposes a novel sparse sensing frame structure aligned with the 5G new radio (5G NR) resource grid at the slot and physical resource block (PRB) levels through a predefined sensing-pattern block. Specifically, inspired by the design of two-dimensional (2D) sparse antenna arrays, we map the sparse spatial geometries onto the time-frequency resource grid. By leveraging the hole-free property of the difference coarray, we eliminate the range-velocity ambiguity and cast the sensing signals into a reconstructed higher-order tensor representation. For efficient parameter estimation, we propose a novel binary-tree-based tensor train decomposition (BT-TTD) algorithm that extracts lower-dimensional tensor train cores (TT-cores) and executes a Vandermonde-prior-guided rectified alternating least squares (RecALS) algorithm. Simulation results validate that the proposed scheme achieves competitive estimation accuracy with reduced complexity. Furthermore, we investigate the topological properties of various sparse patterns, revealing the inherent trade-off among sensing accuracy, resource occupancy, and computational complexity.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09544v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "16 pages, 7 figures, 2 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09461v1",
-      "title": "A Hybrid Digital/Analog Polyphase Filtering Approach for High-Speed RF-DACs",
-      "authors": [
-        "Behdad Jamadi",
-        "Jungmin Lee",
-        "Tarun Cousik",
-        "Rohit Rangaraj",
-        "Jeffrey S. Walling"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:38:06Z",
-      "summary": "This paper proposes a hybrid polyphase interpolation for RF-DACs that removes the need for full-rate digital commutation by using passive combining on the RF-DAC itself. A P-branch polyphase FIR filter is factored into M streams, each formed by a (P/M)-way digital commutator at fRF/M and driving a dedicated RF-DAC slice, giving either partial digital (1<M<P) or fully analog (M=P) recombination. We show that the slice array acts as a single full-rate DAC with an M-times longer zero-order hold, derive yield laws for slice gain, timing and unit-capacitor mismatch, and find that with retiming the binding requirement is sub-picosecond matching of the fRF clock arrival, so the best choice is the smallest M that closes digital timing. Two 28-nm digital macros, designed for a 12.8GSps output rate and verified by post-layout simulation, illustrate a 4-phase variant that closes timing up to 14.4GSps with its digital logic at fRF/4 and an 8-phase variant that closes timing up to 16GSps with its digital logic at fRF/8. The analog recombination is evaluated with a behavioral model of the slice array. The architectures target wideband software defined radio (SDR) platforms, including cognitive radio, electronic warfare, and satellite communications.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09461v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "11 pages, 5 figures, 5 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09451v1",
-      "title": "Scalable BLE Channel Sounding Localization with Ranging-Assisted PDoA",
-      "authors": [
-        "Jorg Wieme",
-        "Eli De Poorter",
-        "Jeroen Hoebeke"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:25:58Z",
-      "summary": "Bluetooth Channel Sounding (CS) enables accurate phase-based ranging, but multi-anchor localization requires sequential ranging exchanges that limit scalability and increase measurement latency. This paper proposes Ranging-Assisted Phase Difference of Arrival (RA-PDoA), a scalable BLE localization architecture combining one active anchor performing a standard two-way CS exchange with multiple passive receive-only anchors observing the same transmissions. A channel-recovery framework is derived that enables passive anchors to reconstruct a channel response suitable for super-resolution delay estimation, allowing multipath-robust ranging without participating in a two-way exchange. Coarse arrival-time information is further used to bound the position estimate and reject inconsistent range solutions. A comprehensive evaluation characterizes the impact of multipath propagation, body shadowing, synchronization requirements, oscillator impairments, anchor placement, and deployment inaccuracies, thereby quantifying the practical infrastructure requirements for scalable BLE localization. Simulation results in modeled indoor environments show that RA-PDoA reduces the 90th-percentile localization error from 175.3 cm to 95.5 cm under body shadowing while maintaining an airtime requirement independent of the number of anchors. The results demonstrate that a single active ranging link enables scalable and multipath-robust BLE Channel Sounding localization.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09451v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "cs.NI"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "cs.NI (计算机网络与互联网通信)"
-      ],
-      "comment": "14 pages, 5 figures, 7 tables, Appendix, For reproducibility code available at https://gitlab.ilabt.imec.be/iwine/ra-pdoa-simulator",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09435v1",
-      "title": "Pinching Antenna Systems (PASS) for Air-Ground Integrated Sensing and Communications (ISAC)",
-      "authors": [
-        "Chaoran Chen",
-        "Haochen Li",
-        "Jincheng Zhu",
-        "Zhiwen Pan",
-        "Mark F. Flanagan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:05:58Z",
-      "summary": "This paper proposes a multi-user single-target air-ground integrated sensing and communication (ISAC) system, in which a ground pinching-antenna system (PASS) transmits communication and sensing signals and an unmanned aerial vehicle (UAV) receives the target echo. The communication and sensing beamforming vectors, pinching antenna positions, and UAV position are jointly optimized to minimize the weighted Cramér-Rao bound (CRB). A penalty dual decomposition (PDD) algorithm is developed for the resulting nonconvex problem. The auxiliary variable and beamforming subproblems admit globally optimal solutions in semi-closed form, while the positions of the pinching antennas and the UAV are updated by successive convex approximation (SCA). Under mild conditions, every accumulation point of the sequence generated by our proposed algorithm is a Karush-Kuhn-Tucker (KKT) point of the reformulated problem. Numerical results show that the proposed PASS-UAV design achieves a lower weighted CRB than conventional multiple-input multiple-output (MIMO) and PASS benchmarks.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09435v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "5 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09409v1",
-      "title": "Beyond the Pseudo-Inverse: GIM Precoding for Per-Antenna Power Minimisation in MU-MIMO",
-      "authors": [
-        "Hernan X. Cordova"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T12:42:43Z",
-      "summary": "We study linear precoder design for multi-user MIMO downlink under per-antenna power constraints (PAPC), which arise naturally when each antenna port has its own power amplifier. While the Moore-Penrose pseudo-inverse is the unique optimal generalized inverse for zero-forcing precoding under a total power constraint [1], we prove this optimality does not extend to the MMSE/RZF case under PAPC. Any precoder in the Generalized Inverse Matrix (GIM) family shares the same effective channel and per-user SINRs as the pseudo-inverse baseline, while its null-space component reshapes the per-antenna power profile. This separation principle enables minimising peak per-antenna power at fixed SINR targets with zero SINR penalty. We characterise the convex peak-power problem over this family and its active-set optimality, establish MRT and ZF asymptotic limits, and provide a convergent first-order subgradient algorithm. Simulations with 8-64 antennas confirm gains of 1.9-3.7 dB over pseudo-inverse RZF, with GIM-MMSE eliminating essentially all PAPC violations up to 20% per-antenna budget imbalance. The framework applies directly to fully-digital massive MIMO. Cell-free and hybrid analog-digital arrays are promising extensions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09409v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09384v1",
-      "title": "DNN-Driven Proactive UAV Trajectory and Beam Steering for Blockage-Resilient Communications",
-      "authors": [
-        "Abdallah S. Ghazy",
-        "Hussein A. Ammar",
-        "James Bayes",
-        "Francois Chan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T12:23:22Z",
-      "summary": "This paper proposes Autonomous UAV Communication (AutUAVCom), a proactive communication system that jointly adapts the flight trajectory and RF beam steering to minimize UAV energy consumption while satisfying secrecy and reliability requirements for rescue teams operating in dynamic, cluttered, and GPS-denied environments. Unlike existing modelbased proactive approaches, AutUAVCom employs a deep neural network-based Tracking and Prediction (T&P) module that combines onboard sensing with spatiotemporal and body-orientation information to track users, localize blocking objects, and predict future trajectories and potential beam blockages. Building on the T&P module, we formulate a constrained optimization problem and develop a two-step iterative numerical approach. Monte Carlo simulations show that, relative to a reactive system, AutUAVCom achieves 10% and 19% gains in energy efficiency and channel secrecy, respectively, while reducing the outage probability by 85%, under a mean blockage arrival interval of 120 seconds and a mean blockage duration of 20 seconds.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09384v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09182v1",
-      "title": "A Tutorial on Practical QKD Post-Processing Algorithms Using a GUI-Based Simulation Framework",
-      "authors": [
-        "Ushnik Nath",
-        "Neha Sharma",
-        "Ramniwas Meena",
-        "Neel Kanth Kundu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T09:02:34Z",
-      "summary": "Recent experimental demonstrations of Quantum Key Distribution (QKD) have attracted significant attention for their ability to establish information-theoretically secure encryption keys for next-generation communication systems. As practical deployment accelerates, the realization of compact, scalable, and high-throughput discrete-variable (DV) QKD systems has become increasingly important. While advances in photonic integration are enabling low-size, low-weight, and low-power QKD hardware, the security and performance of these systems rely heavily on efficient post-processing techniques to generate identical, secure keys. This tutorial presents a comprehensive algorithm-level review of practical post-processing techniques for DV-QKD, with particular emphasis on information reconciliation methods based on Cascade, Winnow, low-density parity-check (LDPC), and polar codes. We also analyze the theoretical asymptotic and finite-size secret key rates (SKRs) of DV-QKD and benchmark these bounds against the practical SKRs achieved using actual post-processing algorithms. Furthermore, we present a server-client model to implement the entire QKD post-processing pipeline. The performance is evaluated in terms of QBER and SKR across various system parameters, considering the complete post-processing pipeline, including sifting, information reconciliation, privacy amplification, and authentication. This tutorial also presents a graphical user interface (GUI) for the QKD post-processing methods, enabling researchers, industry practitioners, and academic users to visualize and analyze the impact of different post-processing techniques and system parameters, such as QBER, on the SKR performance of DV-QKD systems.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09182v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "Submitted to IEEE Open Journal of the Communications Society",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09156v1",
-      "title": "Evaluation of a Multi-Link Machine Learning Approach for Rainfall Detection Using Satellite Microwave Links",
-      "authors": [
-        "Mostafa Ftouni",
-        "Margherita Spalla",
-        "Matteo Colli",
-        "Andrea Randazzo",
-        "Christian Gianoglio"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T08:37:57Z",
-      "summary": "The impacts of climate change have increased the need for reliable real-time rainfall monitoring systems. This study investigates rainfall detection using a network of opportunistic sensors based on satellite microwave links (SMLs) combined with machine learning (ML) classifiers. Two models, a random forest (RF) and a convolutional neural network (CNN), were trained on aggregated SML data, including information from neighboring links. The results demonstrate that leveraging information from multiple links substantially enhances the detection of both wet and dry periods compared to single-link approaches. Moreover, the RF model consistently provides a more stable and reliable trade-off than CNN, improving rainfall detection and reducing misclassifications overall, with particularly strong performance during harsh weather conditions. The study spanned up to 32 rainy days between 2021 and 2024.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09156v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": "IEEE Geoscience and Remote Sensing Letters, Volume: 23, article number: 1001305, date of publication: 21 May 2026",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09081v1",
-      "title": "Quantum-Enhanced Classical Communications for DPMZM-based NG-PON2 Systems",
-      "authors": [
-        "Parvin Kumar",
-        "Sourav Banerjee",
-        "Neel Kanth Kundu",
-        "Umesh Sharma"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T07:08:44Z",
-      "summary": "This paper presents a framework for integrating quantum detection techniques into a Dual-Parallel Mach-Zehnder Modulator (DPMZM)-based Next Generation Passive Optical Network 2 (NG-PON2) communication system. We present a system model for the DPMZM-based NG-PON2 quantum communication system and characterize its signal-to-noise ratio (SNR), demonstrating its superiority over conventional MZM-based systems. We analyze the performance of various quantum modulation techniques, including binary phase-shift keying, quadrature phase-shift keying, and M-ary quadrature amplitude modulation. A comprehensive analytical framework is developed to evaluate the SNR, BER, and mutual information for both classical and quantum detection schemes within the DPMZM-based NG-PON2 quantum communication system. Our simulation results show that quantum detection significantly outperforms classical detection, and the DPMZM architecture further enhances the performance over the baseline MZM architecture by improving the effective modulation efficiency and receiver sensitivity.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09081v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09079v1",
-      "title": "DeepRT-Cal: Learning to Calibrate Ray-Traced Twin Channel Statistics with Low-Fidelity Environmental Geometry",
-      "authors": [
-        "Shaoyi Liu",
-        "Jianhua Zhang",
-        "Li Yu",
-        "Yichen Cai",
-        "Tao Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T07:07:21Z",
-      "summary": "Sixth-generation (6G) wireless systems increasingly rely on digital twin channels (DTCs) to represent and interact with physical radio environments. Ray tracing (RT) is naturally suited to DTC construction because it provides deterministic and physically interpretable channel predictions. However, high-fidelity three-dimensional environment models are expensive to obtain, whereas geometric inaccuracies in low-fidelity models can alter the detected multipath components (MPCs) and consequently distort received-power and delay-domain twin channel statistics. Building on the DeepRT ray-tracing framework, this paper proposes DeepRT-Cal, a geometry-aware cross-fidelity calibration framework that predicts high-fidelity twin channel statistics from low-fidelity geometry and RT features.The network encodes global link descriptors, masked low-fidelity MPC tokens, propagation-corridor geometry, and link-centered environmental objects. During training, detailed geometry is introduced as privileged information with structured masking, while deployment requires only low-fidelity geometry and low-fidelity RT information. A link-conditioned cross-attention module retrieves the environmental context relevant to each Tx--Rx link. The prediction heads estimate high-fidelity twin channel statistics, including total received power, RMS delay spread, mean excess delay, and a normalized power-weighted power-delay profile (PDP). Outdoor evaluation shows that, in an non-line of sight (NLoS) region, the method reduces power MAE from 16.80 to 3.88 dB and RMS delay-spread MAE from 304.89 to 98.19 ns. In a LoS-dominated region, power prediction improves, while RMS delay-spread accuracy remains comparable to direct RT.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09079v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "15 pages, 14 figures, 3 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09019v1",
-      "title": "Capacity of Multi-Layer Manhattan-Grid UAV Corridors Served by Terrestrial 5G NR Networks",
-      "authors": [
-        "Saad Masrur",
-        "M M Sadman Shafi",
-        "Md Sharif Hossen",
-        "Ismail Guvenc"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T05:49:16Z",
-      "summary": "Advanced air mobility (AAM) is expected to organize unmanned aerial vehicle (UAV) traffic into corridors at multiple altitudes. In this paper, we study the downlink (DL) and uplink (UL) capacity of a multi-layer Manhattan-grid corridor mesh served by a terrestrial fifth-generation (5G) new radio (NR) macro network. The corridor spacing and the numbers of layers, UAVs, and base stations are configurable. We combine the 3GPP aerial channel and antenna models, correlated UAV mobility, and frequency-selective fading with an NR physical-layer abstraction that includes channel aging and link adaptation. Results show that UAVs above 90 m experience a DL signal-to-interference-plus-noise ratio (SINR) about 17 dB below that of ground users, and that a dense macro network with $10^\\circ$ downtilt leaves 17-29% of corridor positions without DL service under full-buffer load, regardless of corridor spacing. On a common layout, the carrier frequency (700 MHz, 3.5 GHz, or 7.2 GHz) changes the UAV SINR by less than 0.5 dB, since the corridor links are strongly interference-limited. The UL is the bottleneck: at 85% satisfaction, a 20 MHz carrier supports only about 3.4-4.1 UAVs/km$^2$ with 4 Mb/s of UL video per UAV.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09019v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "cs.PF"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "cs.PF (系统性能与评估)"
-      ],
-      "comment": "Under Review",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09003v1",
-      "title": "FoundaRF: A Physics-Informed Foundation Model Framework for Radio-Frequency Passive Components",
-      "authors": [
-        "Houbo He",
-        "Chris Han",
-        "Hyunsu Chae",
-        "Lei Xia",
-        "Qiang Zhou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T05:22:17Z",
-      "summary": "Designing RF/mmWave passive components is a time-consuming process that relies heavily on expert knowledge and iterative EM simulations. Although recent ML surrogate models have shown great promise in accelerating passive design, they remain task-specific and lack generalization. This paper presents FoundaRF, a foundation model framework that unifies passive layout modeling across diverse layout structures and technologies. It combines a self-supervised encoder with adaptive layout processing and physics-aware decoders to enable few-shot transfer. Experiments across four semiconductor technologies show strong generalization to unseen structures, outperforming baselines with up to a 3.3x reduction in prediction error, reducing labeled-data requirements by up to fourfold, and substantially shortening design turnaround. FoundaRF establishes a scalable and data-efficient solution for RF/mmWave passive design automation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09003v1.pdf",
+      "published_at": "2026-11-10T16:11:11Z",
+      "summary": "Channel estimation is crucial in wireless communication systems. Many existing works train and test their models using the same or similar channel. However, practical channels are infinitely diverse and time-variant while data-driven algorithms often degrade on new and previously unseen channels. This prohibits the practical implementation of neural networks for channel estimation, particularly in high speed scenarios characterized by rapidly channel profile changes and very high Doppler shifts. Online training can fine-tune models to adapt to new channels, but requires high computation resource and incurs significant latency for physical-layer devices. Moreover, online training cannot exhaustively cover all possible channels because there are infinitely many possible channels. Therefore, we investigate the ability of neural networks to generalize to wireless channels. This paper proposes design criteria to generate synthetic training data, which guaranty that the resulting networks perform robustly across wireless channels, especially for very high Doppler shifts and different Doppler spectra. It ensures that offline-trained neural networks require no prior information or online training to precisely estimate the new channels. To demonstrate general applicability, we use neural networks with different levels of complexity to show that the generalization achieved appears to be independent of architecture. From simulation results, neural networks achieve a certain performance across wireless channels with different unseen power delay profiles (PDP) and Doppler shifts.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14267v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SP",
       "categories": [
@@ -500,103 +49,504 @@
         "eess.SP (信号处理 (Signal Processing))",
         "cs.AI (通用人工智能 (AI))"
       ],
-      "comment": "Accepted for publication in the proceedings of the 2026 IEEE/ACM International Conference on Computer-Aided Design (ICCAD 2026)",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08879v1",
-      "title": "GeoJeV: Unified Spatial Probability for Training-Free Efficient Evidence Acquisition in Ultra-High-Resolution Remote Sensing",
+      "paper_id": "2611.14266v1",
+      "title": "Physics-Constrained Autoencoder for Interpretable Health Representation Learning in Turbofan Engines",
       "authors": [
-        "Xinyi Niu",
-        "Lingfeng Chen",
-        "Jiehua Zhang",
-        "Panhe Hu",
-        "Li Liu"
+        "Leonardo Baldo",
+        "Jokin Alcibar Ibarzabal",
+        "Daniel Cisneros Acevedo",
+        "Kai Goebel",
+        "Manuel Arias Chao"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T02:12:39Z",
-      "summary": "Ultra-high-resolution (UHR) remote sensing imagery provides rich spatial details but poses challenges for accurate and efficient multimodal understanding. Existing evidence acquisition methods selectively explore relevant image regions, yet largely rely on generative multimodal large language models (MLLMs) for intermediate search control. However, reinforcement learning from human feedback (RLHF) primarily aligns these models with human-preferred responses rather than explicitly optimizing region-level relevance judgments, while repeated autoregressive decoding introduces additional computational overhead. To address these limitations, we propose GeoJeV, a training-free method that formulates evidence acquisition as spatial probability-driven decision making. At each evaluated region, a frozen JeV model produces a probability distribution over candidate regions. Specifically, Region Rank prioritizes candidate regions, Sparse Branch adaptively determines branching width through sparse probability support, and Depth Gate controls refinement depth based on branch sparsity and distribution concentration. By coordinating search priority, branching width, and refinement depth through a shared distribution, GeoJeV reduces reliance on RLHF-aligned generation and eliminates intermediate decoding. Experiments on LRS-GRO, MME-RealWorld-RS, and LRS-VQA achieve accuracies of 60.59%, 52.79%, and 34.32%, respectively. Across the three benchmarks, GeoJeV improves the average accuracy of Qwen3-VL-8B by +5.32pp with only 1.12 additional seconds per question, while achieving a 7.8-fold inference speedup over the recent method.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08879v1.pdf",
+      "published_at": "2026-11-10T16:10:36Z",
+      "summary": "Health Indices (HIs) summarize degradation from operational data and support diagnostic and prognostic tasks in Prognostics and Health Management (PHM). Their usefulness depends on capturing degradation and interpreting system condition. Autoencoders learn such representations from unlabelled monitoring data; however, when training is driven only by reconstruction, the physical meaning of latent variables remains undefined, limiting their interpretation and diagnostic value. This work proposes a physics-constrained autoencoder that embeds system knowledge as an inductive bias in the decoder architecture and as a learning bias in the loss function. The decoder contains differentiable physical equations that receive latent variables and operating conditions as inputs, structurally guiding each latent variable to represent a predefined physical quantity and enabling component-level analysis before aggregation into a system-level HI.The methodology is benchmarked on the N-CMAPSS dataset against alternative representations. Reconstruction reaches an $R^2$ of 0.9993 and an MAE of 0.0036, comparable to fully data-driven models. After operating-condition correction, the inferred physical quantities track degradation, and their aggregation produces an HI with a Spearman correlation of 0.9791 with the ground truth, an RMSE of 0.0286, and an MAE of 0.0233. The methodology is further evaluated using a single model trained across four datasets representing distinct degradation scenarios. This model preserves component-level signatures that distinguish compression-side from expansion-side degradation without diagnostic labels.Finally, the proposed framework enables degradation trends to be visualized on component maps, providing a health representation in a form familiar to engine operators and domain experts.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14266v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14263v1",
+      "title": "Chain of Physics: Supporting Fault Diagnosis with Engineering-Inspired Large Language Model Reasoning",
+      "authors": [
+        "Wenqi Zhou",
+        "Leonardo Baldo",
+        "Kai Goebel",
+        "Manuel Arias Chao"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:09:44Z",
+      "summary": "Fault diagnosis in complex systems requires linking observed changes in physical quantities to the failure mechanisms that produce them. Experienced engineers perform this task by combining sensor information with knowledge of system behavior and fault propagation. Large Language Models (LLMs) can support this process, but their diagnostic reasoning depends on the availability of asset-specific engineering knowledge and on how this knowledge is represented and used during inference. This work introduces Chain of Physics (CoP), an LLM-based fault-diagnosis framework built around a Constrained Knowledge Graph (CKG) generated automatically from asset-specific reference documentation. CoP addresses failure-sensor association from textual engineering knowledge. The CKG stores diagnostic chains connecting failure modes, changes in physical quantities, and monitoring sensors. During inference, semantically similar graph paths are retrieved for each question and used as both information and in-context examples for the reasoning process. Candidate failure modes are extracted from the question and analysed independently through dedicated LLM calls, which generate plausible failure-to-observation chains. A final decision module compares these chains with the available answer choices. CoP is evaluated on the FailureSensorIQ benchmark across four industrial asset classes and three LLMs. Compared with direct prompting and conventional Retrieval-Augmented Generation (RAG), CoP improves diagnostic accuracy across all evaluated models, with gains ranging from 7.8 to 19.6 percentage points and from 11.7 to 18.2 percentage points, respectively. The results show that structured engineering knowledge can improve LLM-based diagnostic reasoning when graph retrieval is combined with in-context examples of fault propagation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14263v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14250v1",
+      "title": "CFAR Detection on Non-Coherently Integrated Angular Maps for mmWave Radio SLAM",
+      "authors": [
+        "Paolo Tosi",
+        "Ossi Kaltiokallio",
+        "Marcus Henninger",
+        "Silvio Mandelli",
+        "Mikko Valkama"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:00:02Z",
+      "summary": "Reliable multipath detection is essential for millimeter-wave simultaneous localization and mapping (SLAM), where propagation paths reflecting off the environment provide geometric constraints beyond the dominant line-of-sight component. This paper develops constant false alarm rate (CFAR)-based detectors for beam-swept bistatic integrated sensing and communications (ISAC). Starting from conventional CFAR on the I/Q datacube, we derive a modified detector for non-coherently integrated angular power maps, where the post-integration noise statistics differ from those assumed by standard cell-averaging CFAR. To improve practicality, we introduce a multi-cell cell-under-test formulation and a plus-shaped training window that reduces computational cost while accounting for sidelobe structure. The proposed methods are evaluated on experimental 60 GHz indoor measurements using a snapshot-SLAM estimator. Compared with a singular value decomposition (SVD)-based detector, the proposed CFAR approaches reduce the overall positioning RMSE from 0.30 m to 0.24-0.26 m, with the largest improvement in non-line-of-sight snapshots. The multi-cell non-coherent detector further lowers the computational complexity without degrading positioning accuracy, demonstrating its suitability for practical multipath radio-SLAM.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14250v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 4 figures, 1 table. This work has been submitted to the IEEE for possible publication",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14225v1",
+      "title": "Dual-Parabola Interpolator: A Low-Bias Peak Estimator for Distributed Radar Synchronization",
+      "authors": [
+        "Matteo Pardi",
+        "Giulio Meucci",
+        "Francesco Mancuso",
+        "Anna Lisa Saverino",
+        "Amerigo Capria"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:41:19Z",
+      "summary": "Coherent distributed radar processing requires accurate wireless synchronization. Two-way time transfer (TWTT) obtains reception timestamps from sampled matched-filter peaks, but interpolation bias limits accuracy even when noise is reduced by higher signal-to-noise ratio (SNR) or averaging. Three-point parabolic interpolation is attractive for its simple, explicit formula; reducing its bias generally requires more elaborate fitting, such as higher-order polynomials, or a model tailored to a particular peak shape. A practical alternative should retain this simplicity and interpretability while approaching the low bias of more flexible fits. We propose the Dual-Parabola Interpolator (DPI), which combines two parabolic estimates from five amplitude samples near the matched-filter peak. An adaptive weight cancels the leading interpolation error without requiring a waveform-specific peak model or a correction table. Simulations over flat and standardized multipath channels show bias comparable to a five-point quartic fit, with essentially the same standard deviation as the other interpolators and an execution cost close to a three-point parabolic fit. This combination is useful for TWTT in urban or other multipath settings, where channel distortion prevents reliance on a nominal peak shape.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14225v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 7 figures. Submitted for peer review as a conference paper",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14055v1",
+      "title": "Finite Blocklength Performance Analysis of Uplink RSMA with Practical Imperfections",
+      "authors": [
+        "Farjam Karim",
+        "Nurul Huda Mahmood",
+        "Arthur Sousa de Sena",
+        "Deepak Kumar",
+        "Matti Latva-aho"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:21:56Z",
+      "summary": "Future generations of wireless networks will support massive communication and hyper-reliable low-latency communications, which are fundamental to large-scale Internet of Things (IoT) deployments with stringent performance requirements. To support such diverse and demanding requirements, robust and flexible multiple access schemes are essential. In this work, we develop a comprehensive analytical framework for evaluating uplink rate-splitting multiple access (RSMA) in the finite blocklength regime under realistic non-ideal conditions. Specifically, we derive closed-form expressions for the block error rate (BLER) and goodput, accounting for imperfect channel state information at the receiver (CSIR), imperfect successive interference cancellation (SIC), and hardware impairments. To reflect practical wireless environments, we model the channel using Nakagami-m fading model. Our analysis shows that at lower transmit power levels, imperfect CSIR is the dominant performance-limiting factor, whereas hardware impairments and imperfect SIC become more significant in degrading system performance as the transmit power increases. To further understand the system behavior, we derive asymptotic BLER expressions. We also analyze the impact of rate allocation, demonstrating its critical role in ensuring fairness and reliability. Monte Carlo simulations validate our analytical expressions. Notably, our results show that uplink RSMA significantly outperforms NOMA even when RSMA operates under harsh imperfect CSIR. This superiority establishes RSMA as a robust and efficient candidate for future wireless networks in practical, constrained environments",
+      "pdf_url": "https://arxiv.org/pdf/2611.14055v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14035v1",
+      "title": "ScaleBrain: A Scale-Consistent Framework for EEG Foundation Models",
+      "authors": [
+        "Minyu Zhou",
+        "Yajing Wu",
+        "Yongqiang Tang",
+        "Wang Jia",
+        "Wensheng Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:03:41Z",
+      "summary": "Foundation models pre-trained on large unlabeled electroencephalography (EEG) corpora have emerged as a transformative paradigm for Brain-Computer Interface (BCI) applications. Recent EEG foundation models have shown that multi-scale representations derived from fixed-length patches can improve EEG representation learning. Existing frameworks commonly construct temporal scales through feature-level operations. However, these operations leave the correspondence between learned features and scale-specific characteristics of the original EEG signals implicit. Moreover, when the self-supervised objective is not aligned with the multi-scale input representations, information at some temporal scales may receive insufficient supervision during pre-training. In light of this, we propose ScaleBrain, a scale-consistent pre-training framework that explicitly coordinates multi-scale representations of EEG from both the model input and optimization objective sides. Specifically, ScaleBrain introduces multi-scale EEG tokenization to represent the same EEG segment through analysis windows with different temporal spans and shared temporal anchors, and pairs these representations with scale-specific reconstruction to align with the multi-scale input structure and provide supervision across temporal resolutions during self-supervised learning. We further develop an axial spatio-temporal attention mechanism to contextualize the fused multi-scale representation along spatial and temporal dimensions. Extensive evaluations on six public BCI benchmarks against 12 representative baselines show that ScaleBrain achieves the highest mean Balanced Accuracy on five datasets and ranks third on the remaining one, with only 5.0M parameters, demonstrating strong performance and favorable parameter efficiency.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14035v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14007v1",
+      "title": "Application of the Phase Correction Method in Tracking Modules of Navigation Receivers",
+      "authors": [
+        "Kudryavtsev I. A.",
+        "Shafran S. V.",
+        "Balmasova M. A"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:46:30Z",
+      "summary": "One of the problems of the tracking modules is their significant inertia in case of narrow bandwidth, which is desirable to mitigate signal noise. The paper describes a method of phase correction, improving accuracy and dynamic characteristics of the tracking process in GNSS receivers. The pivotal idea of the method supposes correction of the phase deviation between the received signal and its local copy at the end of every integration period. This correction is performed directly over the phase accumulator of a DDS system. This approach reduces inertial effects crucially. Application of phase correction method with narrow filter bandwidth is much more efficient when FLL-assisted PLL tracking is used. It is shown that in this case a separate FLL discriminator is not needed, and the resulting filter structure can be significantly simplified.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14007v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "15 pages, 17 figures. The paper is accepted for publication in the journal \"Radiotechnika\" (Radio engineering)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13906v1",
+      "title": "Target Selection with a Disappearing-Stimulus Mixed-Reality P300 Interface: Feasibility and Object-Distinguishable Versus Uniform Cues",
+      "authors": [
+        "Runqi Pan",
+        "Takuto Niinuma",
+        "Yunshan Huang",
+        "Masato Sugino",
+        "Kenta Shimba"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T11:01:32Z",
+      "summary": "Mixed-reality (MR) P300 interfaces can register selectable destinations, such as wheelchair goals, directly in the user's surroundings. When the cues disappear between flashes, however, the user must retain an intended target that is no longer visible. We tested whether such an interface supports target selection and whether giving each cue a stable colour-shape identity improves it compared with visually uniform spheres. Six healthy adults completed four trials in each cue condition of a 5x5 row/column task on a head-mounted MR display, with EEG from Fz, Cz, and Pz. Shrinkage linear discriminant analysis was evaluated with nested validation in which complete trials were held out from class balancing, hyperparameter selection, and fitting. Both conditions evoked a parietal target-related positivity. The decoded cell was correct in 18 of 48 held-out trials, against 1.9 expected by chance (binomial p < 1e-12), and in three participants individually. Cue format made no detectable difference: complete-target accuracy was 9/24 in both conditions (paired difference 0.0 percentage points, 95% CI [-37, 37]), and held-out AUC was 0.609 for spheres and 0.585 for object cues. Disappearing-stimulus MR P300 selection is therefore feasible under strict trial-level evaluation, but the benefit of object identity, if any, is too small to resolve in a pilot of this size.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13906v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.HC",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.HC (人机交互 (HCI))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "5 pages, 2 figures, 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13834v1",
+      "title": "MusicFlux: Flexible Conditioning for Text-Guided Music Generation and Editing",
+      "authors": [
+        "Teysir Baoueb",
+        "Leonardo Boulitreau de Menezes Martins Marques",
+        "Paraskevas Stamatiadis",
+        "Ga{ë}l Richard"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T10:00:03Z",
+      "summary": "Music editing transforms existing recordings while preserving their original attributes. Recent approaches adapt pretrained text-to-music models for tasks like inpainting, event insertion, or restoration by conditioning them with context audio. It was recently proposed for image editing to unify generation and editing by treating the source image as in-context information. However, applying this directly to music is computationally expensive due to long audio sequences. In this work, we develop MusicFlux, a text-guided music editor built on an efficient pretrained flow-matching text-to-audio model. We introduce two conditioning approaches that trade off editing performance and computational efficiency. Experiments show that both are competitive with strong baselines, with one achieving better editing quality and the other preserving the original sequence length and substantially improving computational efficiency.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13834v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "cs.AI",
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.SD (声音与音频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "Submitted to ICASSP 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13828v1",
+      "title": "A Faster and Efficient Indoor User Localization Using Bistatic MIMO Radar",
+      "authors": [
+        "Shadab Anjum",
+        "Sourav Banerjee",
+        "Neel Kanth Kundu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T09:53:54Z",
+      "summary": "Indoor user localization is essential for applications such as asset tracking, robotic navigation, and smart-building automation where satellite-based positioning is unavailable. Bistatic MIMO radar exploits bistatic range measurements and geometric diversity from distributed antennas, but low-SNR conditions make the resulting estimation ill-conditioned. We formulate indoor localization as a Tikhonov-regularized nonlinear least-squares problem and solve it with a damped Gauss-Newton (DGN) algorithm, in which each iteration reduces to a closed-form 3x3 linear solve followed by an Armijo backtracking line search. Simulations show accuracy on par with, and runtime far faster than, an SDP-based benchmark.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13828v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 5 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13827v1",
+      "title": "RaGCD: Reliability-Aware 2D-3D Multimodal Generalized Category Discovery",
+      "authors": [
+        "Junyong Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T09:53:05Z",
+      "summary": "Generalized Category Discovery (GCD) aims to recognize known categories while discovering novel ones from partially labeled data. Existing GCD studies primarily focus on unimodal observations or image-text interactions, leaving the complementarity between visual appearance and explicit 3D geometry underexplored. To exploit complementary visual appearance and spatial geometry, we investigate GCD with paired images and point clouds. However, the relative reliability of these modalities varies across samples, so unreliable evidence can compromise both multimodal fusion and cross-modal knowledge transfer. This challenge is particularly pronounced for novel categories, where labeled supervision is unavailable. To address it, we propose RaGCD, a reliability-aware framework for 2D-3D multimodal GCD. Specifically, Reliability-aware Modality Allocation (RMA) combines prediction-derived reliability cues with modality-specific features to adaptively allocate image and point-cloud contributions at the channel level. Reliability-conditioned Alignment (RCA) further reweights feature-level and prediction-level alignment and selects reliable observations for prototype-level alignment, regulating cross-modal interaction according to sample reliability. Extensive experiments on ModelNet40, Washington RGB-D, and ShapeNet-ViPC demonstrate that RaGCD outperforms the compared methods in overall and novel-category clustering accuracy. Ablation studies support the complementary roles of RMA and RCA, while controlled corruption experiments show that modality allocation shifts toward the less corrupted modality. These results support the effectiveness of reliability-aware interaction for category discovery from paired appearance and geometry.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13827v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13758v1",
+      "title": "Mixed Signals: Weight-Space Programming for EEG and ECG",
+      "authors": [
+        "Dara Varam",
+        "Taraneh Aminosharieh Najafi",
+        "David Atienza"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T08:59:09Z",
+      "summary": "Weight-space programming allows language models to read a trained neural network's weights and edit them. This opens the door to ``training'' by reasoning rather than through gradient descent. Prior work has demonstrated its functionality and promise for game-playing networks and fixing specific failures in language models, even extending to diffusion models. In this work, we present its applicability to models trained on biosignal data, specifically EEG and ECG data. We show that frontier models are not only able to debug specific faults planted in biosignal-based models without being told what these faults are, but are even capable of writing all the weights of a network from scratch, given only the architecture, the task, and a minimal set of training subjects. In particular, in one set of experiments, a language model was able to match standard gradient-descent training using $6\\times$ fewer training subjects, through reasoning alone and without any gradient descent step. Networks written by Claude Opus 5.5 also scored higher than classic hand-crafted EEG pipelines (alpha band power, and common spatial patterns with linear discriminant analysis) when built from the same 5 subjects. We also highlight some of the limitations, which include the inability of language models to improve already well-trained classification models, and their incapacity to reliably recognize, from the weights alone, the task a network was trained on. Overall, our results indicate that weight-space programming can be useful for small networks, such as those deployed on edge devices and wearables, but the concept still requires further investigation before it can be used in practice.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13758v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.AI (通用人工智能 (AI))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "9 pages, 7 figures, 5 tables. Project website: https://daravaram.github.io/BioWSP",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13699v1",
+      "title": "Residual-Closed-Loop SAGE-Brent Estimation for Unknown-Order Wideband Underwater Acoustic Channels",
+      "authors": [
+        "Wenxu Bi",
+        "Peng Chen",
+        "Wei Wang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T07:45:00Z",
+      "summary": "Grid mismatch in wideband channel estimation leaves structured cancellation residuals after strong-path subtraction. These residuals generate spurious correlation peaks or mask weak arrivals, turning continuous parameter errors into path-count errors. We propose RC-SAGE-Brent, a residual-closed-loop estimator that jointly refines continuous delay-scale parameters and corrects the unknown-order path set. Within each feedback cycle, ambiguity-constrained alternating Brent searches suppress strong-path cancellation residuals. Candidate validation, resolution-constrained pruning, and full-domain residual redetection then revise the active path set. For linear frequency modulation (LFM) probes, an observable signal-to-residual ratio adaptively scales the model-order penalty to mitigate overestimation caused by delay-scale coupling. Theoretical analysis links off-grid parameter errors to local cancellation-residual curvature and weak-path detectability. Factorial ablations, paired comparisons against standard sparse and off-grid estimators, and measured channel replay demonstrate improved path-set recovery and waveform reconstruction while delineating the operational boundaries of the method.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13699v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "31 pages, 14 figures, 9 tables. Includes supplementary materials (Tables S1-S5)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13655v1",
+      "title": "Toward Pseudorange-Based PNT with Starlink: A Mock Fused LEO GNSS Implementation",
+      "authors": [
+        "Samuel C. Morgan",
+        "Zacharias M. Komodromos",
+        "Wenkai Qin",
+        "Andrew Graff",
+        "Zachary L. Clements"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T06:55:16Z",
+      "summary": "We present experimental results from Starlink for pseudorange-based positioning, navigation, and timing (PNT), emulating a system that fuses a primary communications mission with a secondary low-Earth orbit (LEO) PNT mission. Legacy global navigation satellite system (GNSS) constellations faceinherent vulnerabilities and signal limitations, prompting growing interest in broadband LEO constellations---such as SpaceX's Starlink---for resilient PNT. However, opportunistic use of stand-alone Starlink signals fails to achieve GNSS-competitive accuracy due to frame timing irregularities and reliance on uncorrected poor-quality publicly available ephemeris data. To overcome these limitations, we present a mock implementation of a fused LEO GNSS architecture. Our method extracts time-of-arrival observables from live Starlink Ku-band downlinks and pairs them with high-fidelity, beam-specific orbit and clock models distributed as if provided natively by the constellation operator. In a field campaign, and despite constraints imposed by consumer-grade receiver hardware, the method yields 95% error bounds of 2.33 m horizontally (semi-major axis), 3.37 m vertically, and 11.19 ns in timing, with the actual solution errors falling well within these bounds.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13655v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "astro-ph.IM",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "astro-ph.IM (天文仪器与方法)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13646v1",
+      "title": "MouldIt: Data Efficiency of Multi-Task Temporal Representation Learning in Injection Moulding",
+      "authors": [
+        "Abdullah Ayad"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T06:42:04Z",
+      "summary": "Smart industrial solutions that can address multiple tasks require models that understand the underlying processes. We examine representation learning for modeling the injection moulding process as an example of such solutions. We consider its data efficiency and multi-modal benefit compared to classical machine learning alternatives. To this end, we synthesize a process-informed dataset based on a real reference cycle of an Erlanger Träger part. We then introduce MouldIt, a temporal convolution and attention based variational autoencoder that reconstructs in-mould signals, while classifying parts as acceptable or as one of our synthetic failure modes. We evaluate MouldIt on two tasks, known-class classification and unknown-class detection, across nine dataset sizes in single-modal and multi-modal settings. We compare it with an accept-all baseline and the classical methods k-nearest neighbors, logistic regression, random forests, and principal component analysis, which we adapt to support both tasks. MouldIt outperforms classical methods across both tasks from 4000 cycles in the single-modal setting and from 2000 cycles in the multi-modal setting. It achieves part sorting losses of 6.0 $\\pm$ 0.7% and 1.0 $\\pm$ 0.3% in the single-modal and multi-modal settings respectively, ranking first across all baselines and a combination of principal component analysis and random forests.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13646v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "cs.RO (机器人学与具身智能)",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "14 pages, 10 figures, 4 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13633v1",
+      "title": "Stability Analysis of Single- and Multi-Snapshot ESPRIT",
+      "authors": [
+        "Wenchong Huang",
+        "Ping Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T06:19:55Z",
+      "summary": "Spectral estimation seeks to recover unknown frequencies from $T$ snapshots, each consisting of $Ω+1$ noisy Fourier measurements. Super-resolution refers to the recovery of frequencies whose minimum separation $Δ$ is smaller than $1/Ω$. We establish state-of-the-art stability bounds for single- and multi-snapshot ESPRIT when the frequencies form well-separated clumps, with the largest clump containing $n^\\star$ frequencies. In particular, for single-snapshot ESPRIT, our error bound scales as $$ \\mathcal{O}(Ω^{-1}\\mathrm{SRF}^{2n^\\star-2}\\cdot\\mathrm{Noise}), $$ where $\\mathrm{SRF}:=(ΩΔ)^{-1}$ denotes the super-resolution factor, provided that the noise level satisfies $\\mathrm{Noise}\\lesssim(ΩΔ)^{2n^\\star-2}$. In comparison with the minimax bounds [arXiv:1904.09186] and the computational resolution limits [arXiv:2003.02917, arXiv:2211.15208], our result shows that single-snapshot ESPRIT achieves the optimal stability scaling in the super-resolution regime. For multi-snapshot ESPRIT, we establish error bounds under both deterministic noise and Gaussian white noise, attaining the best-known SRF dependence under weaker conditions. Numerical experiments corroborate the theoretical error bounds.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13633v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13574v1",
+      "title": "Joint Air Corridor and BS Coverage Planning for Large-Scale High-Density Low-Altitude Aerial Networks via Channel Knowledge Maps",
+      "authors": [
+        "Jiaxuan Li",
+        "Yilong Chen",
+        "Yuan Guo",
+        "Fan Liu",
+        "Jie Xu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T04:43:28Z",
+      "summary": "This paper studies the joint air corridor and base station (BS) coverage planning problem for high-density low-altitude aerial networks supported by terrestrial cellular infrastructures. In the considered system, unmanned aerial vehicles (UAVs) operate within a structured air corridor planned over a grid-based airspace, and each BS serves selected corridor grid cells by sharing its communication resources among all UAVs therein. Each BS's traffic load depends on both the number of covered corridor cells and the UAV density, thereby affecting the communication rate available to each UAV. We exploit the channel knowledge map (CKM) to characterize the channel gains between BSs and candidate airspace cells and evaluate desired signals and inter-cell interference for environment-aware offline planning. Based on CKM, we jointly optimize the corridor layout and BS coverage to minimize a weighted objective balancing corridor length and the supportable average UAV density along the entire corridor, subject to minimum communication rate requirements for all UAVs along the air corridor. The joint design is formulated as a mixed-integer linear program (MILP), which can be optimally solved using off-the-shelf solvers. For large maps, we develop a scalable suboptimal algorithm based on Lagrangian relaxation and A* search. Specifically, we incorporate BS resource constraints into A* corridor search via Lagrangian relaxation, and then jointly optimize BS coverage and UAV density along the generated corridors under the original rate constraints. Numerical results demonstrate the benefits of the proposed joint design in supporting high-density UAV operations and show that the proposed algorithm obtains high-quality solutions with substantially reduced computation time.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13574v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13510v1",
+      "title": "Distribution Shift Detection in Remote Sensing Imagery using Machine Learning Models",
+      "authors": [
+        "Abdullah Almansour",
+        "Ozan K. Tonguz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T03:37:47Z",
+      "summary": "Remote sensing imagery acquired by Unmanned Aerial Vehicles (UAVs) supports wide range of applications; however, deploying machine learning (ML) models on resource-constrained aerial platforms introduces challenges beyond predictive accuracy, particularly when deployment data differ from the distributions observed during training. Such shifts are common in remote sensing due to geographic, sensor, seasonal, and other visual variations. A practical solution is to equip deployed models with mechanisms that detect emerging distribution shifts and support subsequent responsive actions. This paper presents an empirical case study of three open-source detection tools: (i) Alibi-Detect; (ii) NannyML; and (iii) PyTorch-OOD. Using cross-dataset remote-sensing shifts, we evaluate both detection effectiveness and computational latency of these tools. Our results reveal differences in detection behavior and processing cost across methods and implementations, highlighting trade-offs between detection capability and response-time. These findings motivate further work toward lightweight, and latency-aware monitoring mechanisms for resource-constrained systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13510v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.CV",
       "categories": [
         "cs.CV",
+        "cs.LG",
+        "eess.IV",
         "eess.SP"
       ],
       "category_names_zh": [
         "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))",
+        "eess.IV (图像与视频处理)",
         "eess.SP (信号处理 (Signal Processing))"
       ],
-      "comment": null,
+      "comment": "Accepted as a short paper at the 4th Workshop on Computer Vision for Earth Observation (CV4EO), held in conjunction with WACV 2027",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08850v1",
-      "title": "Stochastic High-Resolution Parameter-Based Channel Modeling for Sub-Terahertz Outdoor Device-to-Device Propagation at 145 GHz",
+      "paper_id": "2611.13490v1",
+      "title": "Design and Over-the-Air Evaluation of a Digital Twin-Driven Site-Specific Neural Receiver for 5G NR on NVIDIA DGX Spark",
       "authors": [
-        "Zihang Cheng",
-        "Naveed A. Abbasi",
-        "Jorge Gomez-Ponce",
-        "Jianzhong",
-        "Zhang"
+        "Qiuyuan Chen",
+        "Chengyang Yao",
+        "Liuchang Zhuo",
+        "Yuquan Sun",
+        "Cunhua Pan"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T01:14:40Z",
-      "summary": "Since device-to-device (D2D) systems operating in the sub-THz regime are of interest for a variety of 6G applications, modeling their propagation channels is therefore essential. This paper presents high-resolution parameter estimation (HRPE) of specular multipath components (MPCs) as well as diffuse multipath components (DMCs) from an extensive measurement campaign. The extracted MPCs and DMCs are then clustered, and statistical models for both intra- and inter-cluster statistics are established. Among other insights, we find a large number (typically 10-50) of clusters; both the powers and densities of MPCs within each cluster show significant variations. DMC occurs both when associated with discrete MPCs and standalone. The paper provides a complete model that can generate double-directional impulse responses, and a MATLAB program implementing it is made available. Extensive verifications of \"derived\" (not directly modeled) parameters are provided as well.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08850v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "Currently under submitted and under revision in the IEEE Transactions on Wireless Communications",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08826v1",
-      "title": "An Ultra-Low-Noise Tunable TIA in 45nm Silicon Photonics for Electro-Optical Ultrasound Data Acquisition",
-      "authors": [
-        "Marziyeh Rezaei",
-        "Sridhar Singhal",
-        "Alp A. Derin",
-        "Soner Sonmezoglu",
-        "Sajjad Moazeni"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T00:30:09Z",
-      "summary": "This paper presents the design and experimental characterization of a 32-channel, WDM-compatible electronic-photonic receiver array fabricated in the GlobalFoundries 45nm monolithic silicon photonics process. Optimized for miniaturized, millimeter-scale electro-optical ultrasound data acquisition probes for broadband photo-acoustic imaging (PAI), the chip utilizes integrated micro-ring resonator (MRR) demultiplexers and photodiode (PD) arrays to decode multi-wavelength acoustic signals outside the body. This work focuses specifically on the comprehensive characterization of the receiver front-end, evaluating both the optical WDM filter bank and the transimpedance amplifier (TIA) performance. Monolithic co-integration minimizes critical photodiode-to-TIA interface parasitics. The TIA incorporates a DC-offset cancellation loop that compensates for photodiode-induced offset currents while providing tunable low-frequency cutoff control over a range of 30 kHz to 1.5 MHz. This tunability enables effective suppression of flicker noise and improves overall signal integrity. The front-end achieves the peak transimpedance gain of 144 dB$Ω$ while maintaining an ultra-low input-referred noise current density of $1\\text{ pA}/\\sqrt{\\text{Hz}}$, demonstrating a highly scalable architecture for high-sensitivity intravascular and endobronchial imaging.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08826v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08813v1",
-      "title": "Energy-Aware Vertically Layered Pinching-Antenna System Design with Probabilistic LoS Availability",
-      "authors": [
-        "Ruotong Zhao",
-        "Derrick Wing Kwan Ng"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T00:09:25Z",
-      "summary": "This paper investigates a vertically layered pinching antenna (PA) system, in which dielectric waveguides deployed at different heights provide additional vertical spatial degrees of freedom for line-of-sight (LoS)-favorable PA placement. We consider a practical energy model that captures in-waveguide attenuation, base station-to-feed-point optical-fiber loss, and PA repositioning energy, along with a statistical LoS-availability model that depends on elevation and distance. We then jointly optimize the transmit beamforming, PA positions, time allocation, and transmission rates to maximize the expected successfully delivered frame-effective sum rate under per-user outage and quality-of-service constraints. To avoid enumerating the exponentially many LoS states, we derive a certified conditional-moment outage envelope for outage-guaranteed rate selection and a differentiable safe approximation of the chance constraints to facilitate tractable optimization. Building on these results, a block coordinate descent algorithm with a penalty-aided majorization-minimization procedure attains a high-quality suboptimal solution. Simulation results confirm the gains of vertical layering and reveal a fundamental energy-LoS tradeoff: LoS-favorable PA placement generally enhances both performance and reliability, although it incurs higher attenuation, path loss, and energy costs.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08813v1.pdf",
+      "published_at": "2026-11-10T03:03:44Z",
+      "summary": "We design and evaluate a site-specific neural receiver for the 5G New Radio (NR) uplink. A corridor digital twin built from a radar scan and refined manually provides 28,671 ray-traced channel records for training an eight-round convolutional graph neural network with pilot-aware inputs and auxiliary channel supervision. The GPU on NVIDIA DGX Spark evaluates time--frequency convolutions in parallel across the received grid to accelerate inference. The receiver uses the standard NR uplink waveform and reference signals and feeds soft bits to the existing transport-block decoder. In over-the-air tests with NI USRP B210 radios under common radio settings, the site-trained receiver achieves the highest mean uplink rate at all five positions. At a non-line-of-sight corner, it reaches 16.2 Mb/s, compared with 4.1 Mb/s for the conventional receiver and 2.4 Mb/s for the 3GPP-trained neural receiver. These results demonstrate the feasibility of integrating neural reception into the 5G NR physical layer and show its potential for AI-RAN deployments.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13490v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SP",
       "categories": [
@@ -610,57 +560,107 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08809v1",
-      "title": "Sensing-Based Communication: A Non-Orthogonal Passive Reflection Framework for ISAC",
+      "paper_id": "2611.13326v1",
+      "title": "ARIA: An AI-Powered Radio-Channel Inference and Analysis Pipeline",
       "authors": [
-        "Xin Xiong",
-        "Mathew Salas",
-        "Sihua Shao",
-        "Chen Chen",
-        "Mostafa Hassanalian"
+        "Homa Nikbakht",
+        "Mingjun Ying",
+        "Dipankar Shakya",
+        "Daniel Abraham",
+        "Theodore S. Rappaport"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T00:02:38Z",
-      "summary": "While integrating uplink without disrupting the primary downlink remains a critical challenge for existing reflective communication systems, this paper proposes a non-orthogonal passive integrated sensing and communication (ISAC) mechanism termed Sensing-based Communication. Originating from and validated within an optical retro-reflective system, this mechanism possesses an underlying wave-agnostic architecture with the potential to be generalized across other physical modalities. It leverages incident downlink signals for parasitic modulation via passive tags. By relying solely on fundamental on-off keying (OOK) reflection, the tag unifies the reflective sensing channel and the uplink communication channel, and simultaneously achieves both sensing and duplex communication. Consequently, our approach introduces uplink capability without sacrificing the downlink data rate or consuming additional spectrum resources. At the receiver, we design a joint decoding architecture combining cross-correlation computation and successive interference cancelation (SIC) to fully exploit the degrees of freedom in broadband signals for multi-user interference suppression. We derive closed-form expressions for the interference and bit error rate (BER) assuming zero-mean Gaussian signals. Using an experimental testbed, we validate the pivotal theoretical finding, the scaling relationship of SINR with signal bandwidth and cross-correlation time--where linear regression yields a strong goodness-of-fit with $R^2 = 0.9688$. Furthermore, evaluations under noise-like orthogonal frequency division multiplexing (OFDM) waveforms exhibit high consistency between theoretical derivations and simulation data ($R^2 = 0.9372$, mean absolute percentage error, $\\text{MAPE} = 14\\%$), confirming the model's accuracy and waveform generalizability.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08809v1.pdf",
+      "published_at": "2026-11-09T22:48:29Z",
+      "summary": "Statistical channel models play a key role in the design and standardization of next-generation wireless systems. The models substitute for costly and time-consuming field measurements when fitted distributions accurately reproduce the measured channel impulse responses. Future wireless systems will operate in global spectrum allocations from 1 to 150 GHz. Over the full span, analytically chosen distribution families fitted to scarce measurement data fail to deliver the required accuracy. Generative AI models instead learn each distribution from the radio-propagation data itself, adapt to the measured structure at every frequency, and scale across the entire band. We present ARIA, an AI-powered Radio-channel Inference and Analysis pipeline that learns each channel-parameter distribution from the measurements. The pipeline extracts power-delay profiles and recovers the channel parameters with time-cluster spatial-lobe (TCSL) analysis. Three neural density estimators, namely mixture density networks, neural spline flows (NSF), and denoising diffusion implicit models, learn each parameter's distribution. A composite rank across goodness-of-fit metrics with Friedman-Nemenyi testing identifies the best estimator, and a maximum-likelihood step anchored to the measured samples converts its density into closed-form parametric families. We instantiate ARIA on the NYU WIRELESS 16.95 GHz InH campaign and find that NSF outperforms the other estimators on every metric. We also show that a conditional NSF with feature-wise linear modulation, trained jointly on the 6.75 and 16.95 GHz measurements, improves over single-frequency training. We feed the fitted distributions into the NYUSIM simulator and reproduce the measured omnidirectional RMS delay spread medians within 2 ns, the per-lobe azimuth and zenith spread medians within 1 degree, and the omnidirectional zenith spread medians within 0.5 degrees.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13326v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.IT",
       "categories": [
         "cs.IT",
-        "eess.SP",
-        "eess.SY"
+        "eess.SP"
       ],
       "category_names_zh": [
         "cs.IT (信息论)",
-        "eess.SP (信号处理 (Signal Processing))",
-        "eess.SY (系统与控制理论 (Systems and Control))"
+        "eess.SP (信号处理 (Signal Processing))"
       ],
-      "comment": null,
+      "comment": "This work has been submitted to the IEEE for possible publication",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08803v1",
-      "title": "Tags Helping Tags: Coordination-Free Power Boosting for Battery-less Backscatter Networks",
+      "paper_id": "2611.13300v1",
+      "title": "Thickness-Field-Excited Bimorph Piezoelectric Micromachined Ultrasonic Transducer in Submicrometer Thin-Film Lithium Niobate",
       "authors": [
-        "Mathew Salas",
-        "Xin Xiong",
-        "Sihua Shao",
-        "Atef Elsherbeni",
-        "Mostafa Hassanalian"
+        "Vakhtang Chulukhadze",
+        "Jiajun Huang",
+        "Zihuan Liu",
+        "Will Leskowitz",
+        "Tzu-Hsuan Hsu"
       ],
       "year": 2026,
-      "published_at": "2026-11-05T23:55:54Z",
-      "summary": "Battery-less backscatter sensor nodes powered by radio-frequency wireless power transfer are attractive for large or hard-to-reach deployments, but their range is typically limited by the forward power-transfer link rather than by communication sensitivity. We present a method for improving power delivery, and thus range, in dense tag deployments by having nearby tags act as helpers: each helper terminates its antenna in purely reactive impedances, reflecting the power beacon's signal toward a target tag so that it combines constructively with the direct line-of-sight path and increases the power the target harvests. On a hardware testbed, helpers using discrete impedance control are shown to increase the target tag's harvested power by over 50% above an all-absorbing baseline, while randomly set helper impedances give no reliable benefit, and are sometimes even detrimental. We further propose and implement a local algorithm that lets each helper tune its own impedance using only measurements of the target's packet rate, without channel estimation or coordination between helpers, and we show that it brings the target's packet rate close to that of an independently tuned configuration. These results suggest that independent, passive sensor nodes can cooperatively extend each other's power-transfer range with minimal added infrastructure.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08803v1.pdf",
+      "published_at": "2026-11-09T22:08:39Z",
+      "summary": "This work presents the first demonstration of a submicrometer-thick thickness-field-excited (TFE) lithium niobate (LN) flexural-mode piezoelectric micromachined ultrasonic transducer (PMUT). A 670-nm-thick bilayer periodically poled piezoelectric film (P3F) 128Y LN is used to demonstrate a suspended membrane with an area of 0.25 mm$^{2}$, achieving a low resonance frequency of 33.4 kHz for airborne transduction. Its electrical measurements reveal an extracted effective electromechanical coupling efficiency ($k_{\\mathrm{eff}}^{2}$) of 3% and a moderate static capacitance $C_0$ of 17 pF. Meanwhile, mechanical measurements using a laser Doppler vibrometer (LDV) yield a high quasi-static peak out-of-plane displacement ($ξ_{\\mathrm{static}}$) of 145 nm/V and a high corresponding open-circuit sensitivity ($S_{\\mathrm{OC}}$) of 1.4 mV/Pa in the audio band. The fabricated device is compared with state-of-the-art (SoA) airborne piezoelectric transducers with sub-100-kHz resonance frequencies, underscoring the potential of the TFE P3F LN transducer platform by simultaneously demonstrating strong actuation capability while featuring high sensitivity.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13300v1.pdf",
       "source": "arxiv",
-      "primary_category": "eess.SY",
+      "primary_category": "eess.SP",
       "categories": [
-        "eess.SY",
         "eess.SP"
       ],
       "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "8 pages, 11 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13238v1",
+      "title": "STAR: Semantic-Criticality Tiered Allocation of Radio Resources via Zero-Shot Learning",
+      "authors": [
+        "Albert Shaju",
+        "Christo Kurisummoottil Thomas",
+        "Mingzhe Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T21:07:26Z",
+      "summary": "In remote inference, edge devices transmit high-resolution images over wireless links to a receiver, where an artificial intelligence (AI) model answers task-specific questions about these images to enable reliable decisions. These answers are often determined by a small set of task-causal pixels, such as those of text, whose corruption changes the answer, so these pixels must be delivered with high fidelity. Conventional transmission protects every pixel equally, so it either consumes many resource elements (REs) or corrupts these regions at low signal-to-noise ratio (SNR). To overcome these limitations, in this paper, a zero-shot, domain-agnostic framework, termed semantic-criticality tiered allocation of resources (STAR), is proposed. In particular, a per-pixel semantic-criticality indicator (SCI) is derived from the attention of a frozen vision-language model, so new tasks and domains are handled by changing only the prompt, without retraining. The resulting task causality-aware resource allocation problem over protection tiers is solved exactly by a threshold rule on the SCI, realized by a coded tier for the task-causal pixels and an uncoded, downsampled base layer for the full image. Simulations over a 5G New Radio link demonstrate that STAR attains a semantic accuracy of at least 0.98 for $E_s/N_0 \\geq -4$ dB and, at comparable semantic reliability, reduces the REs of robust coded transmission by 59.5% and 91.5% on factory- and vehicle-monitoring datasets, respectively, the latter without any change to the models. Although a deep joint source-channel coding baseline uses fewer REs at comparable semantic accuracy, it must be retrained with labeled data for every new task or domain.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13238v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.AI",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.AI (通用人工智能 (AI))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "6 pages, 9 figures, 1 table. Submitted to IEEE ICC 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12644v1",
+      "title": "Coexistence of Direct-to-Device (D2D) Satellite Systems with 5G/6G Terrestrial Networks: Cross-Border Aggregate Interference Analysis in Saudi Arabia",
+      "authors": [
+        "Muneer M. Alzubi",
+        "Muhammad Alrabeiah",
+        "Khalid Aldubaikhy",
+        "Abdullah Alqasir",
+        "Majed Alsifaee"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T16:18:51Z",
+      "summary": "Direct-to-device (D2D) satellite systems, particularly those based on 3GPP-compliant non-terrestrial networks (NTN), deliver connectivity to standard mobile phones and IoT devices using terrestrial International Mobile Telecommunications (IMT) spectrum. This raises the risk of harmful cross-border interference into incumbent terrestrial IMT networks, an issue considered under Agenda Item 1.13 of the ITU World Radiocommunication Conference 2027 (WRC-27). This paper presents an ITU-R-compliant assessment of aggregate downlink interference from two hypothetical D2D systems operating in Jordan and Iraq into terrestrial IMT user equipment (UE) in Saudi Arabia, operating in the 698-960 MHz band. Unlike prior studies that evaluate a few test points near a simplified ideal tri-border intersection, we distribute multiple victim UEs along realistic national borders within various strips at a distance of 0-40 km from the borders. We compare two satellite selection strategies: highest-elevation and random strategies. The CDF of the interference-to-noise ratio (I/N) together with the intra-system and inter-system aggregation factors are analyzed. Results show that the protection criterion is exceeded up to 88% of the time, requiring up to 27 dB of additional isolation, so coexistence is infeasible without interference mitigation. In general, random selection produces higher interference because low-elevation beams place victims closer to boresight. Two mitigation techniques are then evaluated. A border isolation zone of one cell diameter yields only a moderate improvement under both strategies, whereas a narrow-beam, deep-null phased-array pattern lowers the exceedance to about 40% irrespective of strategy, providing an important input for spectrum regulatory considerations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12644v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
         "eess.SP (信号处理 (Signal Processing))"
       ],
       "comment": null,
@@ -675,33 +675,48 @@
       "count": 25
     },
     {
-      "code": "eess.SY",
-      "name_zh": "系统与控制理论 (Systems and Control)",
-      "count": 4
-    },
-    {
-      "code": "cs.NI",
-      "name_zh": "计算机网络与互联网通信",
-      "count": 3
-    },
-    {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
-      "count": 3
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 8
     },
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
+      "count": 4
+    },
+    {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
       "count": 2
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
+      "code": "eess.IV",
+      "name_zh": "图像与视频处理",
+      "count": 2
+    },
+    {
+      "code": "q-bio.NC",
+      "name_zh": "神经科学与脑认知",
       "count": 1
     },
     {
-      "code": "cs.PF",
-      "name_zh": "系统性能与评估",
+      "code": "cs.HC",
+      "name_zh": "人机交互 (HCI)",
+      "count": 1
+    },
+    {
+      "code": "cs.SD",
+      "name_zh": "声音与音频处理",
+      "count": 1
+    },
+    {
+      "code": "astro-ph.IM",
+      "name_zh": "天文仪器与方法",
+      "count": 1
+    },
+    {
+      "code": "cs.RO",
+      "name_zh": "机器人学与具身智能",
       "count": 1
     },
     {
@@ -715,5 +730,5 @@
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T08:30:24.107622"
+  "snapshot_synced_at": "2026-11-12T20:17:04.935328"
 }

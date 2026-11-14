@@ -1,6 +1,19 @@
 from email.message import Message
+from email.utils import formatdate
+from types import SimpleNamespace
+
+import pytest
 
 import online_paper_search_agent as mod
+
+
+@pytest.fixture(autouse=True)
+def isolated_scheduler(monkeypatch):
+    monkeypatch.setattr(mod, "_ARXIV_SCHEDULER", mod.ArxivScheduler())
+    monkeypatch.setattr(mod, "_ARXIV_CACHE", mod.OrderedDict())
+    monkeypatch.setattr(mod, "_RADAR_SEARCH_CACHE", mod.OrderedDict())
+    monkeypatch.setattr(mod, "ARXIV_MIN_INTERVAL", mod.ARXIV_MIN_INTERVAL)
+    monkeypatch.setattr(mod, "ARXIV_MAX_RETRIES", mod.ARXIV_MAX_RETRIES)
 
 
 class FakeResponse:
@@ -14,7 +27,7 @@ class FakeResponse:
         return b"<feed xmlns='http://www.w3.org/2005/Atom'></feed>"
 
 
-def test_arxiv_429_retries_then_caches(monkeypatch):
+def test_arxiv_429_stops_retries_and_blocks_other_callers(monkeypatch):
     mod._ARXIV_CACHE.clear()
     mod._ARXIV_LAST_REQUEST_AT = 0.0
     mod.ARXIV_MIN_INTERVAL = 0.0
@@ -22,7 +35,7 @@ def test_arxiv_429_retries_then_caches(monkeypatch):
     calls = []
 
     headers = Message()
-    headers["Retry-After"] = "0"
+    headers["Retry-After"] = "1200"
 
     def fake_urlopen(_req, timeout):
         calls.append(timeout)
@@ -37,9 +50,92 @@ def test_arxiv_429_retries_then_caches(monkeypatch):
     monkeypatch.setattr(agent, "_parse_atom_feed", lambda _xml: [])
 
     assert agent.search_arxiv("quantum field theory", max_results=3) == []
-    assert len(calls) == 2
-    agent.search_arxiv("quantum field theory", max_results=3)
-    assert len(calls) == 2
+    assert len(calls) == 1
+    assert mod._ARXIV_SCHEDULER.is_in_cooldown()[1] > 1190
+    assert not mod._ARXIV_CACHE  # A failed request is not a successful zero-result query.
+    req = mod.urllib.request.Request("https://export.arxiv.org/api/query?different=query")
+    with pytest.raises(TimeoutError, match="静默保护期"):
+        mod._ARXIV_SCHEDULER.execute(req)
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("retry_after", ["1200", formatdate(2_000_001_200, usegmt=True), "invalid", None])
+def test_retry_after_seconds_and_http_date(monkeypatch, retry_after):
+    monkeypatch.setattr(mod.time, "time", lambda: 2_000_000_000)
+    headers = Message()
+    if retry_after:
+        headers["Retry-After"] = retry_after
+    expected = 1200 if retry_after not in ("invalid", None) else mod.ARXIV_RATE_LIMIT_COOLDOWN
+    assert mod._arxiv_retry_after_seconds(headers) == expected
+
+
+@pytest.mark.parametrize("status", [403, 429, 503])
+def test_curl_preserves_http_error_and_real_retry_after(monkeypatch, status):
+    import subprocess
+
+    calls = []
+
+    def fake_run(command, **kwargs):
+        calls.append(command)
+        return SimpleNamespace(
+            returncode=0,
+            stdout=(
+                f"HTTP/1.1 200 Connection established\r\n\r\n"
+                f"HTTP/2 {status}\r\nRetry-After: 1800\r\n\r\n"
+                f"blocked\n__HTTP_STATUS__:{status}"
+            ).encode(),
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    def forbidden_urlopen(*args, **kwargs):
+        pytest.fail("HTTP errors must not trigger a second transport request")
+    forbidden_urlopen.__module__ = "urllib.request"
+    monkeypatch.setattr(mod.urllib.request, "urlopen", forbidden_urlopen)
+    scheduler = mod.ArxivScheduler()
+    req = mod.urllib.request.Request("https://export.arxiv.org/api/query?test=1")
+    with pytest.raises(mod.urllib.error.HTTPError) as caught:
+        scheduler.execute(req)
+    assert caught.value.code == status
+    assert caught.value.headers["Retry-After"] == "1800"
+    assert len(calls) == 1  # No second urllib request on HTTP errors.
+    assert scheduler.is_in_cooldown()[0] == (status in (403, 429))
+    if status in (403, 429):
+        assert scheduler.is_in_cooldown()[1] > 1790
+
+
+def test_curl_success_preserves_atom_body(monkeypatch):
+    import subprocess
+
+    body = FakeResponse().read()
+    monkeypatch.setattr(subprocess, "run", lambda *a, **kw: SimpleNamespace(
+        returncode=0,
+        stdout=b"HTTP/2 200\r\nContent-Type: application/atom+xml\r\n\r\n" + body + b"\n__HTTP_STATUS__:200",
+    ))
+    req = mod.urllib.request.Request("https://export.arxiv.org/api/query")
+    assert mod.ArxivScheduler().execute(req) == body
+
+
+def test_curl_dns_failure_is_not_reported_as_read_timeout(monkeypatch):
+    import subprocess
+
+    monkeypatch.setattr(subprocess, "run", lambda *a, **kw: SimpleNamespace(
+        returncode=6, stdout=b"\n__HTTP_STATUS__:000"
+    ))
+    req = mod.urllib.request.Request("https://export.arxiv.org/api/query")
+    with pytest.raises(mod.urllib.error.URLError, match="code=6"):
+        mod.ArxivScheduler().execute(req)
+
+
+def test_radar_successful_empty_result_is_cached(monkeypatch):
+    calls = []
+    monkeypatch.setattr(mod._ARXIV_SCHEDULER, "execute", lambda *a, **kw: calls.append(1) or FakeResponse().read())
+    agent = mod.OnlinePaperSearchAgent.__new__(mod.OnlinePaperSearchAgent)
+    monkeypatch.setattr(agent, "_parse_atom_feed", lambda xml: [])
+    first = agent.search_radar(query="no matches", major="CS")
+    assert first["papers"] == []
+    assert not first.get("is_cached_snapshot")
+    assert agent.search_radar(query="no matches", major="CS") == first
+    assert len(calls) == 1
 
 
 def test_arxiv_cache_is_bounded(monkeypatch):

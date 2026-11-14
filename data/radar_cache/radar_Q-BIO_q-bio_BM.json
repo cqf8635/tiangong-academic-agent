@@ -1,8 +1,86 @@
 {
   "query_expression": "cat:q-bio.BM",
   "total_fetched": 25,
-  "total_results": 6978,
+  "total_results": 6981,
   "papers": [
+    {
+      "paper_id": "2611.14504v1",
+      "title": "Emergent Biological Capabilities in a Foundation Model for Molecular Interactions",
+      "authors": [
+        "Adi Mashiach"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:53:01Z",
+      "summary": "Foundation models trained on large unlabeled corpora develop emergent capabilities, tasks that go beyond the training objective. We extend this paradigm to multimodal biology with Bonbon, a foundation model for molecular interactions trained on approximately 3.2 trillion tokens of paired protein-ligand sequences. From a single representation space, Bonbon exhibits three zero-shot emergent capabilities at hierarchical levels of resolution: functional (mechanism of action), residue (binding site localization, including orthosteric/allosteric discrimination), and bond (covalent versus non-covalent engagement). All three capabilities generalize to out-of-distribution complexes. Bonbon was trained on protein-ligand sequences alone, without any task-specific supervision and without structural coordinates. We conducted controlled scaling experiments across six model scales from 42M to 1.6B parameters; every capability evaluated shows a sharp jump at the largest scale on continuous metrics, even as pretraining loss decreases smoothly. This demonstrates that loss-based scaling laws alone are insufficient to predict when zero-shot emergent capabilities become available. The capabilities reported here emerge after training at a 1:2,000 parameter-to-token ratio to accommodate the sparsity of paired biological interaction data. The same frozen representations achieve state-of-the-art binding and affinity prediction at five orders of magnitude greater speed than co-folding methods. In prospective wet-lab validation across nine disease targets spanning seven protein families, Bonbon achieves a 61.5% dose-response hit rate on de novo compounds, yielding structurally novel molecules not previously reported to inhibit these proteins, including for out-of-distribution targets.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14504v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "Accepted at NeurIPS 2026 (Main Track, Oral)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14287v1",
+      "title": "ANTIOCH-VS: From Sequence to Hits with Modular, Open-Source Ensemble Virtual Screening",
+      "authors": [
+        "Hale S. Hasdemir",
+        "Venkata Sai Sreyas Adury",
+        "Pratyush Tiwary"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:27:14Z",
+      "summary": "Structure-based virtual screening needs a receptor conformation that fits the ligand class, but for most targets no ligand-bound crystal is available -- and a single predicted model or an apo structure often misses the binding-competent state. We present ANTIOCH-VS, an open-source framework that runs an entire in silico screening campaign, from a protein sequence to a ranked shortlist of candidate binders, as one plug-and-play workflow. It first builds a conformational ensemble by reduced-MSA subsampling with ColabFold, then uses AlphaFold2-RAVE (AF2RAVE) -- short molecular-dynamics simulations with State Predictive Information Bottleneck analysis -- to pick out docking-ready, Boltzmann-weighted metastable states. It then detects the binding pocket, prepares receptors and ligands, docks the library across the ensemble with DOCK6 or AutoDock Vina, builds a consensus ranking, and triages the top hits by physics-based metadynamics (CTMD). We benchmark it on two very different targets, JAK2 kinase and ADRB2 GPCR, using their DUD-E benchmark sets of known binders and property-matched decoys. Starting from sequence alone -- no ligand-bound crystal, no manual intervention -- the AF2RAVE ensembles gave top-20 shortlists strongly enriched for true binders: a 20% hit rate for JAK2 and 60% for ADRB2 (random ~1-2%), on par with ligand-bound crystals and, for the kinase, above single AF2 models and an apo crystal. The full pipeline runs end to end on a workstation or HPC from a single command, or each module can be run on its own with user-supplied inputs. ANTIOCH-VS is freely available at https://github.com/tiwarylab/antioch-vs",
+      "pdf_url": "https://arxiv.org/pdf/2611.14287v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.chem-ph",
+      "categories": [
+        "physics.chem-ph",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "physics.chem-ph (化学物理)",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "34 pages, 19 figures (6 main text, 13 supplementary); code available at https://github.com/tiwarylab/antioch-vs",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13348v1",
+      "title": "ProTEUS: A mutation-resolved world model for closed-loop protein evolution",
+      "authors": [
+        "Yikun Zhang",
+        "Minghao Guo",
+        "Guangxue Xu",
+        "Peter Yichen Chen",
+        "Wojciech Matusik"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T23:19:33Z",
+      "summary": "Protein engineering requires navigating rugged fitness landscapes, where small sequence changes can produce large functional differences, but experimental screening can only sample a small fraction of sequence space. Thus, a central challenge is to efficiently traverse the large combinatorial space of mutations in silico. We introduce ProTEUS, a mutation-resolved world model for closed-loop protein evolution. Pretrained on deep mutational scanning assays, ProTEUS learns a joint representation of sequence, evolutionary, and structural information using MutationFormer, a mutation-biased attention architecture. Variants are represented as states in this joint latent space, and mutations define actions whose functional consequences are predicted. To support exploration of many mutants, we developed a fast, physics-constrained all-atom predictor that utilizes explicit geometric constraint enforcement to achieve >10 fold increase in speed than AlphaFold3 with guaranteed physical validity. Lastly, ProTEUS refines its prediction and understanding of protein activity through closed loop experimental feedback to guide evolution toward a desired phenotype. ProTEUS surpasses established models in both zero-shot and supervised fine-tuning mutation prediction tasks. We experimentally demonstrate its utility in two closed-loop multi-objective engineering campaigns on aldehyde dehydrogenase and levansucrase, yielding variants with >10 fold higher activity than wild type. ProTEUS provides a world-model framework that connects virtual evaluation of mutational outcomes with experimental learning for efficient protein evolution.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13348v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.BM",
+      "categories": [
+        "q-bio.BM",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "q-bio.BM (生物分子结构与动力学)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "64 pages, 5 main figures, 5 supplementary figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.12000v1",
       "title": "HyPLM Technical Report",
@@ -598,84 +676,6 @@
       "comment": "NeurIPS 2026 Workshop on AI for Drug Discovery (AI4DD)",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.41029v1",
-      "title": "Contribution of chromosome-naïve transposon-seeded network of DNA templates to intracellular pools of protein dimers of liquid-liquid phase-separated condensate-forming proteins",
-      "authors": [
-        "Gennadi Glinsky"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T22:15:59Z",
-      "summary": "Molecular mechanisms governing protein-protein interactions (PPI) contributing to the biogenesis of membraneless condensates remain poorly understood. Observations reported in this contribution demonstrate that liquid-liquid phase-separated (LLPS) condensate-forming proteins and their variants harboring condensate-disrupting human pathogenic mutations are significantly enriched among PPI cascade constituents of the Hybrid Assembly Pathway (HAP) of endogenous multiprotein complexes (EMC). In contrast, no structured or disordered proteins defined as condensate-negative molecules were detected among PPI cascade constituents. Cumulative evidence derived from different lines of analytical inquiries support the concept of the significant contributions of PPI cascade constituents of HAP to the biogenesis of intracellular pools of cell type-specific protein heterodimers assembled with the engagement of at least one protein monomer selected from condensate-forming protein molecules. Analytical evidence documented in this study support the concept that genome-wide chromosome-naïve networks of transposon-seeded DNA-templates nucleate the initiation of PPI cascade chain reactions with the capacity to facilitate the concurrent iterative assembly in human cells of both the membraneless biomolecular condensates and the structured multiprotein complexes. AlphaFold 3D modelling of mutation patterns and analysis of partner-bound experimental structures identified variants located at a measured protein dimerization interface. This contribution nominates numerous protein heterodimers of potential relevance to human pathophysiology for follow-up mechanistic studies of potential fundamental and translational impacts.",
-      "pdf_url": "https://arxiv.org/pdf/2610.41029v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM",
-        "q-bio.SC"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)",
-        "q-bio.SC (亚细胞过程与动力学)"
-      ],
-      "comment": "36 pages, 7 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.39662v1",
-      "title": "AI-driven structural informatics reveals diverse glycosylation machinery across double-stranded DNA viruses",
-      "authors": [
-        "Lan Na"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-29T09:14:02Z",
-      "summary": "Glycosylation is widespread in biology and shapes molecular recognition, yet the diversity and biosynthetic organization of viral glycosyltransferases (GTs) remain poorly understood. Here we integrate structural-alphabet-guided searches and structure similarity networks with genomic-neighbourhood and biosynthetic gene cluster embedding analyses to examine viral GT-A proteins. This approach reveals extensive structural diversity overlooked by sequence-based annotation, including previously uncharacterized viral GT lineages. Most strikingly, we identified a jumbo-phage locus encoding five tandem glycosyltransferases alongside hydroxymethyl-pyrimidine biosynthetic and sulfation-associated enzymes, suggesting a previously unrecognized form of viral DNA modification involving a sulfated pentasaccharide. Beyond these examples, predicted saccharide-associated loci span divergent double-stranded DNA viruses, from giant viruses to tailed phages, and occupy multiple regions of the reference biosynthetic landscape. Together, our findings uncover an underappreciated repertoire of virus-encoded glycosylation machinery and suggest that viral glycan biosynthesis encompasses diverse molecular contexts and potential biological functions.",
-      "pdf_url": "https://arxiv.org/pdf/2610.39662v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.BM",
-      "categories": [
-        "q-bio.BM"
-      ],
-      "category_names_zh": [
-        "q-bio.BM (生物分子结构与动力学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.38835v1",
-      "title": "What to randomize matters: a controlled study of volume, axis and representation in low-data molecular generation",
-      "authors": [
-        "Neerav Kaushal",
-        "Alisa Teige",
-        "Ajay MNV Penmatsa"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-28T20:24:51Z",
-      "summary": "Chemical language models can struggle to generate new molecules when trained on small datasets, where a model may reproduce training examples rather than learn a useful generative distribution. Randomized SMILES augmentation varies atom traversal, whereas Sequential Attachment-based Fragment Embedding (SAFE) also allows the order of fragment blocks to vary. How these distinct sources of representational variation affect low-data molecular generation has not been clearly studied. Here, using 1,000 seed molecules to train an autoregressive sequence model, we compare canonical SAFE with randomized SAFE at increasing corpus sizes, isolate atom-order and fragment-order axes of SAFE randomization, and compare fully randomized SAFE with randomized SMILES at molecule-by-molecule matched training corpora. Three findings emerge. First, randomization of SAFE alone raises the genuine yield of novel molecules more than 450-fold, turning a model that merely reproduces its training set into a practical molecular generator. Second, the two axes of randomization act jointly rather than additively: atom order alone reaches a tenth, and fragment order alone a seventh, of the genuine yield obtained when both vary, which is four times their combined contribution. Third, at matched corpus size and compute, randomized SAFE delivers 2.8 times the genuine yield of randomized SMILES. Welch tests with Games-Howell post-hoc comparisons resolve every difference on the primary outcomes. In the low-data regime, thus, what one randomizes rather than only how much determines whether augmentation produces new molecules or merely new spellings of the training set.",
-      "pdf_url": "https://arxiv.org/pdf/2610.38835v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.CE",
-        "cs.CL",
-        "q-bio.BM",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.CE (计算工程、金融与科学计算)",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "q-bio.BM (生物分子结构与动力学)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": "27 pages, 9 figures, 5 tables",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -692,6 +692,11 @@
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
+      "count": 4
+    },
+    {
+      "code": "physics.chem-ph",
+      "name_zh": "化学物理",
       "count": 3
     },
     {
@@ -702,16 +707,6 @@
     {
       "code": "physics.bio-ph",
       "name_zh": "生物物理",
-      "count": 2
-    },
-    {
-      "code": "physics.chem-ph",
-      "name_zh": "化学物理",
-      "count": 2
-    },
-    {
-      "code": "cs.CE",
-      "name_zh": "计算工程、金融与科学计算",
       "count": 2
     },
     {
@@ -730,6 +725,11 @@
       "count": 1
     },
     {
+      "code": "cs.CE",
+      "name_zh": "计算工程、金融与科学计算",
+      "count": 1
+    },
+    {
       "code": "cs.MA",
       "name_zh": "多智能体系统 (Multiagent)",
       "count": 1
@@ -738,22 +738,7 @@
       "code": "cond-mat.stat-mech",
       "name_zh": "统计力学",
       "count": 1
-    },
-    {
-      "code": "q-bio.SC",
-      "name_zh": "亚细胞过程与动力学",
-      "count": 1
-    },
-    {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
-      "count": 1
-    },
-    {
-      "code": "q-bio.QM",
-      "name_zh": "生物医学定量方法",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T18:02:02.839643"
+  "snapshot_synced_at": "2026-11-12T20:15:57.765072"
 }

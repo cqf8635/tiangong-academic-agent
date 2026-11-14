@@ -29,6 +29,8 @@ class TianGongRadarController {
     this.currentQuery = "";
     this.searchIn = "all";
     this.sortBy = "submittedDate";
+    this.radarOpened = false;
+    this.radarHasLoaded = false;
 
     this.initElements();
     this.bindEvents();
@@ -170,10 +172,12 @@ class TianGongRadarController {
 
   switchView(mode) {
     if (mode === "radar") {
+      this.radarOpened = true;
       this.tabDialogue.classList.remove("active");
       this.tabRadar.classList.add("active");
       this.mainLayoutDialogue.style.display = "none";
       this.mainLayoutRadar.style.display = "grid";
+      this.loadInitialRadarIfReady();
     } else {
       this.tabRadar.classList.remove("active");
       this.tabDialogue.classList.add("active");
@@ -189,12 +193,16 @@ class TianGongRadarController {
       this.taxonomy = data.taxonomy;
       this.renderTopMajorNavBar();
       this.renderSubTree();
-      // 初始加载一次默认大类文献
-      this.doSearch();
+      this.loadInitialRadarIfReady();
     } catch (err) {
       console.error("加载学科分类典籍失败:", err);
-      if (this.statusText) this.statusText.textContent = `学科分类加载失败: ${err.message}`;
-      throw err;
+    }
+  }
+
+  loadInitialRadarIfReady() {
+    if (this.radarOpened && this.taxonomy && !this.radarHasLoaded) {
+      this.radarHasLoaded = true;
+      this.doSearch(true);
     }
   }
 
@@ -400,7 +408,9 @@ class TianGongRadarController {
     const endIdx = totalCount > 0 ? Math.min(startIdx + currentBatchCount - 1, totalCount) : 0;
 
     if (this.statusText) {
-      if (totalCount > 0) {
+      if (radarData.is_cached_snapshot) {
+        this.statusText.textContent = `「🍃 经卷容灾快照 · 当前处于无缝离线快照模式 (本卷共 ${currentBatchCount} 篇)」`;
+      } else if (totalCount > 0) {
         this.statusText.textContent = `「星津澄澈 · 历史卷册总库共 ${totalCount.toLocaleString()} 卷，当前展阅第 ${startIdx} ~ ${endIdx} 篇 (本卷共 ${currentBatchCount} 篇)」`;
       } else {
         this.statusText.textContent = "「星津微茫 · 暂无匹配卷册」";
@@ -567,24 +577,20 @@ class TianGongRadarController {
       const isLatestBatch = Boolean(publishedDate && publishedDate === todayDate);
       const dateLabel = isLatestBatch
         ? `✨ ${publishedDate} 今日新发`
-        : `📅 著于 ${publishedDate || paper.year || "日期未提供"}`;
+        : `📅 著于 ${publishedDate || paper.year || "近期"}`;
 
       // 检查本地持久化缓存 (免重复消耗 Token)
       let cachedSummary = null;
       let cachedFull = null;
       try {
-        const summaryStr = localStorage.getItem(`radar_trans_summary_${paper.paper_id}`);
-        const fullStr = localStorage.getItem(`radar_trans_full_v5_${paper.paper_id}`);
+        const summaryStr = localStorage.getItem(`radar_trans_summary_${paper.paper_id}`)
+          || localStorage.getItem(`radar_trans_${paper.paper_id}`);
+        const fullStr = localStorage.getItem(`radar_trans_full_${paper.paper_id}`);
         const summaryParsed = summaryStr ? JSON.parse(summaryStr) : null;
         const fullParsed = fullStr ? JSON.parse(fullStr) : null;
         if (summaryParsed && summaryParsed.title_zh && !summaryParsed.full_text_zh) cachedSummary = summaryParsed;
-        if (fullParsed) {
-          if (fullParsed.version !== 5 || fullParsed.complete !== true || !fullParsed.full_text_zh) {
-            throw new Error('全文翻译缓存不完整');
-          }
-          cachedFull = fullParsed;
-        }
-      } catch (error) { throw error; }
+        if (fullParsed && fullParsed.version >= 4 && fullParsed.full_text_zh) cachedFull = fullParsed;
+      } catch (e) {}
 
       card.innerHTML = `
         <div class="radar-card-header-row">
@@ -669,7 +675,7 @@ class TianGongRadarController {
             try {
               localStorage.setItem(`radar_trans_summary_${paper.paper_id}`, JSON.stringify(result.data));
             } catch (storageError) {
-              throw storageError;
+              console.warn("保存 AI 精译缓存失败:", storageError);
             }
             renderSummaryData(result.data);
           } catch (err) {
@@ -685,16 +691,23 @@ class TianGongRadarController {
       const btnFullTrans = document.getElementById(`btn-full-trans-${paper.paper_id}`);
       const fullTransBox = document.getElementById(`full-trans-box-${paper.paper_id}`);
       const renderFullData = (data) => {
-        let rawZh = (data.full_text_zh || "").trim();
+        let rawZh = (data.full_text_zh || "").replace(/\\\\/g, "\\").trim();
 
         // 1. 智能预处理：美化页码标记，使其成为明显的学术分页隔断徽章
         rawZh = rawZh.replace(/(?:^|\n+)【第\s*(\d+)\s*页】/g, "\n\n---\n**📜 【第 $1 页】**\n\n");
 
         // 2. 接入问答窗口统一的 formatMarkdown 渲染管线 (标准 Markdown + LaTeX 规范)
-        if (typeof window.formatMarkdown !== "function") {
-          throw new Error("全文渲染引擎未加载");
+        let renderedHtml = "";
+        if (typeof window.formatMarkdown === "function") {
+          renderedHtml = window.formatMarkdown(rawZh);
+        } else if (typeof marked !== "undefined" && typeof marked.parse === "function") {
+          renderedHtml = marked.parse(rawZh);
+        } else {
+          // 兜底基础分段
+          const escaped = escapeHtml(rawZh);
+          renderedHtml = escaped.replace(/\n\n+/g, "</p><p>").replace(/\n/g, "<br/>");
+          renderedHtml = `<p>${renderedHtml}</p>`;
         }
-        const renderedHtml = window.formatMarkdown(rawZh);
 
         fullTransBox.innerHTML = `
           <div class="trans-full-paper-header">
@@ -710,6 +723,9 @@ class TianGongRadarController {
 
         // 3. 触发数学公式高精度渲染引擎
         this.renderMathEquations(fullTransBox);
+        if (typeof rehydrateMathFallbacks === "function") {
+          rehydrateMathFallbacks();
+        }
 
         // 4. 绑定重新翻译按钮事件
         const btnRetrans = document.getElementById(`btn-retrans-${paper.paper_id}`);
@@ -717,7 +733,7 @@ class TianGongRadarController {
           btnRetrans.addEventListener("click", async (e) => {
             e.stopPropagation();
             if (confirm("确定要重新对这篇论文进行全文翻译与公式重构吗？")) {
-              localStorage.removeItem(`radar_trans_full_v5_${paper.paper_id}`);
+              localStorage.removeItem(`radar_trans_full_${paper.paper_id}`);
               cachedFull = null;
               fullTransBox.dataset.loaded = "false";
               btnFullTrans.click();
@@ -746,7 +762,7 @@ class TianGongRadarController {
             });
             const result = await resp.json();
             if (result.status !== "success" || !result.data) throw new Error(result.detail || "翻译异常");
-            localStorage.setItem(`radar_trans_full_v5_${paper.paper_id}`, JSON.stringify(result.data));
+            localStorage.setItem(`radar_trans_full_${paper.paper_id}`, JSON.stringify(result.data));
             renderFullData(result.data);
           } catch (err) {
             btnFullTrans.textContent = "🇨🇳 翻译全文";
@@ -795,10 +811,11 @@ class TianGongRadarController {
             try {
               const cached = JSON.parse(
                 localStorage.getItem(`radar_trans_summary_${paper.paper_id}`) ||
+                localStorage.getItem(`radar_trans_${paper.paper_id}`) ||
                 "{}"
               );
               if (cached.title_zh) zhTitle = cached.title_zh;
-            } catch (error) { throw error; }
+            } catch (e) {}
           }
           const sessionTitle = `📜 研读：${(zhTitle || paper.title || "前沿论文").slice(0, 28)}`;
 
@@ -883,6 +900,8 @@ class TianGongRadarController {
         // 1. 刷新左侧知识库经卷列表
         if (window.loadDocumentList) {
           await window.loadDocumentList();
+        } else if (window.fetchDocuments) {
+          await window.fetchDocuments();
         }
         // 2. 自动把当前激活经卷设为该文献
         if (fileName && window.setCurrentActiveDocument) {
@@ -927,10 +946,10 @@ class TianGongRadarController {
     }
     if (!zhTitle && paper.paper_id) {
       try {
-        const cached = JSON.parse(localStorage.getItem(`radar_trans_summary_${paper.paper_id}`) || "{}");
+        const cached = JSON.parse(localStorage.getItem(`radar_trans_${paper.paper_id}`) || "{}");
         if (cached.title_zh) zhTitle = cached.title_zh;
         if (cached.thesis_zh) zhThesis = cached.thesis_zh;
-      } catch (error) { throw error; }
+      } catch (e) {}
     }
 
     // 2. 完全依据论文自身题名、摘要与核心要旨构造通用深度研读指令，不依赖任何学科词硬编码
@@ -950,8 +969,7 @@ class TianGongRadarController {
   renderMathEquations(targetElement) {
     const root = targetElement || this.paperListContainer;
     const doRender = () => {
-      if (!root) return;
-      if (!window.renderMathInElement) throw new Error("公式渲染引擎未加载");
+      if (!window.renderMathInElement || !root) return;
       try {
         window.renderMathInElement(root, {
           delimiters: [
@@ -961,12 +979,10 @@ class TianGongRadarController {
             { left: "\\[", right: "\\]", display: true },
           ],
           throwOnError: false,
-          errorCallback: (message, error) => { console.warn('Radar math render warning:', message); },
           ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"],
-          ignoredClasses: ["katex", "katex-html", "katex-display", "math-display-wrap"],
         });
       } catch (e) {
-        console.warn('Radar math render exception:', e);
+        console.warn("KaTeX renderMathInElement error:", e);
       }
     };
 

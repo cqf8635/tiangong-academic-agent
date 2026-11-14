@@ -12,14 +12,13 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 from openai import OpenAI
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
-from config_utils import get_default_llm_model, get_llm_timeout
-from llm_accounting import BudgetExceeded
+from config_utils import get_default_llm_model, get_llm_timeout, resolve_retrieval_time_constraint
 from prompts import build_intent_system_prompt
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -30,10 +29,6 @@ load_dotenv(ENV_PATH)
 # ==========================================
 # 1. 结构化意图输出定义 (Pydantic Schema)
 # ==========================================
-class IntentParsingError(RuntimeError):
-    """意图解析未成功；调用方必须停止本轮任务，不能伪造意图继续执行。"""
-
-
 class IntentDecision(BaseModel):
     domain: str = Field(
         description=(
@@ -43,19 +38,28 @@ class IntentDecision(BaseModel):
     )
     intent: str = Field(
         description=(
-            "跨学科通用任务类型标识，从支持的意图定义全集中选取。"
-            "应按用户任务选择，不按具体学科创建专用意图。"
+            "用简短自然语言概括用户本轮实际要做的事。可以组合多个动作；"
+            "不要求从固定任务类别中选择。"
         )
     )
-    confidence: Optional[float] = Field(default=None, description="意图识别置信度 (0.0 ~ 1.0)")
-    target_agent: str = Field(description="推荐路由的下游智能体名称")
+    task_segments: List[Dict[str, Any]] = Field(
+        default_factory=list,
+        description=(
+            "按语义关系识别本轮任务片段，保留每项动作、对象、条件及必要的检索表达；"
+            "不以标点作为唯一切分依据，也不为凑数量拆分。"
+        ),
+    )
+    confidence: float = Field(default=0.9, description="意图识别置信度 (0.0 ~ 1.0)")
+    target_agent: str = Field(description="推荐处理本轮任务的已实现能力名称；不限制或改写任务意图")
+    control_action: Optional[str] = Field(default=None, description="仅系统控制任务填写具体动作，如 stop_recording、pause_recording、start_recording、change_voice、clear_session；不确定留空")
+    control_parameters: Dict[str, Any] = Field(default_factory=dict, description="控制动作的明确参数：voice 为音色名称或 ID，mode 为 mic 或 system；未指定不填")
     required_data_sources: List[str] = Field(
         default_factory=list,
-        description="该意图所需的数据源列表，如 ['uploaded_pdf_docs', 'general_science_knowledge', 'arxiv_live_search']"
+        description="当前任务明确需要读取的资料类型或用户指定资源；不因学术问题而自动添加资料源"
     )
     search_query: Optional[str] = Field(
         default="",
-        description="根据完整信息抽取生成的精简正向检索表达，不拼接分析说明或扩展概念"
+        description="概括当前任务对象与目标的检索表达；保留影响任务的条件和限定"
     )
     target_topic: Optional[str] = Field(
         default="",
@@ -79,15 +83,15 @@ class IntentDecision(BaseModel):
     )
     need_online_paper_search: bool = Field(
         default=False,
-        description="是否需要调用在线 arXiv 检索前沿论文（如用户要求最新学术成果查重、前沿去重或调研新工作）"
+        description="本轮任务是否需要当前外部学术信息；不能仅因主题学术或生成了检索表达就设为 true"
     )
     online_search_query: Optional[str] = Field(
         default="",
-        description="需要在线检索时使用的精简英文学术短语；无须联网时为空，不拼接解释或扩展概念"
+        description="确有在线信息需求时提供有助检索的英文表达；不要求固定数量或纯关键词格式"
     )
     topic_action: str = Field(
         default="STAY_LOCKED",
-        description="主题生命周期动作: INIT_LOCK (首轮确立并锁定) | STAY_LOCKED (多轮默认持续锁定当前主题) | EVOLVE (在原主题下深入子分支) | RESET (用户明确指示切换/重置为新主题)"
+        description="本轮主题状态动作: INIT_LOCK | STAY_LOCKED | EVOLVE | RESET；按本轮与当前状态的关系判断"
     )
     sub_topic: Optional[str] = Field(
         default="",
@@ -98,7 +102,7 @@ class IntentDecision(BaseModel):
         description="是否属于多领域/多学科交叉课题。"
     )
     disciplines: List[str] = Field(
-        default_factory=list,
+        default_factory=lambda: ["general"],
         description=(
             "涉及的一个或多个学科、技术方向或交叉领域。允许模型自由生成，"
             "不得局限于预设学科列表；单学科问题也应保留一个明确领域标签。"
@@ -107,26 +111,22 @@ class IntentDecision(BaseModel):
     sub_queries: List[Dict[str, Any]] = Field(
         default_factory=list,
         description=(
-            "若为跨领域交叉课题，拆解出的各领域子检索/推演问题字典列表。"
-            "格式: [{'discipline': str, 'query': str, 'is_umbrella_generic': bool, 'is_core_bottleneck': bool, 'retrieval_strategy': 'online_probe'|'local_only'|'llm_prior'}]。"
-            "严禁在代码中写死任何学科词，全部由大模型自主推断学科层级、任务重合度与核心理论瓶颈。"
+            "任务包含相互独立的动作或领域、且拆分有助于执行时，记录相关子任务；"
+            "不要求固定数量，也不只用于跨学科问题。"
         )
     )
     time_constraint: Optional[Dict[str, Any]] = Field(
         default=None,
-        description="仅用于在线检索的文献发表范围：{'has_time_constraint': True, 'start_year': int, 'end_year': int, 'sort_by_date': bool}。本地检索不按时间过滤。相对当前日期的范围动态计算；对象或事件时间保留在信息抽取中，不猜测年份，无可确定在线发表范围时为 null。"
+        description="检索时间范围：用户明确要求优先，否则默认当前日期向前推三年；时间范围本身不决定是否检索。"
     )
-    extracted_entities: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="通用信息抽取：objects、goal、actions、relations、conditions、method、time_expression；仅补全有依据的指代，未指定的方法和时间为 null",
+    time_constraint_note: Optional[str] = Field(
+        default="",
+        description="用户使用相对事件锚点表达的时间条件原文；需先核实锚点，不直接当作公历年份过滤。"
     )
+    extracted_entities: Dict[str, Any] = Field(default_factory=dict, description="抽取的关键学术概念或实体")
     requires_long_form: bool = Field(
         default=False,
-        description=(
-            "根据用户完整描述与任务本质，智能判定是否属于需要突破日常研讨篇幅的超长篇完整成果撰写任务"
-            "（如起草整篇长篇学术论文/期刊正文、万字专著书籍章节、完整基金/重大课题申报书正文、完整技术白皮书、全书纲要等）。"
-            "若属于日常学术探究、概念辨析、单点或分步数理推导、文献/书籍/课件/技术文档的局部考据与对比、深入机理剖析（即使包含'详细解释'、'深入剖析'、'展开讲讲'），一律为 False。"
-        ),
+        description="用户是否要求完整长篇成果；详细程度本身不决定该字段",
     )
     long_form_type: Optional[str] = Field(
         default=None,
@@ -141,86 +141,59 @@ class IntentDecision(BaseModel):
         description="若用户的提问是针对近期已就绪文献候选池进行横向对比、多篇筛选、总结或全量问答，设为 True；否则为 False"
     )
     reasoning: Optional[str] = Field(default="", description="做出该意图判断的简明逻辑依据")
-
-    @field_validator("framework_reference", mode="before")
-    @classmethod
-    def normalize_empty_framework_reference(cls, value: Any) -> Any:
-        if isinstance(value, dict):
-            name = value.get("doc_name")
-            if name is None or (isinstance(name, str) and not name.strip()):
-                return None
-        return value
+    is_resolved: bool = Field(default=True, description="本轮任务是否已能从输入和上下文中可靠理解")
 
 
 # ==========================================
-# 2. 意图知识库元数据定义 (Domain-Agnostic)
+# 2. 可调用能力目录（仅供路由能力推荐，不作为任务类别）
 # ==========================================
-INTENT_DEFINITIONS = [
+AGENT_CAPABILITIES = [
     {
-        "intent": "concept_simplify",
         "name": "通俗概念原理解释",
         "description": "请求用通俗语言、直观比喻或大白话解释某个学术概念、物理现象、语法规则或模型机制",
         "agent": "ConceptTutorAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs"],
     },
     {
-        "intent": "stepwise_derivation",
         "name": "公式与算法分步推导",
         "description": "请求对数学公式、物理定律方程、算法每一步的演化推导或代码流程进行逐步展开解析",
         "agent": "DerivationAgent",
-        "sources": ["uploaded_pdf_docs", "general_science_knowledge"],
     },
     {
-        "intent": "cross_modal_locate",
         "name": "音视频与课件教材对照",
         "description": "询问视频/讲课当前所讲内容对应在课件、PPT或教材文档的哪一页/哪个位置",
         "agent": "CrossModalRAGAgent",
-        "sources": ["live_audio_records", "uploaded_pdf_docs"],
     },
     {
-        "intent": "doc_evidence_query",
         "name": "学术论文/专著书籍/教材讲义/技术文档全景解读与细节考据",
         "description": "在上传的 PDF 论文、学术专著书籍、教材讲义、技术报告、课件PPT，或当前会话已检索就绪的文献资产池（recent_paper_candidates）中查找证据、筛选分类、提取章节段落，或者请求对某篇论文/专著书籍/课件进行全文概述、背景介绍、方法拆解、方案构思或核心贡献总结",
         "agent": "DocumentSearchAgent",
-        "sources": ["uploaded_pdf_docs", "recent_paper_candidates", "arxiv_live_search"],
     },
     {
-        "intent": "content_summarize",
         "name": "实时语音会议/课堂流水要点提炼",
-        "description": "专门针对刚才开启的实时麦克风/声卡语音录音流水（即会议记录、课堂口头讲解）进行要点总结与纪要生成。注意：如果是针对上传的论文/PDF/文档做概述，绝对不能选这项，必须选 doc_evidence_query！",
+        "description": "针对刚才开启的实时麦克风/声卡语音录音流水（会议记录、课堂口头讲解）提炼要点与纪要；上传文档的概述应使用文档处理能力。",
         "agent": "SummarizerAgent",
-        "sources": ["live_audio_records"],
     },
     {
-        "intent": "action_homework_extract",
         "name": "作业与待办事项提取",
         "description": "专门提取老师布置的课后作业、思考题、或会议达成的待办事项与截止时间",
         "agent": "SummarizerAgent",
-        "sources": ["live_audio_records"],
     },
     {
-        "intent": "compare_contrast",
         "name": "多方案/概念对比分析",
         "description": "请求对比两个或多个理论、方法、模型、技术路线或语言现象的区别与优缺点",
         "agent": "ComparisonAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs", "arxiv_live_search"],
     },
     {
-        "intent": "quiz_generate",
         "name": "考题与随堂测验生成",
         "description": "请求出题考查用户对指定知识点、理论、方法、技术或语言内容的掌握情况",
         "agent": "QuizAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs"],
     },
     {
-        "intent": "study_path_plan",
         "name": "学科与技能学习路径规划",
         "description": "请求针对任意学科、技术方向或跨学科主题制定系统化阶段学习计划或前置知识图谱",
         "agent": "StudyPlannerAgent",
-        "sources": ["user_study_profile", "general_science_knowledge"],
     },
     {
-        "intent": "research_design",
         "name": "研究方案与验证路线设计",
         "description": (
             "请求设计、构建或规划研究方案、理论框架、实验流程、算法路线、"
@@ -229,63 +202,50 @@ INTENT_DEFINITIONS = [
             "总结文献或安排学习先后顺序。适用于任意学科。"
         ),
         "agent": "StudyPlannerAgent",
-        "sources": ["general_science_knowledge", "uploaded_pdf_docs", "arxiv_live_search"],
     },
     {
-        "intent": "voice_system_control",
         "name": "系统语音口令与功能控制",
         "description": "用户的控制指令，如开启/关闭录音、暂停、切换模型音色、清空会话等系统级操作",
         "agent": "SystemControlAgent",
-        "sources": [],
     },
     {
-        "intent": "arxiv_paper_search",
-        "name": "多源学术文献与开源前沿检索",
-        "description": "请求在线实时检索 arXiv、OpenAlex、CrossRef、GitHub 等全球学术库中最新的研究论文、权威期刊、开源复现代码及 Abstract 摘要并整理学术综述",
+        "name": "ArXiv 线上最新学术文献检索与前沿综述",
+        "description": "请求在线实时检索 arXiv、SOTA 前沿论文库中最新的研究论文、论文作者、发表年份及 Abstract 摘要并整理学术综述",
         "agent": "OnlinePaperSearchAgent",
-        "sources": ["arxiv_live_search"],
     },
     {
-        "intent": "general_chitchat",
         "name": "通用日常与学术问候",
         "description": "打招呼、日常寒暄、感谢、身份询问或与学术无关的闲聊",
         "agent": "GeneralChatAgent",
-        "sources": [],
     },
 ]
 
-INTENT_TO_AGENT = {d["intent"]: d["agent"] for d in INTENT_DEFINITIONS}
-INTENT_DEFAULT_SOURCES = {d["intent"]: list(d.get("sources", [])) for d in INTENT_DEFINITIONS}
+AVAILABLE_AGENTS = {d["agent"] for d in AGENT_CAPABILITIES} | {"GeneralTutorAgent"}
 
 
 # ==========================================
 # 3. 意图识别 Agent 实现
 # ==========================================
 class IntentRecognitionAgent:
-    def __init__(self, client: Optional[Any] = None):
+    def __init__(self):
         self.model = get_default_llm_model()
-        if client is not None:
-            self.client = client
-        else:
-            try:
-                from master_agent_workflow import MasterEngineRegistry
-                self.client = MasterEngineRegistry.get_llm_client()
-            except Exception:
-                self.api_key = os.getenv("OPENAI_API_KEY")
-                self.base_url = os.getenv("OPENAI_BASE_URL")
-                if not self.api_key or not self.base_url:
-                    raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
-                self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.base_url = os.getenv("OPENAI_BASE_URL")
+
+        if not self.api_key or not self.base_url:
+            raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
+
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def _build_system_prompt(self, current_date: Optional[str] = None) -> str:
         if not current_date:
             current_date = datetime.now().strftime("%Y-%m-%d")
 
-        intents_desc = "\n".join(
-            [f"- `{item['intent']}`: {item['name']} - {item['description']} (推荐智能体: {item['agent']}, 关联数据源: {item.get('sources', [])})" for item in INTENT_DEFINITIONS]
+        capability_desc = "\n".join(
+            [f"- {item['agent']}: {item['name']} — {item['description']}" for item in AGENT_CAPABILITIES]
         )
 
-        return build_intent_system_prompt(intents_desc=intents_desc, current_date=current_date)
+        return build_intent_system_prompt(intents_desc=capability_desc, current_date=current_date)
 
     def parse_intent(
         self,
@@ -316,7 +276,16 @@ class IntentRecognitionAgent:
 
         query_clean = query.strip()
         if not query_clean:
-            raise IntentParsingError("输入为空，未执行意图解析")
+            return IntentDecision(
+                domain="general",
+                intent="general_chitchat",
+                confidence=1.0,
+                target_agent="GeneralChatAgent",
+                required_data_sources=[],
+                search_query="",
+                extracted_entities={},
+                reasoning="空输入默认问候",
+            )
 
         # 直接从 LangGraph 状态字段中投射会话研讨现场态势
         context_parts = []
@@ -325,7 +294,7 @@ class IntentRecognitionAgent:
             sub_t = sub_subject or (topic_state or {}).get("sub_topic")
             status = (topic_state or {}).get("status", "LOCKED")
             context_parts.append(
-                f"【LangGraph 会话研讨现场状态】：\n- 核心研究主体 (active_subject): {curr_t}\n- 当前子分支 (sub_subject): {sub_t or '无'}\n- 状态: {status}（用于补全指代；当前明确的新任务优先，不强制继承）"
+                f"【会话已有主体状态（仅作上下文）】：\n- 主体: {curr_t}\n- 子分支: {sub_t or '无'}\n- 状态: {status}\n本轮任务可以延续、改变或替换；不要仅凭旧状态推定本轮任务。"
             )
 
         if active_doc:
@@ -336,13 +305,13 @@ class IntentRecognitionAgent:
             for i, c in enumerate(recent_candidates[:8], 1):
                 src = c.get("source", "online")
                 src_label = "arXiv预印本" if src == "arxiv" else ("正式发表期刊" if src in ["openalex", "crossref"] else src)
-                cand_lines.append(f"{i}. [{src_label}] 《{c.get('title')}》 ({c.get('year') or '年份未提供'}, 出处/DOI: {c.get('paper_id', '')})")
+                cand_lines.append(f"{i}. [{src_label}] 《{c.get('title')}》 ({c.get('year', 'Recent')}, 出处/DOI: {c.get('paper_id', '')})")
             context_parts.append(f"【会话当前已就绪文献资产池 (recent_paper_candidates, 共 {len(recent_candidates)} 篇)】：\n" + "\n".join(cand_lines))
 
         if isinstance(state, dict) and state.get("matched_topic"):
             m_top = state["matched_topic"]
             context_parts.append(
-                f"【外科手术式锁定的前序主题档案 (matched_topic)】：\n- 主题: 《{m_top.get('topic_name')}》 | 动作类型: {m_top.get('action_type')}\n- 核心理论定论与基线依据:\n{m_top.get('key_findings')}"
+                f"【相关历史主题记录（仅供参考）】：\n- 主题: 《{m_top.get('topic_name')}》 | 动作类型: {m_top.get('action_type')}\n- 既有结论与依据:\n{m_top.get('key_findings')}"
             )
 
         if history_summary and history_summary.strip():
@@ -356,9 +325,10 @@ class IntentRecognitionAgent:
 
         current_date_str = datetime.now().strftime("%Y-%m-%d")
         max_retries = 3
+        fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
         last_err = None
         for attempt in range(1, max_retries + 1):
-            active_model = self.model
+            active_model = (fallback_model if (attempt >= 2 and fallback_model and fallback_model != self.model) else self.model)
             try:
                 resp = self.client.chat.completions.create(
                     model=active_model,
@@ -371,8 +341,6 @@ class IntentRecognitionAgent:
                     max_tokens=8192,
                     timeout=get_llm_timeout(100.0),
                 )
-                if getattr(resp.choices[0], "finish_reason", None) != "stop":
-                    raise ValueError("模型响应未完整结束，本阶段未完成")
                 raw_json = (resp.choices[0].message.content or "").strip()
                 if not raw_json:
                     raise RuntimeError(f"模型 {active_model} 返回空内容 (finish_reason={resp.choices[0].finish_reason})")
@@ -380,9 +348,39 @@ class IntentRecognitionAgent:
                     raw_json = re.sub(r"^```[a-zA-Z]*\n?", "", raw_json)
                     raw_json = re.sub(r"\n?```$", "", raw_json).strip()
                 parsed_dict = json.loads(raw_json)
+                if not parsed_dict.get("search_query"):
+                    parsed_dict["search_query"] = query_clean
+
+                # Keep malformed optional objects from forcing the entire intent
+                # request to retry. Preserve textual time conditions for repair
+                # rather than discarding an existing requirement.
+                schema_notes = []
+                framework_ref = parsed_dict.get("framework_reference")
+                if not isinstance(parsed_dict.get("control_parameters"), dict):
+                    parsed_dict["control_parameters"] = {}
+                if framework_ref is not None and not isinstance(framework_ref, dict):
+                    parsed_dict["framework_reference"] = None
+                    schema_notes.append("framework_reference 格式无效，已忽略")
+                time_constraint = parsed_dict.get("time_constraint")
+                if time_constraint is not None and not isinstance(time_constraint, dict):
+                    parsed_dict["time_constraint"] = None
+                    if isinstance(time_constraint, str) and time_constraint.strip():
+                        if not parsed_dict.get("time_constraint_note"):
+                            parsed_dict["time_constraint_note"] = query_clean
+                        schema_notes.append("time_constraint 为相对文字条件，未转换为公历日期")
+                    else:
+                        schema_notes.append("time_constraint 格式无效，采用系统默认检索时间")
+                elif isinstance(time_constraint, dict):
+                    parsed_dict["time_constraint"] = resolve_retrieval_time_constraint(time_constraint)
+                    for k in list(parsed_dict["time_constraint"].keys()):
+                        if k not in time_constraint and parsed_dict["time_constraint"][k] in (None, False, "explicit_user_constraint"):
+                            parsed_dict["time_constraint"].pop(k, None)
+                if schema_notes:
+                    previous_reasoning = str(parsed_dict.get("reasoning") or "").strip()
+                    parsed_dict["reasoning"] = "；".join(filter(None, [previous_reasoning, *schema_notes]))
 
                 # Keep the domain vocabulary open while preserving the legacy
-                # singular `domain` field used by the router and retrieval.
+                # singular `domain` field used by the router and RAG fallback.
                 raw_disciplines = parsed_dict.get("disciplines") or []
                 if isinstance(raw_disciplines, str):
                     raw_disciplines = [raw_disciplines]
@@ -390,21 +388,23 @@ class IntentRecognitionAgent:
                     str(item).strip()
                     for item in raw_disciplines
                     if str(item).strip()
-                ]
+                ] or ["general"]
 
                 # If the model uses `general` only as a placeholder, expose the
                 # first real discipline through the backward-compatible domain
                 # field. No discipline names are hardcoded here.
                 domain = str(parsed_dict.get("domain") or "").strip()
-                if domain in {"", "general", "综合科学"} and parsed_dict["disciplines"] and parsed_dict["disciplines"] != ["general"]:
+                if domain in {"", "general", "综合科学"} and parsed_dict["disciplines"] != ["general"]:
                     parsed_dict["domain"] = parsed_dict["disciplines"][0]
 
-                intent_key = parsed_dict.get("intent", "")
-                expected_agent = INTENT_TO_AGENT.get(intent_key)
-                if expected_agent:
-                    parsed_dict["target_agent"] = expected_agent
-                else:
-                    raise ValueError(f"模型返回不支持的意图: {intent_key!r}")
+                suggested_agent = str(parsed_dict.get("target_agent") or "").strip()
+                if suggested_agent not in AVAILABLE_AGENTS:
+                    parsed_dict["target_agent"] = "GeneralTutorAgent"
+
+                raw_sources = parsed_dict.get("required_data_sources") or []
+                if isinstance(raw_sources, str):
+                    raw_sources = [raw_sources]
+                parsed_dict["required_data_sources"] = raw_sources
 
                 # 规范化长篇大论字段类型
                 if "requires_long_form" in parsed_dict:
@@ -415,24 +415,27 @@ class IntentRecognitionAgent:
                 else:
                     parsed_dict["requires_long_form"] = False
 
-                decision = IntentDecision(**parsed_dict)
-                needs_search = decision.need_online_paper_search or any(
-                    source in decision.required_data_sources
-                    for source in ("uploaded_pdf_docs", "arxiv_live_search")
-                )
-                if needs_search and not (decision.search_query or "").strip():
-                    raise ValueError("任务声明需要检索，但未返回检索词")
-                return decision
+                return IntentDecision(**parsed_dict)
 
-            except BudgetExceeded as e:
-                raise IntentParsingError(f"意图解析失败（BudgetExceeded），额度已耗尽") from e
             except Exception as e:
                 last_err = e
                 if attempt < max_retries:
                     print(f"⚠️ [IntentRouter Note] 意图解析请求异常 ({e})，正在重试 ({attempt}/{max_retries})...")
                     time.sleep(2.0)
 
-        raise IntentParsingError(f"意图解析失败（{type(last_err).__name__}），本轮任务已停止") from last_err
+        return IntentDecision(
+            domain="",
+            intent="unresolved",
+            confidence=0.0,
+            target_agent="GeneralTutorAgent",
+            subject_action="INHERIT",
+            subject_entity="",
+            required_data_sources=[],
+            search_query=query_clean,
+            extracted_entities={"raw_query": query_clean},
+            reasoning=f"本轮任务未能可靠解析；保留用户原话，不推断任务或资料需求。解析错误: {last_err}",
+            is_resolved=False,
+        )
 
 
 # ==========================================

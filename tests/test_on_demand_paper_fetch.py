@@ -27,7 +27,6 @@ def test_download_and_ingest_creates_sidecar_and_computes_sha256(monkeypatch):
     agent = mod.OnlinePaperSearchAgent.__new__(mod.OnlinePaperSearchAgent)
     mock_rag = MagicMock()
     mock_rag.ingest_file.return_value = 5
-    mock_rag.collection.get.return_value = {"ids": ["indexed-chunk"]}
 
     candidate = {
         "paper_id": "2401.99999",

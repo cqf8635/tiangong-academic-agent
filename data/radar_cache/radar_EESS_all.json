@@ -1,21 +1,458 @@
 {
   "query_expression": "cat:eess*",
   "total_fetched": 35,
-  "total_results": 143105,
+  "total_results": 143368,
   "papers": [
     {
-      "paper_id": "2611.09860v1",
-      "title": "Geometric Pairwise Classification of Affine Constraints over Ellipsoidal Regions",
+      "paper_id": "2611.14443v1",
+      "title": "Assessing Alignment in Automatic Piano Transcription Datasets: A Benchmark for Scoring Methods",
       "authors": [
-        "Igor M. L. Pataro",
-        "Martina Mammarella",
-        "Fabrizio Dabbene",
-        "Teodoro Alamo"
+        "Lucas de Souza Brandão",
+        "Lucas Gris",
+        "Joaquim Cavalcante",
+        "Chukwuemeka Nkama",
+        "Andrea Poltronieri"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:42:13Z",
-      "summary": "This paper presents a deterministic geometric procedure for analysing affine constraints over fixed ellipsoidal regions, motivated by chance-constrained set approximation. Analytical tests classify inequalities as always violated, never violated, or cutting. Pairwise tests determine whether two inequalities can be strictly violated at a common point, yielding a compatibility matrix. The tests follow from quadratic optimisation and the Karush--Kuhn--Tucker conditions, with explicit treatment of tangencies, parallel normals, and degenerate inequalities. The formulation applies in arbitrary finite dimensions and provides geometric information for subsequent bounds on simultaneous sampled violations and safe-region approximation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09860v1.pdf",
+      "published_at": "2026-11-10T18:13:47Z",
+      "summary": "Automatic Music Transcription (AMT) relies on paired audio--MIDI datasets, implicitly assuming near-perfect temporal alignment. However, widely used piano datasets have been shown to contain alignment errors that may bias model evaluation and training. We propose a framework for evaluating audio--MIDI alignment scoring methods through controlled temporal, pitch, and structural MIDI corruptions. We also introduce STI, a scoring method built on AMT models, and benchmark it against existing alignment scoring approaches. Our results show that STI, together with methods based on CENS and spectrograms, achieves the strongest overall performance, with STI exhibiting the highest sensitivity to fine-grained temporal misalignments, the main alignment error in AMT datasets. We then apply the best-performing methods to widely used piano AMT datasets and identify trends in their relative alignment quality. These results support more informed dataset curation, model training, and AMT evaluation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14443v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "cs.SD (声音与音频处理)",
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "6 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14439v1",
+      "title": "Cascading Contingency Analysis of Modern Power Systems Using a Stochastic Hybrid Systems Framework",
+      "authors": [
+        "Masoud H. Nazari",
+        "Hamid Varmazyari"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:11:28Z",
+      "summary": "This paper presents a cascading contingency analysis and risk assessment framework that incorporates probabilistic mode transitions motivated by stochastic hybrid system (SHS) concepts together with power-flow-based stress evaluation. A two-stage modeling approach is adopted in which sensitivity-based analysis is first used to identify candidate cascading transitions, followed by DC power flow re-evaluation to accurately capture post-contingency stress redistribution, islanding behavior, and load shedding. A probabilistic propagation model is constructed using mode-dependent transition probabilities derived from line loading conditions. A Cascading Risk Index (CRI) is introduced to quantify the expected load shedding accumulated over cascade progression. Case studies on the IEEE 39-bus system demonstrate that the proposed framework captures diverse cascading routes under multiple initiating outages and identifies critical propagation patterns that are not revealed by N-1/N-2 screening. The results highlight the importance of SHS modeling in assessing cascading risk and providing a scalable framework for resilience evaluation in modern power systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14439v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "This paper was accepted at the 2026 North American Power Symposium (NAPS)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14421v1",
+      "title": "Earlybird: Predictive Streaming Speech Recognition in 29M Parameters",
+      "authors": [
+        "Sahil Mahendrakar"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T17:59:28Z",
+      "summary": "Streaming speech recognizers output a word only after the speaker has finished it, typically 90-400 ms later. For a voice agent every millisecond counts: the sooner the words are outputted, the sooner the agent can start a search or plan its reply. We present Earlybird, a 29M-parameter streaming recognizer (16.8 MB at 4 bits). Earlybird learns from audio cut off at random points, including partway through a word, and is asked to predict every word that is due by then in full, plus a guess of the next two words. Its raw token probabilities give a confidence for every word including the one still being spoken. On clean audiobook speech (LibriSpeech test-clean), the median word is predicted correctly 90 ms before the speaker finishes it, while released streaming models get it 90 to 400 ms after it ends. Earlybird is the earliest on all six test sets we time, covering audiobooks, TED talks, public speech, earnings calls, and synthetic speech. On the same audiobooks, 69% of words are predicted correctly before they end, against 3-25% for the other models. For words still being spoken, confidence is calibrated, with an expected calibration error (ECE) of 3.7 to 5.5. On the eight English Open ASR Leaderboard sets, it is more accurate than Moonshine Tiny on every set and roughly ties Whistle, a model of the same size.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14421v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "cs.CL",
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "cs.SD (声音与音频处理)",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "9 pages, 3 figures, 6 tables. Model: https://huggingface.co/sahilmahendrakar/Earlybird-29M",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14416v1",
+      "title": "Analysis and Demonstration of a Current-Stiff, Isolated Capacitive Bridge Transformer",
+      "authors": [
+        "Patrick Nowakowski",
+        "Cameron Little",
+        "Mahima Gupta",
+        "Daniel C. Ludois"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T17:57:10Z",
+      "summary": "The traditional Voltage Source Inverter (VSI) based Dual Active Bridge (DAB) utilizes a transformer at its center to provide galvanic isolation and a turns ratio for step up/down functionality. However, the transformer is often the limiting factor of the DAB, especially as semiconductor switching speeds improve, given steel core losses, winding losses, etc. This paper presents a new DAB architecture based on Current Source Inverters (CSIs) coupled through, and isolated by, an AC capacitive bridge, yielding a system called a Capacitive Bridge Transformer (CBT). The CBT architecture eliminates all magnetic components in the AC portion of the isolated DAB circuit, reducing frequency scaling barriers normally present in DABs. The paper introduces the CBT from the perspective of duality and then develops the DC-DC power flow equations, the internal apparent power equations, and effective turns ratio. The analytical models are verified by steady state and detailed time domain measurements on a 2 kW experimental prototype.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14416v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "10 pages, 17 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14374v1",
+      "title": "Uncertainty-Aware Hybrid Offline Reinforcement Learning with Online Action Selection Enabled by Sparse Gaussian-Process Critics",
+      "authors": [
+        "Marco Chan",
+        "Christos Evripidou",
+        "Liqiu Dong",
+        "Benoit Chachuat",
+        "Mehmet Mercangöz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T17:30:34Z",
+      "summary": "Start-ups and grade changes remain largely operator-driven, while developing and maintaining dynamic models for model-based control requires substantial engineering effort. Hybrid Offline Learning and Online Optimisation (HOFLON) uses one-step offline reinforcement learning to select actions from historical transition data. In its original implementation, the online objective combines the predicted return from a tree-ensemble critic with an adversarial-autoencoder (AAE) penalty for unfamiliar state-action pairs. We examine the effect of this penalty and replace the critic and AAE with a sparse variational Gaussian-process (sGP) critic. Actions maximise $μ- κσ$, an uncertainty-adjusted estimate of the return from one action followed by the historical operating practice. On the HOFLON polymerisation-reactor benchmark, removing the AAE from HOFLON led to 4 failed start-ups in 15 runs over five critics. At its published weight, the variation in the AAE penalty is four orders of magnitude smaller than the variation in the tree-ensemble critic. Nevertheless, it changes actions when the predicted returns of competing candidates are nearly equal, and paired runs with and without the penalty diverged from the first move. With a Matérn-5/2 sGP critic, $κ= 0$ led to failure in 13 of 15 runs, whereas with $κ= 3$ none of 15 runs (five critics, three noise realisations) failed. The median and lowest returns were 13,464 and 13,398 (HOFLON: 13,393 and 12,411). A squared-exponential sGP critic with learned inducing inputs needed $κ\\geq 3$ to remain within the empirical data support in steady state, and then settled with a temperature offset of 2.0 K.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14374v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "8 pages, 5 figures, 1 table. Submitted to the 2027 European Control Conference (ECC 2027)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14371v1",
+      "title": "Reliable and explainable analysis of AVS/RS by Statistical Model Checking and Process Mining",
+      "authors": [
+        "Emanuele Guerrazzi",
+        "Andrea Vandin"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T17:28:54Z",
+      "summary": "Automated Vehicle Storage and Retrieval Systems (AVS/RS) are increasingly adopted to boost warehouse throughput while containing operational costs. We present an integrated analysis framework that couples discrete-event simulation with Statistical Model Checking (SMC) and Process Mining (PM) to quantify and explain AVS/RS performance. SMC, implemented through the MultiVeStA tool, delivers statistically reliable estimates of key indicators, such as cycle times, throughput, and storage utilization, across alternative stocking and picking policies with user-specified confidence levels. MultiVeStA orchestrates multiple independent simulations in a black-box manner, enabling automated verification. PM ingests the resulting event logs to uncover the behavioral patterns and bottlenecks that drive those indicators, closing the interpretability gap typical of simulation studies. We instantiate the framework on a new open-source AVS/RS simulator configured according to recent industrial guidelines and evaluate multiple control strategies. Results show that the joint use of SMC and PM enables both predictive what-if analyses and post-hoc diagnostics, providing the first combined SMC+PM assessment of AVS/RS operations and a reusable toolchain for automated warehousing research.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14371v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.SE (软件工程)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "40 pages, 12 figures. Original manuscript submitted before peer review. A revised version has been accepted for publication in Expert Systems with Applications",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14299v1",
+      "title": "Energy- and Time-Efficient Multi-Vehicle Trajectory Planning Using Augmented DAG Search in Configuration Space",
+      "authors": [
+        "Amirreza Akbari",
+        "Galina Sidorenko",
+        "Johan Thunberg"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:34:29Z",
+      "summary": "Multi-vehicle trajectory planning for CAV requires balancing energy consumption and travel time while ensuring safety and scalability. While travel-time-optimal methods based on Integer Programming exhibit poor scalability in large-scale multi-vehicle scenarios, existing energy-oriented approaches fail to balance energy consumption and travel time. We extend a configuration-space framework for multi-vehicle trajectory planning to jointly locally optimize travel time and energy consumption. A weighted energy-travel time objective is combined with an efficient augmented DAG search on two-dimensional decompositions of a high-dimensional configuration space, enabling scalable and collision-free coordination of large numbers of vehicles. Although the proposed framework is applicable to other traffic scenarios, such as roundabouts and vehicle-following, we focus on intersections as a representative and challenging planning problem. To further improve performance for our methodology, we also extend the method with an insertion-ordering heuristic that exploits reduced-space geometric information. Combined with nonlinear model predictive control, the proposed framework is shown to scale to 40 vehicles, outperform MILP-based and convex optimization baselines in dense intersections, and reduce energy consumption at equalized travel times relative to time-optimal planning.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14299v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "This manuscript is currently under review at IEEE Transactions on Intelligent Transportation Systems",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14267v1",
+      "title": "Achieving Robust Channel Estimation Neural Networks on Doppler effects by Designed Training Data",
+      "authors": [
+        "Dianxin Luan",
+        "John Thompson"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:11:11Z",
+      "summary": "Channel estimation is crucial in wireless communication systems. Many existing works train and test their models using the same or similar channel. However, practical channels are infinitely diverse and time-variant while data-driven algorithms often degrade on new and previously unseen channels. This prohibits the practical implementation of neural networks for channel estimation, particularly in high speed scenarios characterized by rapidly channel profile changes and very high Doppler shifts. Online training can fine-tune models to adapt to new channels, but requires high computation resource and incurs significant latency for physical-layer devices. Moreover, online training cannot exhaustively cover all possible channels because there are infinitely many possible channels. Therefore, we investigate the ability of neural networks to generalize to wireless channels. This paper proposes design criteria to generate synthetic training data, which guaranty that the resulting networks perform robustly across wireless channels, especially for very high Doppler shifts and different Doppler spectra. It ensures that offline-trained neural networks require no prior information or online training to precisely estimate the new channels. To demonstrate general applicability, we use neural networks with different levels of complexity to show that the generalization achieved appears to be independent of architecture. From simulation results, neural networks achieve a certain performance across wireless channels with different unseen power delay profiles (PDP) and Doppler shifts.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14267v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14266v1",
+      "title": "Physics-Constrained Autoencoder for Interpretable Health Representation Learning in Turbofan Engines",
+      "authors": [
+        "Leonardo Baldo",
+        "Jokin Alcibar Ibarzabal",
+        "Daniel Cisneros Acevedo",
+        "Kai Goebel",
+        "Manuel Arias Chao"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:10:36Z",
+      "summary": "Health Indices (HIs) summarize degradation from operational data and support diagnostic and prognostic tasks in Prognostics and Health Management (PHM). Their usefulness depends on capturing degradation and interpreting system condition. Autoencoders learn such representations from unlabelled monitoring data; however, when training is driven only by reconstruction, the physical meaning of latent variables remains undefined, limiting their interpretation and diagnostic value. This work proposes a physics-constrained autoencoder that embeds system knowledge as an inductive bias in the decoder architecture and as a learning bias in the loss function. The decoder contains differentiable physical equations that receive latent variables and operating conditions as inputs, structurally guiding each latent variable to represent a predefined physical quantity and enabling component-level analysis before aggregation into a system-level HI.The methodology is benchmarked on the N-CMAPSS dataset against alternative representations. Reconstruction reaches an $R^2$ of 0.9993 and an MAE of 0.0036, comparable to fully data-driven models. After operating-condition correction, the inferred physical quantities track degradation, and their aggregation produces an HI with a Spearman correlation of 0.9791 with the ground truth, an RMSE of 0.0286, and an MAE of 0.0233. The methodology is further evaluated using a single model trained across four datasets representing distinct degradation scenarios. This model preserves component-level signatures that distinguish compression-side from expansion-side degradation without diagnostic labels.Finally, the proposed framework enables degradation trends to be visualized on component maps, providing a health representation in a form familiar to engine operators and domain experts.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14266v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14263v1",
+      "title": "Chain of Physics: Supporting Fault Diagnosis with Engineering-Inspired Large Language Model Reasoning",
+      "authors": [
+        "Wenqi Zhou",
+        "Leonardo Baldo",
+        "Kai Goebel",
+        "Manuel Arias Chao"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:09:44Z",
+      "summary": "Fault diagnosis in complex systems requires linking observed changes in physical quantities to the failure mechanisms that produce them. Experienced engineers perform this task by combining sensor information with knowledge of system behavior and fault propagation. Large Language Models (LLMs) can support this process, but their diagnostic reasoning depends on the availability of asset-specific engineering knowledge and on how this knowledge is represented and used during inference. This work introduces Chain of Physics (CoP), an LLM-based fault-diagnosis framework built around a Constrained Knowledge Graph (CKG) generated automatically from asset-specific reference documentation. CoP addresses failure-sensor association from textual engineering knowledge. The CKG stores diagnostic chains connecting failure modes, changes in physical quantities, and monitoring sensors. During inference, semantically similar graph paths are retrieved for each question and used as both information and in-context examples for the reasoning process. Candidate failure modes are extracted from the question and analysed independently through dedicated LLM calls, which generate plausible failure-to-observation chains. A final decision module compares these chains with the available answer choices. CoP is evaluated on the FailureSensorIQ benchmark across four industrial asset classes and three LLMs. Compared with direct prompting and conventional Retrieval-Augmented Generation (RAG), CoP improves diagnostic accuracy across all evaluated models, with gains ranging from 7.8 to 19.6 percentage points and from 11.7 to 18.2 percentage points, respectively. The results show that structured engineering knowledge can improve LLM-based diagnostic reasoning when graph retrieval is combined with in-context examples of fault propagation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14263v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14259v1",
+      "title": "Concentration-Based Probabilistic Reachability for Linear Systems under Multiplicative Uncertainty and Additive Noise",
+      "authors": [
+        "Kaouther Moussa",
+        "Kaito Ito",
+        "Hideaki Ishii"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:05:42Z",
+      "summary": "This paper investigates probabilistic reachability for discrete-time linear stochastic systems subject to bounded multiplicative uncertainty and potentially unbounded additive noise. To address the conservatism of reachable sets constructed solely from covariance information, we develop two complementary approaches based on sub-Gaussian and sub-exponential matrix moment-generating-function characterizations. The sub-Gaussian approach relies on a worst-case envelope over the uncertainty support, whereas the sub-exponential approach exploits expectation-based propagation of the matrix variance proxy. Both approaches are used to construct probabilistic reachable sets with explicit probability guarantees, considering ellipsoidal confidence regions and half-space bounds. For the latter, we derive a necessary and sufficient condition under which the sub-exponential chance-constraint margin is no larger than its sub-Gaussian counterpart. Numerical results show that the proposed bounds can be less conservative than those based on the covariance, and illustrate the complementary nature of the two approaches across probability levels.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14259v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14250v1",
+      "title": "CFAR Detection on Non-Coherently Integrated Angular Maps for mmWave Radio SLAM",
+      "authors": [
+        "Paolo Tosi",
+        "Ossi Kaltiokallio",
+        "Marcus Henninger",
+        "Silvio Mandelli",
+        "Mikko Valkama"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:00:02Z",
+      "summary": "Reliable multipath detection is essential for millimeter-wave simultaneous localization and mapping (SLAM), where propagation paths reflecting off the environment provide geometric constraints beyond the dominant line-of-sight component. This paper develops constant false alarm rate (CFAR)-based detectors for beam-swept bistatic integrated sensing and communications (ISAC). Starting from conventional CFAR on the I/Q datacube, we derive a modified detector for non-coherently integrated angular power maps, where the post-integration noise statistics differ from those assumed by standard cell-averaging CFAR. To improve practicality, we introduce a multi-cell cell-under-test formulation and a plus-shaped training window that reduces computational cost while accounting for sidelobe structure. The proposed methods are evaluated on experimental 60 GHz indoor measurements using a snapshot-SLAM estimator. Compared with a singular value decomposition (SVD)-based detector, the proposed CFAR approaches reduce the overall positioning RMSE from 0.30 m to 0.24-0.26 m, with the largest improvement in non-line-of-sight snapshots. The multi-cell non-coherent detector further lowers the computational complexity without degrading positioning accuracy, demonstrating its suitability for practical multipath radio-SLAM.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14250v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 4 figures, 1 table. This work has been submitted to the IEEE for possible publication",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14249v1",
+      "title": "Information-Theoretic Threshold Design for Sparse Event Encoding in Learning Systems",
+      "authors": [
+        "Pratishtha Shukla",
+        "Maksudul Alam",
+        "Srikanth B. Yoginath",
+        "Ali R. Ekti"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:59:59Z",
+      "summary": "One approach to event-driven learning is to encode continuous signals as sparse events generated when signal changes exceed a prescribed threshold. However, this threshold is typically selected empirically, with limited theoretical guidance. This paper establishes a connection between threshold-based event encoding and discretized learning systems and identifies a dimensionless ratio governing information retention. From this connection, we derive an information-sufficiency boundary using normal-condition data and formulate a data-driven criterion that selects the sparsest threshold retaining a prescribed fraction of peak discriminative information. The framework is illustrated using event cameras and evaluated on power-system fault classification. Results show that the proposed design identifies sparse operating thresholds while exposing the tradeoff between information retention, event activity, and classification performance.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14249v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14240v1",
+      "title": "Beyond Accuracy: Physics-Informed Evaluation of ANN-based Power Flow Solvers under System Shift",
+      "authors": [
+        "Dong Liu",
+        "Jochen Stiasny",
+        "Jochen Cremer",
+        "Pedro P. Vergara"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:51:53Z",
+      "summary": "Recent advances in artificial deep learning-based power flow (PF) solvers have primarily focused on improving estimation accuracy, while their physical feasibility and operational reliability under realistic system variations remain insufficiently evaluated. This paper proposes a physics-informed evaluation framework for deep learning-based PF solvers under topology and load distribution shifts. Beyond conventional voltage-domain errors, the framework incorporates KCL gaps, branch-flow gaps, KVL residuals, continuous feasibility scores, and strict, practical, and relaxed PF feasibility rates. Four case studies are designed to investigate topology shifts, mixed topology training, load distribution shifts, and combined topology distribution shifts. Eight ANN architectures, including graph input models, load-only baselines, and physics-informed neural networks, are evaluated under consistent settings. The results demonstrate that low estimation errors do not necessarily correspond to physically feasible or operationally reliable PF solutions, particularly under combined system shifts. The proposed framework establishes an initial foundation and analysis for the development and verification of trustworthy deep learning-based PF solvers, providing support for their reliable deployment in future AI-enabled power system analysis.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14240v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14232v1",
+      "title": "Intelligent Carbon Emission-aware Radio Unit Activation Control in Dense Heterogeneous Energy 6G Networks",
+      "authors": [
+        "Xuanyu Liang",
+        "Mostafa Rahmani Ghourtani",
+        "Swarna Chetty",
+        "Mehdi Sookhak",
+        "Hamed Ahmadi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:45:06Z",
+      "summary": "Base stations account for a dominant share of energy consumption and operational carbon emissions in radio access networks. In O-RAN deployments with heterogeneous energy sources, however, minimizing energy consumption alone does not necessarily minimize carbon emissions. In this work, we investigate carbon-aware DRL for RU sleep control. Under the adopted source-matched operational accounting model, renewable-matched RUs are assigned zero direct operational emissions, whereas non-renewable-supplied RUs incur operational emissions. The problem is formulated as a Markov decision process and evaluated using two carbon-aware reward formulations and a conventional energy--QoS reward baseline. We implement and compare TD3, PPO, and a heuristic method under realistic mobility and 3GPP channel models across multiple renewable-matched RU layouts and traffic loads. Simulation results show that TD3 learns more energy-efficient activation policies than PPO, achieving approximately 3%--6% lower energy consumption in representative scenarios. TD3 also achieves 8%--12% lower operational emissions than PPO in scenarios with a low proportion of renewable-matched RUs and up to a 20% reduction relative to the heuristic baseline under moderate renewable availability and high traffic load. Moreover, the joint energy,carbon and QoS reward achieves approximately 12%--28% lower operational emissions than the energy and QoS reward, while maintaining comparable energy consumption.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14232v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14225v1",
+      "title": "Dual-Parabola Interpolator: A Low-Bias Peak Estimator for Distributed Radar Synchronization",
+      "authors": [
+        "Matteo Pardi",
+        "Giulio Meucci",
+        "Francesco Mancuso",
+        "Anna Lisa Saverino",
+        "Amerigo Capria"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:41:19Z",
+      "summary": "Coherent distributed radar processing requires accurate wireless synchronization. Two-way time transfer (TWTT) obtains reception timestamps from sampled matched-filter peaks, but interpolation bias limits accuracy even when noise is reduced by higher signal-to-noise ratio (SNR) or averaging. Three-point parabolic interpolation is attractive for its simple, explicit formula; reducing its bias generally requires more elaborate fitting, such as higher-order polynomials, or a model tailored to a particular peak shape. A practical alternative should retain this simplicity and interpretability while approaching the low bias of more flexible fits. We propose the Dual-Parabola Interpolator (DPI), which combines two parabolic estimates from five amplitude samples near the matched-filter peak. An adaptive weight cancels the leading interpolation error without requiring a waveform-specific peak model or a correction table. Simulations over flat and standardized multipath channels show bias comparable to a five-point quartic fit, with essentially the same standard deviation as the other interpolators and an execution cost close to a three-point parabolic fit. This combination is useful for TWTT in urban or other multipath settings, where channel distortion prevents reliance on a nominal peak shape.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14225v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "6 pages, 7 figures. Submitted for peer review as a conference paper",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14186v1",
+      "title": "Koopman Model-Based Reinforcement Learning",
+      "authors": [
+        "Wenjian Hao",
+        "Paulo C. Heredia",
+        "Shaoshuai Mou"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:08:33Z",
+      "summary": "We propose a Koopman model-based reinforcement learning (K-MBRL) algorithm for controlling nonlinear robotic systems with unknown dynamics. The K-MBRL learns a control policy by minimizing an approximate policy objective that combines the analytical immediate cost with an estimate of the future cost evaluated at the one-step predicted state. To this end, we develop a stochastic Koopman operator-based learning method to approximate the unknown nonlinear dynamics in a linear representation, while a critic function estimates the remaining future cost. This formulation offers two key advantages. First, the linear Koopman dynamics simplify the model-dependent policy gradient computation to a constant matrix product, enabling computationally efficient policy improvement. Second, one-step model propagation mitigates the accumulation of prediction errors associated with long-horizon rollouts while retaining long-term cost information through the critic. The learned policy enables real-time control through feedforward evaluation without online optimization. We establish policy learning convergence guarantees under standard stochastic approximation assumptions. Simulations on HalfCheetah and quadruped four-legged locomotion tasks demonstrate strong sample efficiency and improved performance compared with classical model-free and model-based reinforcement learning baselines. A pendulum swing-up task is used to assess policy gradient approximation accuracy and conduct ablation studies on the learning mechanism and key hyperparameters. The proposed K-MBRL is further validated on a physical quadruped robot performing a challenging sequence of maneuvers: rising to an upright posture supported by two rounded rear feet, maintaining balance during bipedal walking, and safely returning to the ground, as shown in Fig.1.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14186v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "cs.RO (机器人学与具身智能)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14088v1",
+      "title": "Discrete-Time Stochastic Control Beyond i.i.d. Noise",
+      "authors": [
+        "Reyajul Hasan Leon",
+        "Ali Devran Kara"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:50:23Z",
+      "summary": "We study discrete-time stochastic control problems where the noise driving the state dynamics is a stationary infinite-order chain rather than an i.i.d. sequence. We formulate the problem as a controlled Markov process by enlarging the state space to include the posterior distribution of the noise given the state-action history. Assuming that the sensitivity of the noise transition kernel to past noise values decays exponentially, we show that the expected total variation distance between the full-history and finite-memory noise filters decays at rate $\\sqrt{N}ρ^{\\sqrt{N}}$. We use this result to construct finite-memory control models and establish explicit near-optimality bounds for their policies. Finally, under suitable ergodicity conditions, we show that Q-learning converges to the optimal solution of the approximate model, so the same performance bounds apply to the learned policies.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14088v1.pdf",
       "source": "arxiv",
       "primary_category": "math.OC",
       "categories": [
@@ -26,77 +463,369 @@
         "math.OC (运筹学、优化与控制论)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "6 pages, 1 figure",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09854v1",
-      "title": "Super-resolved digital terrain models for GEDI geolocation correction: agreement with airborne LiDAR DTM-based corrections at the beam level, not the footprint level",
+      "paper_id": "2611.14055v1",
+      "title": "Finite Blocklength Performance Analysis of Uplink RSMA with Practical Imperfections",
       "authors": [
-        "Natsuki Yuda",
-        "Shinichiro Shirota"
+        "Farjam Karim",
+        "Nurul Huda Mahmood",
+        "Arthur Sousa de Sena",
+        "Deepak Kumar",
+        "Matti Latva-aho"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:36:50Z",
-      "summary": "The Global Ecosystem Dynamics Investigation (GEDI) mission measures three-dimensional forest structure with a LiDAR aboard the International Space Station. GEDI observations have geolocation errors of about 10 m, which cause misalignment with other remote sensing data and reduce the accuracy of downstream tasks. Matching GEDI ground elevations against high-resolution digital terrain models (DTMs) from airborne LiDAR is one way to correct these errors, but such DTMs exist in few regions. To widen this method's applicability, we super-resolved a more widely available low-resolution DTM and used it for the matching. Our question is whether a super-resolved DTM yields the same correction as a 1 m-resolution airborne LiDAR DTM and, if not, why. In steep forests of western Japan, we super-resolved an existing 10 m-resolution DTM to 1 m. Improving its accuracy required fusion with a global 30 m-resolution DTM from a different source. Using the resulting DTM, we corrected GEDI observation positions first by a single shift per ground track, then per observation. For most tracks, the shifts nearly matched those from the airborne LiDAR DTM, likely because DTM errors canceled out across many observations. Per-observation corrections, however, did not match. At a single observation, the error does not cancel out and is too large for the correction. This error likely originates mainly from the input DTM. Therefore, even without a 1 m-resolution DTM, a roughly 10 m-resolution DTM, fused with a global DTM and super-resolved to 1 m, should yield track-wise corrections nearly matching those from a 1 m-resolution DTM.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09854v1.pdf",
+      "published_at": "2026-11-10T13:21:56Z",
+      "summary": "Future generations of wireless networks will support massive communication and hyper-reliable low-latency communications, which are fundamental to large-scale Internet of Things (IoT) deployments with stringent performance requirements. To support such diverse and demanding requirements, robust and flexible multiple access schemes are essential. In this work, we develop a comprehensive analytical framework for evaluating uplink rate-splitting multiple access (RSMA) in the finite blocklength regime under realistic non-ideal conditions. Specifically, we derive closed-form expressions for the block error rate (BLER) and goodput, accounting for imperfect channel state information at the receiver (CSIR), imperfect successive interference cancellation (SIC), and hardware impairments. To reflect practical wireless environments, we model the channel using Nakagami-m fading model. Our analysis shows that at lower transmit power levels, imperfect CSIR is the dominant performance-limiting factor, whereas hardware impairments and imperfect SIC become more significant in degrading system performance as the transmit power increases. To further understand the system behavior, we derive asymptotic BLER expressions. We also analyze the impact of rate allocation, demonstrating its critical role in ensuring fairness and reliability. Monte Carlo simulations validate our analytical expressions. Notably, our results show that uplink RSMA significantly outperforms NOMA even when RSMA operates under harsh imperfect CSIR. This superiority establishes RSMA as a robust and efficient candidate for future wireless networks in practical, constrained environments",
+      "pdf_url": "https://arxiv.org/pdf/2611.14055v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14043v1",
+      "title": "ESDCodec: Ultra-Low Bitrate Speech Codec with Enhanced Semantic Disentanglement and Subband Decoding",
+      "authors": [
+        "Nan Xu",
+        "Kecan Mao",
+        "Xin Gu",
+        "Yi Zhao",
+        "Zhi Gong"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:12:34Z",
+      "summary": "Despite recent advances in neural speech codecs, achieving highfidelity speech reconstruction at low bitrates remains a formidable challenge. To address this limitation, we propose ESDCodec, a speech codec that integrates a thoroughly enhanced semantic quantizer and a conditioned decoder network. Specifically, we employ a randomly initialized and frozen codebook, followed by a lightweight projector, to encode semantic details entirely within a linear space while enhancing codebook utilization. To further improve perceptual quality, we design a condition network that explicitly injects prior subband knowledge into the upsampling decoder. Taking the de-quantized feature as input, this network predicts subband signals, thereby providing fine-grained guidance for waveform reconstruction. Extensive experimental results show that ESDCodec achieves superior reconstruction performance at an ultra-low bitrate of 0.85kbps. For LLM-based speech generation tasks, ESDCodec also consistently outperforms existing codec models.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14043v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "5 pages, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14035v1",
+      "title": "ScaleBrain: A Scale-Consistent Framework for EEG Foundation Models",
+      "authors": [
+        "Minyu Zhou",
+        "Yajing Wu",
+        "Yongqiang Tang",
+        "Wang Jia",
+        "Wensheng Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:03:41Z",
+      "summary": "Foundation models pre-trained on large unlabeled electroencephalography (EEG) corpora have emerged as a transformative paradigm for Brain-Computer Interface (BCI) applications. Recent EEG foundation models have shown that multi-scale representations derived from fixed-length patches can improve EEG representation learning. Existing frameworks commonly construct temporal scales through feature-level operations. However, these operations leave the correspondence between learned features and scale-specific characteristics of the original EEG signals implicit. Moreover, when the self-supervised objective is not aligned with the multi-scale input representations, information at some temporal scales may receive insufficient supervision during pre-training. In light of this, we propose ScaleBrain, a scale-consistent pre-training framework that explicitly coordinates multi-scale representations of EEG from both the model input and optimization objective sides. Specifically, ScaleBrain introduces multi-scale EEG tokenization to represent the same EEG segment through analysis windows with different temporal spans and shared temporal anchors, and pairs these representations with scale-specific reconstruction to align with the multi-scale input structure and provide supervision across temporal resolutions during self-supervised learning. We further develop an axial spatio-temporal attention mechanism to contextualize the fused multi-scale representation along spatial and temporal dimensions. Extensive evaluations on six public BCI benchmarks against 12 representative baselines show that ScaleBrain achieves the highest mean Balanced Accuracy on five datasets and ranks third on the remaining one, with only 5.0M parameters, demonstrating strong performance and favorable parameter efficiency.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14035v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14021v1",
+      "title": "Safe and Scalable Minimax Adaptive Control of Positive Systems",
+      "authors": [
+        "Fethi Bencherki",
+        "David Ohlin",
+        "Tomas Meijer"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:53:49Z",
+      "summary": "This paper studies minimax adaptive control of positive linear systems with fixed unknown dynamics and nonnegative disturbances. We reformulate the problem by compressing the historical data into a vector and a positivity-induced consistency set containing the models compatible with the observations. Together with the physical state, these quantities form a sufficient information state and yield an exact reformulation as a standard minimax dynamic game. We allow the admissible input set to adapt to the current consistency set, ensuring positivity for every remaining feasible model. As inconsistent models are eliminated, the input set can expand, allowing less cautious control actions. For finite model sets, we derive an explicit solution to the Bellman inequality and construct a safe and stabilizing certainty-equivalence controller with robustness guarantees. The framework also accommodates structured classes of continuum model uncertainty whose consistency sets admit fixed, finite-dimensional representations, enabling scalable information-state updates.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14021v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "20 pages, 1 figure (6 panels), 1 table",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14016v1",
+      "title": "Passive ladder-network representation of the radiation impedance of a spherical cap on a rigid sphere",
+      "authors": [
+        "Ronald M. Aarts"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:52:00Z",
+      "summary": "A loudspeaker in a closed box is modeled as a rigid sphere with an axially moving cap. For an axisymmetric cone-velocity profile, its radiation impedance is written as a network. Each spherical-harmonic mode has an impedance rational in frequency, realized exactly as a finite passive ladder of masses and compliances terminated in a resistance. Ideal transformers set by Legendre coefficients couple these ladders; truncated modes reduce to a residual mass. Despite the different geometry, the impedance resembles that of a baffled piston but, at equal volume velocity, has half its low-frequency resistance and about three quarters of its radiation mass.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14016v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.AS",
+      "categories": [
+        "eess.AS",
+        "physics.class-ph"
+      ],
+      "category_names_zh": [
+        "eess.AS (音频与语音信号处理)",
+        "physics.class-ph (经典物理学)"
+      ],
+      "comment": "13 pages (preprint format), 3 figures. Submitted to JASA Express Letters",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14007v1",
+      "title": "Application of the Phase Correction Method in Tracking Modules of Navigation Receivers",
+      "authors": [
+        "Kudryavtsev I. A.",
+        "Shafran S. V.",
+        "Balmasova M. A"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:46:30Z",
+      "summary": "One of the problems of the tracking modules is their significant inertia in case of narrow bandwidth, which is desirable to mitigate signal noise. The paper describes a method of phase correction, improving accuracy and dynamic characteristics of the tracking process in GNSS receivers. The pivotal idea of the method supposes correction of the phase deviation between the received signal and its local copy at the end of every integration period. This correction is performed directly over the phase accumulator of a DDS system. This approach reduces inertial effects crucially. Application of phase correction method with narrow filter bandwidth is much more efficient when FLL-assisted PLL tracking is used. It is shown that in this case a separate FLL discriminator is not needed, and the resulting filter structure can be significantly simplified.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14007v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "15 pages, 17 figures. The paper is accepted for publication in the journal \"Radiotechnika\" (Radio engineering)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14003v1",
+      "title": "Spatio-Temporal Calibration of a Vehicle-Mounted Microphone Array for Autonomous Driving",
+      "authors": [
+        "Marvin Seegert",
+        "Richard Taupitz",
+        "Korbinian Moller",
+        "Johannes Betz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:44:52Z",
+      "summary": "Microphones let an autonomous vehicle sense into areas its cameras and LiDAR cannot see, by picking up the sound that other traffic participants emit. Locating those sources and fusing them with the visual perception requires the microphone array to be calibrated and registered relative to the vehicle's other sensors. Existing calibration methods assume small, unobstructed indoor rigs, whereas a vehicle body casts an acoustic shadow that straight-line propagation cannot represent, and to our knowledge no calibration of an array distributed around a vehicle has been reported. We propose a pipeline that uses a balloon burst as a single cross-modal target, which the LiDAR locates in metric coordinates, every microphone hears as a sharp onset and a camera times. Each observation is weighted by its own timing variance, which discounts shadowed arrivals instead of discarding them and needs no model of the vehicle. On a full-size vehicle with eight microphones over a 4.9 m aperture, the held-out range residual of 6.37 cm approaches the 6.07 cm floor set by the onset timing noise, and the calibrated array tracks a moving source to within a few degrees of the vehicle's own LiDAR. A dozen bursts spread around the vehicle suffice, and spreading them matters more than adding more.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14003v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.SD",
+      "categories": [
+        "cs.SD",
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "cs.SD (声音与音频处理)",
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "Submitted to IEEE ICRA 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13990v1",
+      "title": "On the information rate of phones, syllables and words",
+      "authors": [
+        "Herman Kamper"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:33:12Z",
+      "summary": "Which linguistic units minimise the bitrate required to encode speech content: phones, syllables, words, maybe larger units, or something in between? This question has implications for the development of speech and language systems and theories of human language processing. Using a transcribed corpus of 960 hours of English audiobooks, I compare the information rates of phones, syllables, words, multi-word combinations and intermediate tokenisations. While all units are equivalent under a perfect language model, it makes sense to compare these under limited modelling budgets; I use $n$-gram and transformer language models. The lowest bitrates are achieved using words, with slightly longer units sometimes performing best. The results show that, when modelling capacity is limited, units larger than syllables but smaller than long multi-word phrases provide the most efficient representation in terms of information rate.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13990v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "eess.AS"
+      ],
+      "category_names_zh": [
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "eess.AS (音频与语音信号处理)"
+      ],
+      "comment": "5 pages, 1 table, 2 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13986v1",
+      "title": "Distributionally Robust Indirect-Feedback Stochastic MPC with Gelbrich Ambiguity Sets",
+      "authors": [
+        "Jiaxun Sun",
+        "Riccardo Cescon",
+        "Marcell Bartos",
+        "Melanie N. Zeilinger"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:30:05Z",
+      "summary": "Stochastic model predictive control uses disturbance statistics to set safety margins. Errors in these statistics can invalidate the safety guarantees. This paper therefore describes the uncertainty in the disturbance mean and covariance by a prescribed Gelbrich ambiguity set. This contains distributions of any shape whose moments are close in the Gelbrich distance to the nominal values, including distributions with unbounded support. For linear time-invariant systems with additive disturbances, we build on the indirect feedback paradigm, propagate this moment uncertainty along the error dynamics, and obtain a closed-form constraint tightening that is computed offline. Robustness enters as a single additive term that grows with the size of the ambiguity set, so the online problem remains a quadratic program. Recursive feasibility and closed-loop satisfaction of conditional value-at-risk (CVaR) constraints hold for every disturbance distribution in the set. We illustrate the method on a linearized planar quadrotor.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13986v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "math.OC (运筹学、优化与控制论)"
+      ],
+      "comment": "6 pages, 2 figures, 1 table. Submitted to the 2027 European Control Conference (ECC)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13985v1",
+      "title": "Excitable Behaviours of a First-Order High-Pass Neuron Model",
+      "authors": [
+        "Jérôme Adriaens",
+        "Guillaume Drion",
+        "Pierre Sacré",
+        "Alessio Franci",
+        "Gustave Bainier"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:29:50Z",
+      "summary": "With the rise of neuromorphic technologies, simple and tunable neuron models are needed to analyse and design spiking systems. However, the simplest neuron models, e.g., Leaky Integrate-and-Fire (LIF) models, usually fail to capture the excitable behaviours of biological neurons. This could be a significant limitation, as excitability enables reliable spike timing under parametric uncertainties. Recently, a minimal excitable model, the so-called High-Pass Model (HPM), was introduced in neuroengineering. It simply consists of a static sigmoid with a high-pass filter in positive feedback. Given its novelty, it is still unclear how easily the HPM can be tuned, and how much of the excitable behaviours of a biophysical neuron it can reproduce. To address these questions, we investigate the tunability of a first-order HPM sub- and supra-rheobase, i.e., below and above the onset of the tonic spiking regime (where the neuron spikes periodically), and compare its behaviours with those of a simple Hodgkin-Huxley-type Conductance-Based Model (CBM). Below rheobase, both models fire spikes in response to transient inputs, including post-inhibitory rebound spikes. Above rheobase, an affine reparametrization of the input of the HPM suffices to fit its frequency-current curve to that of a CBM. The two models mostly differ near their respective rheobases, where the first-order HPM lacks bistability and spike latency. We suggest that modifying the frequency-selective element of the HPM may be sufficient to overcome this limitation. These results highlight the potential of the HPM as a fundamental computational primitive in neuromorphic, spike-based technologies.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13985v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "6 pages, 8 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13971v1",
+      "title": "TransGHOST: Real-Time, Synthesis-Free Reconstruction of Instrument-Occluded Regions in Ophthalmic Microsurgery",
+      "authors": [
+        "Niran Nataraj",
+        "Maina Sogabe",
+        "Masamichi Yamashita",
+        "Norihiko Ito",
+        "Kenji Kawashima"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:08:36Z",
+      "summary": "Intraoperative scene perception in ophthalmic microsurgery is limited by instrument occlusion: when a tool enters the high-magnification field, it conceals tissue from both the surgeon and the perception components of robot-assisted systems that process the video. Generative inpainting can remove the occluder but replaces the missing image content with synthesis, which is unsuitable when visual provenance matters. Many video inpainters also depend on future frames and cannot operate online. We present TransGHOST, a causal reference-guided reconstruction pipeline whose non-generative safe mode operates in real time. Every restored value is obtained by resampling a recorded frame using geometric transforms fitted only to visible regions. The system provides per-pixel confidence and provenance and marks unsupported pixels as abstentions. We evaluate TransGHOST on a new veterinary clinical corpus of canine cataract surgery with pixel-level instrument and anatomy labels. Only the occluded region is scored, and each scoring target is verified to differ from the reference supplied to the system. Safe mode reaches 31.89 dB masked PSNR and 0.915 masked SSIM at 51.7 ms median and 85.5 ms 95th-percentile latency. On a pre-declared held-out cohort using instrument cutouts excluded from segmentation training, it reaches 29.83 dB masked PSNR, while matched-mask evaluation on validation shows a 3.45 dB advantage over LaMa. Region-aware reference selection improves masked PSNR by 3.60 dB over recency when candidate references can themselves be occluded. Reference-age analysis further defines the operating interval for the brief, repeated occlusions targeted by TransGHOST.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13971v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.RO (机器人学与具身智能)"
+      ],
+      "comment": "21 pages, 10 figures, 11 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13970v1",
+      "title": "Counterfactual Analysis of Extent Leakage from Annotation-Derived Prompts in Vision-Language Medical Image Segmentation",
+      "authors": [
+        "Niran Nataraj",
+        "Ankita Das",
+        "C. Krishna Mohan",
+        "Kenji Kawashima"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:07:24Z",
+      "summary": "Text-guided segmentation models receive an image and a short caption about the lesion, and on public benchmarks the caption improves accuracy considerably. On colonoscopy and breast ultrasound, however, the size, count and location words of each caption were computed from the mask that later scores the prediction, and the chest X-ray captions were written by benchmark annotators. We tested what two published models take from them. On colonoscopy and chest X-ray, it is mostly the lesion's extent. Keeping only the size word or the lung-zone phrase recovers 84 to 98 percent of the improvement over an empty caption, and removing it loses 52 to 77 percent. The rest matters little, and a polyp called a rock is segmented just as well. We call this extent leakage. On breast ultrasound, nearly half the captions also name the diagnosis, which carries part of the benefit. Retraining on three datasets shows that models pick up this habit from their training captions, though only partly on breast ultrasound, and that it weakens their segmentation from the image alone. The leak can be measured without training a model, since caption words alone predict lesion area (coefficient of determination 0.54 to 0.77 on six of seven test sets). Without the test mask, the best method we tested, which estimates extent from the image, reaches 74.59 Dice on colonoscopy against the published 77.23. We propose an evaluation protocol that keeps what a caption says about the image apart from what it copies from the label.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13970v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.IV",
       "categories": [
         "eess.IV",
         "cs.CV",
-        "physics.geo-ph"
+        "cs.LG"
       ],
       "category_names_zh": [
         "eess.IV (图像与视频处理)",
         "cs.CV (计算机视觉与模式识别 (CV))",
-        "physics.geo-ph (地球物理学)"
+        "cs.LG (机器学习 (ML))"
       ],
-      "comment": "Appendices will be added in a future version",
+      "comment": "23 pages, 10 figures, 13 tables",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09845v1",
-      "title": "AdaptivePnP: Fast Auto-Tuned Plug-and-Play for Deconvolution",
+      "paper_id": "2611.13927v1",
+      "title": "Safety and Connectivity Certificates for Finite-Time Formation Transitions",
       "authors": [
-        "Haley Duba-Sullivan",
-        "Emma J. Reid",
-        "Charles A. Bouman",
-        "Gregery T. Buzzard"
+        "Yash Purswani",
+        "Shivansh Agarwal",
+        "Anuj Tiwari"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:29:09Z",
-      "summary": "Plug-and-play (PnP) methods reconstruct images by alternating a data-fitting step with an image denoiser. Their performance depends on two parameters: the step size $γ$ and the measurement noise level $σ$. In practice, $γ$ is often tuned by grid search over validation images and must be retuned whenever the problem setting changes, and $σ$ is assumed known or estimated separately. We propose AdaptivePnP, a PnP framework that jointly estimates $σ$ and $γ$ at every iteration from the data-fitting residual. To do so, we apply the PnP virtual model to the data-fitting proximal map and show that the residual is zero-mean Gaussian with covariance parameterized by $γ$ and $σ$. However, when one parameter is much larger than the other, the residual carries little information about the smaller one and using the maximum likelihood (ML) estimator can degrade the PnP iterations. We therefore introduce the identifiable maximum likelihood (IML) estimator, which restricts the ML estimator to an identifiable window in which the normalized Cramér--Rao bound of every parameter is bounded by a user-specified tolerance. For the virtual model, this window is an interval of ratios $ρ= γ/σ$, so computing the IML estimate reduces to a one-dimensional search over $ρ$. We apply AdaptivePnP to two standard PnP methods, yielding algorithms that require neither a tuned $γ$ nor a known $σ$. On image deblurring and super-resolution, AdaptivePnP matches or outperforms PnP baselines tuned with the true $σ$. Code is available at https://github.com/hdubasullivan/AdaptivePnP.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09845v1.pdf",
+      "published_at": "2026-11-10T11:15:47Z",
+      "summary": "Finite-time formation transitions are useful for coordinating multi-agent systems in time-critical missions, but convergence to a prescribed formation in finite time does not guarantee collision avoidance or communication connectivity during the transition. Existing approaches address finite-time coordination and safety-constrained formation control, yet explicit connections between disagreement during transitions, formation geometry, and coupling-gain selection need to be developed for certifying safe maneuvers. This paper develops a disagreement-based framework for certifying transient safety and connectivity during finite-time tracking of arbitrary prescribed formation trajectories. Local feedback guarantees exact finite-time tracking with a graph-independent settling-time bound, while a graph-dependent disagreement bound is used to derive sufficient geometric conditions for collision avoidance and connectivity preservation. These conditions further yield an offline coupling-gain selection rule based on the available geometric clearance. Numerical simulations illustrate the trade-off between convergence rate and control effort as the coupling gain increases. They also demonstrate the effectiveness and conservatism of the proposed certificates.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13927v1.pdf",
       "source": "arxiv",
-      "primary_category": "eess.IV",
+      "primary_category": "eess.SY",
       "categories": [
-        "eess.IV",
-        "cs.CV"
+        "eess.SY",
+        "cs.MA"
       ],
       "category_names_zh": [
-        "eess.IV (图像与视频处理)",
-        "cs.CV (计算机视觉与模式识别 (CV))"
+        "eess.SY (系统与控制理论 (Systems and Control))",
+        "cs.MA (多智能体系统 (Multiagent))"
       ],
-      "comment": "Submitted to IEEE Transactions on Computational Imaging",
+      "comment": "7 Pages, 2 Figures, under review",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09796v1",
-      "title": "Generalized H matrix stability for power systems",
+      "paper_id": "2611.13923v1",
+      "title": "Online Adaptive Clustering in Robust Distributed Model Predictive Control",
       "authors": [
-        "Elinor Ginzburg-Ganz",
-        "Yoash Levron",
-        "Juri Belikov",
-        "George Weiss"
+        "Stefan van Dijk",
+        "W. P. M. H. Heemels",
+        "Paula Chanfreut Palacio"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T17:50:54Z",
-      "summary": "The small-signal stability of a power system model with arbitrary loads is investigated, with a focus on locally constant power loads in lossless networks. A central element of the proposed analysis is the matrix H, which represents the partial derivatives of generator powers with respect to their relative angles. The local stability of any equilibrium point is determined by the properties of H if the loads consume locally constant power. Specifically, an equilibrium point is asymptotically stable if H is positive definite and unstable if H is full-rank and not positive definite, while several quantitative relationships between the eigenvalues of H and the system Jacobian matrix are also established. The main contribution is that loads are allowed to be arbitrarily located within the transmission network, thereby generalizing the existing H matrix stability criterion which is valid only if loads are located at the same buses as the generators. The advantage of the proposed criterion is demonstrated through case studies involving systems with up to 2869 buses. Accurate stability assessments are maintained, where alternative methods, such as the NRPS model, are found to be overly conservative. Additionally, a computational acceleration by a factor of 340 relative to Jacobian-based methods is achieved.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09796v1.pdf",
+      "published_at": "2026-11-10T11:13:53Z",
+      "summary": "This paper proposes a dynamic clustering framework for tube-based model predictive control (MPC) of coupled multi-agent systems. Agents within a cluster coordinate their dynamics explicitly, while couplings from agents outside the cluster are treated as bounded disturbances. For each admissible cluster, we construct a state-dependent mismatch measure from a robust upper bound on its predicted closed-loop cost and an optimistic, partition-independent lower bound. Combining this mismatch with a communication penalty enables online selection of the clustering topology, ranging from centralized to fully decentralized operation. The resulting switching controller is shown to preserve recursive feasibility and constraint satisfaction, and to render the closed-loop system practically asymptotically stable. Furthermore, the mismatch provides an upper bound on the finite-horizon performance difference with respect to centralized MPC. An eight-agent spring--damper example illustrates how the controller adapts cooperation while maintaining performance close to centralized MPC with reduced communication.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13923v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
@@ -105,467 +834,24 @@
       "category_names_zh": [
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": null,
-      "journal_ref": "IEEE Access, vol. 14, pp. 75960-75974, 2026",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09789v1",
-      "title": "On PMU Adequacy for Wideband Dynamics Tracking Beyond Attenuation Assumptions",
-      "authors": [
-        "Chetan Mishra",
-        "Luigi Vanfretti",
-        "Jaime Delaree Jr. and",
-        "Kevin D. Jones"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T17:45:33Z",
-      "summary": "Recent work highlights the inadequacy of standard synchrophasors in capturing high-frequency grid dynamics, including data center oscillations, primarily due to filtering and windowing attenuation during phasor estimation. This letter shows how synchrophasor ambient data spectrum itself contains information on attenuation, which provides a way to identify critically impacted measurements and potentially estimate and undo the effect. Results are shown for synthetic data as well as actual synchrophasor estimates from digital fault recorders (DFRs) within the Dominion Energy system.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09789v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
+      "comment": "12 pages, 5 figures, journal",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09777v1",
-      "title": "Autonomous Whole-body Loco-manipulation Using a Snake Robot",
+      "paper_id": "2611.13909v1",
+      "title": "The Role of Insurance in Power-System Risk Management: A Critical Review",
       "authors": [
-        "Adarsh Salagame",
-        "Henry Noyes",
-        "Haroon Hublikar",
-        "Alireza Ramezani"
+        "Jing Huang",
+        "Jiale Guo",
+        "Chenjia Gu",
+        "Chengcheng Shao",
+        "Yue Xiang"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T17:38:50Z",
-      "summary": "Snake robots can leverage their hyper-redundant morphology for both locomotion and manipulation through distributed body contact but whole-body loco-manipulation is particularly challenging since the entire body serves simultaneously as propulsive mechanism and manipulation tool Prior work on wheeled legged and snake robot platforms has decoupled these functions through dedicated appendages body segmentation or grippers We present closed-loop loco-manipulation with our snake robot COBRA without this distinction such that any part of the body may make contact We develop a contact-implicit dynamic model unifying robot-ground robot-object and object-ground interactions within a Moreau-Jean time-stepping framework and formulate a trajectory optimization over the full-order dynamics guided by a geometric planner and nominal proportional controller to autonomously push an object to a goal location during sidewinding We validate the planner and controller on hardware across varied configurations and present simulation results for a simplified trajectory optimization that resolves robot-object and object-ground contacts",
-      "pdf_url": "https://arxiv.org/pdf/2611.09777v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.RO (机器人学与具身智能)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "Presented in IROS 2026",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09771v1",
-      "title": "A Cross-Domain TARA-to-NAC Rule Mapping Methodology: From Automotive OEM Networks to Energy Storage Systems",
-      "authors": [
-        "Krishna Teja Medam",
-        "Thiago Quinelato"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T17:33:46Z",
-      "summary": "Threat analysis and risk assessment under ISO/SAE 21434 ends with cybersecurity goals, but existing methods give little structured guidance for turning those goals into enforceable network access control rules. Compliance standards such as IEC 62443, ISO/SAE 21434, and ISO/IEC 27001 are usually applied as parallel efforts rather than as one enforcement architecture. This paper presents a six-step methodology that maps cybersecurity goals from a threat analysis and risk assessment to network access control rules, each placed at a named enforcement point and traceable to the threat records behind it. It also presents a unified compliance framework that treats IEC 62443 and ISO/IEC 27001 as a fixed substrate and domain-specific regulation as an interchangeable overlay. The methodology is applied to an automotive original equipment manufacturer plant network, addressing multi-tier supplier authorization and legacy operational technology devices, and then to utility-scale battery energy storage, where North American Electric Reliability Corporation Critical Infrastructure Protection standards and ISO/IEC 27019 replace the automotive-specific standard while the substrate stays constant. In the automotive example, 37 threat entries and 24 cybersecurity goals yield 23 rules covering 11 of the 13 in-scope goals; the energy example yields six rules. Three derived rules have no equivalent in the cited standards. Both examples are desk-based: the methodology is applied to them, not tested on them. The result is a reusable pattern for translating risk assessment into enforcement across critical infrastructure sectors, with empirical validation left as future work.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09771v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CR",
-      "categories": [
-        "cs.CR",
-        "cs.NI",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.CR (密码学与网络安全)",
-        "cs.NI (计算机网络与互联网通信)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "Preprint, 23 pages, SAE format",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09763v1",
-      "title": "Link-Level Performance Comparison of 5G Beamforming: Reciprocity-Based SVD vs. Codebook-Based Precoding",
-      "authors": [
-        "S. M. Haider Ali Shuvo",
-        "Seda Dogan-Tusha",
-        "Monisha Ghosh"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T17:26:46Z",
-      "summary": "Downlink (DL) precoding in mid-band MIMO relies on uplink (UL) sounding reference signals (SRS) with reciprocity-based singular value decomposition (SVD) or channel state information reference signals (CSI-RS) with codebook-based precoding matrix indicator (PMI) feedback. Although SVD precoding offers unquantized beamforming, it depends on a channel estimate from SRS transmitted at the limited user equipment (UE) power, whereas Type-I PMI is quantized but derived from a high-power CSI-RS based channel estimate. In this paper, we compare SRS-SVD and CSIRS-PMI for single-user MIMO through an end-to-end, 3GPP-compliant link-level simulation at 3.75 GHz with 100 MHz bandwidth, using a 192 antenna element gNB mapped into 32 ports, the 3GPP Release 19 UE antenna model, and ray-traced (RT) channels in Manhattan and Chicago. We show that neither scheme is uniformly superior: CSIRS-PMI serves weak and shadowed users better and reduces outage, whereas SRS-SVD achieves higher spectral efficiency (SE) and enables more multi-layer transmission for users with strong channels. The results on the Clustered Delay Line (CDL)-C statistical channel also confirm this crossover. We further show that by utilizing a simple logistic regression based on the received power of the standard CSI reference signal (CSI-RSRP) and the channel quality indicator (CQI), the gNB can select the optimal transmission scheme with around 90% accuracy, achieving an SE that closely approaches an ideal per-user selection.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09763v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.NI",
-      "categories": [
-        "cs.NI",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "cs.NI (计算机网络与互联网通信)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "7 pages, 8 figures. Submitted to IEEE ICC 2027",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09754v1",
-      "title": "Tomographic Sparse View Selection using the View Covariance Loss",
-      "authors": [
-        "Jingsong Lin",
-        "Amirkoushyar Ziabari",
-        "Singanallur V. Venkatakrishnan",
-        "Obaidullah Rahman",
-        "Gregery T. Buzzard"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T17:21:53Z",
-      "summary": "Standard computed tomography (CT) reconstruction algorithms such as filtered back projection (FBP) and Feldkamp-Davis-Kress (FDK) require many views for producing high-quality reconstructions, which can slow image acquisition and increase cost in non-destructive evaluation (NDE) applications. Over the past 20 years, a variety of methods have been developed for computing high-quality CT reconstructions from sparse views. However, the problem of how to select the best views for CT reconstruction remains open. In this paper, we present a novel view covariance loss (VCL) function that measures the joint information of a set of views by approximating the normalized mean squared error (NMSE) of the reconstruction. We present fast algorithms for computing the VCL along with an algorithm for selecting a subset of views that approximately minimizes its value. Our experiments on simulated and measured data indicate that for a fixed number of views our proposed view covariance loss selection (VCLS) algorithm results in reconstructions with lower NRMSE, fewer artifacts, and greater accuracy than current alternative approaches.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09754v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "Accepted version of the article published in IEEE Transactions on Pattern Analysis and Machine Intelligence. 11 pages main paper plus 3 pages supplementary material",
-      "journal_ref": "IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 48, no. 10, pp. 11335-11345, Oct. 2026",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09714v1",
-      "title": "Beyond Segmentation: Enriching ImageCAS with Coronary Ostia Landmarks, Rooted Centerline Graphs, and Open-Weight Localization Models",
-      "authors": [
-        "Matteo Leccardi",
-        "Andrea Moglia",
-        "Marco Morandini",
-        "Michele Brembilla",
-        "Alessandro Nicosia"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:56:06Z",
-      "summary": "Coronary ostia and centerlines are key reference points for automated analysis of coronary computed tomography angiography (CCTA), from surgical planning to intraoperative vessel tracking. However, the only public ostium annotations cover 77 non-gated aortic scans, not CCTA, while CAT08 and ASOCA (32 and 40 CCTA scans) mark the ostia only implicitly, as centerline start points. This work enriches ImageCAS, the largest public dataset for coronary artery segmentation, with ostium annotations for its 1000 patients and centerline graphs rooted at these new ostia, making it, to the authors' knowledge, the largest public dataset for ostium localization and the only one with centerlines following the official ImageCAS masks and starting at annotated ostia. Three annotators marked each ostium in the first 500 volumes; in the next 500, the candidates of a model trained on the first batch were corrected (human-in-the-loop). Six 3D localization models, trained on ImageCAS, CAT08 and ASOCA, were benchmarked on 58 held-out volumes (50 ImageCAS, 4 CAT08, 4 ASOCA). SwinUNETR-V2 and nnResUNet localized all ostia without failure (>5 mm error), with median errors of 0.70-0.87 mm. Trained on CAT08 and ASOCA alone, SwinUNETR-V2 fails on 34% of right and 53% of left ostia, whereas adding 250 ImageCAS volumes removes all failures. The centerlines were extracted by a deterministic, quality-controlled minimal-path procedure; on ASOCA, they cover a median of 99.5% of the reference length, with a median per-patient mean distance of 0.22 mm between matched reference points and centerlines. Annotations, centerlines, code, and weights are available at https://hal9000-lab.github.io/.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09714v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV",
-        "cs.CV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)",
-        "cs.CV (计算机视觉与模式识别 (CV))"
-      ],
-      "comment": "52 pages including the appendices. Dataset, centerlines, code and model weights: https://hal9000-lab.github.io/",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09702v1",
-      "title": "Adaptive PD-like Fault Tolerant Controller for a Class of Nonlinear Systems",
-      "authors": [
-        "Alessio Dallabona",
-        "Vicenç Puig",
-        "Mogens Blanke",
-        "Dimitrios Papageorgiou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:46:55Z",
-      "summary": "The article presents a nonlinear adaptive control strategy for a class of feedback-linearizable systems subject to process faults and disturbance. The controller is derived through Lyapunov analysis and incorporates an adaptive proportional gain within a PD-like structure, preserving simplicity while providing nonlinear adaptive behavior. A residual-based gating mechanism activates the adaptation only when the tracking error exceeds a prescribed threshold, preventing unnecessary gain updates during nominal operation and improving robustness to noise. The proposed design yields uniform global ultimate boundedness of the closed-loop signals, with explicit expressions for the steady-state tracking bound. Practical tuning guidelines for the adaptive parameters and Lyapunov matrix selection are provided to ensure consistent gating behavior. Simulations on a precision positioning system illustrate effective compensation of process faults, rapid gain escalation during degraded conditions, and smooth reversion to nominal performance, demonstrating that the method enhances fault tolerance while retaining the structural simplicity of PD control.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09702v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09687v1",
-      "title": "Payload-Blind Bistatic Delay-Doppler Sensing with Phase-Injected Chirps in CE-OFDM",
-      "authors": [
-        "Gustavo P. Gonçalves",
-        "Henrique L. Senger",
-        "Bruno S. Chang",
-        "Giuseppe Thadeu Freitas de Abreu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:34:43Z",
-      "summary": "Constant-envelope orthogonal frequency-division multiplexing (CE-OFDM) preserves a unit-magnitude sample envelope, but its Hermitian-symmetric structure makes dedicated sensing pilots costly, and additive pilots disrupt this envelope. We show that injecting a known chirp, here a Zadoff-Chu (ZC) sequence, into the CE-OFDM phase enables payload-blind bistatic delay-Doppler sensing without dedicated sensing frames or an explicit pilot power split: the residual carrier, given by the ensemble mean under the adopted payload model, becomes an implicit superimposed pilot for a receive-only node. A Doppler-aligned receiver integrates this reference coherently across frames while the payload residual averages down. In contrast, phase-domain injected training (PIT) frame averaging, designed for quasi-static channel estimation, loses about 32 dB for the simulated target with 16 averaged frames. Closed-form approximations characterize the payload-induced floor, known-cell detection probability and direct-path tolerance. In the noise-limited simulations, the receiver incurs a 2.8 dB detection gap relative to a payload-aware matched filter without interference cancellation and matches a dedicated-pilot benchmark of equal reference energy without its 53% frame overhead.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09687v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09674v1",
-      "title": "Nonlinear Fault Tolerant Control of Wind Turbine Pitch Systems: A Comparative Study",
-      "authors": [
-        "Alessio Dallabona",
-        "Mogens Blanke",
-        "Dimitrios Papageorgiou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:25:06Z",
-      "summary": "Electro-hydraulic pitch systems account for about one fifth of wind-turbine failures, motivating the development of resilient control strategies for fault mitigation. The study considers a large set of robust nonlinear control designs of different feedback principles and architectures, and assesses their fault-tolerant capabilities in comparison to each other and against the industrial standard, i.e. the Proportional-Integral (PI) controller. The implementation and tuning of each scheme is based on a high-fidelity simulator to ensure nominal performance, whereas each controller is deployed unchanged on an experimental apparatus that includes a full-scale electro-hydraulic pitch system. The comparative evaluation of the considered fault-tolerant solutions is carried out through several tests that cover nominal operation and twenty-five representative fault scenarios, including sensor, process, and actuator faults. The analysis highlights the trade-off between performance preservation under faults and increased actuator chattering. The experimental results show that introducing a dynamic input-reconstruction module into the design of the nonlinear controllers significantly reduces actuator chatter without compromising their fault-tolerant properties.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09674v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09653v1",
-      "title": "A Phase-Balanced Differential Rydberg-Atom Quantum Receiver for Weak GNSS Signal Detection",
-      "authors": [
-        "A. K. Mandal",
-        "F. Zhang",
-        "J. H. Mikkelsen",
-        "M. Shen"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T16:02:36Z",
-      "summary": "This paper proposes a phase-balanced differential Rydberg atomic quantum receiver (DRAQR) for weak-signal recovery, using local-oscillator phase control to reinforce differential signal responses and a shared squeezed-reservoir model to correlate inter-cell quantum projection noise (QPN) and photon shot noise (PSN). An analytical model incorporating QPN, PSN, intrinsic thermal noise (ITN), and inter-cell correlations quantifies signal-to-noise ratio (SNR) gain, outage-constrained minimum detectable power, and bit-error rate (BER) for square $M$-QAM. For the evaluated settings, SNR gain reaches approximately $10$~dB as PSN correlation approaches unity, with BER decreasing as correlation increases. Under Rician fading, at a $0$-dB threshold SNR and maximum outage probability of $0.1$, the minimum detectable power decreases from $-146.95$~dBm at $K=1.155$ to $-159.98$~dBm at $K=2.4$. Analytical results are validated against Monte-Carlo simulations over $150{,}000$ data runs per point for receiver-performance plots.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09653v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph",
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)",
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "6 pages, 10 figures, submitted to IEEE ICC 2027 (in review)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09642v1",
-      "title": "NAVE: A Normalized, Adaptive Conformer for Antarctic Whale Vocalization Detection",
-      "authors": [
-        "Matthias Nagl",
-        "Paul Primus",
-        "Gerhard Widmer"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:54:21Z",
-      "summary": "Antarctic whale vocalization detection requires temporally localizing call boundaries in long underwater recordings and classifying them into predefined call types. Training reliable machine learning models for this task is difficult due to the variability and sparsity of whale calls in passive acoustic monitoring datasets. These difficulties are further amplified by time-varying noise that can mask whale calls and by site-specific ambient sound characteristics to which a trained model may not generalize. In this work, we present NAVE, a Conformer-based detector that improves whale-call detection via three components. First, its input representation combines per-bin complex mean subtraction, which suppresses constant site-specific ambient sound characteristics, with an additional per-channel energy normalization (PCEN) channel that adapts to temporal variations in the noise floor. Second, a frequency-dynamic stem processes these noise-aware representations with convolutions that adapt across the characteristic frequency bands of the target call types. Third, we use a Conformer backbone with a convolution kernel matched to the duration of the target calls that adds an inductive bias and improves temporal localization. We evaluate NAVE on BioDCASE 2026 Task 2 using leave-one-site-out cross-validation across the validation sites, which approximates deployment on unseen recording sites. A single NAVE model with a tuned per-class threshold exceeds the stronger WhaleVAD-BPN baseline, using no boundary-proposal network and no search over post-processing parameters. A controlled ablation study shows that the normalized front-end and a duration-matched convolutional kernel each contribute substantially to recovering the D downsweep, the hardest class for previous detectors, with the wide kernel giving the largest aggregate gain.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09642v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.AS",
-      "categories": [
-        "eess.AS",
-        "cs.LG",
-        "cs.SD"
-      ],
-      "category_names_zh": [
-        "eess.AS (音频与语音信号处理)",
-        "cs.LG (机器学习 (ML))",
-        "cs.SD (声音与音频处理)"
-      ],
-      "comment": "5 pages, 3 figures, 2 tables. Accepted at the Detection and Classification of Acoustic Scenes and Events (DCASE) 2026 Workshop. Code: https://github.com/TheFruitGuy/NAVE-SED",
-      "journal_ref": "Proceedings of the 11th Workshop on Detection and Classification of Acoustic Scenes and Events (DCASE 2026), Boston, USA, pp. 1-5, 2026",
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09640v1",
-      "title": "LACART: Lookahead-Augmented Collision Avoidance and Reference Tracking Strategies for Safety-Critical Robots",
-      "authors": [
-        "Pedro Lopes",
-        "Amit Shivam",
-        "Luis Tiago Paiva"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:52:50Z",
-      "summary": "Autonomous racing provides a demanding testbed for collision avoidance under tight geometric and computational constraints. Building on a recent conference contribution and a master's dissertation, LACART combines lookahead-based control barrier functions (CBFs), a relaxed control Lyapunov function (CLF), and quadratic programming (QP) to modify nominal vehicle commands for obstacle avoidance and reference tracking. The method handles circular obstacles and track boundaries in a common optimisation layer. Comparative simulation results against Huang \\emph{et al.} \\cite{r9} show similar full-track paths and lower median computation times: 0.31 versus 0.33 ms per step and 0.023 versus 0.025 ms per QP solve. The dissertation further demonstrates a 1:43-scale vehicle with camera-based estimation and wireless actuation at a reported 25 Hz control rate. We identify the conditions linking lookahead-point clearance to body clearance, illustrate hardware limitations, and propose a recorded demonstration of safety intervention and recovery. The contribution targets ground-robot collision avoidance and real-time safety monitoring.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09640v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "cs.RO (机器人学与具身智能)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09626v1",
-      "title": "A Novel Algorithm to Simulate Conductance-based Neuronal Networks",
-      "authors": [
-        "Amir Shahhosseini",
-        "Rodolphe Sepulchre"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:46:09Z",
-      "summary": "Conductance-based models are central to neurophysiology and neuromorphic engineering, yet their simulation scales poorly to large networks. We study and analyze an iterative solver that operates in signal space. Each iteration reduces to $N$ decoupled scalar linear time-varying differential equations, one per neuron, which are solved in parallel and in closed form. The solver admits two complementary interpretations: a variable metric forward-backward splitting method, rooted in operator theory, and a waveform relaxation quasi-Newton method, rooted in circuit simulation. We prove uniform and superlinear convergence, with a bound that reflects the conductance structure of the dynamics. The algorithm is illustrated on the classical Hodgkin--Huxley neuron and on networks of up to 5000 neurons.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09626v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09619v1",
-      "title": "Beyond Feasibility: Efficient and Robust On-Device Localization with UWB Concurrent Transmissions",
-      "authors": [
-        "Enrico Soprana",
-        "Michael Stocker",
-        "Davide Vecchia",
-        "Matteo Trobinger",
-        "Carlo Alberto Boano"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:38:53Z",
-      "summary": "Concurrent transmissions (CTX) enable an ultra-wideband (UWB) tag to range to, or self-localize from, multiple nodes with a single frame reception, significantly improving update rate and energy efficiency compared to traditional approaches. Prior work demonstrated the concept feasibility via prototypes whose real-world applicability is however hindered by many limitations, notably including their inability to directly execute on UWB tags and to cope with interfering UWB signals. We address these limitations in two ways. First, we redesign the core CTX techniques to enable a fast and efficient execution on resource-constrained MCUs without sacrificing accuracy. Second, we leverage the new features in the IEEE 802.15.4z standard to achieve robustness to interference from other UWB devices and enable tags to dynamically select which anchors to use, two crucial and unexplored capabilities in CTX-based systems. We quantitatively evaluate our approach experimentally in two real-world testbeds with different characteristics. We first analyze our new techniques individually, offering an in-depth discussion of design choices and performance trade-offs. Then, we embed all our techniques into a CTX-based system enabling a tag to self-localize entirely on-device, unlocking gains up to 44% in runtime and 85% in energy efficiency compared to traditional approaches.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09619v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "cs.NI",
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "cs.NI (计算机网络与互联网通信)",
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "Submitted to the IEEE Transactions on Mobile Computing",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09591v1",
-      "title": "Multi-Mode Pinching-Antenna-Based OFDM Systems: A Robust Design Perspective",
-      "authors": [
-        "Hao Liang",
-        "Xidong Mu",
-        "Mingzhe Chen",
-        "Hyundong Shin",
-        "Michail Matthaiou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:23:20Z",
-      "summary": "A robust transmission framework is proposed for a multi-mode pinching-antenna (MPA)-based orthogonal frequency-division multiplexing (OFDM) system under both channel state information (CSI) errors and PA positioning errors. A physical model is first developed based on the multi-mode coupled-mode equations (CMEs), which characterizes the frequency-dependent guided-mode propagation and the coupling among guided modes and PAs over the OFDM band. Based on this model, a worst-case sum-rate maximization problem is formulated to jointly optimize the baseband beamformer and the intended PA positions under CSI and PA positioning errors, subject to user quality-of-service (QoS) and transmit-power constraints. To solve the resulting non convex problem, the worst-case CSI is exactly obtained for any given PA positions by solving trust-region subproblems, while the PA positioning errors are handled by grid-based and second-order approximation-based scenario constructions. Then, an alternating optimization (AO) algorithm is developed, where the baseband beamformer and the intended PA positions are updated via the weighted minimum mean-square error (WMMSE) method and successive convex approximation (SCA), respectively. Both subproblems are solved efficiently by exploiting the Karush--Kuhn--Tucker (KKT) conditions. Numerical results show that the proposed robust design outperforms the non-robust and conventional robust benchmarks with the same multi-mode architecture in terms of both worst-case sum rate and QoS satisfaction. They also demonstrate that the proposed robust design satisfies the QoS requirements of all users more reliably than the baselines that consider either CSI errors or PA positioning errors.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09591v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "13 pages, 8 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09576v1",
-      "title": "Expert Spindles in the Wild: Enriched Supervision for a Dense Detector",
-      "authors": [
-        "Olivier Pallanca",
-        "Alexis Bollengier",
-        "Abel Díaz Berenguer",
-        "Hichem Sahli",
-        "André Anjos"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T15:12:42Z",
-      "summary": "Sleep spindles are a hallmark of healthy NREM sleep whose frequency, amplitude, density, duration and topography vary with brain maturation, age and disease. Their manual annotation is impractical and variable between scorers, yet the public references used to train automatic detectors cover these characteristics only partially: stage N2 only, a single central derivation, or short pre-selected segments. Measuring duration and density requires dense detectors that learn event boundaries from annotated onsets and offsets, and therefore inherit the protocol under which those boundaries were scored. We introduce Expert Spindles in the Wild (ESW), a stage-agnostic expert spindle annotation set covering 19 complete MASS-SS2 recordings ($\\approx$150 h of continuous EEG, 29,819 events). A sleep neurophysiologist annotated the recordings using the full EEG montage, blinded to sleep-stage labels and prior spindle annotations. On the 15 nights shared with historical scorers, ESW recovers 92.7% of E1 and 73.7% of E2 events, while recovering 81.6% of the MODA expert-consensus events on the common excerpts. Despite stage-blind annotation, 99.0% of ESW events occur in N2/N3. Used to train a fixed dense detector on a frozen SleepFM encoder, ESW reaches an event-level $F_1$ of 0.680 on 166 unseen MODA subjects, compared with 0.635 for E2 ($ΔF_1$ = +0.045, paired-bootstrap 95% CI [0.024, 0.065]). ESW is thus useful supervision for cross-dataset detection, and closer annotation-level agreement with the MODA consensus did not translate into better transfer performance in this experiment. The annotations are released under the MASS data-use terms (https://doi.org/10.5281/zenodo.23894975).",
-      "pdf_url": "https://arxiv.org/pdf/2611.09576v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "5 pages, 1 figure, 2 tables. Submitted to IEEE ISBI 2027 (under review)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09544v1",
-      "title": "Sparse Array-Inspired Frame Structure Design for 5G NR ISAC",
-      "authors": [
-        "Haisu Wu",
-        "Hong Ren",
-        "Cunhua Pan",
-        "Yuqing Chen",
-        "Ruizhe Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T14:53:30Z",
-      "summary": "Integrated sensing and communication (ISAC) has emerged as a promising paradigm for future wireless networks. However, the extensive occupation of time-frequency resources for sensing limits the communication capacity. To address the resource conflict, this paper proposes a novel sparse sensing frame structure aligned with the 5G new radio (5G NR) resource grid at the slot and physical resource block (PRB) levels through a predefined sensing-pattern block. Specifically, inspired by the design of two-dimensional (2D) sparse antenna arrays, we map the sparse spatial geometries onto the time-frequency resource grid. By leveraging the hole-free property of the difference coarray, we eliminate the range-velocity ambiguity and cast the sensing signals into a reconstructed higher-order tensor representation. For efficient parameter estimation, we propose a novel binary-tree-based tensor train decomposition (BT-TTD) algorithm that extracts lower-dimensional tensor train cores (TT-cores) and executes a Vandermonde-prior-guided rectified alternating least squares (RecALS) algorithm. Simulation results validate that the proposed scheme achieves competitive estimation accuracy with reduced complexity. Furthermore, we investigate the topological properties of various sparse patterns, revealing the inherent trade-off among sensing accuracy, resource occupancy, and computational complexity.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09544v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "16 pages, 7 figures, 2 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09530v1",
-      "title": "Data-driven representation of continuous-time linear time-invariant behaviors via Hankel integral operators",
-      "authors": [
-        "Fritz A. Engeln",
-        "Marta Zagórowska",
-        "Jan-Willem van Wingerden"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T14:40:14Z",
-      "summary": "We present a data-driven representation of the finite-horizon behavior of deterministic controllable continuous-time LTI systems. We first introduce a notion of persistency of excitation for continuous-time signals that does not require the signal to be differentiable. We then show that, when the input is persistently exciting in this sense, the closure of the range of a Hankel integral operator built from a single input-output trajectory equals the behavior of the system over a finite time horizon. This result provides a nonparametric representation of system trajectories directly in terms of measured data, without requiring an explicit parametric model of the system.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09530v1.pdf",
+      "published_at": "2026-11-10T11:03:37Z",
+      "summary": "Modern power systems are becoming more renewable-rich, digitalized, and interconnected, making risk propagation and economic consequences increasingly complex. Physical mitigation remains the primary means of risk control, but technical and economic limits leave residual risk. Insurance can complement these measures by transferring associated economic losses and influencing power-system decisions through risk-responsive terms. Despite growing interest, the literature remains fragmented across power-system engineering, actuarial science, and risk finance. This review develops an integrated physical-financial perspective for reviewing insurance in power systems. It examines how power system risks generate residual economic losses and the conditions under which these losses can be insured and transferred. It then develops an actuarial framework for insured-loss assessment and pricing. Insurance-aware decision-making is synthesized through four coupling levels describing how financial protection interacts with power-system decisions. Further progress is constrained by weak physical-financial loss validation, incomplete representation of systemic and evolving portfolio risk, and limited empirical and actuarial grounding of insurance-decision feedback. Research priorities include stronger physical-financial data linkage, forward-looking portfolio assessment, multi-timescale decision feedback, and empirical validation. Addressing these priorities would help move power-system insurance from fragmented applications toward a more coherent approach to residual-risk management in future power systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13909v1.pdf",
       "source": "arxiv",
       "primary_category": "math.OC",
       "categories": [
@@ -576,336 +862,52 @@
         "math.OC (运筹学、优化与控制论)",
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "9 pages, 1 figure",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09508v1",
-      "title": "Characterization of the Frequency-Current Curve of First-Order High-Pass Neurons",
-      "authors": [
-        "Christian Fernandez Lorden",
-        "Jérôme Adriaens",
-        "Alessio Franci",
-        "Gustave Bainier"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T14:25:03Z",
-      "summary": "A spiking model, called the High-Pass (HP) model, has recently been proposed as a minimal excitable primitive. This model is composed of a static activation function, usually a sigmoid, in positive feedback with a high-pass filter. The HP model enters a tonic spiking regime whenever its input lies in the high-gain zone of the sigmoid, where the sigmoid's slope exceeds 1. In neuroscience, the frequency-current (FI) curve is the standard way of characterizing the tonic spiking regime of a neuron. So far, the FI curve of the HP model has been characterized analytically only for specific sigmoids, and has otherwise been computed through simulation. These simulations are computationally heavy, since simulating neurons requires solving a stiff system of differential equations. This paper bridges this gap by analytically characterizing the FI curve of the HP model with a first-order high-pass filter, for a broad class of sigmoid functions. The FI curve of the first-order HP model can be computed by solving two input-independent equations and evaluating two input-dependent integrals, with no need to simulate the model itself. A spiking primitive is said to be Type I (resp. Type II) if tonic spiking starts at a zero (resp. non-zero) frequency. This paper also shows that, for the HP model, the type depends solely on the local shape of the sigmoid at the outer edges of its high-gain zone. A sharp corner, where the derivative approaches a value strictly smaller than 1 from the outside, yields a Type I primitive. A locally twice differentiable corner, with a bounded second derivative and a derivative approaching 1 at the edge, yields a Type II primitive.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09508v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "8 pages, 4 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09461v1",
-      "title": "A Hybrid Digital/Analog Polyphase Filtering Approach for High-Speed RF-DACs",
-      "authors": [
-        "Behdad Jamadi",
-        "Jungmin Lee",
-        "Tarun Cousik",
-        "Rohit Rangaraj",
-        "Jeffrey S. Walling"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:38:06Z",
-      "summary": "This paper proposes a hybrid polyphase interpolation for RF-DACs that removes the need for full-rate digital commutation by using passive combining on the RF-DAC itself. A P-branch polyphase FIR filter is factored into M streams, each formed by a (P/M)-way digital commutator at fRF/M and driving a dedicated RF-DAC slice, giving either partial digital (1<M<P) or fully analog (M=P) recombination. We show that the slice array acts as a single full-rate DAC with an M-times longer zero-order hold, derive yield laws for slice gain, timing and unit-capacitor mismatch, and find that with retiming the binding requirement is sub-picosecond matching of the fRF clock arrival, so the best choice is the smallest M that closes digital timing. Two 28-nm digital macros, designed for a 12.8GSps output rate and verified by post-layout simulation, illustrate a 4-phase variant that closes timing up to 14.4GSps with its digital logic at fRF/4 and an 8-phase variant that closes timing up to 16GSps with its digital logic at fRF/8. The analog recombination is evaluated with a behavioral model of the slice array. The architectures target wideband software defined radio (SDR) platforms, including cognitive radio, electronic warfare, and satellite communications.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09461v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "11 pages, 5 figures, 5 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09451v1",
-      "title": "Scalable BLE Channel Sounding Localization with Ranging-Assisted PDoA",
-      "authors": [
-        "Jorg Wieme",
-        "Eli De Poorter",
-        "Jeroen Hoebeke"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:25:58Z",
-      "summary": "Bluetooth Channel Sounding (CS) enables accurate phase-based ranging, but multi-anchor localization requires sequential ranging exchanges that limit scalability and increase measurement latency. This paper proposes Ranging-Assisted Phase Difference of Arrival (RA-PDoA), a scalable BLE localization architecture combining one active anchor performing a standard two-way CS exchange with multiple passive receive-only anchors observing the same transmissions. A channel-recovery framework is derived that enables passive anchors to reconstruct a channel response suitable for super-resolution delay estimation, allowing multipath-robust ranging without participating in a two-way exchange. Coarse arrival-time information is further used to bound the position estimate and reject inconsistent range solutions. A comprehensive evaluation characterizes the impact of multipath propagation, body shadowing, synchronization requirements, oscillator impairments, anchor placement, and deployment inaccuracies, thereby quantifying the practical infrastructure requirements for scalable BLE localization. Simulation results in modeled indoor environments show that RA-PDoA reduces the 90th-percentile localization error from 175.3 cm to 95.5 cm under body shadowing while maintaining an airtime requirement independent of the number of anchors. The results demonstrate that a single active ranging link enables scalable and multipath-robust BLE Channel Sounding localization.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09451v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP",
-        "cs.NI"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))",
-        "cs.NI (计算机网络与互联网通信)"
-      ],
-      "comment": "14 pages, 5 figures, 7 tables, Appendix, For reproducibility code available at https://gitlab.ilabt.imec.be/iwine/ra-pdoa-simulator",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09435v1",
-      "title": "Pinching Antenna Systems (PASS) for Air-Ground Integrated Sensing and Communications (ISAC)",
-      "authors": [
-        "Chaoran Chen",
-        "Haochen Li",
-        "Jincheng Zhu",
-        "Zhiwen Pan",
-        "Mark F. Flanagan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T13:05:58Z",
-      "summary": "This paper proposes a multi-user single-target air-ground integrated sensing and communication (ISAC) system, in which a ground pinching-antenna system (PASS) transmits communication and sensing signals and an unmanned aerial vehicle (UAV) receives the target echo. The communication and sensing beamforming vectors, pinching antenna positions, and UAV position are jointly optimized to minimize the weighted Cramér-Rao bound (CRB). A penalty dual decomposition (PDD) algorithm is developed for the resulting nonconvex problem. The auxiliary variable and beamforming subproblems admit globally optimal solutions in semi-closed form, while the positions of the pinching antennas and the UAV are updated by successive convex approximation (SCA). Under mild conditions, every accumulation point of the sequence generated by our proposed algorithm is a Karush-Kuhn-Tucker (KKT) point of the reformulated problem. Numerical results show that the proposed PASS-UAV design achieves a lower weighted CRB than conventional multiple-input multiple-output (MIMO) and PASS benchmarks.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09435v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": "5 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09413v1",
-      "title": "SmartBloch-Agent: An Agentic Framework for Automated MRI Sequence Design and Optimization",
-      "authors": [
-        "Jiakai Yang",
-        "Haoye Zheng",
-        "Yixiao Yue",
-        "Qinqin Yang",
-        "Zhong Chen"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T12:44:55Z",
-      "summary": "Magnetic resonance imaging (MRI) pulse sequences organize radiofrequency excitation, gradient encoding, and signal acquisition, determining magnetization evolution and image formation. Sequence research requires translating imaging objectives into executable protocols meeting physical and acquisition constraints, refined via physical simulation, signal reconstruction, and scientific evaluation. Sequence construction, physical verification, parameter search, and assessment involve many tools and manual decisions, limiting automation from objective to verifiable sequence. We develop SmartBloch-Agent, an integrated framework for automated MRI sequence design and optimization. Given objectives and scientific constraints in natural language, an AI agent interprets goals, plans tasks, orchestrates tools, and makes feedback-informed decisions, drawing on a construction module and optimizers for structural design and parameter search. Our GPU-accelerated SmartBloch engine supplies physical computation for both stages, so the framework configures, per sequence and objective, event validation, Full-Bloch magnetization evolution, signal acquisition, image reconstruction, and scientific evaluation, and closes the loop without external MRI simulators. Results return to the agent to guide sequence revision, parameter optimization, and candidate selection, and the design files carry simulation, reconstruction, and evaluation evidence, forming an output package for a real-scanner workflow. Experiments show the framework automatically designs and optimizes MRI sequences for varied objectives and constraints, refines candidates with physical feedback, and improves several parameter-estimation metrics and downstream quantitative reconstruction. SmartBloch-Agent unifies objectives, design, physical execution, and evaluation into a continuous workflow for end-to-end automation of MRI sequence research.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09413v1.pdf",
-      "source": "arxiv",
-      "primary_category": "physics.med-ph",
-      "categories": [
-        "physics.med-ph",
-        "cs.AI",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "physics.med-ph (医学物理学)",
-        "cs.AI (通用人工智能 (AI))",
-        "eess.IV (图像与视频处理)"
-      ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09409v1",
-      "title": "Beyond the Pseudo-Inverse: GIM Precoding for Per-Antenna Power Minimisation in MU-MIMO",
+      "paper_id": "2611.13906v1",
+      "title": "Target Selection with a Disappearing-Stimulus Mixed-Reality P300 Interface: Feasibility and Object-Distinguishable Versus Uniform Cues",
       "authors": [
-        "Hernan X. Cordova"
+        "Runqi Pan",
+        "Takuto Niinuma",
+        "Yunshan Huang",
+        "Masato Sugino",
+        "Kenta Shimba"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T12:42:43Z",
-      "summary": "We study linear precoder design for multi-user MIMO downlink under per-antenna power constraints (PAPC), which arise naturally when each antenna port has its own power amplifier. While the Moore-Penrose pseudo-inverse is the unique optimal generalized inverse for zero-forcing precoding under a total power constraint [1], we prove this optimality does not extend to the MMSE/RZF case under PAPC. Any precoder in the Generalized Inverse Matrix (GIM) family shares the same effective channel and per-user SINRs as the pseudo-inverse baseline, while its null-space component reshapes the per-antenna power profile. This separation principle enables minimising peak per-antenna power at fixed SINR targets with zero SINR penalty. We characterise the convex peak-power problem over this family and its active-set optimality, establish MRT and ZF asymptotic limits, and provide a convergent first-order subgradient algorithm. Simulations with 8-64 antennas confirm gains of 1.9-3.7 dB over pseudo-inverse RZF, with GIM-MMSE eliminating essentially all PAPC violations up to 20% per-antenna budget imbalance. The framework applies directly to fully-digital massive MIMO. Cell-free and hybrid analog-digital arrays are promising extensions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09409v1.pdf",
+      "published_at": "2026-11-10T11:01:32Z",
+      "summary": "Mixed-reality (MR) P300 interfaces can register selectable destinations, such as wheelchair goals, directly in the user's surroundings. When the cues disappear between flashes, however, the user must retain an intended target that is no longer visible. We tested whether such an interface supports target selection and whether giving each cue a stable colour-shape identity improves it compared with visually uniform spheres. Six healthy adults completed four trials in each cue condition of a 5x5 row/column task on a head-mounted MR display, with EEG from Fz, Cz, and Pz. Shrinkage linear discriminant analysis was evaluated with nested validation in which complete trials were held out from class balancing, hyperparameter selection, and fitting. Both conditions evoked a parietal target-related positivity. The decoded cell was correct in 18 of 48 held-out trials, against 1.9 expected by chance (binomial p < 1e-12), and in three participants individually. Cue format made no detectable difference: complete-target accuracy was 9/24 in both conditions (paired difference 0.0 percentage points, 95% CI [-37, 37]), and held-out AUC was 0.609 for spheres and 0.585 for object cues. Disappearing-stimulus MR P300 selection is therefore feasible under strict trial-level evaluation, but the benefit of object identity, if any, is too small to resolve in a pilot of this size.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13906v1.pdf",
       "source": "arxiv",
-      "primary_category": "eess.SP",
+      "primary_category": "cs.LG",
       "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09384v1",
-      "title": "DNN-Driven Proactive UAV Trajectory and Beam Steering for Blockage-Resilient Communications",
-      "authors": [
-        "Abdallah S. Ghazy",
-        "Hussein A. Ammar",
-        "James Bayes",
-        "Francois Chan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T12:23:22Z",
-      "summary": "This paper proposes Autonomous UAV Communication (AutUAVCom), a proactive communication system that jointly adapts the flight trajectory and RF beam steering to minimize UAV energy consumption while satisfying secrecy and reliability requirements for rescue teams operating in dynamic, cluttered, and GPS-denied environments. Unlike existing modelbased proactive approaches, AutUAVCom employs a deep neural network-based Tracking and Prediction (T&P) module that combines onboard sensing with spatiotemporal and body-orientation information to track users, localize blocking objects, and predict future trajectories and potential beam blockages. Building on the T&P module, we formulate a constrained optimization problem and develop a two-step iterative numerical approach. Monte Carlo simulations show that, relative to a reactive system, AutUAVCom achieves 10% and 19% gains in energy efficiency and channel secrecy, respectively, while reducing the outage probability by 85%, under a mean blockage arrival interval of 120 seconds and a mean blockage duration of 20 seconds.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09384v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SP",
-      "categories": [
-        "eess.SP"
-      ],
-      "category_names_zh": [
-        "eess.SP (信号处理 (Signal Processing))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09368v1",
-      "title": "AISHELL8-FISHEYE: A Fisheye Audio-Visual Dataset for Target Speaker Extraction with Distortion-Aware Baselines",
-      "authors": [
-        "Peijun Yang",
-        "Zhan Jin",
-        "Juan Liu",
-        "Hui Bu",
-        "Xiaoyi Qin"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T12:06:07Z",
-      "summary": "Fisheye cameras offer wide visual coverage but distort facial and lip geometry, challenging audio-visual target speaker extraction. We introduce AISHELL8-FISHEYE, a 47.03-hour corpus of 94 Mandarin speakers with synchronized audio and paired fisheye and normal-camera videos. Speaker-disjoint splits and synthetic two-speaker mixtures support reproducible evaluation under matched acoustic conditions. We also establish a baseline that combines a lip-reading encoder with a frozen distortion-aware branch transferred from fisheye head pose estimation. On fisheye video, adding this branch to an adapted lip encoder improves scale-invariant signal-to-distortion ratio improvement from 10.47 to 11.84 dB. The branch does not improve performance with a frozen lip encoder, highlighting the importance of visual adaptation. A substantial gap to paired normal-camera inputs remains. The corpus and baseline resources support further research on speech extraction from distorted visual cues.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09368v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.AS",
-      "categories": [
-        "eess.AS"
-      ],
-      "category_names_zh": [
-        "eess.AS (音频与语音信号处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09358v1",
-      "title": "GTCRN-SS: Lightweight Causal Speech Separation with Residual Allocation and Reconstruction Refinement",
-      "authors": [
-        "Shao-Chun Hu",
-        "Zi-Xiang Lin",
-        "Hsin-Min Wang",
-        "Jeih-Weih Hung",
-        "Hung-Shin Lee"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T11:57:10Z",
-      "summary": "Low-complexity causal speech separation must preserve speaker information and allocate residual mixture energy without relying on future feature frames. We present GTCRN-SS, a two-stage time-frequency separator that adapts the compact GTCRN enhancement backbone to fixed-output speech separation. The model combines internal residual allocation, reconstruction-conditioned refinement, and frame-aligned recurrent-state transfer. Its complex-mask estimator assigns non-target content to an unreturned residual branch, while the complementary speech estimate conditions a second stage whose final masks remain anchored to the original mixture. A lightweight low-rank adapter transfers causal recurrent evidence between recursive executions without adding another recurrent memory network. The neural graph excludes future feature frames and incurs only the fixed analysis look-ahead of the centered short-time Fourier transform. On noisy Libri2Mix, GTCRN-SS achieves 10.1 dB SDRi and 9.5 dB SI-SNRi with fewer than one million parameters and a low computational footprint. Independently trained ablations confirm the benefits of recurrent-state transfer and reconstruction conditioning, and corpus-level diagnostics show that the internal branch primarily captures residual rather than target-speech content. These results establish GTCRN-SS as an effective quality-efficiency operating point for causal monaural speech separation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09358v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.AS",
-      "categories": [
-        "eess.AS",
-        "cs.SD"
-      ],
-      "category_names_zh": [
-        "eess.AS (音频与语音信号处理)",
-        "cs.SD (声音与音频处理)"
-      ],
-      "comment": "Accepted to ROCLING 2026",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09331v1",
-      "title": "An Inspection Game for Monitor Design Against GNSS Timing Attacks in Synchronous Islanding",
-      "authors": [
-        "Gregory Provan",
-        "Quanyan Zhu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T11:26:32Z",
-      "summary": "Phasor measurement units (PMUs) take their time from GNSS, so a spoofer that slowly drags a receiver clock rotates the reported phase without touching the power waveform. The threat is acute in synchronous islanding, where a controller keeps an islanded generator in phase with the grid, using one PMU on each side of an open breaker, so that the two can be reconnected at any moment: a differential clock bias of about $0.56$\\,ms can make the controller hold the generator $10^\\circ$ out of phase while it reports perfect synchronism. We cast the defense as a zero-sum inspection game. The defender, as inspector, chooses its timing monitors and audits the clocks periodically; the attacker, as inspectee, drags the two clocks to an unsafe bias by the next audit; the payoff is the evidence, the Kullback--Leibler divergence between the probability laws of the defender's record under attack and under normal operation. Our central result is that the evidence equals the cost of the cheapest innocent explanation of the attacked record. This single identity predicts which monitors work, turns the attacker's best response into a strictly convex quadratic program, and turns the defender's design into a convex program with a saddle point. Pairing explanations, which bound the evidence from above, with test statistics, which bound it from below, certifies audit periods in which every successful attack leaves at least a threshold of evidence. On a 50\\,Hz island, these evidence-based periods, at the matched-test threshold, are up to 8.4 times as long as those of a rule that checks each monitor separately, and the case study favors placing the better oscillator on the utility side of the breaker.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09331v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY",
-        "cs.GT"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "cs.GT (计算机博弈论与算法经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09305v1",
-      "title": "An Optimal Power-Flow Grouping Topology for Single-Isolation-Stage Multi-Output Solid-State Transformers",
-      "authors": [
-        "Yi Hao",
-        "Krzysztof Puczko",
-        "Levy Ferreira Costa",
-        "Liangcai Shu",
-        "Dongsheng Yang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T10:56:19Z",
-      "summary": "Electric-vehicle dc fast-charging stations and data centers require multiple high-power dc outputs with independently varying demands. Conventional multi-output solid-state transformers typically establish a common dc bus and use downstream dc/dc converters for port-level regulation and, where required, galvanic isolation. A single-isolation-stage solid-state transformer can eliminate this additional high-power interface stage by directly forming multiple isolated outputs from its submodule dc/dc stages. However, because one submodule is generally insufficient for an individual output port, multiple submodules must be connected in parallel, while inter-submodule balancing circuits redistribute power under unbalanced loading. The submodule grouping therefore determines the internal balancing-power paths. Sequential grouping can create long transfer paths and accumulated balancing power, increasing current stress and losses. This paper proposes an optimal power-flow grouping topology that interleaves submodules assigned to different output ports, thereby localizing power redistribution and reducing the power processed by the balancing circuits. Analytical models quantify the required balancing power and its reduction relative to sequential grouping. A coordinated submodule-bypass strategy is also developed, and the remaining output-power capability under different fault scenarios is evaluated. A six-submodule prototype validates the proposed topology. Under the same highly unbalanced operating conditions, the proposed topology reduces the maximum submodule dc-link voltage difference by 63\\% and the peak balancing current by 14.5%, while improving the measured efficiency by approximately 5.6% at rated power. Stable post-fault operation is also experimentally demonstrated.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09305v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.SY",
-      "categories": [
-        "eess.SY"
-      ],
-      "category_names_zh": [
-        "eess.SY (系统与控制理论 (Systems and Control))"
-      ],
-      "comment": "13 pages, 19 figures. Submitted to IEEE for possible publication",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09295v1",
-      "title": "Bridging Spiking and Continuous Dynamics in Spiking Neural Networks: A Muscle-Inspired Model",
-      "authors": [
-        "Maryam Soltani",
-        "Philip N. Garner"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T10:47:55Z",
-      "summary": "Transforming the spike trains produced by spiking neural networks (SNNs) into continuous signals through biologically inspired mechanisms remains an open challenge in generative and regression tasks. In biological systems, a similar transformation occurs when muscles integrate neural spikes to produce smooth, coordinated movements. Inspired by this mechanism, we introduce a muscle-response model, a biologically motivated dynamical layer that converts spike trains into continuous representations. Our approach uses second-order dynamics to model the temporal integration of spiking activity. We investigate how the number of spiking neurons and temporal resolution affect the quality of the generated signals in a text-to-speech task, showing that increasing representational capacity has a greater impact than increasing temporal resolution under the evaluated configurations. Furthermore, an analysis of the learned dynamics reveals that, without explicit constraints on the response type, most neurons converge toward non-oscillatory behavior. These results demonstrate the potential of biologically inspired dynamical decoders for bridging spiking neural computation and continuous signal generation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09295v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.NE",
-      "categories": [
-        "cs.NE",
         "cs.LG",
-        "eess.AS"
+        "cs.HC",
+        "eess.SP"
       ],
       "category_names_zh": [
-        "cs.NE (神经与进化计算)",
         "cs.LG (机器学习 (ML))",
-        "eess.AS (音频与语音信号处理)"
+        "cs.HC (人机交互 (HCI))",
+        "eess.SP (信号处理 (Signal Processing))"
       ],
-      "comment": null,
+      "comment": "5 pages, 2 figures, 1 table",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09276v1",
-      "title": "DC-Link Voltage Regulation in a Single-Isolation-Stage Multioutput Solid-State Transformer for Wide-Range DC Outputs",
+      "paper_id": "2611.13880v1",
+      "title": "Towards Mode-Balanced Intersection Control: Hierarchical Coordination of Signal Timings, AV Trajectories, and Cyclist Speed Advice",
       "authors": [
-        "Yi Hao",
-        "Levy Ferreira Costa",
-        "Krzysztof Puczko",
-        "Liangcai Shu",
-        "Dongsheng Yang"
+        "Wies Siffels",
+        "Giray Önür",
+        "Azita Dabiri"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T10:32:07Z",
-      "summary": "Single-isolation-stage solid-state transformers with balancing circuits eliminate an additional downstream dc--dc conversion stage. However, the remaining isolated converters must directly accommodate a wide output-voltage range. This paper investigates variable dc-link voltage operation of a single-isolation-stage multioutput SST to ease this requirement. Coordinated cascaded H-bridge modulation and embedded four-switch balancing circuits support intentionally unequal submodule dc-link voltages, allowing the isolated-converter input voltages to be adjusted according to the output requirements. The achievable voltage range is determined by relating the required balancing power to the BC transfer capability within the available CHB switching windows, subject to modulation and peak and rms current limits. The analysis quantifies the range extension provided by BC operation beyond modulation alone. For a single-phase-shift dual-active-bridge converter, input-voltage following within this range reduces the calculated peak current and extends the ideal zero-voltage-switching region compared with fixed input. Experiments on a six-submodule SST prototype demonstrate unequal dc-link voltage operation and inter-submodule power exchange. Experiments result on DAB demonstrate reduced current stress and improved efficiency with voltage following.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09276v1.pdf",
+      "published_at": "2026-11-10T10:38:54Z",
+      "summary": "Connected and automated vehicles (AVs) enable traffic signals and vehicle trajectories to be optimised jointly, but existing co-optimisation frameworks overlook cyclists, even though they share the same intersections. We propose a hierarchical framework that optimises traffic signal timings, AV trajectories, and cyclist speed advice to reduce travel times for both motorised vehicles and cyclists. The upper level jointly optimises signal timings and cyclist speed advice, while the lower level optimises AV trajectories and also updates cyclist speed advice obtained from the higher level at a higher frequency based on the resulting signal plan. The framework is evaluated in simulation under multiple demand profiles and optimisation parameter settings. Compared with optimized vehicle trajectories with fixed-time signal control, the proposed framework reduces mean travel times by 13.6\\% for AVs and 12.3\\% for cyclists. Adding cyclist speed advice further reduces mean cyclist waiting time by about 80\\% relative to the same framework without speed advice. These results demonstrate substantial benefits for both modes of transport.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13880v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.SY",
       "categories": [
@@ -914,7 +916,7 @@
       "category_names_zh": [
         "eess.SY (系统与控制理论 (Systems and Control))"
       ],
-      "comment": "Submitted to IEEE Transactions on Power Electronics (TPEL) for possible publication",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     }
@@ -923,36 +925,41 @@
     {
       "code": "eess.SY",
       "name_zh": "系统与控制理论 (Systems and Control)",
-      "count": 14
+      "count": 18
     },
     {
       "code": "eess.SP",
       "name_zh": "信号处理 (Signal Processing)",
-      "count": 13
-    },
-    {
-      "code": "eess.IV",
-      "name_zh": "图像与视频处理",
-      "count": 5
-    },
-    {
-      "code": "cs.NI",
-      "name_zh": "计算机网络与互联网通信",
-      "count": 4
+      "count": 10
     },
     {
       "code": "eess.AS",
       "name_zh": "音频与语音信号处理",
-      "count": 4
+      "count": 6
     },
     {
-      "code": "cs.CV",
-      "name_zh": "计算机视觉与模式识别 (CV)",
-      "count": 3
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 6
     },
     {
       "code": "math.OC",
       "name_zh": "运筹学、优化与控制论",
+      "count": 4
+    },
+    {
+      "code": "cs.SD",
+      "name_zh": "声音与音频处理",
+      "count": 3
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 2
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 2
     },
     {
@@ -961,50 +968,40 @@
       "count": 2
     },
     {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
+      "code": "eess.IV",
+      "name_zh": "图像与视频处理",
       "count": 2
     },
     {
-      "code": "cs.SD",
-      "name_zh": "声音与音频处理",
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
       "count": 2
     },
     {
-      "code": "physics.geo-ph",
-      "name_zh": "地球物理学",
+      "code": "cs.SE",
+      "name_zh": "软件工程",
       "count": 1
     },
     {
-      "code": "cs.CR",
-      "name_zh": "密码学与网络安全",
+      "code": "q-bio.NC",
+      "name_zh": "神经科学与脑认知",
       "count": 1
     },
     {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
+      "code": "physics.class-ph",
+      "name_zh": "经典物理学",
       "count": 1
     },
     {
-      "code": "physics.med-ph",
-      "name_zh": "医学物理学",
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
       "count": 1
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 1
-    },
-    {
-      "code": "cs.GT",
-      "name_zh": "计算机博弈论与算法经济",
-      "count": 1
-    },
-    {
-      "code": "cs.NE",
-      "name_zh": "神经与进化计算",
+      "code": "cs.HC",
+      "name_zh": "人机交互 (HCI)",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T08:30:18.683719"
+  "snapshot_synced_at": "2026-11-12T20:16:59.696781"
 }

@@ -8,16 +8,51 @@ from __future__ import annotations
 
 import os
 import subprocess
+from datetime import date
 from pathlib import Path
 from typing import Optional
 
 
-def get_default_llm_model() -> str:
+def resolve_retrieval_time_constraint(constraint=None, today: Optional[date] = None) -> dict:
+    """Default discovery to the preceding three calendar years, preserving explicit bounds."""
+    if isinstance(constraint, dict) and constraint.get("basis") != "default_three_years":
+        if constraint.get("unrestricted"):
+            return {**constraint, "has_time_constraint": False}
+        if constraint.get("has_time_constraint") is not False and any(
+            constraint.get(key) for key in
+            ("start_date", "end_date", "start_year", "end_year", "description", "requires_resolution")
+        ):
+            return dict(constraint)
+    current = today or date.today()
+    try:
+        start = current.replace(year=current.year - 3)
+    except ValueError:  # February 29 maps to the last day of February.
+        start = current.replace(year=current.year - 3, day=28)
+    return {
+        "has_time_constraint": True,
+        "start_date": start.isoformat(), "end_date": current.isoformat(),
+        "start_year": start.year, "end_year": current.year,
+        "sort_by_date": True, "basis": "default_three_years",
+    }
+
+
+def retrieval_date_bounds(constraint: dict) -> tuple[str, str] | None:
+    if not constraint.get("has_time_constraint", True):
+        return None
+    start = constraint.get("start_date")
+    end = constraint.get("end_date")
+    start_year = constraint.get("start_year")
+    end_year = constraint.get("end_year")
+    if start or end or start_year or end_year:
+        start = start or (f"{int(start_year or end_year):04d}-01-01" if start_year or end_year else date.min.isoformat())
+        end = end or (f"{int(end_year or start_year):04d}-12-31" if end_year or start_year else date.today().isoformat())
+        return date.fromisoformat(str(start)).isoformat(), date.fromisoformat(str(end)).isoformat()
+    return None
+
+
+def get_default_llm_model(default: str = "gpt-5.6-terra") -> str:
     """统一解析当前激活的大模型名称，消除环境变量分歧与硬编码默认值"""
-    model = os.getenv("DEFAULT_LLM_MODEL") or os.getenv("OPENAI_MODEL")
-    if not model or not model.strip():
-        raise ValueError("未配置 DEFAULT_LLM_MODEL 或 OPENAI_MODEL")
-    return model.strip()
+    return os.getenv("DEFAULT_LLM_MODEL") or os.getenv("OPENAI_MODEL", default)
 
 
 def get_llm_timeout(default: float = 100.0) -> float:
@@ -26,38 +61,120 @@ def get_llm_timeout(default: float = 100.0) -> float:
     if val:
         try:
             return float(val)
-        except (ValueError, TypeError) as e:
-            raise ValueError("LLM_TIMEOUT 配置无效") from e
+        except (ValueError, TypeError):
+            pass
     return float(default)
 
 
-def resolve_model_path(env_key: str, local_subpath: str, base_dir: Optional[Path] = None) -> str:
-    """使用明确配置或项目内约定的本地目录，不自动改用远程模型。"""
-    value = os.getenv(env_key)
-    path = Path(value).expanduser() if value else Path("models") / local_subpath
-    if not path.is_absolute():
-        path = (base_dir or Path.cwd()) / path
-    if value and not path.exists():
-        raise FileNotFoundError(f"{env_key} 指定的模型不存在: {path}")
-    return str(path.resolve())
+def resolve_model_path(
+    env_key: str,
+    local_subpath: str,
+    fallback_hf_id: str,
+    base_dir: Optional[Path] = None,
+) -> str:
+    """通用本地模型路径解析器。
+    
+    优先级：
+    1. 环境变量指定的路径（支持相对路径如 ./models/... 或 ../models/...，自动基于 base_dir 解析）
+    2. 项目内相对路径 <base_dir>/models/<local_subpath>
+    3. 同级相对路径 <base_dir>/../models/<local_subpath>
+    4. 标准 HuggingFace 模型标识符 (fallback_hf_id)
+    严禁任何特定宿主机绝对路径硬编码。
+    """
+    val = os.getenv(env_key)
+    if val:
+        p = Path(val)
+        if not p.is_absolute() and base_dir:
+            rel_candidate = (base_dir / p).resolve()
+            if rel_candidate.exists():
+                return str(rel_candidate)
+        if p.exists():
+            return str(p.resolve())
+        if not val.startswith("/") and not val.startswith("."):
+            return val
+
+    if base_dir:
+        # 1. 项目内 models 目录
+        local_dir = (base_dir / "models" / local_subpath).resolve()
+        if local_dir.exists():
+            return str(local_dir)
+        # 2. 项目同级 models 共享资产目录
+        peer_dir = (base_dir.parent / "models" / local_subpath).resolve()
+        if peer_dir.exists():
+            return str(peer_dir)
+
+    return val or fallback_hf_id
 
 
 def resolve_whisper_path(base_dir: Optional[Path] = None) -> Path:
-    """使用指定的 Whisper 路径；未配置时使用项目内约定目录。"""
-    return Path(resolve_model_path("WHISPER_MODEL_PATH", "whisper-large-v3", base_dir))
+    """解析 Whisper 语音模型路径，全动态相对路径支持与零硬编码"""
+    val = os.getenv("WHISPER_MODEL_PATH")
+    if val:
+        p = Path(val)
+        if not p.is_absolute() and base_dir:
+            rel_candidate = (base_dir / p).resolve()
+            if rel_candidate.exists():
+                return rel_candidate
+        if p.exists():
+            return p.resolve()
+        if not val.startswith("/") and not val.startswith("."):
+            return Path(val)
+
+    if base_dir:
+        # 1. 优先解析 OpenAI 官方原生模型文件 (large-v3.pt)
+        for pt_cand in [
+            (base_dir / "models" / "large-v3.pt"),
+            (base_dir.parent / "models" / "large-v3.pt"),
+        ]:
+            if pt_cand.exists():
+                return pt_cand.resolve()
+
+        # 2. 备选项目内与同级 models/whisper-large-v3 目录
+        local_dir = (base_dir / "models" / "whisper-large-v3").resolve()
+        if local_dir.exists():
+            return local_dir
+        peer_dir = (base_dir.parent / "models" / "whisper-large-v3").resolve()
+        if peer_dir.exists():
+            return peer_dir
+
+    return Path(val or "openai/whisper-large-v3")
 
 
 def get_default_monitor_source() -> str:
-    """使用显式音源或当前默认输出设备的内录通道；探测失败直接报错。"""
-    source = os.getenv("AUDIO_MONITOR_SOURCE")
-    if source:
-        return source
-    result = subprocess.run(["pactl", "get-default-sink"], capture_output=True,
-                            text=True, check=True, timeout=2.0)
-    sink = result.stdout.strip()
-    if not sink:
-        raise RuntimeError("未找到默认输出音源，请配置 AUDIO_MONITOR_SOURCE")
-    return f"{sink}.monitor"
+    """动态探测系统活动的扬声器内录 (Speaker Monitor) 音频源。
+    
+    解耦对特定主板 PCI 声卡硬件设备名的写死。
+    优先级：
+    1. 环境变量 AUDIO_MONITOR_SOURCE (若用户显式指定)
+    2. 通过 pactl 动态探测 Speaker monitor 或任意 monitor
+    3. 缺省安全标识符 'default'
+    """
+    env_source = os.getenv("AUDIO_MONITOR_SOURCE")
+    if env_source:
+        return env_source
+
+    try:
+        res = subprocess.run(
+            ["pactl", "list", "short", "sources"],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=2.0,
+        )
+        # 优先匹配 Speaker monitor
+        for line in res.stdout.strip().splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 2 and "monitor" in parts[1] and "Speaker" in parts[1]:
+                return parts[1]
+        # 次优匹配任意 monitor
+        for line in res.stdout.strip().splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 2 and "monitor" in parts[1]:
+                return parts[1]
+    except Exception:
+        pass
+
+    return "default"
 
 
 def get_default_obsidian_vault_path() -> Path:

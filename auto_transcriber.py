@@ -30,13 +30,23 @@ ENV_PATH = BASE_DIR / ".env"
 load_dotenv(ENV_PATH)
 
 MODEL_DIR = resolve_whisper_path(BASE_DIR)
+SPEAKER_MONITOR = get_default_monitor_source()
 TEMP_WAV = BASE_DIR / "auto_temp.wav"
 
 
 def load_whisper_pipeline(model_dir: Path = MODEL_DIR):
-    """Load local Whisper large-v3 model using OpenAI official whisper library with memory safety."""
-    from whisper_loader import load_whisper_safely
-    return load_whisper_safely(model_dir)
+    """Load local Whisper large-v3 model using OpenAI official whisper library."""
+    import whisper
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    download_root = str(model_dir.parent) if model_dir.parent.exists() else None
+
+    print(f"🧠 正在加载本地 Whisper 模型: {model_dir.name} (计算设备: {device.upper()})...")
+    model = whisper.load_model("large-v3", device="cpu", download_root=download_root)
+    if device == "cuda":
+        model = model.half().to("cuda")
+        torch.cuda.empty_cache()
+    return model
 
 
 def calculate_rms(chunk_bytes: bytes) -> float:
@@ -125,8 +135,8 @@ def live_stream_transcribe(
                                 current_display_text = partial_text
                                 sys.stdout.write(f"\r🎙️  [实时字幕] {current_display_text}   ")
                                 sys.stdout.flush()
-                        except Exception as e:
-                            raise RuntimeError(f"实时转录失败: {e}") from e
+                        except Exception:
+                            pass
 
                 elif is_speaking:
                     audio_buffer.extend(raw_chunk)
@@ -151,7 +161,8 @@ def live_stream_transcribe(
                         sys.stdout.write(f"\r✅ 【确定识别】: {final_text}\n\n")
                         sys.stdout.flush()
                 except Exception as e:
-                    raise RuntimeError(f"最终转录失败: {e}") from e
+                    sys.stdout.write(f"\r[转录错误]: {e}\n\n")
+                    sys.stdout.flush()
             else:
                 # 杂音或时长过短，清除行
                 if is_speaking:

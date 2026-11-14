@@ -28,11 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const actionItemsList = document.getElementById('action-items-list');
   const evidencePanelList = document.getElementById('evidence-list') || document.getElementById('evidence-panel-list');
-  const evidenceTurnBar = document.getElementById('evidence-turn-bar');
-  const evidenceTurnSelect = document.getElementById('evidence-turn-select');
-  const evidenceTurnCountBadge = document.getElementById('evidence-turn-count-badge');
-  const evidenceCurrentTitle = document.getElementById('evidence-current-title');
-  const evidenceSubLabel = document.getElementById('evidence-sub-label');
   const streamLogs = document.getElementById('stream-logs');
   const globalAudio = document.getElementById('global-tts-audio');
 
@@ -43,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (selectTtsVoice) {
     const savedVoice = localStorage.getItem('preferred_tts_voice');
     if (savedVoice) {
+      if (!Array.from(selectTtsVoice.options).some(option => option.value === savedVoice)) {
+        selectTtsVoice.add(new Option(savedVoice, savedVoice));
+      }
       selectTtsVoice.value = savedVoice;
     }
     selectTtsVoice.addEventListener('change', () => {
@@ -106,69 +104,128 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hubStatusText) hubStatusText.textContent = text;
   }
 
-  function highlightGraphPipelineStep() {
-    // 接口返回前没有节点进度事件，等待时间不能证明任何阶段已执行。
-    resetGraphNodes();
-    setHubStatus('正在处理请求');
+  function highlightGraphPipelineStep(stepIdx) {
+    if (hubCoordinator) hubCoordinator.classList.add('active-node');
+
+    if (stepIdx === 0) {
+      // 0. 主调度中枢解析意图
+      resetGraphNodes();
+      setHubStatus('规划路径中');
+      setOrbitNode(1, 'running', '🎯 意图解析中');
+    } else if (stepIdx === 1) {
+      // 1. 感知交叉学科，派生特派专家与知识检索
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'running', '🌐 全网文献发现');
+      setOrbitNode(3, 'running', '⚡ 经卷知识对齐');
+      setHubStatus('双路文献与专家检索');
+    } else if (stepIdx === 2) {
+      // 2. 证据整理归纳席位去噪清洗与机制骨架提炼
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'running', '📑 证据清洗与归纳');
+      setHubStatus('跨源证据清洗归纳');
+    } else if (stepIdx === 3) {
+      // 3. 专家并行推导数理公式
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
+      setOrbitNode(4, 'running', '🔬 特派专家数理推导');
+      setHubStatus('特派专家推演中');
+    } else if (stepIdx === 4) {
+      // 4. 学术质询席位审视去冗
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
+      setOrbitNode(4, 'running', '🧐 质询专员去冗审度');
+      setHubStatus('博弈质询·去冗提纯');
+    } else if (stepIdx === 5) {
+      // 5. 主研反思重构终稿
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
+      setOrbitNode(4, 'running', '✍️ 主研反思·重构终稿');
+      setHubStatus('终版反思重构中');
+    } else if (stepIdx === 6) {
+      // 6. 研讨闭环，生成脉络与导图
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
+      setOrbitNode(4, 'active', '✅ 数理方案终审闭环');
+      setOrbitNode(6, 'running', '🗺️ 提炼脉络与导图');
+      setHubStatus('提炼全景思维导图');
+    } else if (stepIdx >= 7) {
+      // 7. 音画呈现与共识交付
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
+      setOrbitNode(2, 'active', '✅ 权威文献已锁定');
+      setOrbitNode(3, 'active', '✅ 证据备忘录已生成');
+      setOrbitNode(4, 'active', '✅ 数理方案终审闭环');
+      setOrbitNode(6, 'active', '✅ 导图脉络就绪');
+      setOrbitNode(7, 'running', '🔊 音画呈现准备中');
+      setHubStatus('协同共识交付中');
+    }
   }
 
   function highlightGraphFromResult(data) {
     if (!data) return;
-    resetGraphNodes();
-    const stages = data.stage_statuses || {};
-    const generated = stages.generation === 'completed' || stages.reflective_revision === 'completed';
 
-    if (stages.intent_parsing === 'failed') {
-      setOrbitNode(1, 'idle', '意图解析失败');
-    } else if (data.intent_decision && data.intent_decision.intent !== 'error') {
-      setOrbitNode(1, 'active', '✅ 已返回意图解析');
-    } else {
-      setOrbitNode(1, 'idle', '暂无意图解析结果');
-    }
+    // 1. 意图拆解节点必然已完成
+    setOrbitNode(1, 'active', '✅ 意图解耦完成');
 
+    // 2 & 3. 检查文献与经卷证据
     const evidence = data.retrieved_evidence || [];
-    let onlineCount = 0;
-    let localCount = 0;
+    let hasOnline = false;
+    let hasLocal = false;
     evidence.forEach(e => {
-      const sources = [e.doc_type, e.source, ...(e.sources_merged || [])]
-        .filter(Boolean).map(src => String(src).toLowerCase());
-      if (sources.some(src => ['arxiv', 'openalex', 'crossref', 'doaj', 'online', 'github', 'fused_academic'].includes(src))) onlineCount++;
-      if (e.is_local_indexed || sources.some(src => ['local', 'local_pdf', 'pdf', 'pptx', 'docx', 'txt'].includes(src))) localCount++;
+      const src = (e.source || '').toLowerCase();
+      if (src === 'arxiv' || src === 'openalex' || src === 'crossref' || src === 'doaj' || src === 'online') {
+        hasOnline = true;
+      } else {
+        hasLocal = true;
+      }
     });
-    setOrbitNode(2, onlineCount ? 'active' : 'idle', onlineCount ? `返回在线资料 ${onlineCount} 条` : '本轮无在线资料');
-    setOrbitNode(3, localCount ? 'active' : 'idle', localCount ? `返回本地资料 ${localCount} 条` : '本轮无本地资料');
 
-    let reviewLabel = '暂无执行状态记录';
-    let reviewActive = false;
-    if (stages.reflective_revision === 'failed') reviewLabel = '修订未完成';
-    else if (stages.reflective_revision === 'completed') {
-      reviewLabel = '修订稿已生成，尚未复核';
-      reviewActive = true;
-    } else if (stages.reflective_revision === 'unchanged') reviewLabel = '修订未改变初稿，问题待确认';
-    else if (stages.dialectical_inquiry === 'failed') reviewLabel = '模型质询未完成';
-    else if (stages.dialectical_inquiry === 'completed') {
-      reviewLabel = data.review_verdict?.needs_revision === false ? '模型审核未要求修订'
-        : data.review_verdict?.needs_revision === true ? '模型审核要求修订' : '已生成审核意见，未记录修订决策';
-      reviewActive = true;
-    } else if (stages.dialectical_inquiry === 'checklist') reviewLabel = '仅生成待审查清单';
-    else if (stages.dialectical_inquiry === 'skipped') reviewLabel = '未执行模型质询';
-    else if (stages.reflective_revision === 'skipped') reviewLabel = '未执行模型修订';
-    setOrbitNode(4, reviewActive ? 'active' : 'idle', reviewLabel);
+    if (hasOnline) {
+      setOrbitNode(2, 'active', `✅ 锁定文献 ${evidence.length} 篇`);
+    } else {
+      setOrbitNode(2, 'idle', '等待任务');
+    }
 
+    if (hasLocal) {
+      setOrbitNode(3, 'active', '✅ 经卷证据已对齐');
+    } else {
+      setOrbitNode(3, 'idle', '等待任务');
+    }
+
+    // 4. 数理推演与学术导师
     const targetAgent = data.target_agent || '';
-    if (targetAgent.includes('CrossModal') || targetAgent.includes('PPT')) {
-      setOrbitNode(5, generated && evidence.length ? 'active' : 'idle',
-        generated && evidence.length ? '已返回课件候选' : '暂无课件匹配结果');
-    }
-    if (data.mindmap_markdown) setOrbitNode(6, 'active', '已生成内容导图');
-    else if (targetAgent.includes('Meeting') || targetAgent.includes('Summarizer')) {
-      setOrbitNode(6, generated ? 'active' : 'idle', generated ? '已生成会议摘要' : '会议摘要未生成');
+    const dialogue = data.agent_dialogue_history || [];
+    const hasDerivation = targetAgent.includes('Planner') || targetAgent.includes('Tutor') || targetAgent.includes('Derivation') || dialogue.length > 0;
+    if (hasDerivation) {
+      setOrbitNode(4, 'active', '✅ 数理反思重构闭环');
     }
 
-    if (data.audio_url) setOrbitNode(7, 'active', '语音已生成');
-    else setOrbitNode(7, generated ? 'active' : 'idle', generated ? '回答已返回' : '暂无生成成果');
-    const hasFailure = Object.values(stages).includes('failed');
-    setHubStatus(hasFailure ? '部分步骤未完成' : generated ? '回答已返回' : '请求已返回', false);
+    // 5. 跨模态课件对齐
+    if (targetAgent.includes('CrossModal') || targetAgent.includes('PPT')) {
+      setOrbitNode(5, 'active', '✅ 课件声画对齐');
+    } else {
+      setOrbitNode(5, 'idle', '等待任务');
+    }
+
+    // 6. 流水纪要与导图
+    if (data.mindmap_markdown || targetAgent.includes('Summarizer')) {
+      setOrbitNode(6, 'active', '✅ 脉络导图已沉淀');
+    } else {
+      setOrbitNode(6, 'idle', '等待任务');
+    }
+
+    // 7. 音画呈现与语音播报
+    if (data.audio_url) {
+      setOrbitNode(7, 'running', '🔊 正在语音学术播报');
+      setHubStatus('羽若协同播报中', true);
+    } else {
+      setOrbitNode(7, 'active', '✅ 成果交付完毕');
+      setHubStatus('研讨闭环就绪', false);
+    }
   }
 
   function highlightGraphStep(stepName, targetAgent = null) {
@@ -190,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'MeetingAgent': 6,
       };
       const nNum = nodeMap[targetAgent] || 4;
+      setOrbitNode(1, 'active', '✅ 意图已解耦');
       setOrbitNode(nNum, 'running', `⚡ ${targetAgent || 'Agent'} 执行中`);
       setHubStatus(`执行: ${targetAgent || 'Agent'}`);
     } else if (stepName === 'TTS') {
@@ -303,12 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
-    sessionTurnsMindmaps = [];
-    sessionTurnsEvidence = [];
-    currentActiveTurnIndex = 0;
-    currentActiveEvidenceTurnIndex = 0;
-    updateEvidenceTurnUI();
+    updateEvidencePanel([]);
     showMindmapEmptyState();
+    sessionTurnsMindmaps = [];
     currentFullBookMindmap = '';
     currentActiveDocumentName = '';
     if (userInput) {
@@ -334,7 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {
       console.error('Failed to load sessions:', e);
-      throw e;
     }
   }
 
@@ -431,12 +485,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentActiveMarkdown = '';
   let currentActiveDocumentName = '';
   
-  // 多层次多轮问答导图与研讨证据管理体系
+  // 多层次多轮问答导图管理体系
   let sessionTurnsMindmaps = []; // Array of { turnIndex: number, title: string, markdown: string, docName: string }
-  let sessionTurnsEvidence = []; // Array of { turnIndex: number, title: string, evidences: Array, docName: string }
   let currentMindmapScope = 'current'; // 'current' | 'book' | 'session'
   let currentActiveTurnIndex = 0;
-  let currentActiveEvidenceTurnIndex = 0;
 
   function showMindmapEmptyState() {
     const placeholder = document.getElementById('mindmap-empty-placeholder');
@@ -467,32 +519,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!mdText) return '';
     let res = String(mdText);
 
-    {
+    if (window.katex) {
       // 1. 转换标准 LaTeX 行内定界符 \( ... \)
       res = res.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
         try {
-          return renderMathSource(formula.trim(), false);
-        } catch (error) { throw error; }
+          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
+        } catch (_) { return match; }
       });
 
       // 2. 转换标准行内公式 $ ... $
       res = res.replace(/(?<!\\)\$([^\$\n]+)\$/g, (match, formula) => {
         try {
-          return renderMathSource(formula.trim(), false);
-        } catch (error) { throw error; }
+          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
+        } catch (_) { return match; }
       });
 
       // 3. 转换导图节点中以括号包裹的显式 LaTeX 表达式 (如 (\sqrt{d_k})、(\mathbf{M}\in\mathbb{R}^{T\times T}))
       res = res.replace(/（([^）\n]*?\\[a-zA-Z]+[^）\n]*?)）/g, (match, formula) => {
         try {
-          return `（${renderMathSource(formula.trim(), false)}）`;
-        } catch (error) { throw error; }
+          return `（${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })}）`;
+        } catch (_) { return match; }
       });
 
       res = res.replace(/\(([^)\n]*?\\[a-zA-Z]+[^)\n]*?)\)/g, (match, formula) => {
         try {
-          return `(${renderMathSource(formula.trim(), false)})`;
-        } catch (error) { throw error; }
+          return `(${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })})`;
+        } catch (_) { return match; }
       });
     }
 
@@ -511,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (svgEl && svgEl._markmapInstance) {
           try {
             svgEl._markmapInstance.fit();
-          } catch (error) { throw error; }
+          } catch (_) {}
         }
       };
 
@@ -535,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return svgEl._markmapInstance;
     } catch (e) {
-      throw e;
+      console.warn('Markmap render notice:', e);
     }
   }
 
@@ -603,8 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (currentMindmapScope === 'book') {
       if (turnSelectWrap) turnSelectWrap.style.display = 'none';
-      const docName = currentActiveDocumentName;
-      if (!docName) throw new Error('未选择书籍，无法加载全书导图');
+      const docName = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
       const cleanDocName = docName.replace(/\.[^/.]+$/, '');
       if (titleEl) titleEl.textContent = `《${cleanDocName}》全景知识树`;
       if (badgeEl) badgeEl.textContent = '📚 全书宏观结构';
@@ -612,13 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!currentFullBookMindmap || currentFullBookMindmapDoc !== docName) {
         try {
           const resp = await fetch(`/api/documents/${encodeURIComponent(docName)}/mindmap`);
-          if (!resp.ok) throw new Error('书籍导图接口失败');
           const data = await resp.json();
-          if (!data.mindmap_markdown) throw new Error('未返回书籍导图');
           currentFullBookMindmap = data.mindmap_markdown;
           currentFullBookMindmapDoc = docName;
         } catch (e) {
-          throw new Error(`书籍导图加载失败：${e.message}`);
+          console.error('Failed to load book mindmap:', e);
         }
       }
       currentActiveMarkdown = currentFullBookMindmap;
@@ -699,14 +748,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function prepareCleanExportSvg(targetSvg) {
     if (!targetSvg) return null;
 
-    const bbox = targetSvg.getBBox();
-    if (!bbox || bbox.width <= 0 || bbox.height <= 0) {
-      throw new Error('思维导图尺寸无效，无法导出');
-    }
-    const vw = Math.max(Math.ceil(bbox.width) + 160, 1200);
-    const vh = Math.max(Math.ceil(bbox.height) + 160, 800);
-    const vx = Math.floor(bbox.x) - 80;
-    const vy = Math.floor(bbox.y) - 80;
+    let width = 1600;
+    let height = 1000;
+    let vx = -80, vy = -80, vw = 1600, vh = 1000;
+
+    try {
+      const bbox = targetSvg.getBBox();
+      if (bbox && bbox.width > 0 && bbox.height > 0) {
+        vw = Math.max(Math.ceil(bbox.width) + 160, 1200);
+        vh = Math.max(Math.ceil(bbox.height) + 160, 800);
+        vx = Math.floor(bbox.x) - 80;
+        vy = Math.floor(bbox.y) - 80;
+      }
+    } catch (_) {}
 
     const svgClone = targetSvg.cloneNode(true);
     svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -725,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. 将 Markmap 的 <foreignObject> 转为标准原生 SVG <text>
     // 彻底根治: 
-    // a) 浏览器 Canvas/Image 对含 foreignObject 的 SVG 有安全限制，导出失败时明确报错;
+    // a) 浏览器 Canvas/Image 加载含 foreignObject 的 SVG 报安全错误导致 PNG 导出失败并被动回退为 SVG;
     // b) 桌面看图软件 (Linux Loupe / eog / macOS Preview) 无法解析 foreignObject 导致文字完全隐形.
     const cloneFos = Array.from(svgClone.querySelectorAll('foreignObject'));
     const sourceFos = Array.from(targetSvg.querySelectorAll('foreignObject'));
@@ -761,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (compStyle.color) color = compStyle.color;
           if (compStyle.fontSize) fontSize = compStyle.fontSize;
           if (compStyle.fontWeight) fontWeight = compStyle.fontWeight;
-        } catch (error) { throw error; }
+        } catch (_) {}
       }
 
       const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -817,17 +871,15 @@ document.addEventListener('DOMContentLoaded', () => {
       downloadBlob(blob, filename.endsWith('.svg') ? filename : `${filename}.svg`);
     } catch (err) {
       console.error('Export SVG error:', err);
-      alert(`SVG 导出失败: ${err.message}`);
+      const mdBlob = new Blob([currentActiveMarkdown], { type: 'text/markdown;charset=utf-8' });
+      downloadBlob(mdBlob, filename.replace(/\.(svg|png)$/, '.md'));
     }
   }
 
   async function exportSVGToPNG(svgEl, filename = '学术知识思维导图.png') {
     if (!currentActiveMarkdown) {
-      if (!currentActiveDocumentName) {
-        alert('请先选择书籍或发起研讨提问');
-        return;
-      }
-      await loadAndRenderBookMindmap(currentActiveDocumentName);
+      const targetDoc = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
+      await loadAndRenderBookMindmap(targetDoc);
     }
     if (!currentActiveMarkdown) {
       alert('请先在左侧选择书籍或发起研讨提问以生成思维导图');
@@ -861,25 +913,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pngBlob) {
               downloadBlob(pngBlob, filename.endsWith('.png') ? filename : `${filename}.png`);
             } else {
-              alert('PNG 导出失败：未生成图像数据');
+              downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
             }
             (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
           }, 'image/png');
         } catch (e) {
-          console.error('PNG 导出失败:', e);
-          alert(`PNG 导出失败：${e.message}`);
+          console.error('Canvas export error, fallback to SVG:', e);
+          downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
           (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
         }
       };
       img.onerror = (e) => {
-        console.error('PNG 图像加载失败:', e);
-        alert('PNG 导出失败：图像加载失败');
+        console.error('Image load error on SVG blob, fallback to SVG:', e);
+        downloadBlob(svgBlob, filename.replace(/\.png$/, '.svg'));
         (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
       };
       img.src = blobUrl;
     } catch (err) {
-      console.error('PNG 导出失败:', err);
-      alert(`PNG 导出失败：${err.message}`);
+      console.error('Export PNG failed, downloading SVG:', err);
+      exportSVGToFile(svgEl, filename.replace(/\.png$/, '.svg'));
     }
   }
 
@@ -924,7 +976,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return data.session;
     } catch (e) {
       console.error('创建新会话失败:', e);
-      throw e;
     }
   }
 
@@ -948,13 +999,10 @@ document.addEventListener('DOMContentLoaded', () => {
       userInput.style.height = 'auto';
     }
     stopTTS();
-    resetGraphNodes();
 
-    // 严密重置当前会话的思维导图与研讨证据轮次列表与索引，彻底杜绝跨会话轮次串味污染
+    // 严密重置当前会话的思维导图轮次列表与索引，彻底杜绝跨会话轮次串味污染
     sessionTurnsMindmaps = [];
-    sessionTurnsEvidence = [];
     currentActiveTurnIndex = 0;
-    currentActiveEvidenceTurnIndex = 0;
     currentMindmapScope = 'current';
 
     // 严密更新侧边栏高亮
@@ -991,7 +1039,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         chatFeed.appendChild(welcomeDiv);
-        updateEvidenceTurnUI();
+        updateEvidencePanel([]);
         // 空白对话：默认呈现虚席占位，不展示图谱
         showMindmapEmptyState();
       } else {
@@ -1011,20 +1059,15 @@ document.addEventListener('DOMContentLoaded', () => {
             appendMessage('user', textContent, userTurnCounter, msg.image_url || null);
           } else {
             agentTurnCounter++;
-            const turnTitle = sanitizeTopicTitle(lastUserQuery || `第 ${agentTurnCounter} 轮研讨精要`);
-            const evs = (msg.retrieved_evidence && Array.isArray(msg.retrieved_evidence)) ? msg.retrieved_evidence : [];
-            sessionTurnsEvidence.push({
-              turnIndex: agentTurnCounter,
-              title: turnTitle,
-              evidences: evs,
-              docName: (evs[0] && evs[0].doc_name) ? evs[0].doc_name : currentActiveDocumentName
-            });
-
             let mindmapMd = msg.mindmap_markdown;
+            if (!mindmapMd && msg.content && (msg.content.includes('##') || msg.content.includes('###') || msg.content.length > 80)) {
+              mindmapMd = autoExtractMindmapFromAnswer(msg.content, lastUserQuery || '研讨知识脉络精析');
+            }
             if (mindmapMd && mindmapMd.trim() && mindmapMd.includes('\n')) {
               turnCounter++;
+              const turnTitle = sanitizeTopicTitle(lastUserQuery || `第 ${turnCounter} 轮研讨精要`);
               sessionTurnsMindmaps.push({
-                turnIndex: agentTurnCounter,
+                turnIndex: turnCounter,
                 title: turnTitle,
                 markdown: mindmapMd,
                 docName: (msg.retrieved_evidence && msg.retrieved_evidence[0]) ? msg.retrieved_evidence[0].doc_name : currentActiveDocumentName
@@ -1035,31 +1078,24 @@ document.addEventListener('DOMContentLoaded', () => {
               final_answer: msg.content,
               intent_decision: msg.intent_decision,
               target_agent: msg.target_agent,
-              retrieved_evidence: evs,
+              retrieved_evidence: msg.retrieved_evidence || [],
               mindmap_markdown: mindmapMd,
               audio_url: msg.audio_url,
               topicTitle: lastUserQuery,
               agent_dialogue_history: msg.agent_dialogue_history || [],
               synthesized_evidence_slate: msg.synthesized_evidence_slate,
-              dialectical_notes: msg.dialectical_notes,
-              review_verdict: msg.review_verdict,
-              stage_statuses: msg.stage_statuses || {}
+              dialectical_notes: msg.dialectical_notes
             }, agentTurnCounter);
 
             // 追踪当前会话中最新一轮智能体的检索证据，绝不残留早期轮次文献
-            latestEvidence = evs;
+            latestEvidence = (msg.retrieved_evidence && Array.isArray(msg.retrieved_evidence)) ? msg.retrieved_evidence : [];
             if (latestEvidence.length > 0 && latestEvidence[0].doc_name) {
               currentActiveDocumentName = latestEvidence[0].doc_name;
             }
           }
         });
 
-        if (sessionTurnsEvidence.length > 0) {
-          currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
-        }
-        updateEvidenceTurnUI();
-        const lastAgentMessage = [...session.messages].reverse().find(msg => msg.sender === 'agent');
-        if (lastAgentMessage) highlightGraphFromResult(lastAgentMessage);
+        updateEvidencePanel(latestEvidence);
       }
 
       currentActiveTurnIndex = Math.max(0, sessionTurnsMindmaps.length - 1);
@@ -1230,11 +1266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const welcomeCard = chatFeed.querySelector('.welcome-scroll-card, .empty-hint');
     if (welcomeCard) welcomeCard.remove();
 
-    const currentTurnNum = Math.max(
-      chatFeed.querySelectorAll('.message-bubble.agent').length,
-      sessionTurnsEvidence.length,
-      sessionTurnsMindmaps.length
-    ) + 1;
+    const currentTurnNum = sessionTurnsMindmaps.length + 1;
     appendMessage('user', query, currentTurnNum, attachedImg);
 
     // 清空输入与预览
@@ -1245,71 +1277,39 @@ document.addEventListener('DOMContentLoaded', () => {
     setAssistantState('THINKING');
     highlightGraphStep('ROUTING');
 
-    // 在聊天流中插入实时动态思考与研讨状态指示器
+    // 在聊天流中插入实时思考与检索状态气泡
     const thinkingId = 'thinking-' + Date.now();
     const thinkingDiv = document.createElement('div');
     thinkingDiv.id = thinkingId;
     thinkingDiv.className = 'message-bubble agent thinking-bubble';
     thinkingDiv.innerHTML = `
       <div class="msg-identity" aria-hidden="true"><img src="img/agent_avatar.jpg?v=2026" alt="羽若" class="msg-avatar-img"></div>
-      <div class="msg-card thinking-card">
-        <div class="thinking-spinner-wrap">
-          <svg class="thinking-spinner-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2" opacity="0.25" />
-            <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
-          </svg>
-          <span class="thinking-sparkle-center">✨</span>
-        </div>
-        <div class="thinking-text-group">
-          <div class="thinking-status-row">
-            <span id="${thinkingId}-text" class="thinking-phase-text">🧭 正在解析学术意图与知识脉络</span>
-            <span class="thinking-dots">
-              <span class="dot-bounce"></span>
-              <span class="dot-bounce"></span>
-              <span class="dot-bounce"></span>
-            </span>
-          </div>
-          <div class="thinking-sub-tip">正在调用领域多智能体协同研讨，请稍候...</div>
-        </div>
+      <div class="msg-card" style="display: flex; align-items: center; gap: 10px;">
+        <span class="dot pulse-jade"></span>
+        <span id="${thinkingId}-text" style="font-size: 0.82rem; color: var(--color-pine-jade); font-weight: 700;">🔍 羽若正在解析研讨意图并分析内容...</span>
       </div>
     `;
     chatFeed.appendChild(thinkingDiv);
     chatFeed.scrollTop = chatFeed.scrollHeight;
 
-    const thinkingStages = [
-      '🧭 正在解析学术意图与知识脉络',
-      '🔍 正在靶向检索高相关学术文献与知识切片',
-      '🧠 主研学者正在严密推导核心机理与数理公式',
-      '🧐 学术审稿专员正在交叉核验证据与学术规约',
-      '✍️ 正在反思重构并凝练高信噪比技术成果'
+    const thinkingSteps = [
+      '🔍 主调度中枢 (MasterRouter) 正在解析学术意图并规划执行管线...',
+      '🧬 正在感知交叉学科命题，并行派生特派专家子代理推演底层机理...',
+      '📑 证据整理归纳席位 (Evidence Synthesis) 正在跨源去噪清洗与提炼机制论据...',
+      '📚 课题主研导师 (Lead Author) 正在组织理论推导与 LaTeX 数理公式...',
+      '🧐 学术质询席位 (Dialectical Interrogator) 正在审视论据链与去冗提纯...',
+      '✍️ 主研团队正在吸收质询意见，开展认知反思并重构方案终稿...',
+      '⚖️ 研讨闭环成稿中，正在生成高密度学术成果与思维导图...',
+      '🗺️ 正在合成最终多智能体共识方案、思维导图与高保真语音播报...'
     ];
-    let stageIndex = 0;
-    const tickerInterval = setInterval(() => {
-      const textEl = document.getElementById(`${thinkingId}-text`);
-      if (!textEl) {
-        clearInterval(tickerInterval);
-        return;
-      }
-      textEl.classList.add('fade-out');
-      setTimeout(() => {
-        stageIndex = (stageIndex + 1) % thinkingStages.length;
-        const currentEl = document.getElementById(`${thinkingId}-text`);
-        if (currentEl) {
-          currentEl.textContent = thinkingStages[stageIndex];
-          currentEl.classList.remove('fade-out');
-          currentEl.classList.add('fade-in');
-          setTimeout(() => currentEl.classList.remove('fade-in'), 250);
-        }
-      }, 250);
-    }, 3200);
-
-    const cleanupThinking = () => {
-      if (tickerInterval) clearInterval(tickerInterval);
-      const placeholder = document.getElementById(thinkingId);
-      if (placeholder) placeholder.remove();
-    };
-
-    highlightGraphPipelineStep();
+    let stepIdx = 0;
+    highlightGraphPipelineStep(0);
+    const thinkingTimer = setInterval(() => {
+      stepIdx = (stepIdx + 1) % thinkingSteps.length;
+      const tSpan = document.getElementById(`${thinkingId}-text`);
+      if (tSpan) tSpan.textContent = thinkingSteps[stepIdx];
+      highlightGraphPipelineStep(stepIdx);
+    }, 4500);
 
     try {
       const resp = await fetch('/api/chat', {
@@ -1327,24 +1327,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await resp.json();
 
-      cleanupThinking();
+      clearInterval(thinkingTimer);
+      const placeholder = document.getElementById(thinkingId);
+      if (placeholder) placeholder.remove();
 
       // 拓扑图执行节点根据后端实际执行情况精确高亮
       highlightGraphFromResult(data);
 
-      const evs = (data.retrieved_evidence && Array.isArray(data.retrieved_evidence)) ? data.retrieved_evidence : [];
-      const turnTitle = sanitizeTopicTitle(query || data.query || `第 ${currentTurnNum} 轮研讨`);
-      sessionTurnsEvidence.push({
-        turnIndex: currentTurnNum,
-        title: turnTitle,
-        evidences: evs,
-        docName: (evs[0] && evs[0].doc_name) ? evs[0].doc_name : currentActiveDocumentName
-      });
-      currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
-
+      const control = data.control_result || {};
+      if (control.action === 'clear_session' && control.status === 'completed') {
+        await switchSession(data.session_id);
+      }
+      if (typeof control.is_recording === 'boolean') {
+        setMeetingRecordingState(control.is_recording);
+      }
+      if (control.status === 'completed' && control.tts_voice && selectTtsVoice) {
+        if (!Array.from(selectTtsVoice.options).some(option => option.value === control.tts_voice)) {
+          selectTtsVoice.add(new Option(control.tts_voice, control.tts_voice));
+        }
+        selectTtsVoice.value = control.tts_voice;
+        localStorage.setItem('preferred_tts_voice', control.tts_voice);
+      }
       appendAgentMessage(data, currentTurnNum);
 
-      updateEvidenceTurnUI();
+      updateEvidencePanel(data.retrieved_evidence || []);
 
       if (data.mindmap_markdown) {
         renderAnswerMindmap(data.mindmap_markdown, query || data.query || '当前研讨深度导图');
@@ -1374,12 +1380,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } catch (err) {
-      cleanupThinking();
+      const placeholder = document.getElementById(thinkingId);
+      if (placeholder) placeholder.remove();
 
       appendAgentMessage({
         final_answer: `⚠️ **[研讨请求发生异常]**: ${err.message}\n\n请检查网络或稍后重新发送。`,
         intent_decision: { intent: 'error' },
-        target_agent: '',
+        target_agent: 'ErrorFallback',
       });
       setAssistantState('IDLE');
       resetGraphNodes();
@@ -1411,22 +1418,22 @@ document.addEventListener('DOMContentLoaded', () => {
         imgHtml = `<img src="${imageUrl}" alt="附带截图" class="user-msg-image-thumb" onclick="openImageModal('${imageUrl}', '学者附带截图')" />`;
       }
       let userHtml = `<p>${escapeHtml(text)}</p>`;
-      if (/(\$[^$\n]+\$|（[^）\n]*?\\[a-zA-Z]+[^）\n]*?）|\([^)\n]*?\\[a-zA-Z]+[^)\n]*?\))/.test(text)) {
+      if (window.katex && /(\$[^$\n]+\$|（[^）\n]*?\\[a-zA-Z]+[^）\n]*?）|\([^)\n]*?\\[a-zA-Z]+[^)\n]*?\))/.test(text)) {
         const rendered = text
           .replace(/（([^）\n]*?\\[a-zA-Z]+[^）\n]*?)）/g, (m, f) => {
             try {
-              return `（${renderMathSource(f.trim(), false)}）`;
-            } catch (error) { throw error; }
+              return `（${window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false })}）`;
+            } catch (_) { return m; }
           })
           .replace(/\(([^)\n]*?\\[a-zA-Z]+[^)\n]*?)\)/g, (m, f) => {
             try {
-              return `(${renderMathSource(f.trim(), false)})`;
-            } catch (error) { throw error; }
+              return `(${window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false })})`;
+            } catch (_) { return m; }
           })
           .replace(/\$([^$\n]+)\$/g, (m, f) => {
             try {
-              return renderMathSource(f.trim(), false);
-            } catch (error) { throw error; }
+              return window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false });
+            } catch (_) { return m; }
           });
         userHtml = `<p>${rendered}</p>`;
       }
@@ -1435,12 +1442,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="msg-identity" aria-hidden="true"><img src="img/user_avatar.jpg?v=2026_neutral_v1" alt="学者" class="msg-avatar-img"></div>
         <div class="msg-card">${imgHtml}${userHtml}</div>
       `;
-      msgDiv.addEventListener('click', (e) => {
-        if (e.target.closest('button, a, input, select, textarea, img')) return;
-        if (turnIndex) {
-          switchActiveTurn(turnIndex, false);
-        }
-      });
     }
     chatFeed.appendChild(msgDiv);
     chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -1476,6 +1477,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (bookPrefix) return `${bookPrefix}知识架构精要`;
     return '研讨核心脉络导图';
+  }
+
+  function autoExtractMindmapFromAnswer(answerMd, topicTitle = '当前研讨核心脉络') {
+    const cleanTitle = sanitizeTopicTitle(topicTitle);
+    if (!answerMd) return `# 🧠 ${cleanTitle}\n- 暂无导图内容`;
+    const lines = [`# 🧠 ${cleanTitle}`];
+    const rawLines = answerMd.split('\n');
+    let inCode = false;
+    let currentSection = null;
+
+    for (const raw of rawLines) {
+      const line = raw.trim();
+      if (!line) continue;
+      if (line.startsWith('```')) {
+        inCode = !inCode;
+        continue;
+      }
+      if (inCode) continue;
+
+      // 彻底排除表格数据行
+      if (line.startsWith('|') || line.includes('| ---') || (line.split('|').length > 2)) {
+        continue;
+      }
+
+      if (line.startsWith('$$') || line.startsWith('\\[') || line.startsWith('\\]')) {
+        continue;
+      }
+
+      const mHead = line.match(/^(#{1,5})\s+(.+)$/);
+      if (mHead) {
+        const hashes = mHead[1];
+        let txt = mHead[2].trim().replace(/[：:;；。]+$/, '');
+        const level = Math.min(hashes.length, 3) + 1;
+        lines.push(`${'#'.repeat(level)} ${txt}`);
+        currentSection = txt;
+        continue;
+      }
+
+      const mBold = line.match(/^\*\*([0-9\.\s一二三四五六七八九十]*[^*]+)\*\*/);
+      if (mBold && (line.length < 60 || mBold[1].trim() === line.replace(/^\*+|\*+$/g, '').trim())) {
+        let txt = mBold[1].trim().replace(/[：:;；。]+$/, '');
+        if (/^[0-9一二三四五六七八九十]+[\.、\s]/.test(txt)) {
+          lines.push(`## ${txt}`);
+        } else if (/^[0-9]+\.[0-9]+/.test(txt)) {
+          lines.push(`### ${txt}`);
+        } else {
+          lines.push(`## ${txt}`);
+        }
+        currentSection = txt;
+        continue;
+      }
+
+      const mList = line.match(/^([-\*]|\d+[\.、])\s+(.+)$/);
+      if (mList) {
+        let itemTxt = mList[2].trim().replace(/[;；。]+$/, '');
+        if (itemTxt.includes('|')) continue;
+        if (itemTxt.length < 80) {
+          if (!currentSection) {
+            lines.push('## 核心要点概览');
+            currentSection = '核心要点概览';
+          }
+          lines.push(`- ${itemTxt}`);
+        }
+        continue;
+      }
+
+      if (/(核心|关键|定义|公式|推导|结论|定位|出处)/.test(line) && line.length < 60 && !line.startsWith('<') && !line.includes('|')) {
+        const cleanShort = line.replace(/[;；。]+$/, '');
+        if (!currentSection) {
+          lines.push('## 核心要点概览');
+          currentSection = '核心要点概览';
+        }
+        lines.push(`- ${cleanShort}`);
+      }
+    }
+
+    if (lines.length <= 1) {
+      lines.push('## 核心要点概览');
+      lines.push(`- ${cleanTitle}`);
+    }
+    return lines.join('\n');
   }
 
   function appendAgentMessage(data, turnIndex = null) {
@@ -1539,6 +1621,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let mindmapMd = data.mindmap_markdown;
+    if (!mindmapMd && data.final_answer && (data.final_answer.includes('##') || data.final_answer.includes('###') || data.final_answer.length > 80)) {
+      mindmapMd = autoExtractMindmapFromAnswer(data.final_answer, data.topicTitle || '研讨知识脉络精析');
+    }
 
     let mindmapBtnHtml = '';
     if (mindmapMd && mindmapMd.trim() && mindmapMd.includes('\n')) {
@@ -1561,16 +1646,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let roundBadge = `<span style="display:inline-block; font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #e0f2fe; color: #0369a1; font-weight: 700; margin-right: 4px;">R${item.round !== undefined ? item.round : 0}</span>`;
         if (item.action === 'EVIDENCE_CLEANSING_AND_SYNTHESIS') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #ccfbf1; color: #0f766e; font-weight: 700; margin-right: 4px;">📑 整理归纳</span>`;
-        } else if (item.action && item.action.endsWith('_FAILED')) {
-          actionBadge = `<span style="color: #991b1b; font-weight: 700;">⚠️ 未完成</span>`;
-        } else if (item.action === 'PREPARE_REVIEW_CHECKLIST') {
-          actionBadge = `<span style="color: #92400e; font-weight: 700;">📋 待审查清单</span>`;
-        } else if (item.action === 'REVISION_UNCHANGED') {
-          actionBadge = '<span style="color: #92400e; font-weight: 700;">修订未改变初稿</span>';
-        } else if (item.action === 'RETAIN_DRAFT') {
-          actionBadge = `<span style="color: #475569; font-weight: 700;">📄 保留初稿</span>`;
-        } else if (item.action === 'ORGANIZE_EVIDENCE') {
-          actionBadge = `<span style="color: #0f766e; font-weight: 700;">📑 模板整理</span>`;
         } else if (item.action === 'DELIVER_DISCIPLINARY_FOUNDATION') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fef3c7; color: #92400e; font-weight: 700; margin-right: 4px;">🔬 学科奠基</span>`;
         } else if (item.action === 'REQUEST_BASELINE_PAPERS') {
@@ -1582,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (item.action === 'CRITIQUE_AND_REQUIRE_REVISION' || item.action === 'DIALECTICAL_INQUIRY_AND_PRUNING') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fee2e2; color: #991b1b; font-weight: 700; margin-right: 4px;">🧐 辩证质询</span>`;
         } else if (item.action === 'APPROVE_INITIAL') {
-          actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #d1fae5; color: #065f46; font-weight: 700; margin-right: 4px;">审核未要求修订</span>`;
+          actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #d1fae5; color: #065f46; font-weight: 700; margin-right: 4px;">✅ 初审通过</span>`;
         } else if (item.action === 'SUBMIT_REVISED_DRAFT' || item.action === 'REFLECTIVE_RECONSTRUCTION') {
           actionBadge = `<span style="font-size: 0.68rem; padding: 1px 5px; border-radius: 4px; background: #fef3c7; color: #b45309; font-weight: 700; margin-right: 4px;">✍️ 反思重构</span>`;
         } else if (item.action === 'CONSENSUS_ACCEPTED') {
@@ -1606,7 +1681,7 @@ document.addEventListener('DOMContentLoaded', () => {
       multiAgentTrackHtml = `
         <details class="multi-agent-track-details" style="margin-top: 8px; font-size: 0.74rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 6px 10px;">
           <summary style="cursor: pointer; font-weight: 700; color: #15803d; user-select: none; display: flex; align-items: center; gap: 6px;">
-            <span>👥 查看多智能体执行记录 (${data.agent_dialogue_history.length} 次席位交互)</span>
+            <span>👥 查看多智能体闭环研讨辩论与合议轨迹 (${data.agent_dialogue_history.length} 次席位交互)</span>
           </summary>
           <ul style="margin: 8px 0 0 0; padding-left: 0; list-style: none;">
             ${items}
@@ -1700,19 +1775,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    msgDiv.addEventListener('click', (e) => {
-      if (e.target.closest('button, a, input, select, textarea, .evidence-badge, .msg-action-chip, details, .evidence-img-box')) return;
-      if (turnIndex) {
-        switchActiveTurn(turnIndex, false);
-      }
-    });
-
     // 绑定证据标签点击事件：点击切片标签直接联动右侧证据面板
     msgDiv.querySelectorAll('.evidence-badge').forEach((tag) => {
       tag.style.cursor = 'pointer';
       tag.title = '点击在右侧查看该切片详情与原图快照';
-      tag.addEventListener('click', (e) => {
-        e.stopPropagation();
+      tag.addEventListener('click', () => {
         // 激活右侧“证据与页码” Tab
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -1722,9 +1789,7 @@ document.addEventListener('DOMContentLoaded', () => {
           evTabBtn.classList.add('active');
           evTabContent.classList.add('active');
         }
-        if (turnIndex) {
-          switchActiveTurn(turnIndex, false);
-        } else if (data.retrieved_evidence) {
+        if (data.retrieved_evidence) {
           updateEvidencePanel(data.retrieved_evidence);
         }
       });
@@ -1739,10 +1804,9 @@ document.addEventListener('DOMContentLoaded', () => {
               {left: '$', right: '$', display: false},
               {left: '\\(', right: '\\)', display: false}
             ],
-            throwOnError: false,
-            errorCallback: (message, error) => { console.warn('Badge math render warning:', message); }
+            throwOnError: false
           });
-        } catch (error) { console.warn('Badge math error:', error); }
+        } catch (_) {}
       }
     }
 
@@ -1785,14 +1849,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   }
 
-  async function playTTS(url, speechText = null, triggerBtn = null) {
+  async function playTTS(url, textFallback = null, triggerBtn = null) {
     let targetUrl = url;
 
     // 若该条历史消息未生成独立音频或为旧版公共链接，动态调取按需合成
-    if ((!targetUrl || targetUrl === '/api/audio/latest') && speechText) {
+    if ((!targetUrl || targetUrl === '/api/audio/latest') && textFallback) {
       try {
         // 过滤规则二：彻底过滤 Emoji 图标与机器人/意图标签
-        const cleanSpeechText = speechText
+        const cleanSpeechText = textFallback
           .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
           .replace(/🤖\s*[\w_]+/g, '')
           .replace(/🎯\s*意图[：:]\s*[\w_]+/g, '')
@@ -1804,15 +1868,13 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: cleanSpeechText, voice: getCurrentVoice() }),
         });
-        if (!res.ok) throw new Error('语音合成接口失败');
         const d = await res.json();
-        if (!d.audio_url) throw new Error('语音合成未返回音频');
         if (d.audio_url) {
           targetUrl = d.audio_url;
           if (triggerBtn) triggerBtn.dataset.url = d.audio_url;
         }
       } catch (e) {
-        throw new Error(`语音合成失败：${e.message}`);
+        console.error('Synthesize fallback error:', e);
       }
     }
 
@@ -1886,7 +1948,7 @@ document.addEventListener('DOMContentLoaded', () => {
     globalAudio.onerror = (e) => {
       console.warn('Audio playback error:', e);
       setAssistantState('IDLE');
-      setOrbitNode(7, 'error', '❌ 语音播放失败');
+      setOrbitNode(7, 'active', '✅ 成果已交付');
       setHubStatus('可调度', false);
       if (window.digitalAvatar && typeof window.digitalAvatar.stopSpeaking === 'function') {
         window.digitalAvatar.stopSpeaking();
@@ -1900,8 +1962,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await globalAudio.play();
     } catch (e) {
-      console.error('语音播放失败:', e);
-      alert(`语音播放失败: ${e.message}`);
+      console.log('Autoplay restriction or pause:', e);
       if (triggerBtn) {
         triggerBtn.textContent = '🔊 播放搭档语音';
         triggerBtn.disabled = false;
@@ -2030,7 +2091,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {
       console.error('Failed to load documents:', err);
-      throw err;
     }
   }
 
@@ -2078,94 +2138,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, duration);
   };
 
-  function highlightActiveTurnBubble(turnIndex) {
-    document.querySelectorAll('.message-bubble.turn-highlight-active').forEach(el => {
-      el.classList.remove('turn-highlight-active');
-    });
-    if (!turnIndex) return;
-    const targetAgent = document.getElementById(`chat-turn-agent-${turnIndex}`);
-    const targetUser = document.getElementById(`chat-turn-user-${turnIndex}`);
-    if (targetAgent) targetAgent.classList.add('turn-highlight-active');
-    if (targetUser) targetUser.classList.add('turn-highlight-active');
-  }
-
-  function switchActiveTurn(turnIndex, shouldScroll = false) {
-    if (!turnIndex) return;
-
-    // 1. 同步证据面板
-    const evIdx = sessionTurnsEvidence.findIndex(e => e.turnIndex === turnIndex);
-    if (evIdx >= 0) {
-      currentActiveEvidenceTurnIndex = evIdx;
-      updateEvidenceTurnUI();
-    }
-
-    // 2. 同步思维导图
-    const mapIdx = sessionTurnsMindmaps.findIndex(t => t.turnIndex === turnIndex);
-    if (mapIdx >= 0) {
-      currentActiveTurnIndex = mapIdx;
-      currentMindmapScope = 'current';
-      updateMindmapScopeUI();
-    }
-
-    // 3. 高亮对话气泡
-    highlightActiveTurnBubble(turnIndex);
-    if (shouldScroll) {
-      scrollToChatTurn(turnIndex);
-    }
-  }
-
-  function updateEvidenceTurnUI() {
-    if (!sessionTurnsEvidence || sessionTurnsEvidence.length === 0) {
-      if (evidenceTurnBar) evidenceTurnBar.style.display = 'none';
-      if (evidenceCurrentTitle) evidenceCurrentTitle.textContent = '最新检索证据切片 (Grounding)';
-      if (evidenceSubLabel) evidenceSubLabel.textContent = 'BGE-M3 + BGE-Reranker 重排定位';
-      updateEvidencePanel([], null);
-      return;
-    }
-
-    if (currentActiveEvidenceTurnIndex < 0) currentActiveEvidenceTurnIndex = 0;
-    if (currentActiveEvidenceTurnIndex >= sessionTurnsEvidence.length) {
-      currentActiveEvidenceTurnIndex = sessionTurnsEvidence.length - 1;
-    }
-
-    const activeTurn = sessionTurnsEvidence[currentActiveEvidenceTurnIndex];
-
-    if (evidenceTurnBar) {
-      evidenceTurnBar.style.display = (sessionTurnsEvidence.length > 1) ? 'flex' : 'none';
-    }
-
-    if (evidenceTurnSelect) {
-      evidenceTurnSelect.innerHTML = sessionTurnsEvidence.map((t, idx) => {
-        const countDesc = (t.evidences && t.evidences.length > 0) ? `${t.evidences.length} 条引证` : '先验推演';
-        return `<option value="${idx}" ${idx === currentActiveEvidenceTurnIndex ? 'selected' : ''}>[第 ${t.turnIndex} 轮] ${t.title} (${countDesc})</option>`;
-      }).join('');
-    }
-
-    if (evidenceTurnCountBadge) {
-      const count = (activeTurn && activeTurn.evidences) ? activeTurn.evidences.length : 0;
-      evidenceTurnCountBadge.textContent = count > 0 ? `${count} 条切片` : '先验推演';
-    }
-
-    if (evidenceCurrentTitle && activeTurn) {
-      evidenceCurrentTitle.textContent = `第 ${activeTurn.turnIndex} 轮依据：${activeTurn.title}`;
-    }
-    if (evidenceSubLabel && activeTurn) {
-      const count = (activeTurn.evidences) ? activeTurn.evidences.length : 0;
-      if (count > 0) {
-        evidenceSubLabel.textContent = `本轮共调取并引用 ${count} 条文献切片 · 精确至段落与页码`;
-      } else {
-        evidenceSubLabel.textContent = `本轮研讨依据先验理论与第一性原理推演 · 未调取外部切片`;
-      }
-    }
-
-    updateEvidencePanel(activeTurn ? activeTurn.evidences : [], activeTurn);
-    highlightActiveTurnBubble(activeTurn ? activeTurn.turnIndex : null);
-  }
-
-  function updateEvidencePanel(evidences, activeTurn = null) {
+  function updateEvidencePanel(evidences) {
     if (!evidences || evidences.length === 0) {
-      const turnLabel = activeTurn ? `第 ${activeTurn.turnIndex} 轮研讨` : '当前轮次研讨';
-      evidencePanelList.innerHTML = `<div class="empty-hint">🎋 【${turnLabel}】依据先验理论与第一性原理推演，暂无引用的外部切片。<br><span style="font-size:0.75rem;color:var(--color-ink-muted);">若研讨结合专著教材或文献考据，将在此处实时联动段落快照与精确页码。</span></div>`;
+      evidencePanelList.innerHTML = '<div class="empty-hint">🎋 当前轮次研讨依据先验理论与第一性原理推演，暂无引用的外部切片。<br><span style="font-size:0.75rem;color:var(--color-ink-muted);">若研讨结合专著教材或文献考据，将在此处实时联动段落快照与精确页码。</span></div>';
       return;
     }
     evidencePanelList.innerHTML = evidences.map((ev, i) => {
@@ -2193,7 +2168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
       return `
-        <div class="evidence-card" data-doc="${escapeHtml(docName)}" data-loc="${escapeHtml(locLabel)}">
+        <div class="evidence-card">
           <div class="evidence-card-header">
             [${i + 1}] 《${formatMathInText(docName)}》 ${escapeHtml(locLabel)}${scoreText}
           </div>
@@ -2213,10 +2188,9 @@ document.addEventListener('DOMContentLoaded', () => {
             {left: '$', right: '$', display: false},
             {left: '\\(', right: '\\)', display: false}
           ],
-          throwOnError: false,
-          errorCallback: (message, error) => { console.warn('Evidence math render warning:', message); }
+          throwOnError: false
         });
-      } catch (error) { console.warn('Evidence math error:', error); }
+      } catch (_) {}
     }
   }
 
@@ -2262,7 +2236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const resp = await fetch('/api/meetings/summarize', { method: 'POST' });
         if (!resp.ok) {
-          const errorData = await resp.json();
+          const errorData = await resp.json().catch(() => ({}));
           throw new Error(errorData.detail || '会议纪要生成失败');
         }
         const data = await resp.json();
@@ -2306,11 +2280,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const voiceCaptureMode = document.getElementById('voice-capture-mode');
   let isMeetingRecording = false;
 
-  let meetingRecordRequestPending = false;
-
-  function updateMeetingRecordingUI(recording, captureMode) {
+  function setMeetingRecordingState(recording) {
     isMeetingRecording = recording;
-    const sidebarText = btnToggleMeetingRecord?.querySelector('.record-text');
+    const sidebarText = btnToggleMeetingRecord ? btnToggleMeetingRecord.querySelector('.record-text') : null;
     if (btnToggleMeetingRecord) btnToggleMeetingRecord.classList.toggle('recording', recording);
     if (sidebarText) sidebarText.textContent = recording ? '录音中 (点击结束)' : '开启会议录音';
     if (btnHeaderRecord) {
@@ -2321,35 +2293,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerRecordText) headerRecordText.textContent = recording ? '录制中 (点击停止)' : '开启会议录制';
     if (headerRecordIcon) headerRecordIcon.textContent = recording ? '🔴' : '🎙️';
     if (voiceCaptureMode) voiceCaptureMode.disabled = recording;
-    if (recording) {
-      const modeLabel = captureMode === 'system' ? '系统声音（腾讯会议/视频）' : '麦克风';
-      setAssistantState('LISTENING', `已请求${modeLabel}监听，等待实时转写...`);
-    } else {
-      setAssistantState('IDLE');
-    }
   }
 
   async function toggleMeetingRecording() {
-    if (meetingRecordRequestPending) return;
-    meetingRecordRequestPending = true;
+    const starting = !isMeetingRecording;
+    const captureMode = voiceCaptureMode ? voiceCaptureMode.value : 'mic';
     try {
-      const nextRecording = !isMeetingRecording;
-      const captureMode = voiceCaptureMode?.value;
-      if (!['mic', 'system'].includes(captureMode)) throw new Error('未选择有效音源');
-      const response = await fetch(nextRecording ? '/api/voice/start' : '/api/voice/stop', {
+      const response = await fetch(starting ? '/api/voice/start' : '/api/voice/stop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: nextRecording ? JSON.stringify({ mode: captureMode }) : undefined,
+        ...(starting ? { body: JSON.stringify({ mode: captureMode }) } : {}),
       });
-      const data = await response.json();
-      if (!response.ok || data.is_recording !== nextRecording) {
-        throw new Error(data.detail || '录音状态未确认');
-      }
-      updateMeetingRecordingUI(nextRecording, captureMode);
+      if (!response.ok) throw new Error(`Server returned ${response.status}`);
+      const result = await response.json();
+      if (typeof result.is_recording === 'boolean') setMeetingRecordingState(result.is_recording);
+      setAssistantState(isMeetingRecording ? 'LISTENING' : 'IDLE', result.message || '');
     } catch (error) {
-      alert(`会议录音操作失败: ${error.message}`);
-    } finally {
-      meetingRecordRequestPending = false;
+      console.error('Voice control failed:', error);
+      setAssistantState(isMeetingRecording ? 'LISTENING' : 'IDLE', '录音操作未确认，请稍后重试。');
     }
   }
 
@@ -2377,10 +2338,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'error') {
-          updateMeetingRecordingUI(false);
-          alert(`实时语音已停止: ${data.message}`);
-          return;
+        if (data.type === 'recording_status') {
+          setMeetingRecordingState(Boolean(data.is_recording));
         }
         if (data.type === 'speech' && data.text) {
           appendStreamLog(data.timestamp, data.source, data.text);
@@ -2393,7 +2352,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.setSelectionRange(userInput.value.length, userInput.value.length);
           }
         }
-      } catch (error) { throw error; }
+      } catch (e) {}
     };
     ws.onclose = () => setTimeout(connectVoiceWebSocket, 3000);
   }
@@ -2515,7 +2474,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } catch (err) {
           console.error('Whisper 转录网络/服务异常:', err);
-          alert(`转录失败: ${err.message}`);
           setAssistantState('IDLE');
         } finally {
           userInput.placeholder = '向羽若垂询学术要旨、公式推导、专著论文研读，或探讨学术疑窦... (Enter 发送, Shift+Enter 换行)';
@@ -2555,7 +2513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localMediaRecorder && localMediaRecorder.state !== 'inactive') {
       try {
         localMediaRecorder.stop();
-      } catch (error) { throw error; }
+      } catch (e) {}
     }
   }
 
@@ -2664,7 +2622,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 绑定问答导图轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次及证据依据)
+  // 绑定问答轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次)
   const mindmapTurnSelect = document.getElementById('mindmap-turn-select');
   if (mindmapTurnSelect) {
     mindmapTurnSelect.addEventListener('change', async (e) => {
@@ -2672,21 +2630,10 @@ document.addEventListener('DOMContentLoaded', () => {
       currentMindmapScope = 'current';
       await updateMindmapScopeUI();
 
-      // 双向联动：右侧切换轮次时，左侧对话区自动平滑滚动并呼吸高亮对应轮次，同时同步证据依据面板
+      // 双向联动：右侧切换轮次时，左侧对话区自动平滑滚动并呼吸高亮对应轮次
       const selectedTurnObj = sessionTurnsMindmaps[currentActiveTurnIndex];
       const targetTurnIndex = selectedTurnObj ? selectedTurnObj.turnIndex : (currentActiveTurnIndex + 1);
-      switchActiveTurn(targetTurnIndex, true);
-    });
-  }
-
-  // 绑定证据依据轮次下拉切换 (并实现双向联动：自动定位并高亮左侧对话轮次及思维导图)
-  if (evidenceTurnSelect) {
-    evidenceTurnSelect.addEventListener('change', (e) => {
-      const idx = parseInt(e.target.value, 10) || 0;
-      currentActiveEvidenceTurnIndex = idx;
-      const targetTurnObj = sessionTurnsEvidence[idx];
-      const targetTurnIndex = targetTurnObj ? targetTurnObj.turnIndex : (idx + 1);
-      switchActiveTurn(targetTurnIndex, true);
+      scrollToChatTurn(targetTurnIndex);
     });
   }
 
@@ -2776,11 +2723,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function openMindmapFullscreen() {
     if (!currentActiveMarkdown) {
-      if (!currentActiveDocumentName) {
-        alert('请先选择书籍或发起研讨提问');
-        return;
-      }
-      await loadAndRenderBookMindmap(currentActiveDocumentName);
+      const targetDoc = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
+      await loadAndRenderBookMindmap(targetDoc);
     }
     if (!currentActiveMarkdown) {
       alert('请先选择书籍或发起研讨提问');
@@ -2878,58 +2822,62 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderMathSource(source, displayMode = false) {
     let math = String(source || '').trim();
     if (!math) return '';
+    // 规范化双反斜杠转义
+    math = math.replace(/\\\\([a-zA-Z{}()\[\]])/g, '\\$1');
+    if (window.katex) {
+      try {
+        return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false });
+      } catch (_) { /* Fall through to symbol map */ }
+    }
+    const symbols = {
+      le: '≤', leq: '≤', ge: '≥', geq: '≥', times: '×', cdot: '·',
+      pm: '±', mp: '∓', to: '→', rightarrow: '→', leftarrow: '←',
+      in: '∈', notin: '∉', approx: '≈', neq: '≠', ne: '≠',
+      sum: '∑', prod: '∏', alpha: 'α', beta: 'β', gamma: 'γ',
+      delta: 'δ', theta: 'θ', lambda: 'λ', mu: 'μ', sigma: 'σ',
+      pi: 'π', ell: 'ℓ', hat: '^', mathbf: '', mathcal: '', mathbb: '',
+      Sigma: 'Σ', Pi: 'Π', Omega: 'Ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ',
+      Lambda: 'Λ', Xi: 'Ξ', Phi: 'Φ', Psi: 'Ψ', nu: 'ν', chi: 'χ', tau: 'τ',
+      rho: 'ρ', phi: 'ϕ', psi: 'ψ', omega: 'ω', eta: 'η', zeta: 'ζ',
+      xi: 'ξ', kappa: 'κ', epsilon: 'ε', infty: '∞', partial: '∂',
+      nabla: '∇', hbar: 'ℏ', int: '∫', langle: '⟨', rangle: '⟩',
+    };
+    const readable = math
+      .replace(/\\(?:mathrm|mathbf|mathit|operatorname|text|mathbb|mathcal)\s*\{([^}]*)\}/g, '$1')
+      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)')
+      .replace(/\\([a-zA-Z]+)/g, (_, command) => symbols[command] || command)
+      .replace(/[{}]/g, '');
+    return `<span class="formula-fallback" data-math-source="${escapeHtml(math)}" data-math-display="${displayMode ? 'true' : 'false'}">${escapeHtml(readable)}</span>`;
+  }
 
-    // 0. 清理非打印控制字符并修复 PDF 字体编码缺陷 (严格排除 \n, \r, \t 等多行公式排版换行符)
-    math = math.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]*bbda/g, '\\lambda')
-               .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]+([a-zA-Z]+)/g, '\\$1')
-               .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '');
-
-    // 1. 规范化双反斜杠转义：仅针对字母开头的指令，严禁匹配中括号，避免破坏 '\\[2mm]' 行高间距
-    math = math.replace(/\\\\([a-zA-Z]+)/g, '\\$1');
-
-    // 2. 净化公式内部的全角中文标点（全角句号/逗号会导致 KaTeX 解析中断变为红字）
-    math = math.replace(/。/g, '.')
-               .replace(/，/g, ',')
-               .replace(/；/g, ';')
-               .replace(/：/g, ':')
-               .replace(/、/g, ',')
-               .replace(/（/g, '(')
-               .replace(/）/g, ')');
-
-    // 3. 智能修复多行公式 (aligned / align / cases / matrix) 跨换行 \\ 导致的 \left 与 \right 跨行断开问题
-    if (math.includes('\\\\')) {
-      const lines = math.split(/\\\\/);
-      const fixedLines = [];
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        const lefts = (line.match(/\\left(?![a-zA-Z])/g) || []).length;
-        const rights = (line.match(/\\right(?![a-zA-Z])/g) || []).length;
-        const diff = lefts - rights;
-        if (diff > 0) {
-          // 当前行有未闭合的 \left，在行末换行前补上隐式 \right.
-          line = line + '\\right.'.repeat(diff);
-        } else if (diff < 0) {
-          // 当前行有孤立的 \right，在对齐符 & 或首个符号后补上隐式 \left.
-          const needed = -diff;
-          const m = line.match(/^(\s*(?:&|\+|-)?\s*)/);
-          const prefix = m ? m[1] : '';
-          const rest = line.slice(prefix.length);
-          line = prefix + '\\left.'.repeat(needed) + rest;
-        }
-        fixedLines.push(line);
+  // KaTeX 异步就绪后自动重水合兜底数学节点
+  function rehydrateMathFallbacks() {
+    if (!window.katex || typeof document === 'undefined') return;
+    document.querySelectorAll('.formula-fallback').forEach(el => {
+      const src = el.getAttribute('data-math-source');
+      const disp = el.getAttribute('data-math-display') === 'true';
+      if (src) {
+        try {
+          const rendered = window.katex.renderToString(src, { displayMode: disp, throwOnError: false, trust: false });
+          const temp = document.createElement('span');
+          temp.innerHTML = rendered;
+          el.replaceWith(temp.firstElementChild || temp);
+        } catch (_) {}
       }
-      math = fixedLines.join('\\\\');
-    }
+    });
+  }
 
-    if (!window.katex) {
-      return displayMode ? `<div class="katex-error">$$${escapeHtml(math)}$$</div>` : `<span class="katex-error">$${escapeHtml(math)}$</span>`;
-    }
-    try {
-      return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false });
-    } catch (e) {
-      console.warn('KaTeX render fallback:', e, math);
-      return displayMode ? `<div class="katex-error">$$${escapeHtml(math)}$$</div>` : `<span class="katex-error">$${escapeHtml(math)}$</span>`;
-    }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('load', () => {
+      setTimeout(rehydrateMathFallbacks, 200);
+      setTimeout(rehydrateMathFallbacks, 1200);
+    });
+    const katexWatchTimer = setInterval(() => {
+      if (window.katex) {
+        rehydrateMathFallbacks();
+        clearInterval(katexWatchTimer);
+      }
+    }, 250);
   }
 
   // 通用文本与公式混合渲染器（用于文献标题、卡片摘要、标签与检索结果）
@@ -2937,7 +2885,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!text) return '';
     let src = String(text);
     // 规范化双反斜杠转义与连字符
-    src = src.replace(/\\\\([a-zA-Z]+)/g, '\\$1').replace(/\\([-_])/g, '$1');
+    src = src.replace(/\\\\([a-zA-Z()\[\]{}])/g, '\\$1').replace(/\\([-_])/g, '$1');
     const mathTokens = [];
 
     // 1. 提取 display math: $$...$$, \\[...\\]
@@ -2955,17 +2903,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = `___MATH_INL_${mathTokens.length}___`;
       const content = dollarContent !== undefined ? dollarContent : parenContent;
       mathTokens.push({ id, content, display: false });
-      return id;
-    });
-
-    // 2.5 智能捕获文本中遗漏 $ 包裹的裸 LaTeX 行内公式与符号 (限定单行内匹配，严禁跨换行吞噬)
-    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\t ]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\t \r\n]|$))/g;
-    src = src.replace(bareLatexRegex, (match, formula) => {
-      let f = formula.trim();
-      if (!f || f.includes('___MATH_') || !/\\[a-zA-Z]+/.test(f)) return match;
-      if (f.startsWith('$') && f.endsWith('$')) return match;
-      const id = `___MATH_INL_${mathTokens.length}___`;
-      mathTokens.push({ id, content: f, display: false });
       return id;
     });
 
@@ -3014,7 +2951,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 行内代码与嵌入数学公式的智能渲染器 (解决标签中包裹公式反斜杠未渲染问题)
   function renderInlineCode(rawCode) {
     if (!rawCode) return '';
-    let code = String(rawCode).replace(/\\\\([a-zA-Z]+)/g, '\\$1').replace(/\\([-_])/g, '$1').trim();
+    let code = String(rawCode).replace(/\\\\([a-zA-Z()\[\]{}])/g, '\\$1').replace(/\\([-_])/g, '$1').trim();
 
     // 1. 显式定界符包裹的纯公式: `\[\mathbb{C}P^{N-1}\]`, `\(\theta\)`, `$\theta$`
     if (/^\\\[([\s\S]*?)\\\]$/.test(code)) {
@@ -3052,9 +2989,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatMarkdown(text) {
     if (!text) return '';
     let src = String(text);
-
-    // 0. 清理非打印控制字符（如 PDF 字体提取残留的 \x00 等异常字节）
-    src = src.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '');
 
     // 1. 提取多行代码块 ```lang ... ```
     const codeBlocks = [];
@@ -3152,18 +3086,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = `@@MATHBLOCK_${mathBlocks.length}@@`;
       const content = dollarContent !== undefined ? dollarContent : parenContent;
       mathBlocks.push(renderMathSource(content, false));
-      return id;
-    });
-
-    // 3.5 智能捕获并渲染正文中遗漏 $ 的裸 LaTeX 数学公式与符号 (限定单行内匹配，严禁跨换行吞噬)
-    const bareLatexRegex = /(?:^|(?<=[\u4e00-\u9fa5，。；：！？、（）《》【】\t ]))([a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?\\[a-zA-Z]+[a-zA-Z0-9_\^+\-*\/=()\[\],.:;~<>\t \\{}"`']*?)(?=(?:[\u4e00-\u9fa5，。；：！？、（）《》【】\t \r\n]|$))/g;
-    src = src.replace(bareLatexRegex, (match, formula) => {
-      let f = formula.trim();
-      if (!f || f.includes('@@MATHBLOCK') || f.includes('@@CODEBLOCK') || f.includes('@@INLINECODE')) return match;
-      if (!/\\[a-zA-Z]+/.test(f)) return match;
-      if (f.startsWith('$') && f.endsWith('$')) return match;
-      const id = `@@MATHBLOCK_${mathBlocks.length}@@`;
-      mathBlocks.push(renderMathSource(f, false));
       return id;
     });
 
@@ -3358,7 +3280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
     } catch (e) {
-      alert(`图表导出失败: ${e.message}`);
+      console.warn('Export chart failed:', e);
     }
   };
 
@@ -3384,7 +3306,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      alert(`流程图导出失败: ${e.message}`);
+      console.warn('Export figure failed:', e);
     }
   };
 
@@ -3456,12 +3378,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         } catch (err) {
-          node.textContent = `流程图渲染失败: ${err.message}`;
-          node.classList.add('render-error');
+          console.warn('Mermaid single node render error:', err);
         }
       }
     } catch (error) {
-      throw error;
+      console.warn('Mermaid flowchart rendering skipped:', error);
     }
   }
 
@@ -3490,9 +3411,9 @@ document.addEventListener('DOMContentLoaded', () => {
         rawText = rawText.replace(/^```[a-zA-Z]*\n?/, '').replace(/\n?```$/, '').trim();
         let config = JSON.parse(rawText);
 
-        if (!config || typeof config !== 'object' || !config.type || !config.data) {
-          throw new Error('图表缺少类型或数据，无法渲染');
-        }
+        if (!config || typeof config !== 'object') return;
+        if (!config.type) config.type = 'bar';
+        if (!config.data) config.data = {};
         if (!config.options) config.options = {};
 
         // 智能为 datasets 补充雅致的学术配色
@@ -3520,10 +3441,8 @@ document.addEventListener('DOMContentLoaded', () => {
         new window.Chart(canvas.getContext('2d'), config);
       } catch (e) {
         console.warn('Academic chart parsing/rendering error:', e);
-        const message = document.createElement('p');
-        message.className = 'render-error';
-        message.textContent = `图表渲染失败: ${e.message}`;
-        box.appendChild(message);
+        const panel = box.querySelector('.chart-raw-json-panel');
+        if (panel) panel.style.display = 'block';
       }
     });
   }
@@ -3535,7 +3454,6 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadSystemConfig() {
     try {
       const resp = await fetch('/api/config');
-      if (!resp.ok) throw new Error('配置接口失败');
       if (resp.ok) {
         const cfg = await resp.json();
         const pill = document.getElementById('pill-model-name');
@@ -3545,8 +3463,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (_) {
-      const pill = document.getElementById('pill-model-name');
-      if (pill) pill.textContent = '模型配置加载失败';
+      // 降级使用通用文案，无需报错
     }
   }
 

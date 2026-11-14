@@ -1,9 +1,9 @@
 """TianGong Academic Radar Daily Sync & Persistent Snapshot Engine.
 
 Ensures:
-1. Whenever backend starts up (even after several days offline), immediately checks and refreshes today's latest papers.
-2. If running 24/7, continuously auto-syncs every 6 hours and especially at arXiv daily publication window (08:30-09:30 AM Beijing Time).
-3. Persists local JSON snapshots to disk (data/radar_cache/), enabling instant offline/zero-latency startup.
+1. Keeps local JSON snapshots for fast offline reads.
+2. Refreshes stale snapshots on the six-hour background schedule; foreground Radar requests fetch on demand.
+3. Yields to active user searches and stops the current sweep while the arXiv circuit breaker is open.
 """
 
 from __future__ import annotations
@@ -59,7 +59,7 @@ class RadarSyncEngine:
                     data = json.load(f)
                     return data
             except Exception as e:
-                raise RuntimeError(f"读取雷达快照失败: {e}") from e
+                logger.warning(f"读取雷达本地快照失败 ({cache_f}): {e}")
         return None
 
     def save_snapshot(self, major: str, sub_key: str, data: Dict[str, Any]):
@@ -69,7 +69,11 @@ class RadarSyncEngine:
             with open(cache_f, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
         except Exception as e:
-            raise RuntimeError(f"写入雷达快照失败: {e}") from e
+            logger.warning(f"写入雷达快照失败 ({cache_f}): {e}")
+
+    def _cooldown_remaining(self) -> float:
+        checker = getattr(self.paper_searcher, "arxiv_cooldown_remaining", None)
+        return float(checker()) if callable(checker) else 0.0
 
     def sync_core_majors_now(self):
         """执行一次全量核心大类与重点子学科同步 (具备智能新鲜度检测与合规防限流机制)"""
@@ -79,9 +83,12 @@ class RadarSyncEngine:
         for major in CORE_MAJORS:
             if self._stop_event.is_set():
                 break
+            if self._cooldown_remaining() > 0:
+                logger.info("[天工雷达] arXiv 熔断期内，暂停剩余学科同步，等待下一调度周期")
+                break
 
             # 避让检测：若检测到前台用户在活跃检索，后台同步主动挂起让行
-            while self.paper_searcher.is_user_active(30.0) and not self._stop_event.is_set():
+            while getattr(self.paper_searcher, "is_user_active", lambda w=30.0: False)(30.0) and not self._stop_event.is_set():
                 logger.info("[天工雷达] 检测到前台用户正在检索交互，后台同步主动礼让避让 15 秒...")
                 time.sleep(15)
 
@@ -105,8 +112,11 @@ class RadarSyncEngine:
                 for sub in CORE_SUB_CATEGORIES.get(major, []):
                     if self._stop_event.is_set():
                         break
+                    if self._cooldown_remaining() > 0:
+                        logger.info("[天工雷达] arXiv 熔断期内，暂停剩余子学科同步，等待下一调度周期")
+                        break
 
-                    while self.paper_searcher.is_user_active(30.0) and not self._stop_event.is_set():
+                    while getattr(self.paper_searcher, "is_user_active", lambda w=30.0: False)(30.0) and not self._stop_event.is_set():
                         logger.info("[天工雷达] 检测到前台用户正在检索交互，后台同步主动礼让避让 15 秒...")
                         time.sleep(15)
 
@@ -124,37 +134,13 @@ class RadarSyncEngine:
                             self.save_snapshot(major, sub, sub_res)
                         time.sleep(4.0)  # 严格遵循 arXiv 合规间隔
             except Exception as e:
-                logger.warning(f"[天工雷达] 学科 [{major}] 检索同步暂遇网络波动: {e}，跳过并继续后续学科")
+                logger.warning(f"[天工雷达] 学科 [{major}] 同步受阻: {e}")
 
         self._last_sync_timestamp = time.time()
         logger.info("[天工雷达] 每日文献同步完成，本地快照已更新完毕")
 
     def _background_loop(self):
-        """24小时常驻轮询调度器：无论常驻还是隔几天启动，都自动保持最新"""
-        # 1. 启动即检查：如果从没同步过或本地快照已超过 6 小时，延后 30 秒热同步一次（给系统初始化与前台访问让路）
-        now = time.time()
-        need_immediate_sync = False
-        check_cache = self.get_cache_file("PHYSICS", "all")
-        if not check_cache.exists():
-            need_immediate_sync = True
-        else:
-            mtime = check_cache.stat().st_mtime
-            if now - mtime > 6 * 3600:  # 超过6小时
-                need_immediate_sync = True
-
-        if need_immediate_sync:
-            # 延时 30 秒，确保后端所有进程完全就绪，且优先让前台用户完成首次访问
-            for _ in range(6):
-                if self._stop_event.is_set():
-                    break
-                time.sleep(5)
-            if not self._stop_event.is_set():
-                try:
-                    self.sync_core_majors_now()
-                except Exception as e:
-                    logger.warning(f"[天工雷达] 后台首次同步异常: {e}")
-
-        # 2. 常驻循环：每 6 小时巡检一次
+        """Refresh stale snapshots periodically; foreground Radar browsing fetches on demand."""
         sync_interval_seconds = 6 * 3600
         while not self._stop_event.is_set():
             # 采用 10 秒递进检测，便于优雅退出
@@ -164,10 +150,7 @@ class RadarSyncEngine:
                 time.sleep(10)
 
             if not self._stop_event.is_set():
-                try:
-                    self.sync_core_majors_now()
-                except Exception as e:
-                    logger.warning(f"[天工雷达] 后台定时巡检同步异常: {e}")
+                self.sync_core_majors_now()
 
     def start_scheduler(self):
         """启动后台自动更新线程"""

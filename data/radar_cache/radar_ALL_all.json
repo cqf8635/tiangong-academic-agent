@@ -1,381 +1,581 @@
 {
   "query_expression": "(cat:cs* OR cat:physics* OR cat:astro-ph* OR cat:cond-mat* OR cat:quant-ph* OR cat:math* OR cat:stat* OR cat:eess* OR cat:q-bio* OR cat:q-fin* OR cat:econ*)",
   "total_fetched": 25,
-  "total_results": 2881463,
+  "total_results": 2885882,
   "papers": [
     {
-      "paper_id": "2611.09894v1",
-      "title": "Video-Coder: Reinforcing Agentic Coding for Video Generation",
+      "paper_id": "2611.14519v1",
+      "title": "Medical Image Segmentation: Foundation Model Adaptation versus Task-Specific Training",
       "authors": [
-        "Chaoyang Wang",
-        "Sicheng Gao",
-        "Junan Hu",
-        "Kunyang Li",
-        "Dongyang Chen"
+        "Emre Kutlusan",
+        "Yongmin Li"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:59:57Z",
-      "summary": "Recent years have witnessed remarkable progress in video generation in terms of visual quality and temporal consistency. However, generating videos with precise spatial structure, coherent motion dynamics, and controllable scene composition remains challenging. In this paper, we introduce Video-Coder, the first attempt to train a code-driven video generation agent, which autonomously writes and executes code to construct a dynamic 3D scene (Draft Video) that provides structure and motion signals to downstream video generators. To support this paradigm, we design a dedicated data pipeline and curate two high-quality datasets, Video-Coder-SFT-6k and Video-Coder-RL-2k, which contain diverse prompts and ground-truth reference videos. We further develop the Video- Coder Harness, a unified interactive environment integrating code execution, 3D scene rendering, and execution feedback for agent training and inference. We then train Video-Coder with SFT fol- lowed by harness-native agentic reinforcement learning with dual reward feedback, which combines execution-based and video-based rewards. Additionally, we design an annealing training strategy that gradually reduces the execution reward over time, allowing the model to rely more on the video reward in the later training stages. Experiments show that Video-Coder achieves significant gains, improving Minimax-H3 by approximately 7 points on PhyGenBench and 24 points on VBench-2.0. We hope this work can serve as an open foundation for coding agents in video generation, and we fully open-source our data, models, and code",
-      "pdf_url": "https://arxiv.org/pdf/2611.09894v1.pdf",
+      "published_at": "2026-11-10T18:59:54Z",
+      "summary": "Foundation models pretrained on large natural-image collections are increasingly adapted for medical image segmentation, in the expectation that they will replace models trained for each task. Most comparisons, however, use data from the training distribution and a single task-specific baseline whose configuration is rarely justified, and therefore provide limited evidence of performance at new clinical sites. It also remains unclear how much of a foundation model must be adapted, and what determines this. We adapted a foundation model, DINOv2, with strategies ranging from tuning only its bias terms to full fine-tuning, and compared it with U-Nets and ResU-Nets trained from scratch. Experiments covered colonoscopy, breast ultrasound and dermoscopy, with testing on held-out data from the training source and on independent datasets from other institutions. The adapted foundation model generalised better on every external dataset. Within the training distribution, the task-specific models remained competitive when training data were abundant, and delineated boundaries more precisely, while the foundation model more often missed small lesions. Only a small fraction of the foundation model required adaptation, and the capacity needed was determined by the imaging domain rather than by the adaptation method. A widely used polyp test set was also found to duplicate images from another benchmark. Foundation-model adaptation is therefore warranted where models must work across sites, with capacity selected on the target domain.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14519v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.CV",
       "categories": [
-        "cs.CV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))"
-      ],
-      "comment": "Project Page:https://cywang735.github.io/Video-Coder/ Code: https://github.com/CYWang735/Video-Coder",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09893v1",
-      "title": "Challenges for minimal warm inflation in the Standard Model and beyond",
-      "authors": [
-        "Anish Ghoshal",
-        "Alessandro Strumia"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:59:55Z",
-      "summary": "A minimal realisation of warm inflation, even within the Standard Model, assumes that the inflaton $φ$ couples via the effective operator $φ\\, G\\tilde G$. We show that the SM solutions are in tension with the plasma calculation (as each sphaleron transition releases an energy much larger than the temperature) and with the assumed effective operator description. Embedding $φ$ as the Goldstone boson of a renormalizable Peccei-Quinn theory requires an anomaly coefficient $\\gtrsim100$, implying a Landau pole for QCD. These tensions are relaxed for more strongly coupled dark gauge sectors.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09893v1.pdf",
-      "source": "arxiv",
-      "primary_category": "hep-ph",
-      "categories": [
-        "hep-ph",
-        "astro-ph.CO"
-      ],
-      "category_names_zh": [
-        "hep-ph (高能物理 - 唯象学)",
-        "astro-ph.CO (宇宙学与河外天体物理)"
-      ],
-      "comment": "14 pages, 1 figure. Webinar presentation: https://youtu.be/wa007nQ_-wM",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09892v1",
-      "title": "On Agentic Manipulation Policies",
-      "authors": [
-        "Chen Chen",
-        "Omid Bagherieh",
-        "Naveen Nikamanth Appiah Balaji",
-        "Jesse T. Gonzalez",
-        "Negin Heravi"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:59:34Z",
-      "summary": "Recent work on robot manipulation has focused on specialist policies trained on demonstrations. We show that generalist AI models can control manipulators more reliably than specialist policies such as vision-language-action models (VLAs) and world-action models (WAMs). We systematically analyze agentic manipulation policies (AMPs), in which a generalist AI model commands the manipulator directly, adapting its actions as the task unfolds. We present AMP1, a reference harness that runs unchanged across single-arm, bimanual, and mobile manipulation. AMP1 achieves state-of-the-art results on the RoboLab-120 and CaP-Gym benchmarks, with no demonstrations or task-specific training. On RoboLab-120, AMP1 reaches an 85.6\\% success rate zero-shot, compared to 49.2\\% and 42.9\\% for leading VLA and WAM policies. The agent succeeds zero-shot in 104 of 108 real-world trials spanning twelve tasks and three robot instances, reducing failure rates by 20x and 15x relative to strong VLA and WAM baselines. The basic harness supplies no grasping, pushing, or placing skills; the agent develops its own strategies, such as searching for hidden objects, using objects as tools, and calibrating its cameras. With the addition of a persistent memory store, the agent can also learn from experience: an augmented harness with a memory representation that is carried across episodes lowers the failure rate on RoboDojo bimanual manipulation tasks by 4.6x relative to zero-shot deployment. Our analysis suggests that AMPs are substantially more general and robust than specialist manipulation policies, providing a promising foundation for robot manipulation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09892v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO",
-        "cs.AI",
         "cs.CV",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "cs.RO (机器人学与具身智能)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": "Videos and code available at: https://apple-aiml-research.github.io/ml-amp/",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09891v1",
-      "title": "CPU-ARC: Agentic Reasoning Caching for on-CPU Reasoning Reuse",
-      "authors": [
-        "Peter Belcak",
-        "Greg Heinrich",
-        "Saurav Muralidharan",
-        "Shizhe Diao",
-        "Pavlo Molchanov"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:58:50Z",
-      "summary": "Large language models reinvent the wheel all the time. They conflate task-solving with the execution of the solutions, which forces them to solve every problem from scratch. We show that once a task has been reasoned through, the application of its solution to a new problem instance can be done very efficiently and with little involvement from language models. We introduce agentic reasoning caching, a method for constructing robust CPU-executable agentic reasoning caches (ARCs) from LLM reasoning traces. ARCs show on-par performance with frontier LLMs across a range of difficult mathematical and scientific tasks, are fully explainable, continually trainable, robust to input perturbations, and 16-291x cheaper to invoke than the source model.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09891v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
         "cs.AI"
       ],
       "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
         "cs.AI (通用人工智能 (AI))"
       ],
-      "comment": "Tech report. 28 pages, 9 figures, 11 tables",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09890v1",
-      "title": "Global Two-Sided Estimates for Time-Fractional Diffusion Kernels on Hyperbolic Space",
+      "paper_id": "2611.14518v1",
+      "title": "Toward Foundation Detection Models via Example-Based Grounding in EM-DETR",
       "authors": [
-        "Vicente Vergara"
+        "Sheethal Bhat",
+        "Bogdan Georgescu",
+        "Awais Mansoor",
+        "Florin C. Ghesu",
+        "Sasa Grbic"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:58:47Z",
-      "summary": "We study time-fractional diffusion on real hyperbolic space $\\mathbb H^n$, $n\\ge2$, with Caputo order $0<α<1$. We establish global two-sided pointwise estimates for the homogeneous fundamental kernel $Z_{\\mathbb H}(t,r)$ and the inhomogeneous (Duhamel) kernel $Y_{\\mathbb H}(t,r)$, uniformly over all $t>0$ and positive geodesic distances $r$. By combining inverse-stable subordination with global bounds for the hyperbolic heat kernel, we distinguish a short-time local regime, a large-time interior region, and an exterior region governed by a saddle-point problem with parameter $r/t$. Both kernels have the same exterior exponential rate, while their amplitudes are related by an explicit saddle-point factor. The estimates are uniformly comparable on the interfaces between regimes, recover the Euclidean time-fractional singularities at small scales, and identify the influence of hyperbolic geometry on large-scale decay. The kernel $Z_{\\mathbb H}$ also describes the one-time marginal density of hyperbolic Brownian motion under an independent inverse stable clock. This representation yields a radial limit law, moment and quantile asymptotics, and a change in the mean square displacement from order $t^α$ at small times to order $t^{2α}$ at large times.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09890v1.pdf",
+      "published_at": "2026-11-10T18:59:17Z",
+      "summary": "DeepLearning (DL)-based Computer-Aided Diagnostic (CAD) systems have shown great promise in supporting clinicians, but their performance heavily depends on the availability of large, well-annotated datasets. In medical lesion detection, the scarcity of comprehensive, stan dardized annotations and the heterogeneity of existing datasets limit the development of robust foundation models. In this work, we introduce a novel approach to building a multi-domain foundation model for le sion detection by integrating diverse medical image datasets annotated for both anatomical structures and abnormalities. We first propose a student-teacher training strategy to effectively combine datasets with heterogeneous label spaces, mitigating catastrophic forgetting, and im proving feature learning. In addition, building on our previously pro posed example-based EM-DETR framework, we adapt it to jointly learn from multiple domain-specific datasets, enabling fine-grained, example driven detection across modalities. Our model achieves state-of-the-art (SOTA) results, with image-level AUC scores exceeding previous SOTA by 1% point on four key findings in CXRs. We achieve a leading mAP50 in CXRs and mammography, surpassing EM-DETR trained on a single dataset by 2-3% points. This approach paves the way for scalable foundation models in medical imaging that leverage heterogeneous data while maintaining robust and generalizable performance.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14518v1.pdf",
       "source": "arxiv",
-      "primary_category": "math.PR",
+      "primary_category": "cs.CV",
       "categories": [
-        "math.PR",
-        "math.AP"
+        "cs.CV",
+        "cs.AI"
       ],
       "category_names_zh": [
-        "math.PR (概率论与随机过程)",
-        "math.AP (偏微分方程 (PDE))"
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.AI (通用人工智能 (AI))"
       ],
-      "comment": "35 pages",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09889v1",
-      "title": "SciCheck: A Framework for Verifying the Integrity of Deep Learning Training",
+      "paper_id": "2611.14517v1",
+      "title": "The closure of the nonreal roots of bounded-height polynomials is connected exactly at pronic heights",
       "authors": [
-        "Alexander Nguyen",
-        "Dylan Gresham",
-        "Gaby G. Dagher",
-        "Min Long"
+        "Bernat Espigule"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:58:38Z",
-      "summary": "Deep learning training is difficult to verify within a scientific workflow: its architecture, hyperparameters, and procedure are rarely fixed until training has been attempted, and two honest runs never produce the same weights, so recomputation cannot serve as a check. We present SciCheck, a framework in which the scientist explores training configurations freely and posts a blueprint to a provenance ledger for each candidate they want verified, and a verifying scientist judges the resulting run in two layers: a statistical judge model that compares per-step gradient statistics against the verifier's own reference run, and a spot-check that re-executes randomly chosen training segments whose checkpoints are committed to the ledger one epoch at a time. On an MLP, a CNN, and an autoencoder at 100k-500k parameters, under gradient sign flipping, label poisoning, and fabricated runs, SciCheck reaches F1 of 0.966, 0.906, and 0.976 while rejecting 0-4.4% of honest runs. For the attacks we test, the spot-check accounts for most of this accuracy, and we characterize what each layer can detect. The effective-signal statistic falls as $(1-2s)^2$ under a sign flip of severity $s$, so gradient statistics alone catch strong enough sign flips, while fabricated runs that replay genuine statistics look no more anomalous than honest runs to any statistical detector we test. The spot-check catches fully fabricated segments with probability at least $1-(1-s)^k$ for $k$ sampled segments when the draws stay hidden until the run is committed, which roughly matches our measurements and lets a verifier choose $k$ for a target soundness. Verification costs 1.5-2.3x one retraining, mostly for the verifier's reference run; each submission's spot-check takes under 1.5 s, and per-epoch commitments reduce checkpoint storage 5-17x compared with keeping every checkpoint.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09889v1.pdf",
+      "published_at": "2026-11-10T18:58:59Z",
+      "summary": "Let C_h be the closure of the nonreal roots of integer polynomials with coefficients of modulus at most h. With the nonzero real roots included, the closure is connected at every height; without them, connectedness becomes arithmetic. We prove that C_h is connected exactly when h=q(q-1) is a pronic number 2, 6, 12, 20, ..., and has at least five components otherwise. At height two this confirms a twenty-year-old numerical observation of Shmerkin and Solomyak on double zeros of power series: apart from 1/2 they form the interval $[1/ρ,1)=C_2\\cap(0,1)$, with $ρ$ the tribonacci constant. Disconnection is almost always infinite. For (p-1)^2<h<=p^2-3, $h\\neq p(p-1)$, infinitely many components with nonempty interior accumulate at $\\pm p$ and $\\pm 1/p$, and when h<p(p-1) these four points are themselves components. Next to each square q^2>=16, at least two of the three heights q^2-2, q^2-1, q^2 have infinitely many components accumulating at a common point of (1/(q+1),1/q). Explicit series give infinitely many components at every nonpronic height below 167 other than 1, 3, 4, 9, 25, 63 and 81, and in general at most sqrt(X)+1 nonpronic heights h<=X can have finitely many components, although C_h is a Peano compactum at every height. The proofs compare values and derivatives of all admissible power series near a real double zero; the comparison sets are open and closed in the whole core, so components separated near the axis cannot reconnect elsewhere. On the real axis, the double zeros at heights 1, 3, 4, 7 form sets with infinitely many components; at height one this proves a conjecture of Shmerkin and Solomyak and one of Solomyak on the connectedness locus for pairs of affine maps.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14517v1.pdf",
       "source": "arxiv",
-      "primary_category": "cs.CR",
+      "primary_category": "math.CV",
       "categories": [
-        "cs.CR"
+        "math.CV",
+        "math.NT"
       ],
       "category_names_zh": [
-        "cs.CR (密码学与网络安全)"
+        "math.CV (复变函数与多复变)",
+        "math.NT (数论)"
       ],
-      "comment": "10 pages, 3 figures, 6 tables",
+      "comment": "45 pages, 8 figures, with a 35-page supplement (80 pages in all). Computational companion: Zenodo, doi:10.5281/zenodo.24117729",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09888v1",
-      "title": "Scenario Orchestration for Closed-loop Policy Evaluation of Autonomous Driving",
+      "paper_id": "2611.14516v1",
+      "title": "TorchCurves: Differentiable Parametric Curves",
       "authors": [
-        "Frieda Rong",
-        "Zhaoyue Wang",
-        "Veer Kapadia",
-        "Vishaka Rajani",
-        "Aren A. Babikian"
+        "Alex Shtoff"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:58:27Z",
-      "summary": "Scenario-based simulation is central to evaluating autonomous-driving policies, but a scenario scripted before execution (i.e., with predetermined, fixed actor routes and speeds) may not preserve its intended interaction once the tested ego policy responds in closed loop. Scripted scenarios cannot adapt to unanticipated ego behavior, while learned traffic actors may remain reactive without reliably realizing a particular scenario intent. We introduce a scenario orchestrator that continuously monitors the joint traffic state and adapts non-ego actors through re-timing, re-routing, and role reassignment for creating a specific scenario intent. At each step, the orchestrator solves a constrained optimization problem that preserves the intended interaction while limiting interventions and maintaining traffic feasibility. We further distinguish scenario realization from policy failure, allowing a test to first be judged based on whether the intended interaction occurred and then by how the ego policy responded. Experiments in the CARLA simulator across multiple scenario families and driving policies show that orchestration realizes targeted interactions more reliably than scripted and learned actor-level baselines, particularly under variations in initial conditions and ego behavior. These results support closed-loop scenario orchestration as a tool for controlled and reproducible policy evaluation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09888v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.RO",
-      "categories": [
-        "cs.RO"
-      ],
-      "category_names_zh": [
-        "cs.RO (机器人学与具身智能)"
-      ],
-      "comment": "8 pages, 5 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09887v1",
-      "title": "On the (non-)closedness of the set of ReLU networks",
-      "authors": [
-        "Eloi Martinet",
-        "Leon Bungert"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:58:06Z",
-      "summary": "We prove that the set $\\mathcal{N}_N$ of ReLU networks with one hidden layer and at most $N\\in\\mathbb N$ neurons is weakly closed in $W^{1,p}(Ω)$, for a bounded connected open set $Ω\\subset\\mathbb R^d$. Consequently, every coercive, weakly lower semicontinuous energy on this space attains its minimum over $\\mathcal{N}_N$. This covers the Deep Ritz method with convex integrands, Sobolev training and Lipschitz learning. Moreover, as the weight decay parameter tends to zero, minimizers of the regularized problem converge, up to subsequences, to minimizers with minimal parameter norm. We also prove that the set of ReLU networks with two hidden layers of bounded widths is not closed in $W^{1,p}(Ω)$ or in $C(\\overlineΩ)$. This disproves a conjecture of Petersen, Raslan and Voigtlaender.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09887v1.pdf",
+      "published_at": "2026-11-10T18:58:52Z",
+      "summary": "We present TorchCurves, a PyTorch library that treats vector-valued parametric curves as learnable primitives. Its central operation maps batches of scalar inputs to points on curves represented in B-spline or Legendre polynomial bases, with differentiation through both inputs and coefficients. Curve coefficients can be optimized jointly with the surrounding model or produced by another network. The library provides trainable modules, reusable basis modules, and a functional interface, supporting applications ranging from continuous feature embeddings to Kolmogorov-Arnold networks and functional regression. Its implementation combines classical evaluation algorithms with vectorized PyTorch operations, emphasizing readability and maintainability without custom hardware kernels. Timing experiments compare curve evaluation against NumPy and SciPy and KAN training against EfficientKAN across a range of problem sizes. The results illustrate where this generality remains computationally practical and where overhead is substantial. Library is available on GitHub at https://github.com/alexshtf/torchcurves.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14516v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.LG",
       "categories": [
         "cs.LG",
-        "math.CA",
-        "math.FA",
-        "math.NA",
-        "math.OC"
+        "stat.ML"
       ],
       "category_names_zh": [
         "cs.LG (机器学习 (ML))",
-        "math.CA (经典分析与常微分方程)",
-        "math.FA (泛函分析)",
-        "math.NA (数值分析与科学计算)",
-        "math.OC (运筹学、优化与控制论)"
+        "stat.ML (机器学习统计基础)"
       ],
-      "comment": "27 pages, 6 figures",
+      "comment": "Software paper for a library I've been working on for more than a year",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09886v1",
-      "title": "Directed systems of A-spaces and weak cores",
+      "paper_id": "2611.14515v1",
+      "title": "AutoScaffold: AI-Guided Scaffolding for Reinforcement Learning of Language Models",
       "authors": [
-        "Jonathan Ariel Barmak",
-        "Juan Galotto"
+        "Zijian Zhang",
+        "Rizhen Hu",
+        "Jiangweizhi Peng",
+        "Shiyang Li",
+        "Sujay Bhatt"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:58:06Z",
-      "summary": "We prove that for any regular CW-complex $X$ there exists a quotient map $X\\to Y$ that is a weak homotopy equivalence and which is minimal with that property, meaning that any quotient $Y\\to Z$ that is a weak equivalence, must be a homeomorphism. The space $Y$ we obtain is an Alexandroff space: a space in which arbitrary intersections of open sets are open. The weak core $Y$ of $X$ is not unique in general. We study homotopy invariants preserved by filtered colimits of Alexandroff spaces. This can be seen as an analogous to Stong's theory of cores of finite topological spaces.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09886v1.pdf",
+      "published_at": "2026-11-10T18:58:46Z",
+      "summary": "Reinforcement learning with verifiable rewards (RLVR) produces rich training experience, yet outcome rewards reduce each attempt to a single number and leave most of this information unused. Training-time scaffolds, such as strategies or hints added to the prompt during training, offer a natural way to turn this information into guidance, but their design and adaptation are largely left to humans and tailored to specific domains. We introduce AutoScaffold, a unified AI-for-AI framework that turns a student's training experience into adaptive scaffolds, with minimal domain-specific information and no human intervention during training. A frozen teacher periodically examines this experience, diagnoses bottlenecks, and designs scaffolds in two forms: (i) strategies shared across a class of tasks and (ii) hints for individual hard tasks, adjusting the content and amount of support as the student learns. The scaffolds are removed at evaluation. We apply the same framework to ALFWorld, search-based QA, mathematical reasoning, and GPU kernel generation. When evaluated without scaffolds, students trained with AutoScaffold outperform those trained with the corresponding RL baselines in all four domains, with gains of 7.2 points in ALFWorld success and 4.0 points in average QA exact match. On GPU kernel generation, AutoScaffold increases the fraction of tasks with a correct kernel that runs faster than the PyTorch reference by up to 5.0 points. On math, our student surpasses QuestA's reported accuracy using approximately one-third as many student training steps. Analyses show that the teacher identifies a different failure in each task class and shifts its scaffolds from step-by-step workflows to targeted fixes as the student improves, and that its revised scaffolds help the student learn more than keeping the previous scaffold or using no scaffold.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14515v1.pdf",
       "source": "arxiv",
-      "primary_category": "math.AT",
+      "primary_category": "cs.LG",
       "categories": [
-        "math.AT"
+        "cs.LG",
+        "cs.CL"
       ],
       "category_names_zh": [
-        "math.AT (代数拓扑)"
-      ],
-      "comment": "21 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09885v1",
-      "title": "Unconditional Uniqueness of KdV and mKdV Green Solutions at Low Regularity",
-      "authors": [
-        "Zhimeng Ouyang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:57:35Z",
-      "summary": "We prove unconditional uniqueness for the Korteweg--de Vries (KdV) equation in $C_tH^{-1}_x(\\mathbb R)$ and the real defocusing modified KdV equation in $C_tL^2_x(\\mathbb R)$ within the class of Green solutions, an intrinsically well defined solution notion that encodes the evolution at these low regularities through the diagonal Green functions of the associated Lax operators. A key contribution is automatic local smoothing: the Green identities imply $q\\in L^2_{\\mathrm{loc}}$ for KdV and $u_x,u^2\\in L^2_{\\mathrm{loc}}$ for mKdV in spacetime, with estimates uniform over spatial translates. The uniqueness results therefore identify every Green solution in these classes with the continuous extension of the corresponding Schwartz flow.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09885v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.AP",
-      "categories": [
-        "math.AP"
-      ],
-      "category_names_zh": [
-        "math.AP (偏微分方程 (PDE))"
+        "cs.LG (机器学习 (ML))",
+        "cs.CL (计算语言与大语言模型 (NLP))"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09884v1",
-      "title": "VLT and Keck recovery and characterisation of 2025 SC$_{79}$: linking 'Ayló'chaxnim and Atira asteroids",
+      "paper_id": "2611.14514v1",
+      "title": "Contrastive Discovery: Open-Ended Scientific Discovery over Competing Explanations",
       "authors": [
-        "Bryce T. Bolin",
-        "Leo Y. Alcorn",
-        "Davide Farnocchia",
-        "Marco Delbo",
-        "Martina Baratella"
+        "Ziang Liu",
+        "James J. Kim",
+        "Yijia Dai",
+        "Jennifer J. Sun"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:57:13Z",
-      "summary": "Asteroids near the boundary between the Atira and 'Ayló'chaxnim classes can trace dynamical links between the two populations, but their small solar elongations make recovery and physical characterisation difficult. We recover 2025 SC$_{79}$, measure its optical colours, and investigate its likely source region and transitions between these populations. We combine Keck/LRIS astrometry and VLT/FORS2 four-filter photometry with Bus-DeMeo taxonomic comparisons, published source-model probabilities, and integrations of 10,000 clones drawn from the covariance of JPL solution #2 and followed for 5 Myr in each direction. The SDSS-equivalent colours are $g-r=0.8254_{-0.1339}^{+0.2136}$, $r-i=0.1764_{-0.0540}^{+0.0523}$ and $i-z=-0.4975_{-0.1162}^{+0.1055}$ mag. The V-type class mean gives the closest colour match. At the V-type median albedo $p_V=0.362$, $H=18.83\\pm0.15$ mag implies a diameter of $0.379^{+0.027}_{-0.025}$ km. The source model assigns a combined probability of 95.4% to delivery channels associated with the inner Main Belt. The ensemble-mean 'Ayló'chaxnim/Atira residence fractions are 30.2%/69.8% over the preceding 100 kyr and 3.6%/96.0% over the following 100 kyr; the remaining 0.4% of future ensemble time follows collision removal. Clones spend an average of 231 kyr in the 'Ayló'chaxnim class over the preceding 500 kyr and 120 kyr over the following 500 kyr. In the 5-Myr forward integrations, 14.56% of clones collide with Venus, 3.77% with Mercury and 0.22% with Earth. The V-like colours and source-model probabilities favour an origin in the inner Main Belt for 2025 SC$_{79}$. Its clones move between the 'Ayló'chaxnim and Atira populations.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09884v1.pdf",
+      "published_at": "2026-11-10T18:58:43Z",
+      "summary": "LLM agents are increasingly used for open-ended, data-driven scientific discovery, yet most of them evaluate hypotheses pointwise, testing an empirical claim $h$ only against its complement $\\neg h$. When evidence rejects $h$, the agent learns that one explanation is unlikely but not which alternative the evidence supports. To recover that alternative, we introduce Contrastive Discovery, which replaces the single hypothesis with a contrast set, a scientific question paired with mutually exclusive and collectively exhaustive competing explanations. Each experiment is scored by how its evidence redistributes belief across the set, and the question is resolved when belief concentrates on one explanation. Because contrast sets change only the unit an agent proposes and scores, an existing agent can use them to re-evaluate evidence it has already collected or to guide its search. Across six domains, $89\\%$ of the pointwise candidates with the largest belief shifts are rejections. On the same evidence, contrast sets resolve $73\\%$ of these candidates to a specific alternative. When contrast sets guide search, the agent resolves $67\\%$ more questions than pointwise surprisal under the same experiment budget. In a blinded study, $38$ human experts chose the same explanation on $78\\%$ of resolved questions and on $82\\%$ of questions where the pointwise agent rejected its hypothesis and stopped. Together, these results support explicit competing explanations as a way for discovery agents to resolve more scientific questions from the same evidence and validation budget.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14514v1.pdf",
       "source": "arxiv",
-      "primary_category": "astro-ph.EP",
+      "primary_category": "cs.AI",
       "categories": [
-        "astro-ph.EP"
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
       ],
       "category_names_zh": [
-        "astro-ph.EP (地球与行星天体物理)"
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.LG (机器学习 (ML))"
       ],
-      "comment": "10 pages, 7 figures, 4 tables, including appendices. Submitted to A&A",
+      "comment": "Accepted at NeurIPS 2026. 55 pages. Project page: https://codiscovery.ai/contrastive-discovery/",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09883v1",
-      "title": "Analytic information encoded in the Bernstein-Sato polynomial of genus-one plane branches",
+      "paper_id": "2611.14513v1",
+      "title": "Online Graph Coloring: Competitive Ratios Separating Randomized and Deterministic Algorithms",
       "authors": [
-        "Maria Alberich-Carramiñana",
-        "Maria Morella"
+        "Ken-ichi Kawarabayashi",
+        "Hirotaka Yoneda",
+        "Masataka Yoneda"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:56:50Z",
-      "summary": "We give an explicit formula recovering the Zariski invariant of a plane branch with one Puiseux pair from its Bernstein-Sato polynomial. Thus the Bernstein-Sato stratification refines the Zariski-invariant stratification. We determine the generic roots in each stratum from the value semigroup and the Zariski invariant, refining Yano's description for a fixed topological class. We also compute the maximal spectral-exponent discrepancy and relate it to the dimension of the generic Bernstein-Sato locus and the minimum Tjurina number.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09883v1.pdf",
+      "published_at": "2026-11-10T18:58:28Z",
+      "summary": "We study online coloring, focusing on the competitive ratio. The best previously known results were (1) a lower bound of $Ω(n / \\log^2 n)$ for both deterministic and randomized algorithms by Halldórsson and Szegedy (1994), (2) an upper bound of $O(n / \\log n)$ for randomized algorithms by Halldórsson (1997), and (3) an upper bound of $O(n / \\log \\log n)$ for deterministic algorithms by Kawarabayashi, Yoneda, and Yoneda (2025). In this paper, we improve these results as follows: 1. A new lower bound of $Ω(n / \\log n)$ for deterministic algorithms. 2. A new upper bound of $O(n (\\log \\log n)^2 / \\log^2 n)$ for randomized algorithms. 3. A new upper bound of $O(n / (\\log \\log n)^{2-\\varepsilon})$ for deterministic algorithms for every fixed $\\varepsilon>0$. For randomized algorithms, we nearly close the gap between the lower and upper bounds; the remaining gap is only $O((\\log \\log n)^2)$. We establish the asymptotic separation between randomized and deterministic online graph coloring. Against an oblivious adversary, a polynomial-time randomized algorithm achieves a competitive ratio asymptotically smaller than any deterministic algorithm can guarantee, even with unlimited computation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14513v1.pdf",
       "source": "arxiv",
-      "primary_category": "math.AG",
+      "primary_category": "cs.DS",
       "categories": [
-        "math.AG"
+        "cs.DS",
+        "cs.DM",
+        "math.CO"
       ],
       "category_names_zh": [
-        "math.AG (代数几何)"
+        "cs.DS (数据结构与算法)",
+        "cs.DM (离散数学)",
+        "math.CO (组合数学与图论)"
       ],
-      "comment": "15 pages",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09882v1",
-      "title": "FlowMoP: Stochastic Multi-Person Motion Prediction",
+      "paper_id": "2611.14511v1",
+      "title": "Pyrite: Building and Benchmarking Protein-Ligand Pose Ranking Agents",
       "authors": [
-        "Aadya Agrawal",
-        "Ho Kei Cheng",
-        "Alexander Schwing"
+        "Megha Srivastava",
+        "Michael H. Lim",
+        "Allison M. Keys",
+        "Pranav Murugan",
+        "Nate Gruver"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:56:41Z",
-      "summary": "Predicting the future motion of multiple people is inherently stochastic: the same observed history admits many plausible continuations depending on intent, coordination, and social context. Yet the dominant paradigm in multi-person 3D motion prediction remains deterministic, with existing methods producing a fixed number of outputs per agent. In contrast, we present a conditional flow matching framework that jointly generates diverse future motions for multiple agents, modeling both global trajectories and root-relative poses. A B-spline reparameterization compresses the generative state space while enforcing temporal smoothness, and a dual-stream transformer conditions each agent's predictions on observed neighbor motion for interaction-aware forecasting. Our method achieves state-of-the-art performance on CMU-Mocap (UMPM) and 3DPW, outperforming deterministic baselines on joint position error, pose error, and final displacement error despite producing a full predictive distribution. We additionally establish the first motion prediction baseline on WorldPose, a large-scale professional soccer dataset, where social conditioning demonstrably concentrates predictive uncertainty along interaction-constrained directions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09882v1.pdf",
+      "published_at": "2026-11-10T18:56:32Z",
+      "summary": "Predicting how a ligand binds to its target is central to small-molecule drug discovery. Modern cofolding models can generate diverse candidate poses, but reliably ranking these candidates remains challenging. We introduce Pyrite, a pairwise pose-ranking benchmark comprising 1,500 pose pairs across diverse protein-ligand complexes. Expert chemists equipped with 3D visualization tools and physics-based scores perform near chance, highlighting the difficulty of interpreting available chemical signals. To investigate automated ranking, we introduce PyriteRep, a structured representation of molecular geometry, protein-ligand interactions, and physicochemical scores, and develop two LLM-based agents: PyriteReasoner, which directly compares poses through text-based reasoning, and PyriteFeaturizer, which generates executable code to construct features for logistic regression, optionally incorporating features derived from LLM subcalls. These agents achieve up to 67% and 74% accuracy, respectively, exceeding observed expert performance. LLM-guided feature discovery generally outperforms direct reasoning, while Group Relative Policy Optimization (GRPO) improves open-weight models, enabling them to match or surpass closed-source frontier models in our evaluations. These results establish Pyrite as a challenging test of pose-ranking ability and highlight LLM-guided feature discovery as a promising approach to interpret and combine the outputs of computational chemistry tools.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14511v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": "32 pages, Agentic AI for Biological Discovery Workshop (NeurIPS 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14510v1",
+      "title": "Gradient Estimates for Singular-Degenerate Elliptic Equations with Solution-Dependent Coefficients",
+      "authors": [
+        "Van Le",
+        "Tuoc Phan"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:56:31Z",
+      "summary": "We study a conormal boundary value problem for a class of singular-degenerate quasilinear elliptic equations in divergence form in bounded domains. The leading terms are measurable in the spatial variable and depend nonlinearly on both the solution and its gradient. The singularity or degeneracy is governed by a power of the distance to the domain boundary, with exponent greater than negative one. In particular, the corresponding weights need not belong to the Muckenhoupt $A_2$ class. Assuming that the weighted mean oscillations of the leading terms in the spatial variable are sufficiently small on small balls and that the domains have Lipschitz boundaries with sufficiently small Lipschitz constants, we establish global weighted $W^{1,p}$-estimates for weak solutions with bounded weighted mean oscillation. Our results extend recent estimates for equations whose leading terms are independent of the solution itself.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14510v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.AP",
+      "categories": [
+        "math.AP",
+        "math.FA"
+      ],
+      "category_names_zh": [
+        "math.AP (偏微分方程 (PDE))",
+        "math.FA (泛函分析)"
+      ],
+      "comment": "40 pages, comments are welcome",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14509v1",
+      "title": "Artificial Currency and Separate Selling: A 3-Approximation for Consumer Surplus",
+      "authors": [
+        "Yang Cai",
+        "Yingkai Li",
+        "Jinzhao Wu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:56:27Z",
+      "summary": "We study the allocation of indivisible items to buyers with additive values drawn from independent distributions. The objective is consumer surplus net of burnt payments. We consider artificial-currency mechanisms: buyers receive personalized budgets of a currency worthless outside the mechanism and use them to bid across items. The better of separate selling and artificial-currency mechanisms provides a 3-approximation to optimal consumer surplus. The guarantee holds at every Bayes--Nash equilibrium, without equilibrium selection. Both branches are necessary: either alone may capture only a vanishing share of the optimum. The proof decomposes benchmark surplus into a stable part captured by artificial currency and a variation covered by separate selling.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14509v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.GT",
+      "categories": [
+        "cs.GT"
+      ],
+      "category_names_zh": [
+        "cs.GT (计算机博弈论与算法经济)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14508v1",
+      "title": "When Does the Real Wiring Win? Testing connectome structure-function claims against unmeasured physiology",
+      "authors": [
+        "Yeyuan Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:55:48Z",
+      "summary": "Connectome-constrained models are often used to argue that a measured wiring diagram outperforms shuffled or rewired wiring, and hence that structure shapes function. Such comparisons can confound wiring with how the models are tuned: a connectome fixes who connects to whom, not the excitability, gains or plasticity rates the model also needs, and modellers often tune these until the real-wiring model works. We separate three estimands: physiology tuned on the real wiring and transferred to nulls (P1), each wiring tuned on its own (P2), and P2 restricted to physiology consistent with independent data (P3). The biases involved are known in machine learning (under-tuned baselines, inherited weights, winner's curse); we measure what they do to biological conclusions, using synthetic ground truth, placebo nulls and three Drosophila circuit models. Some claims survive every protocol we test: segregated reward and punishment dopamine improves learning, and head-direction topography is required for a persistent bump. Others do not. In the mushroom body, the real Kenyon-cell output wiring beats a cross-subtype identity shuffle by 0.09 under P1 and P2 but loses to it by 0.09 under P3 (95% CIs exclude zero; held-out runs confirm). The verdict is set by the share of alpha'beta' cells among active Kenyon cells, which P1 selects low; at the share implied by imaging (about 44%) the real-wiring model fails to learn, exposing a model inadequacy rather than a deficit of the fly's wiring. In flyvis, P1 penalises a mirrored connectome, which has a constructed solution within 0.07 (median) of the real error, more than a spatially shuffled one in 50 of 50 members; the ranking survives ten-fold longer retraining but depends on the checkpoint at fifty-fold. A credible structural claim needs matched optimisation, data-constrained physiology and a model that still works there.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14508v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": "23 pages, 5 figures, 10 tables. Code, data and prediction files are included as ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14507v1",
+      "title": "Local Rigidity of Bergman Logarithmic Flatness on Compact Hermitian Symmetric Spaces",
+      "authors": [
+        "Zhiqin Lu",
+        "Yuang Shi"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:55:40Z",
+      "summary": "We prove the local rigidity of Bergman logarithmic flatness near the standard metrics associated with fixed invariant positive polarizations on compact Hermitian symmetric spaces. Every sufficiently small smooth deformation preserving Bergman logarithmic flatness is induced by a holomorphic automorphism and a constant rescaling. This establishes a Bergman analogue of the local rigidity results for Szegő logarithmic flatness obtained by Lu--Tian (Duke Math. J., 2004) and, more recently, Loi--Palmieri--Zuddas (2026).",
+      "pdf_url": "https://arxiv.org/pdf/2611.14507v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.DG",
+      "categories": [
+        "math.DG",
+        "math.CV",
+        "math.RT"
+      ],
+      "category_names_zh": [
+        "math.DG (微分几何)",
+        "math.CV (复变函数与多复变)",
+        "math.RT (表示论)"
+      ],
+      "comment": "45 pages. Comments are welcome!",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14506v1",
+      "title": "Annular Counterexamples and Skew-Shape Block Identities",
+      "authors": [
+        "Adam Tilèpe"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:55:26Z",
+      "summary": "We establish four connected results on weighted order ideals, cluster coefficients, and block-statistic enumerators. First, we give a counterexample to Theorem 14 of Kang, Lee and Lim (European Journal of Combinatorics, 2026): in the rank-two annular cluster model, a single bridging-lamination coefficient row produces $1+q^2$, contradicting the asserted unimodality. We identify the unsupported initial case in their published induction. Second, we refute their log-concavity Conjecture 1: the same gap example violates log-concavity, and a further single-curve computation gives the full-support polynomial $1+2q+7q^2+10q^3+9q^4+4q^5+q^6$, which also fails log-concavity. Third, we establish the skew-shape block-statistic identity proposed in Kahane's Conjecture 4.4 (arXiv:2607.11225v1) for arbitrary finite skew Young diagrams, under an explicitly specified root-exclusion convention. Its proof combines commuting tableau-transfer matrices, a connected-block inverse kernel, and finite polynomial differential equations; the corresponding mathematical statements have Lean 4/Mathlib formalizations. Fourth, we derive a bivariate block refinement whose coefficients are nonnegative after shifting the order parameter by one and, when necessary, multiplying by a monomial in the weight parameter. We specify the correction to the printed root convention, confirmed by Kahane in correspondence, and the geometric sign and specialization conventions clarified by the relevant authors for the annular examples.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14506v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.CO",
+      "categories": [
+        "math.CO"
+      ],
+      "category_names_zh": [
+        "math.CO (组合数学与图论)"
+      ],
+      "comment": "Complete Lean 4 formalization available at this GitHub repository: https://github.com/adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14505v1",
+      "title": "Continual-ARC: Measuring Skill Acquisition over a Working Lifetime",
+      "authors": [
+        "Daniel Lenton"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:55:01Z",
+      "summary": "Agent harnesses have emerged as a promising mechanism for continual learning, alongside test-time parametric learning. However, the current benchmarks have several limitations: they generally focus on a single applied domain, serve each instance only once, and assume a single family of learner, so memory-based and weight-based systems are rarely compared on the same scale. We propose Continual-ARC, a lifelong stream built from the three ARC-AGI editions, whose tasks need no domain knowledge. The same tasks return after dormant gaps with fresh instances, while new tasks keep arriving. On each instance, the learner may pay for demonstrations, submit answers, or act inside the harness, with retries permitted on incorrect submissions, which are paid for. Each instance is scored based on the share of this feedback budget consumed. Since a learner may keep anything between instances, memory-based and weight-based systems are scored on the same scale. After the stream, the learner is frozen and tested on fresh instances of the tasks it met, which measures memorization, and on unseen tasks, which measures generalization. We run an agent harness with frozen weights, with and without persistence, on Qwen3.5-9B and GLM-5.3 Flash, comparing them with two prompting floors, a program-induction method and Qwen3.5-9B's weights trained to imitate GLM-5.3 Flash. Persistence in the harness generally does not improve memorization unless provided with explicit expert guidance. Most harness-based methods still learn less than a floor that simply caches each task's demonstrations, across all models we tested. No harness-based method gains on unseen tasks, whereas weight-based learning shows substantial gains. This opens the door to future weight-based continual learning that could teach models to drive harnesses in new domains.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14505v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "51 pages, 13 figures. Code and run records: https://github.com/unifyai/continual-arc",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14504v1",
+      "title": "Emergent Biological Capabilities in a Foundation Model for Molecular Interactions",
+      "authors": [
+        "Adi Mashiach"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:53:01Z",
+      "summary": "Foundation models trained on large unlabeled corpora develop emergent capabilities, tasks that go beyond the training objective. We extend this paradigm to multimodal biology with Bonbon, a foundation model for molecular interactions trained on approximately 3.2 trillion tokens of paired protein-ligand sequences. From a single representation space, Bonbon exhibits three zero-shot emergent capabilities at hierarchical levels of resolution: functional (mechanism of action), residue (binding site localization, including orthosteric/allosteric discrimination), and bond (covalent versus non-covalent engagement). All three capabilities generalize to out-of-distribution complexes. Bonbon was trained on protein-ligand sequences alone, without any task-specific supervision and without structural coordinates. We conducted controlled scaling experiments across six model scales from 42M to 1.6B parameters; every capability evaluated shows a sharp jump at the largest scale on continuous metrics, even as pretraining loss decreases smoothly. This demonstrates that loss-based scaling laws alone are insufficient to predict when zero-shot emergent capabilities become available. The capabilities reported here emerge after training at a 1:2,000 parameter-to-token ratio to accommodate the sparsity of paired biological interaction data. The same frozen representations achieve state-of-the-art binding and affinity prediction at five orders of magnitude greater speed than co-folding methods. In prospective wet-lab validation across nine disease targets spanning seven protein families, Bonbon achieves a 61.5% dose-response hit rate on de novo compounds, yielding structurally novel molecules not previously reported to inhibit these proteins, including for out-of-distribution targets.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14504v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.BM"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.BM (生物分子结构与动力学)"
+      ],
+      "comment": "Accepted at NeurIPS 2026 (Main Track, Oral)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14503v1",
+      "title": "$G_2'$-Slodowy Slices II: Anosov Representations",
+      "authors": [
+        "Colin Davalo",
+        "Parker Evans"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:52:47Z",
+      "summary": "We find \\emph{exotic} connected components of Anosov representations of surface groups in the higher rank group $G=G_2'$ that are neither $ι$-Fuchsian deformations nor higher rank Teichmüller spaces. These representations are found through the non-abelian Hodge correspondence via $G_2'$-Higgs bundles that we call \\emph{$α$-bundles} and \\emph{$β$-bundles}, which are particular cyclic Higgs bundles in the Slodowy slices of the $\\mathfrak{sl}_2$-triples associated to the simple roots $α$ and $β$ of $\\mathfrak{g}_2^{\\mathbb{C}}$. We first prove that (most) $β$-bundles that are also Hodge bundles are $P_β$-Anosov and $α$-bundles are $P_α$-Anosov. The strategy employed is new, geometric, and general. For $σ\\in \\{α, β\\}$, we then show the locally homogeneous $(G_2', G_2'/P_σ)$-manifold ${\\mathscr{M}}_σ(ρ)$ recently described in arXiv:2510.12757, for the representation $ρ:π_1S\\rightarrow G_2'$ associated to a $σ$-bundle, coincides up to finite cover with the corresponding geometric structure for $ρ$ defined via domains of discontinuity by Guichard-Wienhard and Kapovich-Leeb-Porti. Consequently, we find that $π_1({\\mathscr{M}}_σ(ρ))$ is an invariant for the connected component of $ρ$ in the space of $P_σ$-Anosov representations. After verifying the folklore result that the $G_2'$-character variety has exactly three connected components, we conclude lower bounds for the number of connected components of $P_σ$-Anosov representations in the two non-Hitchin components, most of which are exotic.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14503v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.DG",
+      "categories": [
+        "math.DG",
+        "math.GT"
+      ],
+      "category_names_zh": [
+        "math.DG (微分几何)",
+        "math.GT (几何拓扑)"
+      ],
+      "comment": "53 pages, 7 figures, 1 table. No AI proof assistance",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14502v1",
+      "title": "Zeros of Katz's p-adic Eisenstein series E2",
+      "authors": [
+        "Abdellah Sebbar",
+        "Khalil Besrour"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:53Z",
+      "summary": "For every prime $p\\geq5$, the zeros of Katz's $p$-adic Eisenstein series $E_2$ on elliptic curves with good ordinary reduction have exactly $\\lfloor p/12\\rfloor+1$ distinct $j$-invariants. We prove that all these invariants lie in finite unramified extensions of $\\mathbf{Q}_p$. Their reductions are given by a classical formula involving the supersingular polynomial, and each nonelliptic residue class contains a unique simple zero. For the Legendre family, hypergeometric congruences determine the polynomial of the lifted invariants modulo every power of $p$. We also study isogenies between the zeros. Each $p$-power isogeny class contains at most one zero $j$-invariant, and any two distinct isogenous zero invariants are algebraic over $\\mathbf{Q}$. At a fixed cyclic degree, the nonelliptic isogenies give points in a finite divisor over $\\mathbf{Q}$ on the corresponding modular curve. Its degree bounds their number and their fields of definition, and excludes several small degrees. The only zeros with complex multiplication have $j=0$ or $1728$. Whether a non-CM zero can have an algebraic $j$-invariant remains open.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14502v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.NT",
+      "categories": [
+        "math.NT"
+      ],
+      "category_names_zh": [
+        "math.NT (数论)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14501v1",
+      "title": "Mutual Linearity in Nonlinear Population Dynamics",
+      "authors": [
+        "Shiling Liang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:44Z",
+      "summary": "Mutual Linearity in Nonlinear Population DynamicsMutual linearity, the persistence of affine relations among stationary observables under arbitrarily strong changes of one transition rate, is known for Markov jump processes and chemical reaction networks. We show that generalized Lotka--Volterra dynamics form a new class of mutually linear systems, even though species can go extinct and attractors can be chaotic. Any change to one species' equation acts on the others as one effective press and keeps all abundances affinely related: piecewise across extinctions, and as time averages on chaotic attractors.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14501v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cond-mat.stat-mech",
+      "categories": [
+        "cond-mat.stat-mech",
+        "physics.bio-ph",
+        "q-bio.PE"
+      ],
+      "category_names_zh": [
+        "cond-mat.stat-mech (统计力学)",
+        "physics.bio-ph (生物物理)",
+        "q-bio.PE (种群与生态进化)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14500v1",
+      "title": "The expected number of holes of the planar Wiener sausage",
+      "authors": [
+        "Tristan Guillaume"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:39Z",
+      "summary": "```text Let $β_1^T(r)$ be the number of holes, that is, the first Betti number, of the Wiener sausage of radius $r$ of a planar Brownian motion run up to time $T$. We prove that $\\mathbb{E}[β_1^T(r)]$ is of order $T/(r^2(\\log T)^2)$ as $T\\to\\infty$, for each fixed $r>0$, which completes the lower bound obtained in a companion paper from a law for the inradii of the cavities of the path. We also identify which parts of the complement of the path contribute at leading order. At unit time and radius $\\varepsilon$, the holes lying in the unbounded component of the complement have expected number $O(\\varepsilon^{-2+θ_0})$ for an absolute $θ_0>0$, whereas the additional holes created when a cavity fragments under erosion have expected number of exact order $\\varepsilon^{-2}(\\log(1/\\varepsilon))^{-2}$. In particular the one-pocket constant of the lower bound is strictly improved. The upper bound is obtained by pricing the contact configurations that pin near-critical pockets along the two independent arms of the path from a deterministic time, each arm contributing one factor $1/\\log(1/\\varepsilon)$. The outer estimate combines a stratified form of this first-moment bound with a packing argument near the frontier of the path, and the splitting lower bound forces a dumbbell-shaped cavity by a local construction followed by two logarithmic avoidance probabilities. The upper bound and the two structural estimates use no limit theorem for the shapes of cavities; the shape law enters only through the lower bound of the companion paper. ```",
+      "pdf_url": "https://arxiv.org/pdf/2611.14500v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.PR",
+      "categories": [
+        "math.PR"
+      ],
+      "category_names_zh": [
+        "math.PR (概率论与随机过程)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14499v1",
+      "title": "Spatial patterns of transportation choice in Niterói",
+      "authors": [
+        "Sandro Martinelli Reia",
+        "Taylor Anderson",
+        "Dieter Pfoser"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:37Z",
+      "summary": "Characterizing how people move through a city requires spatially and temporally fine-grained data that are often costly and difficult to obtain. Here, we introduce a computational framework that uses macroscopic, aggregated, and static urban data to construct a microscopic, dynamic, and spatially detailed representation of urban mobility. Building on an existing activity simulator, the framework combines a synthetic population, the built environment, and transport networks to generate daily trips and assign walking, car, or public transit. Applied to approximately 475,000 synthetic residents of Niterói, Brazil, simulated neighborhood-level transit patterns show a strong association with an empirical activity proxy (Pearson r=0.885). Walking is more prevalent in compact central areas, car use increases toward the periphery, and public-transit use remains comparatively high along bus corridors. Reducing walking times to and from bus stops by 30% increases the modeled public-transit-to-car ratio by 11.3%, with larger transit-share gains in several peripheral areas. These results reveal spatial differences in transportation choice and identify where improved transit access may have the greatest modeled effect.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14499v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.soc-ph",
+      "categories": [
+        "physics.soc-ph",
+        "cs.MA",
+        "stat.OT"
+      ],
+      "category_names_zh": [
+        "physics.soc-ph (物理与社会科学 (复杂系统))",
+        "cs.MA (多智能体系统 (Multiagent))",
+        "stat.OT (其他综合统计学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14498v1",
+      "title": "Measuring Robustness and Efficiency in a Connectome-Constrained Fly Visual System Model: Linking an Adversarial and a Perceptual Illusion",
+      "authors": [
+        "Alexandre Garcia-Duran",
+        "Alejandro Rodriguez-Garcia",
+        "Manuel Molano-Mazón",
+        "Alexandre Hyafil",
+        "Srikanth Ramaswamy"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:31Z",
+      "summary": "Biological visual systems compute reliably under tight metabolic and wiring constraints, whereas artificial vision systems consume far more energy and can be sensitive to adversarial perturbations. Whether networks with brain-like wiring are more robust at lower computational cost is unclear. We address this by benchmarking a task-optimized, continuous-time recurrent neural network of the fly visual system constrained by its synaptic connectome (FlyNet) against artificial neural networks. We compare it against CNNs, RAFT, and continuous-time recurrent neural networks without detailed connectome constraints (sCTRNN, CTRNN) on a collision-detection task within a differentiable 3D rendering pipeline. FlyNet is adversarially vulnerable but, relative to its compute, more robust to common video corruptions than RAFT, while using up to five orders of magnitude fewer FLOPs. The CTRNNs remain more robust than FlyNet across almost all tested perturbations, suggesting that connectome constraints benefit efficiency, through their low edge count, over robustness. Recurrence improves robustness to white-box attacks in RAFT and temporal context improves robustness to common corruptions. FlyNet's position and velocity representations degrade under adversarial textures but recover under counterfactual textures that restore correct classification while staying equally far from training, ruling out unfamiliar textures as the cause of failure. The reverse-phi illusion similarly disrupts these representations and inverts the same low-level motion statistic as the adversarial textures. Optimizing this input statistic alone, without access to the network, suffices to induce classification failure, attributing both perturbations to the same circuit vulnerability. Connectome-constrained models can thus surface adversarial failure mechanisms as testable hypotheses about biological perceptual vulnerabilities.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14498v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.CV",
       "categories": [
         "cs.CV",
-        "cs.LG"
+        "q-bio.NC"
       ],
       "category_names_zh": [
         "cs.CV (计算机视觉与模式识别 (CV))",
-        "cs.LG (机器学习 (ML))"
+        "q-bio.NC (神经科学与脑认知)"
       ],
-      "comment": "Accepted at NeurIPS 2026. 22 pages, including references and appendix",
+      "comment": "39 pages, 24 figures, 2 tables, Accepted at 40th Conference on Neural Information Processing Systems (NeurIPS 2026)",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09881v1",
-      "title": "Unraveling square and kagome lattice frustrated magnetism by scalable tensor networks",
+      "paper_id": "2611.14497v1",
+      "title": "Excess charge in the Engel-Dreizler model of atoms and molecules",
       "authors": [
-        "Xing-Yu Zhang",
-        "Jutho Haegeman",
-        "Yuchi He"
+        "Rafael Benguria",
+        "Heinz Siedentop"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:56:33Z",
-      "summary": "We extend the scalability of variational infinite two-dimensional tensor network methods with application to investigate frustrated magnetism of the square-lattice $J_1$-$J_2$ model and kagome-lattice Heisenberg model. In the sign-problem-free limit of the square-lattice model, we achieve high ground-state energy precision comparable to quantum Monte Carlo methods. With no obstruction beyond this limit, our method obtains direct estimates of order parameters. For the square-lattice $J_1$-$J_2$ model, we determine isotropic plaquette order in the valence-bond solid region. For the model near $J_2/J_1=0.5$, and the kagome lattice Heisenberg model, our data indicate linear-dispersion gapless states. To probe the candidate spin-liquid nature of the highly frustrated cases, we go beyond inferring the absence of symmetry-breaking orders and analyze susceptibilities that characterize gapless spin liquids. By estimating scaling dimensions, our data indicate a stable gapless spin liquid on the kagome lattice, and competing scenarios for the intermediate regime of the square-lattice model. Our developments include parallelization and randomized low-rank methods and largely expand the frontier of high-precision variational numerics for quantum phases of matter.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09881v1.pdf",
+      "published_at": "2026-11-10T18:51:11Z",
+      "summary": "We prove an explicit excess-charge bound for the exchange-free Engel--Dreizler functional of atoms and molecules. If $αλ\\le1/1233$ and $α^3Z_k^2\\le1/137$ for each nucleus, every finite-mass electronic minimizer whose total energy, including nuclear repulsion, is nonpositive satisfies $N-\\sum_kZ_k<(5913/1000)λ^{3/2}K$. For the gradient coefficient $λ=1/9$, this gives $N-\\sum_kZ_k<0.219K$. The energy hypothesis holds automatically for atoms and for local minima of the Born--Oppenheimer energy at which the electronic infimum is attained. The proof uses no symmetry of the density, restriction on the total nuclear charge, or minimum nuclear separation. We combine molecular Sommerfeld estimates with a convex nonlinear comparison in the variable $F(p)$. The failure of the latter comparison at very high density is represented by a nonnegative Newton potential. A quartic coercivity estimate, obtained from nuclear repulsion and a signed localized Hardy inequality, controls the total mass of this source. The chemical potential is retained throughout. Exact covariance yields the invariant parameter domain, and all finite numerical inequalities are reduced to rational arithmetic.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14497v1.pdf",
       "source": "arxiv",
-      "primary_category": "cond-mat.str-el",
+      "primary_category": "math-ph",
       "categories": [
-        "cond-mat.str-el"
+        "math-ph",
+        "cond-mat.other"
       ],
       "category_names_zh": [
-        "cond-mat.str-el (强关联电子系统)"
+        "math-ph (数学物理与严格推演)",
+        "cond-mat.other (其他凝聚态物理)"
       ],
-      "comment": "5+3+12 pages",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09880v1",
-      "title": "ZeoBench: A Benchmark for Self-Supervised Learning on 3D Zeolite Representations",
+      "paper_id": "2611.14496v1",
+      "title": "RS-JEPA: Remote Sensing Joint-Embedding Predictive Architecture with Scan-Path Views for Cross-Sensor Image Retrieval",
       "authors": [
-        "Aaron Sun",
-        "Yachan Liu",
-        "Ping Yang",
-        "Peng Bai",
-        "Subhransu Maji"
+        "Tanishq Rachamalla",
+        "Srishti Kaushik",
+        "Muhammad Attique Khan",
+        "Gustau Camps-Valls",
+        "Swalpa Kumar Roy"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:55:34Z",
-      "summary": "Zeolites are an important class of porous crystalline materials with broad applications in gas storage, separations, and catalysis. Although hundreds of thousands of experimentally realized and hypothetical zeolite structures are known, identifying materials optimized for a target application remains challenging because property labels are expensive to obtain and available only for limited structure-molecule pairs. While prior work has demonstrated that 3D neural representations can predict zeolite properties effectively, it remains unclear which representation-learning strategies are most effective in the low-data regime relevant to materials discovery. We present ZeoBench, a benchmark for self-supervised learning on dense 3D representations of all-silica zeolites, and evaluate the resulting features on six existing downstream adsorption-property prediction tasks, across a range of training set sizes. Our study compares self-supervised 3D pretraining on volumetric zeolite data, adaptations of image-pretrained 2D ConvNets and vision transformers to 3D via multiview and channel-inflation strategies, and 3D ConvNets pretrained on out-of-domain volumetric datasets, alongside hand-crafted descriptors and supervised baselines. Using our pretraining and evaluation framework, we find self-supervised 3D representations outperform existing methods and achieve state-of-the-art performance across both in-domain label regimes and for the unseen domain of metal organic frameworks. Learned representations consistently outperform hand-crafted descriptors, and convolutional architectures are generally more effective than vision transformers in this setting. These results establish ZeoBench as a practical benchmark for 3D representation learning in zeolites and provide guidance for data-limited adsorption property prediction.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09880v1.pdf",
+      "published_at": "2026-11-10T18:51:05Z",
+      "summary": "Cross-sensor remote sensing image retrieval aims to find scenes with the same content across heterogeneous sensors, such as SAR and optical or panchromatic (PAN) and multispectral (MS) imagery, without manual labels. Existing self-supervised methods either reconstruct sensor-specific pixel detail, align each image only with its co-registered twin, or rely on large transformers with 118-173M parameters (and up to 398M). We introduce RS-JEPA, a compact joint-embedding predictive framework built on a Vision Mamba encoder shared by both sensors. Since a state-space encoder reads an image as an ordered sequence of patches, we propose scan-path views, which treat two reading orders of the same image as two views with identical pixels and predict the hidden patches in one order from the visible patches in the other.To keep this prediction challenging, we propose Adversarial View Coupling (AVC), which learns the hardest split of the visible patches, and a neighbourhood consensus loss that aligns the scene similarities of both sensors. Extensive experiments on SAR-optical (BEN-14K, CBRSIR-VS) and PAN-MS (DSRSID) benchmarks demonstrate that RS-JEPA achieves the highest F1@5 among twelve re-implemented methods (72.92, 80.35 and 94.43) with a retrieval network of only 3.88M parameters (14.57M in training, 8-16times fewer than prior JEPA retrievers). Like prior methods, RS-JEPA trains on co-registered pairs. Our results highlight reading order as a source of self-supervised views. code: https://github.com/Tanishq251/RSJEPA.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14496v1.pdf",
       "source": "arxiv",
       "primary_category": "cs.CV",
       "categories": [
@@ -384,285 +584,69 @@
       "category_names_zh": [
         "cs.CV (计算机视觉与模式识别 (CV))"
       ],
-      "comment": "NeurIPS 2026 Datasets and Benchmarks Track",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09879v1",
-      "title": "PhotoFinish: Portable Timerless Probing of Microarchitectural Latencies",
-      "authors": [
-        "Tristan Hornetz",
-        "Eduard Ebert",
-        "Lorenz Hetterich",
-        "Lukas Gerlach",
-        "Michael Schwarz"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:54:16Z",
-      "summary": "Timing measurements are a fundamental building block of microarchitectural attacks, enabling software to convert otherwise invisible latency differences into architectural observations. Thus, restricting high-resolution timers is a common defense, especially in constrained environments such as web browsers. Timerless probing primitives provide an alternative approach. Instead of reading or constructing a timer, they observe architectural events that correlate with the microarchitectural state. However, such primitives typically rely on platform-specific behavior, and none generalizes across the wider computing landscape. In this paper, we present PhotoFinish, a portable timerless probing primitive that converts latency differences directly into an architectural value. PhotoFinish races an operation under test against a fixed reference in two parallel threads that then write unique values to the same shared location, resulting in a latency-dependent architectural value. PhotoFinish only requires parallel execution and shared memory, without constructing or reading a clock. We evaluate PhotoFinish on 38 CPUs spanning four ISAs and demonstrate reliable cache state classification across widely different microarchitectures, with comparable fidelity when compiled to WebAssembly and executed inside a browser. We further use PhotoFinish in AES T-table and Evict+Reload attacks, show that it applies beyond caches to TLB and execution-engine latencies, and demonstrate sufficient precision to identify the LLC slice of an address. Our results demonstrate shared-memory races as a generic and precise replacement for explicit timing, showing that restricting timers alone does not prevent software from observing fine-grained microarchitectural latency differences.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09879v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CR",
-      "categories": [
-        "cs.CR"
-      ],
-      "category_names_zh": [
-        "cs.CR (密码学与网络安全)"
-      ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09878v1",
-      "title": "Graded convolutional networks: scale invariance without the scale and robustness to unknown blur",
+      "paper_id": "2611.14495v1",
+      "title": "SkipLane: Write-Once, Conflict-Free Accumulation for Zero-Skipping CNN Engines on FPGAs",
       "authors": [
-        "Tanush Shaska"
+        "Aditya Saboo",
+        "Pratibha Verma"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:54:03Z",
-      "summary": "The Gaussian jet of an image is a graded vector space: a dilation by $λ$ multiplies derivatives of order $k$ by $λ^{-k}$. Local graded convolutions are exactly homogeneous differential operators, and a local feature is dilation-invariant if and only if it factors through the scale-normalized jet or, without the scale, through the retraction onto the weighted sphere of the grading. Under unknown Gaussian blur the retraction changes only by a change of scale, whereas the scale-normalized jet acquires a grading factor that no radial normalization removes. At the zero jet the retraction separates image families that radial normalizations and continuous classifiers cannot. Networks built on the retraction are universal for invariant features. On MNIST such a network keeps 88.4% accuracy under a two-pixel blur, against 66.2% for the same network on scale-normalized derivatives; in Lindeberg's Gaussian derivative network the retraction raises accuracy at that blur from 91.5% to 95.1%.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09878v1.pdf",
+      "published_at": "2026-11-10T18:50:51Z",
+      "summary": "Skipping zero activations saves multiplications in CNN accelerators, but it complicates accumulation: the products in a compressed input window belong to different output columns and must be merged. In our earlier engine, this merging was done by read-modify-write (RMW) of a row buffer, which made sparse inputs slower than dense ones even at 87% sparsity. Existing designs either merge kernel rows through RMW or reduce bank conflicts with extra hardware, without eliminating them. SkipLane makes the entire accumulation path write-once. Each kernel row is processed in its own lane, which holds partial sums in three registers and retires up to three finished columns per cycle into memory banks that cannot conflict. Lanes and input channels are summed only at readout, so no partial sum is ever read back. Multipliers left idle by zero weights compute a second filter in the same pass. In RTL simulation, the engine stays within 0.5% of its frontend bound up to 70% sparsity and is 1.10-1.26$\\times$ faster than an SCNN-style scatter accumulator with 18 banks and ideal RMW at 50-80% sparsity. Six engines meet 140 MHz on a PYNQ-Z2 using 21.1k LUTs and run LeNet-5 bit-exact on the board. For conv1, the engine needs 1.94$\\times$ fewer cycles than a dense engine (1.26$\\times$ faster end to end); for conv2, whose rows are only 13 pixels wide, it reaches 0.87$\\times$ the dense speed.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14495v1.pdf",
       "source": "arxiv",
-      "primary_category": "cs.CV",
+      "primary_category": "cs.AR",
       "categories": [
-        "cs.CV",
-        "cs.LG"
+        "cs.AR"
       ],
       "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "cs.LG (机器学习 (ML))"
+        "cs.AR (硬件与体系结构)"
       ],
-      "comment": "26 pages, 2 figures, 7 tables. Code, trained networks and results: https://doi.org/10.5281/zenodo.23997172",
+      "comment": "5 pages, 5 figures, 5 tables",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09877v1",
-      "title": "Locating Contact on Tendon-Driven Continuum Robots From Tendon Measurements Alone via Constrained Moving Horizon Estimation",
+      "paper_id": "2611.14494v1",
+      "title": "Dynamic linear equations in the presence of small perturbations of an interface",
       "authors": [
-        "Haitham El-Hussieny"
+        "Christian Daveau",
+        "Abdessatar Khelifi"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T18:53:10Z",
-      "summary": "Tendon-driven continuum robots can reach through constrained spaces, but contact along their bodies is invisible to the sensors at their motors. We show that this is a structural limitation rather than a tuning problem: the map from contact forces to tendon measurements has a null space of dimension at least seven, so no estimator that leaves the contact support free can locate contact. When the obstacle geometry is known, however, non-penetration and complementarity make the contact force locally identifiable, and we prove that the resulting system with unknown contact inputs is locally exponentially strongly detectable. We present a constrained moving horizon estimator (MHE) that encodes these conditions and runs in real time as one quadratic program per sample, and we give a local, mode-wise robust stability result for it. In a finite- element benchmark of a two-section robot pressing and sliding on a wall, the estimator located contact to 0.9 mm and estimated contact force to 0.22 N, compared with 65 mm and 0.72 N for a tuned extended Kalman filter (EKF) with state projection. The estimator tolerated millimeter- level errors in the obstacle position and unmodeled wall friction, under which the projected EKF failed. Under randomized model mismatch over 40 trials, including unmodeled tendon friction, it remained better in force and location in every trial. Without contact, the MHE offered no advantage over the EKF, which confirms that its benefit comes from the contact constraints. This report extends a letter submitted to IEEE Control Systems Letters with complete proofs and additional experiments.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09877v1.pdf",
+      "published_at": "2026-11-10T18:50:19Z",
+      "summary": "We consider solutions to the initial boundary value problems for both heat and wave equations in two dimensions. In this paper, we aim to advance the development of high-order terms in the asymptotic expansions of current boundary perturbations caused by small perturbations of the shape of a $C^2$-boundary inhomogeneity. Our derivations are rigorously derived by the field expansion (FE) method (formal derivation) and proved by layer potential techniques. It extends those already derived for small-volume inhomogeneities to develop efficient algorithms for determining certain properties of the shape of an inhomogeneity based on boundary measurements.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14494v1.pdf",
       "source": "arxiv",
-      "primary_category": "cs.RO",
+      "primary_category": "math.AP",
       "categories": [
-        "cs.RO"
+        "math.AP",
+        "math-ph"
       ],
       "category_names_zh": [
-        "cs.RO (机器人学与具身智能)"
+        "math.AP (偏微分方程 (PDE))",
+        "math-ph (数学物理与严格推演)"
       ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09876v1",
-      "title": "Novikov-Magnus Master Equation for Driven Quantum Systems under Classical Correlated Noise",
-      "authors": [
-        "Nada Khogeer",
-        "Jerison Parra",
-        "Caroline Desgranges",
-        "Hugo Ribeiro"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:53:03Z",
-      "summary": "We introduce a modular framework for deriving time-local quantum master equations for driven systems subject to temporally correlated classical noise. The construction combines the Donsker-Furutsu-Novikov relation with the Magnus expansion: Functional response closes the noise average, while nested commutators retain the noncommuting chronological action of noise-induced perturbations along the controlled quantum trajectory. For zero-mean Gaussian noise, we derive the resulting Novikov-Magnus quantum master equation through fourth order in the noise strength. The same response hierarchy suggests a natural extension beyond Gaussian noise, with connected higher-order noise correlations weighting higher functional derivatives of the stochastic map. For a driven qubit under Ornstein-Uhlenbeck and band-limited $1/f$ noise, the second- and fourth-order maps remain CPTP throughout the perturbative regime and accurately reproduce stochastic simulations. Their diamond-norm errors are comparable to those of the cumulant-based pseudo-Lindblad master equation, with a modest fourth-order improvement for Ornstein-Uhlenbeck noise.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09876v1.pdf",
-      "source": "arxiv",
-      "primary_category": "quant-ph",
-      "categories": [
-        "quant-ph"
-      ],
-      "category_names_zh": [
-        "quant-ph (量子力学、量子通信与量子计算)"
-      ],
-      "comment": "main text 5 pages, supplemental text 24 pages, 3 main text figures, 16 supplemental figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09875v1",
-      "title": "SN 2026ahvu in NGC 1433 May Be a Prompt Type Ia Supernova with a Delay Time Under 100 Myr",
-      "authors": [
-        "Sumit K. Sarbadhicary",
-        "Kiana Henny",
-        "Adam Leroy",
-        "Karin Sandstrom",
-        "Kirsten L. Larson"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:52:29Z",
-      "summary": "SN 2026ahvu is a Type Ia supernova (SN) that occurred in the nearby galaxy NGC 1433. Using archival Hubble and JWST imaging from the PHANGS survey, we show that the SN lies within 0.19$''$ and 0.26$''$ of two UV-bright star clusters. This $0.19/0.26''$ separation corresponds to $8/11$ pc ($17/24$ pc) at the reported distances of $9.1$ and $18.9$ Mpc, respectively. The probability of finding an unrelated Type Ia SN this close to a cataloged star cluster by chance is only $\\sim$0.4 %. Thus, SN 2026ahvu is likely the first Type Ia SN that can be associated with relatively young star clusters in a nearby galaxy. From spectral energy distribution fitting using HST+JWST (or HST-only) data, we find that the clusters have age estimates of $37_{-5}^{+3}$ ($57_{-9}^{+14}$) Myr and $95_{-13}^{+15}$ ($88_{-12}^{+14}$) Myr. Association with either cluster would mean that SN 2026ahvu should be considered a prompt SN Ia and provide one of the most concrete measurements to date of a prompt Ia delay time. The median age of the younger star cluster is close to the minimum possible delay time for SN Ia progenitors. If the SN is indeed associated with the younger cluster, it would imply that Type Ia SNe can occur almost immediately after white dwarf formation. If the SN is associated with the older cluster, this discovery still presents the first example of a prompt Type Ia SN with delay time under 100 Myr.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09875v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.GA",
-      "categories": [
-        "astro-ph.GA",
-        "astro-ph.SR"
-      ],
-      "category_names_zh": [
-        "astro-ph.GA (星系天体物理)",
-        "astro-ph.SR (太阳与恒星天体物理)"
-      ],
-      "comment": "10 pages, 2 figures, 1 table. Submitted to ApJL",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09874v1",
-      "title": "Pure mapping class group fixed points in $\\mathrm{PU}(2,1)$",
-      "authors": [
-        "Samuel Bronstein",
-        "Thomas Le Fils",
-        "Arnaud Maret"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:50:34Z",
-      "summary": "We classify all the fixed points for the action of the pure mapping class group on $\\mathrm{PU}(2,1)$ character varieties of surface groups. Up to trivial peripheral monodromies, we prove that the irreducible fixed points are either pair of pants representations, or restrictions of reduced Burau representations to a once-punctured torus and restrictions of reduced Gassner representations to a 4-punctured sphere. On the other hand, we prove that the only non-trivial reducible fixed points appear in genus 0 where they map all but at most three peripheral loops in the centralizer of the image, and in genus 1 where they are valued in the quaternion group $H_8$. As consequences, we deduce (i) that an irreducible representation in genus 0 with at least four non-trivial peripheral monodromies is rigid if and only if it is a fixed point, and (ii) a partial classification of irreducible representations of pure braid groups into $\\mathrm{PU}(2,1)$.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09874v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.GT",
-      "categories": [
-        "math.GT",
-        "math.DS"
-      ],
-      "category_names_zh": [
-        "math.GT (几何拓扑)",
-        "math.DS (动力系统)"
-      ],
-      "comment": "46 pages, 7 figures. Comments welcome!",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09873v1",
-      "title": "Trajectory-Dependent Decoherence and Leakage During Shuttling of Multi-Spin Qubits",
-      "authors": [
-        "Yu-Ning Zhang",
-        "Aleksandr S. Mokeev",
-        "Maximilian Rimbach-Russ",
-        "David P. DiVincenzo",
-        "Viatcheslav V. Dobrovitski"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:49:52Z",
-      "summary": "Logical qubits encoded in collective states of multiple spins are promising building blocks for large-scale semiconductor quantum processors. As novel fault-tolerant architectures increasingly rely on qubit shuttling, understanding decoherence of the shuttled multi-spin qubits becomes crucial. We analyze fidelity and leakage of the logical qubits dephased by the spatio-temporally correlated $1/f$ noise, considering two-, three-, and four-spin encodings. We study different shuttling protocols and establish that for all encodings generally, parallel shuttling provides the best protection against decoherence at short distances, whereas sequential shuttling outperforms others for long-range transport (although the exact boundaries depend on the specific device parameters). We explain this common behavior in terms of the dephasing factors of pairs of the shuttled spins; we provide explicit expressions for fidelities and leakage, thus enabling experimentalists to predict performance of the multi-spin qubits from only several independently measured pairwise dephasing factors. Our results establish a connection between shuttling trajectories, noise correlations, and qubit decoherence, and provide guidance for achieving noise-resilient shuttling in scalable semiconductor quantum processors.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09873v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cond-mat.mes-hall",
-      "categories": [
-        "cond-mat.mes-hall",
-        "quant-ph"
-      ],
-      "category_names_zh": [
-        "cond-mat.mes-hall (介观与霍尔效应)",
-        "quant-ph (量子力学、量子通信与量子计算)"
-      ],
-      "comment": "22 pages, 12 figures (including Appendices A--E and the references)",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09872v1",
-      "title": "On the Reliability of Majority-Vote Pseudo-Labels in Test-Time Reinforcement Learning",
-      "authors": [
-        "Haoyu Wang",
-        "Ru Wang",
-        "Yuanyuan Wang",
-        "Jiaxian Guo",
-        "Mingming Gong"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:49:02Z",
-      "summary": "Test-time reinforcement learning (TTRL) adapts pretrained language models to unlabeled target-domain data using self-generated pseudo-labels, whose reliability remains poorly understood. We analyze majority-vote supervision for TTRL with online Direct Preference Optimization (DPO) and decompose its error into population-majority bias and prompt-dependent finite-rollout variation. Because population-majority bias is generally unidentifiable without external supervision, we focus on mitigating the downstream effects of finite-rollout variation. We propose \\emph{Prompt-Conditional Distributionally Robust DPO (PC-Dr.DPO)}, which conditions within-prompt robust reweighting on observed vote reliability to make updates from sampling-sensitive prompts more conservative. We further introduce a cache-based mechanism to reduce self-supervised forgetting during online adaptation. Across six mathematical and knowledge-intensive reasoning benchmarks and five model backbones, PC-Dr.DPO matches or outperforms the strongest TTRL baseline in 24 of 30 settings.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09872v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09871v1",
-      "title": "Multi-phase Carbon Structure and Dynamics in NGC 6334: Insights from CO, [C I], and [C II]",
-      "authors": [
-        "S. Neupane",
-        "F. Wyrowski",
-        "N. Schneider",
-        "A. G. G. M. Tielens",
-        "R. Simon"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:48:43Z",
-      "summary": "We present high-angular and velocity resolution observations of the emission lines of [CII] at 158 micron, [CI] at 609 micron, and the 12CO and 13CO (J=3-2) transitions toward the central region of NGC 6334, providing a detailed multi-phase view of carbon in this massive star-forming complex. By combining morphology and spatial scales information, kinematics, line profiles, and line ratio analyses, we quantify the distribution and physical state of ionized and atomic carbon, and carbon in its molecular form in CO. [CII] emission is the most extended, permeates the mapped region and is dynamically complex, while 13CO is compact and quiescent, and 12CO and [CI] occupy intermediate regimes connecting dense regions to transitional diffuse layers. We interpret these emission distributions such that the brightest [CII] emission traces photodissociation regions (PDRs) close to the H II region bubbles located along the central filament, while the extended [CII] emission arises from the more diffuse warm gas, indicating either cloud formation or dispersal processes. Remarkably, the [CI] is more extended than the 13CO, but less than [CII] and may probe the gas velocity structure resulting from colliding flows or cloud-cloud collisions. Line ratios involving [CII], such as [CII]/[CI] or [CII]/CO are systematically high, revealing widespread diffuse emission and localized UV-illuminated surfaces. Line ratio analysis and K-means clustering of [CI]/13CO versus dust continuum (cold 870 micron and warm 70 micron) emission reveal stratified chemical structure that UV photons penetrate deeply into the clumpy ridge (Av~18), suggesting a porous PDR. These results together depict that NGC 6334 is a clumpy, feedback-dominated PDR ridge with coexisting carbon phases, where [CI] and [CII] also trace dynamical processing through multiple velocity components linked to cloud-cloud collisions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09871v1.pdf",
-      "source": "arxiv",
-      "primary_category": "astro-ph.GA",
-      "categories": [
-        "astro-ph.GA",
-        "astro-ph.SR"
-      ],
-      "category_names_zh": [
-        "astro-ph.GA (星系天体物理)",
-        "astro-ph.SR (太阳与恒星天体物理)"
-      ],
-      "comment": "12+10 pages, 23 figures, Accepted for publication in A&A",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09870v1",
-      "title": "AI Exposure and the Changing Responsibilities in Job Postings",
-      "authors": [
-        "Dora Zhao",
-        "Lin Ai",
-        "Pranav Khadpe",
-        "Siddharth Suri",
-        "Scott Counts"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T18:48:36Z",
-      "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09870v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CY",
-      "categories": [
-        "cs.CY"
-      ],
-      "category_names_zh": [
-        "cs.CY (计算机与社会治理)"
-      ],
-      "comment": null,
+      "comment": "16 pages",
       "journal_ref": null,
       "ai_summary": null
     }
   ],
   "sub_distribution": [
     {
-      "code": "cs.CV",
-      "name_zh": "计算机视觉与模式识别 (CV)",
-      "count": 5
-    },
-    {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 4
+      "count": 7
     },
     {
-      "code": "cs.RO",
-      "name_zh": "机器人学与具身智能",
-      "count": 3
+      "code": "cs.CV",
+      "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 4
     },
     {
       "code": "cs.AI",
@@ -670,48 +654,63 @@
       "count": 3
     },
     {
+      "code": "math.CV",
+      "name_zh": "复变函数与多复变",
+      "count": 2
+    },
+    {
+      "code": "math.NT",
+      "name_zh": "数论",
+      "count": 2
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 2
+    },
+    {
+      "code": "math.CO",
+      "name_zh": "组合数学与图论",
+      "count": 2
+    },
+    {
       "code": "math.AP",
       "name_zh": "偏微分方程 (PDE)",
       "count": 2
     },
     {
-      "code": "cs.CR",
-      "name_zh": "密码学与网络安全",
+      "code": "q-bio.NC",
+      "name_zh": "神经科学与脑认知",
       "count": 2
     },
     {
-      "code": "quant-ph",
-      "name_zh": "量子力学、量子通信与量子计算",
+      "code": "math.DG",
+      "name_zh": "微分几何",
       "count": 2
     },
     {
-      "code": "astro-ph.GA",
-      "name_zh": "星系天体物理",
+      "code": "math-ph",
+      "name_zh": "数学物理与严格推演",
       "count": 2
     },
     {
-      "code": "astro-ph.SR",
-      "name_zh": "太阳与恒星天体物理",
-      "count": 2
-    },
-    {
-      "code": "hep-ph",
-      "name_zh": "高能物理 - 唯象学",
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
       "count": 1
     },
     {
-      "code": "astro-ph.CO",
-      "name_zh": "宇宙学与河外天体物理",
+      "code": "cs.DS",
+      "name_zh": "数据结构与算法",
       "count": 1
     },
     {
-      "code": "math.PR",
-      "name_zh": "概率论与随机过程",
+      "code": "cs.DM",
+      "name_zh": "离散数学",
       "count": 1
     },
     {
-      "code": "math.CA",
-      "name_zh": "经典分析与常微分方程",
+      "code": "q-bio.QM",
+      "name_zh": "生物医学定量方法",
       "count": 1
     },
     {
@@ -720,33 +719,18 @@
       "count": 1
     },
     {
-      "code": "math.NA",
-      "name_zh": "数值分析与科学计算",
+      "code": "cs.GT",
+      "name_zh": "计算机博弈论与算法经济",
       "count": 1
     },
     {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
+      "code": "math.RT",
+      "name_zh": "表示论",
       "count": 1
     },
     {
-      "code": "math.AT",
-      "name_zh": "代数拓扑",
-      "count": 1
-    },
-    {
-      "code": "astro-ph.EP",
-      "name_zh": "地球与行星天体物理",
-      "count": 1
-    },
-    {
-      "code": "math.AG",
-      "name_zh": "代数几何",
-      "count": 1
-    },
-    {
-      "code": "cond-mat.str-el",
-      "name_zh": "强关联电子系统",
+      "code": "q-bio.BM",
+      "name_zh": "生物分子结构与动力学",
       "count": 1
     },
     {
@@ -755,18 +739,48 @@
       "count": 1
     },
     {
-      "code": "math.DS",
-      "name_zh": "动力系统",
+      "code": "cond-mat.stat-mech",
+      "name_zh": "统计力学",
       "count": 1
     },
     {
-      "code": "cond-mat.mes-hall",
-      "name_zh": "介观与霍尔效应",
+      "code": "physics.bio-ph",
+      "name_zh": "生物物理",
       "count": 1
     },
     {
-      "code": "cs.CY",
-      "name_zh": "计算机与社会治理",
+      "code": "q-bio.PE",
+      "name_zh": "种群与生态进化",
+      "count": 1
+    },
+    {
+      "code": "math.PR",
+      "name_zh": "概率论与随机过程",
+      "count": 1
+    },
+    {
+      "code": "physics.soc-ph",
+      "name_zh": "物理与社会科学 (复杂系统)",
+      "count": 1
+    },
+    {
+      "code": "cs.MA",
+      "name_zh": "多智能体系统 (Multiagent)",
+      "count": 1
+    },
+    {
+      "code": "stat.OT",
+      "name_zh": "其他综合统计学",
+      "count": 1
+    },
+    {
+      "code": "cond-mat.other",
+      "name_zh": "其他凝聚态物理",
+      "count": 1
+    },
+    {
+      "code": "cs.AR",
+      "name_zh": "硬件与体系结构",
       "count": 1
     }
   ]

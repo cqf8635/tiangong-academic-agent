@@ -1,8 +1,88 @@
 {
   "query_expression": "cat:q-bio.GN",
   "total_fetched": 25,
-  "total_results": 4037,
+  "total_results": 4040,
   "papers": [
+    {
+      "paper_id": "2611.13801v1",
+      "title": "Bridging Graph and Pairwise Learning for Gene Regulatory Network Inference from scRNA-seq Data",
+      "authors": [
+        "Hang Li",
+        "Jiaxin Qi",
+        "Yan Cui",
+        "Yuhua Zheng",
+        "Jianqiang Huang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T09:34:28Z",
+      "summary": "Motivation: Gene regulatory networks (GRNs) capture the underlying interactions through which transcription factors (TFs) regulate genes. Based on gene expression data, existing GRN inference approaches generally fall into two categories: graph-based methods, which model the GRN as a whole graph, and pairwise-based methods, which decompose the GRN into individual TF-target gene pairs for modeling. However, each approach exhibits limitations that are precisely the strengths of its counterpart. Graph-based methods tend to overfit due to their reliance on a single training graph, whereas pairwise-based methods benefit from abundant TF-target training pairs. In contrast, pairwise-based methods overlook the global topological structure, which is essential for comprehensively capturing regulatory mechanisms. Results: To address these limitations, we propose scGPL, an end-to-end unified framework that jointly models global regulatory topology and local interactions. scGPL extracts macro-level features from the global regulatory graph and introduces a dynamic, importance-guided subgraph sampling mechanism to capture fine-grained local dependencies. By fusing global representations with subgraph-enhanced local features, our framework bridges the gap between the two paradigms, incorporating essential whole-graph topological dependencies while retaining the data abundance advantage of pairwise methods. Extensive experiments on seven benchmark datasets demonstrate that scGPL consistently achieves state-of-the-art performance, with up to 13.7% improvement over the strongest baseline, validating the effectiveness of our integrative design. Availability and implementation: The source code is maintained on GitHub (https://github.com/talent-hang/scGPL), and the datasets and versioned releases are archived at https://doi.org/10.5281/zenodo.21608485 for reproducibility.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13801v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "Accepted to Bioinformatics",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13763v1",
+      "title": "Detection of local recombination and mutation hotspots in bacterial genomes using neural posterior estimation",
+      "authors": [
+        "Haochu Liu",
+        "Richard G. Everitt",
+        "Xavier Didelot"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T09:03:29Z",
+      "summary": "Motivation: Recombination and mutation rates in bacteria vary along the genome, and regions of elevated rate (hotspots) often reflect selection on specific genes. Detecting them is difficult because the two processes leave overlapping signals in sequence data, clonal relationships act as a confounder, and inference must scale to whole genomes. Existing methods assume a constant mutation rate and/or rely on a small set of summary statistics. Results: We present a simulation-based framework that infers gene-specific recombination and mutation rates under a well-specified model of bacterial recombination. Neural posterior estimation (NPE) is trained on simulations conditioned on a fixed clonal genealogy, using a wide range of summary statistics. Gene length is also used as both a parameter and an observed statistic, so that the model learns about its effect on other statistics and thus becomes applicable across different gene lengths. To identify hotspots, we introduce a circular posterior-propagated Difference-of-Gaussians detector that contrasts local and regional smoothers of the posterior log rates, carrying NPE uncertainty into hotspot probabilities. On simulated data, the method recovers the true rates, with credible intervals that narrow as gene length increases. We also apply the new methodology to three real datasets in Bacillus cereus, Staphylococcus aureus and Escherichia coli to showcase its usefulness in a range of situations. Availability and implementation: The Python implementation is freely available from https://github.com/haochu-liu/bacnpe.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13763v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.GN",
+      "categories": [
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13748v1",
+      "title": "When Covariance Is Not Enough: Kernel-Based Regularization for Single-Cell Counterfactuals",
+      "authors": [
+        "Korbinian Traeuble",
+        "Edward de Brouwer",
+        "Archit Verma",
+        "Doron Haviv",
+        "Kipper Fletez-Brant"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T08:49:33Z",
+      "summary": "Counterfactual editing of single cells, predicting how an observed cell would look had one factor been different, enables in-silico screening where experiments are infeasible, but is useful only if the edit is faithful to the individual and not merely to the condition. Concept bottleneck generative models make the effects of interventions interpretable by decomposing a cell's representation into known and unknown factors. Previous work uses a linear cross-covariance penalty to disentangle known and unknown dimensions. We demonstrate that this first-order criterion does not fully separate information when non-linear interactions are present. We first demonstrate the inadequacy of linear cross-factor penalization with simulation experiments with controlled edits and known non-linear covariate effects. We then demonstrate that adding a nonlinear kernel criterion, the normalized Hilbert-Schmidt Independence Criterion, is able to recover the true intervention effects on simulation data. Finally, we apply the non-linear concept bottleneck model to a complex single-cell RNA-seq dataset and find that it improves the ability to generate counterfactual expression profiles of cells under different tissue environments.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13748v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.GN"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.GN (基因组学与生物信息)"
+      ],
+      "comment": "17 pages, 3 figures, 5 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.11796v1",
       "title": "Publications as benchmarks: auditing AI agents on spatial transcriptomics alignment",
@@ -610,84 +690,6 @@
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37851v1",
-      "title": "Evaluating and improving AI agents for sequencing protocol understanding",
-      "authors": [
-        "Chi-Lam Poon",
-        "Michael Goneos",
-        "Zezheng Song",
-        "Xi Chen"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T18:58:58Z",
-      "summary": "Existing scientific-agent benchmarks rarely evaluate whether agents can reconstruct the exact molecular structures and generation workflows specified by sequencing protocols, a capability critical for analyzing customized sequencing assays. We introduce LibStructBench, a document-grounded benchmark for reconstructing sequencing-library structures and molecular workflows. Our experiments show that frontier agents often produce approximately correct reconstructions but remain unreliable at exact reconstruction, particularly in molecular-state representation and workflow connectivity. Switching the underlying language model produced larger average performance differences than switching agent harnesses, with a statistically significant difference only for molecular-state reconstruction. Additional knowledge improved oligo-family recovery in a small pilot without improving mean molecular-workflow scores. Autonomous accumulation of procedural rules and cross-protocol examples showed non-monotonic validation performance and no mean held-out molecular-workflow improvement in the tested trajectory. These findings highlight the need for more controlled and verifiable approaches to scientific reasoning about molecular processes in complex experimental protocols.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37851v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.37031v2",
-      "title": "pyTransRate: reference-free quality assessment of de novo transcriptome assemblies with current aligners and quantifiers",
-      "authors": [
-        "Matthew MacManes"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T11:08:52Z",
-      "summary": "Summary: The original software TransRate scores a de novo transcriptome assembly by mapping the reads it was built from back to it, with no reference required. Its last release (1.0.3) depends on Ruby 2.2 and on aligner and quantifier versions that can no longer be installed on most systems. pyTransRate is a Python reimplementation of the TransRate method built on snap-aligner 2.0.5 and salmon 2.7.0. In 5,031 paired comparisons (39 assembly-level metrics on each of 129 public assemblies), it reproduces the original sequence metrics and read counts exactly and ranks assemblies consistently with 1.0.3 (Spearman rho = 0.94 for assembly score, 0.98 for good-mapping rate), although its read-based scores are not numerically interchangeable with the original. It also reads gzip- and bgzip-compressed input directly. Availability and Implementation: pyTransRate is implemented in Python 3 and is freely available under the MIT license at https://github.com/macmanes-lab/pytransrate. It runs on Linux and macOS; snap-aligner and salmon are installed from Bioconda. Supplementary information: Supplementary data are available online. Supplementary Table S1 lists the assembly and read accessions for every assembly analyzed; Supplementary Table S2 gives per-assembly values from both implementations.",
-      "pdf_url": "https://arxiv.org/pdf/2610.37031v2.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.GN",
-      "categories": [
-        "q-bio.GN",
-        "q-bio.QM"
-      ],
-      "category_names_zh": [
-        "q-bio.GN (基因组学与生物信息)",
-        "q-bio.QM (生物医学定量方法)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2610.36500v1",
-      "title": "ACOR: incremental evidence accumulation towards real-time DNA storage reconstruction",
-      "authors": [
-        "Linxuan Han",
-        "Huaming Wu",
-        "Shi Jia",
-        "Guanjin Qu"
-      ],
-      "year": 2026,
-      "published_at": "2026-10-27T01:58:03Z",
-      "summary": "DNA offers high-density, durable storage by encoding digital information into synthetic strands and retrieving it through sequencing. Sequence reconstruction combines noisy copies of each strand before downstream decoding. Conventional offline methods typically reconstruct completed read clusters, separating reconstruction from ongoing read collection. Streaming reconstruction offers a way to overlap evidence processing with sequencing and reduce the computation remaining before downstream decoding. We present ACOR, a streaming consensus reconstruction method that records $k$-mer transitions and boundary support in a persistent ledger, then decodes through length-constrained beam search and priority-based selection at cluster closure. Evaluation on real and simulated DNA-storage datasets showed competitive recovery. On our own short-read next-generation sequencing (NGS) wet-lab library, ACOR combined near-complete recovery with second-scale reconstruction of more than ten million reads. A smaller public benchmark was completed in a fraction of a second. Parallel ACOR achieved speedups of tens to over a thousand-fold relative to the tested serial baseline configurations. Sparse storage reduced high-context memory requirements, while parallel execution accelerated reconstruction computation. ACOR is designed for streaming readout pipelines that process assigned reads while sequencing continues.",
-      "pdf_url": "https://arxiv.org/pdf/2610.36500v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.IR",
-      "categories": [
-        "cs.IR",
-        "q-bio.GN"
-      ],
-      "category_names_zh": [
-        "cs.IR (信息检索与推荐系统)",
-        "q-bio.GN (基因组学与生物信息)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -704,12 +706,12 @@
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 8
+      "count": 9
     },
     {
       "code": "q-bio.QM",
       "name_zh": "生物医学定量方法",
-      "count": 6
+      "count": 5
     },
     {
       "code": "stat.AP",
@@ -750,12 +752,7 @@
       "code": "q-bio.PE",
       "name_zh": "种群与生态进化",
       "count": 1
-    },
-    {
-      "code": "cs.IR",
-      "name_zh": "信息检索与推荐系统",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T18:02:13.314767"
+  "snapshot_synced_at": "2026-11-12T20:16:08.205158"
 }

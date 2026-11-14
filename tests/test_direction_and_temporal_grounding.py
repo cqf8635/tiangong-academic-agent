@@ -5,6 +5,10 @@ import online_paper_search_agent as mod
 
 
 def test_arxiv_uses_submitted_date_when_time_constrained(monkeypatch):
+    from datetime import date
+    from config_utils import resolve_retrieval_time_constraint
+    monkeypatch.setattr(mod, "resolve_retrieval_time_constraint", lambda constraint=None:
+        resolve_retrieval_time_constraint(constraint, today=date(2026, 11, 13)))
     called_urls = []
 
     class FakeResponse:
@@ -30,11 +34,12 @@ def test_arxiv_uses_submitted_date_when_time_constrained(monkeypatch):
     assert "sortBy=submittedDate" in called_urls[0]
     assert "sortOrder=descending" in called_urls[0]
 
-    # 2. 无时间约束时，按经典度/相关度排序
+    # 2. 未显式指定时，系统默认最近三年，仍按时间排序
     called_urls.clear()
     agent.search_arxiv("lattice gauge theory", max_results=3, time_constraint=None)
     assert len(called_urls) == 1
-    assert "sortBy=relevance" in called_urls[0]
+    assert "sortBy=submittedDate" in called_urls[0]
+    assert "submittedDate%3A%5B20231113000000+TO+20261113235959%5D" in called_urls[0]
 
 
 def test_direction_grounding_matches_by_semantic_similarity():

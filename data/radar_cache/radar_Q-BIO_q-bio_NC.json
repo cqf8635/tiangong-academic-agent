@@ -1,8 +1,326 @@
 {
   "query_expression": "cat:q-bio.NC",
   "total_fetched": 25,
-  "total_results": 12774,
+  "total_results": 12789,
   "papers": [
+    {
+      "paper_id": "2611.14508v1",
+      "title": "When Does the Real Wiring Win? Testing connectome structure-function claims against unmeasured physiology",
+      "authors": [
+        "Yeyuan Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:55:48Z",
+      "summary": "Connectome-constrained models are often used to argue that a measured wiring diagram outperforms shuffled or rewired wiring, and hence that structure shapes function. Such comparisons can confound wiring with how the models are tuned: a connectome fixes who connects to whom, not the excitability, gains or plasticity rates the model also needs, and modellers often tune these until the real-wiring model works. We separate three estimands: physiology tuned on the real wiring and transferred to nulls (P1), each wiring tuned on its own (P2), and P2 restricted to physiology consistent with independent data (P3). The biases involved are known in machine learning (under-tuned baselines, inherited weights, winner's curse); we measure what they do to biological conclusions, using synthetic ground truth, placebo nulls and three Drosophila circuit models. Some claims survive every protocol we test: segregated reward and punishment dopamine improves learning, and head-direction topography is required for a persistent bump. Others do not. In the mushroom body, the real Kenyon-cell output wiring beats a cross-subtype identity shuffle by 0.09 under P1 and P2 but loses to it by 0.09 under P3 (95% CIs exclude zero; held-out runs confirm). The verdict is set by the share of alpha'beta' cells among active Kenyon cells, which P1 selects low; at the share implied by imaging (about 44%) the real-wiring model fails to learn, exposing a model inadequacy rather than a deficit of the fly's wiring. In flyvis, P1 penalises a mirrored connectome, which has a constructed solution within 0.07 (median) of the real error, more than a spatially shuffled one in 50 of 50 members; the ranking survives ten-fold longer retraining but depends on the checkpoint at fifty-fold. A credible structural claim needs matched optimisation, data-constrained physiology and a model that still works there.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14508v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": "23 pages, 5 figures, 10 tables. Code, data and prediction files are included as ancillary files",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14498v1",
+      "title": "Measuring Robustness and Efficiency in a Connectome-Constrained Fly Visual System Model: Linking an Adversarial and a Perceptual Illusion",
+      "authors": [
+        "Alexandre Garcia-Duran",
+        "Alejandro Rodriguez-Garcia",
+        "Manuel Molano-Mazón",
+        "Alexandre Hyafil",
+        "Srikanth Ramaswamy"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T18:51:31Z",
+      "summary": "Biological visual systems compute reliably under tight metabolic and wiring constraints, whereas artificial vision systems consume far more energy and can be sensitive to adversarial perturbations. Whether networks with brain-like wiring are more robust at lower computational cost is unclear. We address this by benchmarking a task-optimized, continuous-time recurrent neural network of the fly visual system constrained by its synaptic connectome (FlyNet) against artificial neural networks. We compare it against CNNs, RAFT, and continuous-time recurrent neural networks without detailed connectome constraints (sCTRNN, CTRNN) on a collision-detection task within a differentiable 3D rendering pipeline. FlyNet is adversarially vulnerable but, relative to its compute, more robust to common video corruptions than RAFT, while using up to five orders of magnitude fewer FLOPs. The CTRNNs remain more robust than FlyNet across almost all tested perturbations, suggesting that connectome constraints benefit efficiency, through their low edge count, over robustness. Recurrence improves robustness to white-box attacks in RAFT and temporal context improves robustness to common corruptions. FlyNet's position and velocity representations degrade under adversarial textures but recover under counterfactual textures that restore correct classification while staying equally far from training, ruling out unfamiliar textures as the cause of failure. The reverse-phi illusion similarly disrupts these representations and inverts the same low-level motion statistic as the adversarial textures. Optimizing this input statistic alone, without access to the network, suffices to induce classification failure, attributing both perturbations to the same circuit vulnerability. Connectome-constrained models can thus surface adversarial failure mechanisms as testable hypotheses about biological perceptual vulnerabilities.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14498v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": "39 pages, 24 figures, 2 tables, Accepted at 40th Conference on Neural Information Processing Systems (NeurIPS 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14381v1",
+      "title": "Optimization principles, revisited",
+      "authors": [
+        "William Bialek"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T17:36:48Z",
+      "summary": "The brain solves a wide range of problems, and some of these solutions are very good indeed. It is an old idea that, in some cases, these solutions may be as good as possible given the relevant constraints. If this is true we can promote this notion of optimization to a principle from which aspects of function and mechanism can be derived, ideally with no free parameters. Optimization principles are powerful and have had many successes, but they remain controversial. We start with a reminder of a classic example---diffraction limited optics in insect eyes---and then a summary of why you should worry about optimization as a more general principle. Next we turn to recent progress on the theory of optimal motion estimation in fly vision, and finally summarize recent results on the landscape for optimization, arguing that (contrary to widely held intuitions) optimal performance need not require the underlying mechanisms to have finely tuned parameters. I hope to convince you that this is a moment to take optimization seriously as the basis for theories of neural coding and computation. This is based on a rather informal lecture at the summer school LASCON X in Sao Paulo, and I have tried to preserve that tone here; pointers are given to more detailed and technical discussions.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14381v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC",
+        "physics.bio-ph"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)",
+        "physics.bio-ph (生物物理)"
+      ],
+      "comment": "Based on a lecture at LASCON X, https://sisne.org/en/lascon-x/",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14035v1",
+      "title": "ScaleBrain: A Scale-Consistent Framework for EEG Foundation Models",
+      "authors": [
+        "Minyu Zhou",
+        "Yajing Wu",
+        "Yongqiang Tang",
+        "Wang Jia",
+        "Wensheng Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T13:03:41Z",
+      "summary": "Foundation models pre-trained on large unlabeled electroencephalography (EEG) corpora have emerged as a transformative paradigm for Brain-Computer Interface (BCI) applications. Recent EEG foundation models have shown that multi-scale representations derived from fixed-length patches can improve EEG representation learning. Existing frameworks commonly construct temporal scales through feature-level operations. However, these operations leave the correspondence between learned features and scale-specific characteristics of the original EEG signals implicit. Moreover, when the self-supervised objective is not aligned with the multi-scale input representations, information at some temporal scales may receive insufficient supervision during pre-training. In light of this, we propose ScaleBrain, a scale-consistent pre-training framework that explicitly coordinates multi-scale representations of EEG from both the model input and optimization objective sides. Specifically, ScaleBrain introduces multi-scale EEG tokenization to represent the same EEG segment through analysis windows with different temporal spans and shared temporal anchors, and pairs these representations with scale-specific reconstruction to align with the multi-scale input structure and provide supervision across temporal resolutions during self-supervised learning. We further develop an axial spatio-temporal attention mechanism to contextualize the fused multi-scale representation along spatial and temporal dimensions. Extensive evaluations on six public BCI benchmarks against 12 representative baselines show that ScaleBrain achieves the highest mean Balanced Accuracy on five datasets and ranks third on the remaining one, with only 5.0M parameters, demonstrating strong performance and favorable parameter efficiency.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14035v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "eess.SP (信号处理 (Signal Processing))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13780v1",
+      "title": "Neuromodulation Through Intrinsic Noise",
+      "authors": [
+        "Sunghyun Koo",
+        "Jin Gyu Lee",
+        "Rodolphe Sepulchre"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T09:19:45Z",
+      "summary": "Neuromodulation, the modulation of excitability through the regulation of neuronal parameters, is a key tool in neuromorphic control design. This paper investigates how spiking excitability can be modulated by intrinsic noise. Focusing on a simplified memristive neuron model, we show that intrinsic noise plays distinct functional roles depending on the feedback pathways: Intrinsic noise in the fast excitatory feedback shapes the nature of excitability and modulates the sensitivity of the neuron to external/internal stimuli, whereas that in the slow inhibitory feedback provides internal stimuli that can trigger stochastic spiking. We expect these findings to guide the design of neuromorphic systems that harness intrinsic noise to exploit beneficial stochastic phenomena, such as stochastic resonance.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13780v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": "Submitted to European Control Conference (ECC) 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13692v1",
+      "title": "Similar visual tuning conceals different recovery dynamics in a model of macaque V1",
+      "authors": [
+        "Xialei Huang",
+        "Qingyu Yan",
+        "Zheng Bian",
+        "Zhuo-Cheng Xiao"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T07:39:57Z",
+      "summary": "Biologically detailed neuronal networks can model how brain circuits perform observed functions, but their high computational cost limits the comparisons needed to test biological hypotheses. To address this limitation, we extend a multiscale approach in which responses of small populations of spiking neurons are computed in advance and reused across a larger cortical circuit. In particular, we approximate these local responses by deep neural networks and achieve an estimated acceleration of the order $10^5$ for steady-state evaluation relative to spiking network simulation. Beyond computational acceleration, the smooth deep surrogate of local responses provides derivatives, allowing us to analyze linear stability and to trace how a perturbation in brain activity is transmitted through different pathways. We demonstrate the approach in a model of an input layer of macaque primary visual cortex (V1), testing circuits under visual stimulation and controlled perturbations. We resolve pathway contributions to stability, strong recurrent responses, and slow recovery. Yet different combinations of pathway strengths can support similar responses to visual stimuli while producing different recovery dynamics. Therefore, Steady responses and perturbation recovery place complementary constraints on candidate circuits. Overall, our approach offers efficient evaluation with an interpretable circuit structure, making systematic comparisons across stimuli and biological hypotheses practical.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13692v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC",
+        "q-bio.QM"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)",
+        "q-bio.QM (生物医学定量方法)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13681v1",
+      "title": "A Functional Preservation Score for Auditing Connectome Operations: Compression, Alignment, Transport, and Local-Rule Writing",
+      "authors": [
+        "Praveg Vashishtha"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T07:30:42Z",
+      "summary": "We introduce the Functional Preservation Score (FPS), a null-normalised, behaviourally grounded measure of how much of a neural network's input-output function survives a structural operation, and use it to audit the operations underlying speculative \"mind-migration\" pipelines on public data that runs on a single laptop. Across five pre-registered studies on the C. elegans connectome, whole-brain calcium activity, and hippocampal replay, FPS yields two positive characterisations and a three-part negative. Low-bit quantisation of a real connectome exhibits a structure-dependent sparsity floor: uniform int4/ternary quantisation is forced to roughly 73%/98% effective sparsity because heavy-tailed integer synaptic weights round to zero, while mixed-precision protection of hub neurons lowers these floors to about 27%/32%. Decoded hippocampal replay sequences compress heavily yet remain identifiable at a cross-validated top-1 accuracy of 0.69 (95% CI [0.63, 0.74]; chance 0.125; permutation p < 1e-3) from latents of order 10-50 bits per event, and a bounded incremental store shows a graceful-versus-cliff capacity trade-off. The migration pipeline fails in simulation at each stage for largely independent reasons: the putative \"identity payload\" is not a functionally separable module (p >= 0.16 at every tested size); cross-individual functional transport via Gromov-Wasserstein collapses once the target's wiring is respected (fidelity 1.00 to 0.40, [0.31, 0.49], p < 1e-3) or alignment is imperfect (0.06, [0.00, 0.13]); and biologically plausible local plasticity cannot reach the function the target topology provably admits (gap 0.45, [0.27, 0.64], p < 1e-3, d = 2.0). We release FPS, the data loaders, and all operations as a toolkit. All results are at nematode / small-network scale and concern coherence in simulation, not the feasibility of reading or writing a living brain.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13681v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.NE",
+      "categories": [
+        "cs.NE",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.NE (神经与进化计算)",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": "5 pages, 4 figures. Code, data loaders, and all result artifacts at https://github.com/Praveg432/functional-preservation-score",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13637v1",
+      "title": "Human and Machine Annotations Predict Brain Responses to Naturalistic Movies Across Development",
+      "authors": [
+        "Yiran Huang",
+        "Zeyong Zhang",
+        "Rounak Rahman",
+        "Bharat Biswal",
+        "Xin Di"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T06:25:00Z",
+      "summary": "Naturalistic movie watching provides a powerful framework for studying dynamic brain function, but linking movie content to neural responses typically relies on labor-intensive human annotation. We investigated whether multimodal large language models (MLLMs) can provide scalable socio-affective and semantic annotations for naturalistic fMRI. We compared MLLM-generated theory-of-mind (ToM) and valence ratings with human ratings and with regional BOLD responses across three animated movies. For two of these movies, we combined machine-derived visual features, natural-language scene descriptions, and socio-affective ratings in an ROI-wise encoding model of fMRI data from 66 participants aged 5--22 years. MLLM ratings partially tracked human judgments, but their neural correspondence differed by construct and model: ToM showed the most consistent human--machine overlap in visual cortex, whereas valence correspondence was largely movie dependent. In the encoding model, visual features yielded the strongest and most widespread prediction, whereas scene descriptions were more spatially selective, concentrated in dorsal-attention and visual regions and extending into right lateral temporal cortex. Age-group comparisons suggested feature-specific developmental differences: scene-description encoding in dorsal-attention cortex was higher in the oldest group, whereas visual-feature encoding in salience/ventral-attention, limbic, and control networks peaked in the middle group. Together, these findings indicate that MLLM-generated annotations capture meaningful aspects of human judgments and neural responses, supporting MLLMs as a scalable complement to, rather than a replacement for, human annotation in naturalistic neuroimaging.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13637v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13581v1",
+      "title": "Lightweight Deep Learning Framework for Astrocyte-Centric 3D Reconstruction across Normal and Stress-associated Ultrastructural States",
+      "authors": [
+        "Bowen Deng",
+        "Gwang-Jin Jeong",
+        "Seulgi Noh",
+        "Ji Young Mun",
+        "Na Young Kim"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T04:54:30Z",
+      "summary": "The morphology of astrocytes is closely associated with their ability to support and modulate neural circuit functions; however, its reconstruction from volume electron microscopy (vEM) data remains labor-intensive and computationally resource-intensive, placing substantial barriers on its broader adoption and scalability despite the high spatial resolution of vEM. We present AstroSeg-vEM, a lightweight, astrocyte-centric framework for morphology-preserving astrocyte segmentation, 3D reconstruction, and quantitative morphological analysis in vEM images. AstroSeg-vEM combines transformer-based 2D segmentation with dedicated post-processing methods and operates directly on high-resolution EM sections, making it well suited to anisotropic vEM data and downstream proofreading workflows while preserving the full in-plane resolution of the original EM data. Across four mouse hippocampal datasets representing normal and morphologically defined stress-associated astrocyte ultrastructural states, AstroSeg-vEM demonstrates robust performance and generalization, achieving average Dice and weighted Dice values of 0.92 and 0.95, respectively, on a held-out test dataset. Its lightweight architecture enables efficient, high-fidelity reconstruction on consumer-grade hardware, providing a scalable and accessible platform for large-scale astrocyte ultrastructure analysis and future astrocyte-neuron interaction studies.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13581v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": "Accepted for publication in npj Imaging. 19 pages, 4 figures, 6 tables, including Supplementary Material. Code is available at https://github.com/QuIN-Lab/AstroSeg-vEM",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13400v1",
+      "title": "Orthographic depth at two scales, with English also matched for lexicon size",
+      "authors": [
+        "Adam Y. Shavit"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T00:28:23Z",
+      "summary": "A reader can struggle to read in only one of their languages, and one proposed reason is how predictably spelling maps to sound. We measure that predictability as conditional entropy, the pronunciation uncertainty left once the spelling is seen, at two grain sizes (unit sizes): the alignment unit, an aligned spelling-sound chunk, and the syllable, bounded in the pronunciation. We analyse word lists in twelve alphabetic orthographies and report five in full, with English pronunciations from a dictionary and the rest from the synthesizer eSpeak-ng, length marks removed. Among the five, English has the most uncertainty and Finnish the least at both grains. Across all twelve, Portuguese and Danish exceed English per alignment unit, and German and Italian order differently by grain and transcription. These orders hold when English is transcribed by eSpeak-ng with u allowed to spell /j/ plus a vowel. Uncertainty per unit has no shared direction as units grow: it falls in Spanish and, less securely, German, is level in Finnish, depends on transcription in Italian and on the word list in English, and rises in Norwegian and Swedish. Summed uncertainty per word falls in all twelve, but that score is handed the pronunciation's boundaries and mixes context with in-sample memorisation, so it is no evidence of what a reader computes. An exact identity states when discarded spelling boundaries could reverse that fall. A uniform 20,000-word English sample holds 35% of the dictionary's syllable spellings and has syllable entropy 0.098 bits lower, so lexicons must be matched in size. In an exploratory check over eleven languages, syllable-scale entropy tracked first-year reading accuracy (rho = -0.74, falling to -0.25 if English is given the lowest entropy instead), without separating the syllable scale from the alignment unit. These estimates describe sampled writing systems, not readers.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13400v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "cs.CL",
+        "q-bio.NC",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "stat.AP (应用统计学)",
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "q-bio.NC (神经科学与脑认知)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": "38 pages, 5 figures. Spelling-to-sound entropy as a measure of orthographic depth for cross-language reading research; exploratory check against Grade 1 reading accuracy in Section 3.5. Code and data: https://doi.org/10.17605/OSF.IO/A9T3C",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13316v1",
+      "title": "A probabilistic model of visual segmentation explains early visual cortical dynamics",
+      "authors": [
+        "Tridib K. Biswas",
+        "Ruben Coen-Cagli"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T22:35:26Z",
+      "summary": "Neural dynamics are a central feature of biological neural systems. In the visual cortex, the functional role of neural dynamics is poorly understood, particularly for static stimuli. The statistics of still natural images have long been used by models that successfully predict firing in early visual cortex; those models assume that neurons represent inferences about latent image features, but often ignore the dynamics of said inference. Here, we test if inferential dynamics in images explain visual-cortical dynamics. To do so, we present a biologically plausible model of cortical computation which assumes that the inference of features is coupled with inference about how those features are organized into meaningful parts, a function also known as segmentation. Given an input image, our model iterates between inferring the features and the segments, through recurrence and feedback, thus inducing dynamics in the neural representation of features. For these neural dynamics, we derive theoretical and exact predictions. Our model predicts both gain and variability in evoked responses to natural images, and we show that it captures classical single-neuron experimental findings such as gain dynamics and variability decay during stimulus presentation. The model also predicts that those dynamics are organized around inferred segment structure and more heterogeneous than previously thought, reflecting the complexity of inference for natural scenes. Finally, our analytical formulation provides a clear interpretation of our results. Insights from our normative model could generalize to segmentation problems in other experimental modalities, and help address the cost of inference in artificial networks with iterative computation.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13316v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-bio.NC",
+      "categories": [
+        "q-bio.NC",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "q-bio.NC (神经科学与脑认知)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "40th Conference on Neural Information Processing Systems (NeurIPS 2026)",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13070v1",
+      "title": "IC-GNN: Modeling Individualized Brain Community Organization for Disease Prediction",
+      "authors": [
+        "Yang Zhang",
+        "Xiao Zhou",
+        "Jonathan Warrell",
+        "Avram Holmes",
+        "Xuan Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T18:59:24Z",
+      "summary": "Brain networks exhibit modular organization, where community structures vary substantially across individuals and diseases. Understanding these individual differences is crucial for advancing both basic neuroscience research and precision medicine. However, widely used predefined group-level brain atlases often overlook this heterogeneity. While individualized functional parcellations capture subject-specific variability in community boundaries, they often require lengthy scan times to achieve fine-grained resolution and complicate cross-subject comparisons. To address this trade-off and investigate how individualized community organization captures disease-associated changes across individuals, we propose IC-GNN, an atlas-anchored model that forms distinct, individualized functional communities directly over atlas-defined brain regions. IC-GNN derives discrete, individualized multiscale communities from resting-state functional magnetic resonance imaging (fMRI) data, refines community-guided connections, and adapts shared regional weights to each subject's community context to enable both individualized modeling and group-level comparisons. Across more than 30,000 participants from ABIDE (autism spectrum disorder), ADNI (Alzheimer's disease), and the UK Biobank (depression), IC-GNN achieves the highest performance compared with 15 baseline methods. We further demonstrate that these individualized communities are reproducible within scans and across sessions, and carry predictive power on their own. Furthermore, IC-GNN identifies disease-related shifts in community organization that align with established literature, highlighting a promising approach for modeling individualized community structure for disease prediction and biomarker discovery.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13070v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.NC"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-bio.NC (神经科学与脑认知)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.12809v1",
       "title": "Qualiaphobic artificial neural networks (and why to build them)",
@@ -352,329 +670,6 @@
       "comment": "These authors contributed equally: Miroslav Stibůrek, Tomáš Pikálek, Petra Ondráčková Corresponding authors: Hana Uhlířová (huhlirova@isibrno.cz) and Tomáš Čižmár (cizmart@isibrno.cz)",
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08887v1",
-      "title": "Decoding spatial and semantic information from large-scale visual cortical activity for natural-movie reconstruction",
-      "authors": [
-        "Yukai Huang",
-        "Haoyu Albert Wang",
-        "Jiawei Zhang",
-        "Jialun Ma",
-        "Jiayao Ding"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T02:23:18Z",
-      "summary": "Reconstructing natural visual experience from cortical population activity is a central challenge in neural decoding, particularly for calcium imaging, where signals are noisy, temporally filtered, and paired neural-video data are limited. Here we present Ca2REAL (Calcium Activity to Reconstruct Events, Appearance, and Layout), a neural-to-video framework that conditions a pretrained video diffusion model through separate layout and semantic controls derived from calcium activity. Using measured responses from 7,863 V1 neurons in one mouse, Ca2REAL reconstructed held-out natural-movie clips with 81.4% all-pairs stimulus-identification accuracy, with its clearest gains over deterministic baselines in perceptual and semantic measures. We further evaluated the framework in a stimulus-aligned virtual population of 116,705 neurons assembled from encoding-model-predicted responses across 11 independently recorded datasets. Perturbation and ablation analyses showed that reconstruction depends on distributed, stimulus-specific population structure, with layout and semantic pathways providing complementary spatial and identity information. Temporal analyses further showed improved preservation of semantic dynamics across reconstructed clips. These results show that large-scale cortical population activity constrains the spatial, semantic, and temporal structure of natural visual experience, providing a generative framework for high-fidelity neural reconstruction of dynamic visual scenes.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08887v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "24 pages, 6 figures, 2 tables; 11-page supplementary information included as ancillary file",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08469v1",
-      "title": "Same Behavior, Different Mechanism: What Finite Experiments Can Certify About Integrated Information",
-      "authors": [
-        "Linqian Wu",
-        "Diaoxuan He"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T18:55:31Z",
-      "summary": "Interpretability, AI auditing and assessments of machine consciousness increasingly rest on mechanism-level quantities: functionals of a system's causal transition law that describe how it computes, not what it outputs. Experiments see that law only through finite, partial and noisy interventions. We ask when such a quantity is identifiable from an experiment's access, continuous in the mechanism and certifiable from finite data, and answer exactly for a deliberately demanding case - the integrated information $\\varphi$ of integrated information theory - in stochastic networks of four and five units with known ground truth. Behavior can be silent: a recurrent and a feed-forward network with identical input-output laws at their response delay carry 0.28 and 0 bits, yet internal recordings separate them within 4-53 trials. Partial access can be just as blind: in our examples, units left out of a one-step recording impose precision floors of 0.30-1.02 bits that no sample size lowers, and in all-but-self parity networks, recordings of any length see several hidden units only through the product of their fidelities - a symmetry that one intervention broke in exact checks. The measure has sharp edges: because $\\varphi$ selects a partition, and the cause and effect it specifies, by one criterion and reports another, infinitesimal changes of mechanism that cross an edge change it by 25-100% at 99% of the edges we found in random networks, and about 1% of surrogate models that fit interventional data almost perfectly misreport it by more than 20%. One-sided claims survive: the same data certify a lower bound on both sides of an edge, and we prove $\\varphi>1.004$ bits throughout a 64-dimensional region of mechanisms and certify it from about $10^7$ controlled transitions with false-certificate probability at most $α$. Measurability is thus a design question with computable answers.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08469v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.AI",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.AI (通用人工智能 (AI))",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "30 pages, 7 figures. Code available as ancillary files",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08571v1",
-      "title": "Spiking neuromodulation: a linear control perspective",
-      "authors": [
-        "Fulvio Forni",
-        "Rodolphe Sepulchre"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T18:23:17Z",
-      "summary": "Neuronal excitability is a nonlinear phenomenon, and the complexity of spiking experimental traces sometimes looks defeating. The present paper takes the view point that excitability is a neuromodulated property, and aims to demonstrate that the neuromodulation of spiking is amenable to the classical linear analysis tools of control theory. We illustrate the value of linear feedback analysis as an alternative to bifurcation analysis in the simple yet classical example of spiking modulation by the A-type potassium current.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08571v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.NC",
-      "categories": [
-        "q-bio.NC",
-        "eess.SY",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-bio.NC (神经科学与脑认知)",
-        "eess.SY (系统与控制理论 (Systems and Control))",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "8 pages. Submitted to European Control Conference ECC 2027",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08199v1",
-      "title": "Do sEMG Foundation Models Improve Cross-Subject Generalisation?",
-      "authors": [
-        "William Raftery",
-        "Dario Farina"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T15:53:37Z",
-      "summary": "sEMG Foundation Models aim to learn general purpose representations over diverse subjects and recording conditions that boost performance on a variety of downstream tasks. However, existing evaluations make it difficult to discern whether pretraining alone is sufficient to combat the cross-subject overfitting which makes machine learning on sEMG so challenging. We conduct a systematic evaluation of three sEMG foundation models across three gesture classification datasets under both intra-session and inter-subject splits, using three fine-tuning strategies designed to isolate the contribution of pretraining. We find that pretraining boosts performance when train and test samples are drawn from the same recording session, but this benefit largely disappears under inter-subject evaluation. In low subject count datasets, pretraining provides little to no benefit and classical ML baselines match or exceed foundation model performance.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08199v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07965v1",
-      "title": "Reversible Dynamics, Asymmetric Actions: Parking as a Trajectory-Level Affordance",
-      "authors": [
-        "Adam Y. Shavit"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T13:00:12Z",
-      "summary": "Drivers are often told to back into a tight parking space, not drive in nose first. The advice looks paradoxical, because a slow car is dynamically reversible: reverse its speed and replay the steering backward, and it retraces a feasible path. Played backward, though, reverse-in shows a car driving forward out of the space. Reverse-in and forward-in are different tasks: they share a start position but end facing opposite ways. We separate three clearances between car and obstacles. Static fit $F$ is the clearance the parked car keeps at its best acceptable destination pose. Eventual access $A_\\infty$ is the clearance it can keep all the way there with unlimited corrections. Resource-bounded access $A_K$ is the clearance that survives a budget of $K$ reversals, switches between forward and reverse. They satisfy $F\\ge A_\\infty\\ge A_K$. In one fully specified scene (one car, bay, aisle and start), a certified argument proves $A_\\infty=F=0.5000$ m for both tasks. In this scene, all certified forward/reverse asymmetry therefore arises at finite $K$: it lies in how many corrections each task needs, not in the clearance either can eventually keep. With one reversal, an explicit path gives reverse-in at least $0.4410$ m clearance. A certified reachability argument caps forward-in's one-reversal clearance at $d_0<0.1720002$ m. With two reversals, forward-in gets at least $0.2833$ m. To keep a clearance strictly above any $d$ with $d_0\\le d<0.2833$ m, reverse-in thus needs exactly one reversal and forward-in exactly two when both tasks move forward first. If both move in reverse first, the counts are two and three. The contrast depends on the start position (Section 4.15). Proposed experiments test whether observers distinguish fit, eventual access and budgeted access. They compare these with simpler cues, such as how the turning body sweeps, and learned manoeuvre labels.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07965v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.NC",
-      "categories": [
-        "q-bio.NC",
-        "cs.RO",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-bio.NC (神经科学与脑认知)",
-        "cs.RO (机器人学与具身智能)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": "79 pages, 15 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07952v1",
-      "title": "Invariance before structure: two modes of emergent compression in representation learning",
-      "authors": [
-        "Hardik Rajpal",
-        "Dan Goodman"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T12:49:05Z",
-      "summary": "Learned representations show striking invariance across biological and artificial neural networks, with different substrates and variations driven by drift, heterogeneity and initialisation. To understand this invariance, we propose Emergent Adaptive Representation Learning (EARL), a framework that distinguishes two modes of emergence in learned representations: state-space compression, where a learned representation gains predictive power over its own future beyond what the network's units can predict individually, and parameter-space compression, where networks with different micro-level parameters converge to the same representation. We formalise both as Fisher sensitivities and introduce ensemble-level information-theoretic measures for each. In a recurrent reservoir with a trained bottleneck, parameter-space compression rises within the first few epochs of training and partly independently of the task, whereas state-space compression rises about 30 epochs later and only when the network begins to learn the temporal structure of the task. These results suggest that invariance to the substrate and task-specific emergent structure are acquired in distinct phases of learning.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07952v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.NE",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.NE (神经与进化计算)",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "Extended abstract, UniReps workshop at NeurIPS 2026",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07809v1",
-      "title": "Self-Supervised Learning of Local Predictive Directions as a Neural Computation",
-      "authors": [
-        "Marco Zenari",
-        "Xuehao Ding",
-        "Daniel Burnham",
-        "Austin R. Ellis-Mohr",
-        "Anirvan M. Sengupta"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T10:50:15Z",
-      "summary": "Natural sensory dynamics are globally nonlinear but often exhibit simple local geometry, with nearby trajectories evolving preferentially along a small number of predictive directions. We ask how neural circuits could discover this geometry directly from temporal experience. We introduce Local Predictive Directions (LPD), a self-supervised framework that learns local directions whose projections maximally predict near-future trajectory evolution. LPD applies past-future canonical correlation analysis to temporal differences, making the learned representation invariant to translations of the underlying state while avoiding estimation of equilibria or a global dynamical model. To represent systems with multiple predictive regimes, we introduce a non-negative similarity-matching objective, with offline and online algorithms, that partitions trajectory segments into predictive domains, each associated with a distinct local predictive direction. The online algorithm admits a natural neural-network interpretation: the resulting activities provide soft domain assignments, while synaptic weights encode the corresponding local predictive filters. On stochastic nonlinear dynamical systems, LPD recovers the local predictive geometry and partitions trajectories into distinct dynamical regimes. On naturalistic sensory streams, the online algorithm produces center-surround spatial receptive fields and ON/OFF sustained and transient temporal filters resembling those of early visual neurons. Our results suggest that predictive learning can provide a self-supervised mechanism by which neural circuits discover the local geometry of environmental dynamics and represent it in receptive fields.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07809v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.NC",
-      "categories": [
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "Marco Zenari and Xuehao Ding contributed equally",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07214v1",
-      "title": "Bearing, heading and the perceptual geometry of collective motion",
-      "authors": [
-        "Mohammad Salahshour"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T23:05:53Z",
-      "summary": "Traditional models of collective motion commonly assume that animals turn to match their neighbours' directions of travel. In the harmonic theory, decisions follow from a neural representation of direction, and a neighbour enters only as a stimulus at a bearing, the direction in which it lies. Here we show that a neighbour's spatial extent allows its orientation to enter through projection geometry alone, and the theory generates a matrix of coupling coefficients indexed by the neighbour's bearing and aspect. Responses to bearing alone form one edge of this matrix, and classical heading matching is a special case on its diagonal, one ray through a two-parameter family. Independently, an animal that responds only to neighbour position, perceived with a delay, acquires an alignment coefficient set by the slope of its distance-weighted attraction profile, so that it can align, anti-align or reverse sign. Alignment need not be a rule to be measured. In schooling fish and walking pigeons with body orientation measured independently of travel, social responses are recovered, including bearing responses in the fish. Heading excess depends on how turning is measured, appearing in the fish with forward but not centred responses and remaining unresolved in pigeons. Controls show why neither outcome identifies a direct alignment rule. In fish recordings with motion-assigned body polarity, heading-dependent structure departs from Vicsek form and fails the coefficient test for a common angular potential. Whether animals align thereby becomes a measurable question, with geometric, perceptual and behavioural origins that can be distinguished.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07214v1.pdf",
-      "source": "arxiv",
-      "primary_category": "physics.bio-ph",
-      "categories": [
-        "physics.bio-ph",
-        "cond-mat.stat-mech",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "physics.bio-ph (生物物理)",
-        "cond-mat.stat-mech (统计力学)",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "19 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06895v1",
-      "title": "Learning Time-Varying Connectomes for Stable Behavior Across Development",
-      "authors": [
-        "Christof Fehrman",
-        "Jacob J. Morra",
-        "Eva A. Naumann"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T18:47:35Z",
-      "summary": "Neural circuits must maintain functionality to drive effective behavior while their size, topology, geometry, and intrinsic dynamics change across development. To model developing visuomotor circuits and behavior, we investigated whether a single compact generative encoding could produce functional recurrent controllers across such changes. Building on the HyperNEAT algorithm, we represented this program as a compositional pattern-producing network that received developmental time as an input to generate age-specific connectivity. The developmental substrate prescribed neuronal birth, position, sensory organization, and intrinsic time constants. We tested this approach using two geometrically distinct developmental substrates and two visuomotor tasks: optomotor responses and phototaxis. Controllers optimized at only the initial or mature substrate generally failed when evaluated at other ages. In contrast, controllers optimized across multiple developmental snapshots maintained substantially higher and more consistent performance across trained and unseen ages. Optimization at only three developmental snapshots was often sufficient to produce effective behavior across the tested developmental interval. The resulting connectomes changed substantially with age and did not converge on a single trajectory of sparsity or connection-weight statistics. Controllers also differed in whether they relied on neurons born later in development. These results demonstrate that a shared spatiotemporal time-varying connectivity program can produce recurrent neural networks that preserve behavior across substantial developmental changes. Together, these results provide a framework for studying how functional stability can emerge without requiring structural or dynamical stability.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06895v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.NC",
-      "categories": [
-        "q-bio.NC",
-        "cs.NE"
-      ],
-      "category_names_zh": [
-        "q-bio.NC (神经科学与脑认知)",
-        "cs.NE (神经与进化计算)"
-      ],
-      "comment": "29 pages, 6 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06720v1",
-      "title": "Cell-type-specific modularity in E/I networks shapes dynamical regimes and computational capabilities",
-      "authors": [
-        "Emmanouil Giannakakis",
-        "Victor Buendía",
-        "Oleg Vinogradov",
-        "Anna Levina"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:12:27Z",
-      "summary": "Structural modularity is a ubiquitous feature of brain networks that shapes neural dynamics and information processing. Yet excitatory and inhibitory populations can differ in their modular organization, and it remains unclear how this asymmetry affects network dynamics and computation. Here, using dynamical mean-field theory and simulations of networks performing complex temporal tasks, we show that independently tuning excitatory and inhibitory modularity controls the dynamical regimes of balanced E/I networks. In particular, such tuning can generate a dominant spectral outlier despite overall E/I balance, producing a topology-controlled transition between bulk- and low-rank-dominated regimes, with different dynamical bifurcations leading to chaos and bistability, respectively. In chaotic time-series prediction tasks, computational performance is enhanced near these dynamical boundaries, including both the onset of chaos and the transition to bistability. Favorable configurations exhibit strongly modular excitation and comparatively homogeneous inhibition, similar to what is observed in cortical connectivity.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06720v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cond-mat.dis-nn",
-      "categories": [
-        "cond-mat.dis-nn",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cond-mat.dis-nn (无序系统与神经网络)",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06700v2",
-      "title": "PINR-ESI: Physics-Informed Self-Supervised Implicit Neural Representation Framework for EEG Extended-Source Imaging",
-      "authors": [
-        "Zhiyong Zhou",
-        "Sheng Liao",
-        "Xiaolin Li",
-        "Youshen Xiao",
-        "Bin Dai"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:02:28Z",
-      "summary": "EEG extended-source imaging aims to localize active cortical regions and characterize their spatial extent, yet supervised inverse networks typically depend on synthetic EEG-source pairs and may be sensitive to synthetic-to-real mismatch. We propose a physics-informed self-supervised implicit neural representation (INR) framework for spatial source reconstruction without paired source labels or simulation-based supervised pretraining. The lead field matrix encodes the source-to-sensor volume-conduction model and constrains the INR through agreement between predicted and measured EEG. Cortical current density is modeled as a continuous coordinate-conditioned field. A classical inverse estimate provides warm initialization and spatial constraints on source activity, while patch-integrated projection maps the field to discrete source coefficients for forward modeling. Simulations across varying noise levels, source extents, and source counts showed consistently low spatial dispersion and good localization performance. Quantitative and qualitative evaluations using real EEG recordings from epilepsy patients and intracranial stimulation experiments further supported the feasibility of the framework for source imaging. These findings suggest the potential of physics-informed self-supervised INR for extended-source imaging.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06700v2.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "q-bio.NC"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "q-bio.NC (神经科学与脑认知)"
-      ],
-      "comment": "Preprint, 10 pages, 11 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06618v1",
-      "title": "Synchronized Hearts, Desynchronized Brains: A Nonlinear Dynamics Perspective for Function and Failure",
-      "authors": [
-        "Irene Pellini",
-        "Simon Bauer",
-        "Seba Contreras",
-        "Ruben Fernández Busnadiego",
-        "Anushka Deb"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T15:02:46Z",
-      "summary": "Both the heart and the brain are built from electrically excitable cells, yet the emergent dynamics of these organs could not differ more. In the myocardium, a coherent traveling wave of action potentials ensures coordinated contraction; in the cerebral cortex, distributed, irregular spiking underlies efficient information processing and the generation of behavior. Here, we illuminate the principles that underlie the emergence of such distinct nonlinear dynamics using concepts from complex systems. We trace these principles across scales from ion channels and cellular action potential generation, through cellular coupling mechanisms and network architecture, to organ level dynamics and clinical phenotypes. Designed to support either synchronized waves or desynchronized information processing, the heart and the brain can thus be understood as operating on opposite sides of a synchronization phase transition. Crossing this transition implies pathological dynamics in both organs: Loss of synchrony in the heart produces arrhythmia; excess synchrony in the brain leads to epileptic seizures. We discuss how adaptation mechanisms, including plasticity, modulation, remodeling, and learning, maintain the appropriate level of (de)synchronization. Overall, we provide a unified excitable-system perspective, together with an educational notebook, to foster cross-disciplinary insights into cardiac and neural function and pathology.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06618v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-bio.NC",
-      "categories": [
-        "q-bio.NC",
-        "nlin.AO",
-        "physics.bio-ph"
-      ],
-      "category_names_zh": [
-        "q-bio.NC (神经科学与脑认知)",
-        "nlin.AO (自适应与涌现)",
-        "physics.bio-ph (生物物理)"
-      ],
-      "comment": "Irene Pellini and Simon Bauer contributed equally. Wolfram-Hubertus Zimmermann, Johannes Zierenberg, Philip Bittihn and Viola Priesemann contributed equally. Corresponding authors: johannes.zierenberg@ds.mpg.de viola.priesemann@ds.mpg.de",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
@@ -686,37 +681,57 @@
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 9
-    },
-    {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 4
-    },
-    {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
-      "count": 3
+      "count": 8
     },
     {
       "code": "cs.CV",
       "name_zh": "计算机视觉与模式识别 (CV)",
+      "count": 5
+    },
+    {
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
+      "count": 4
+    },
+    {
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 3
-    },
-    {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
-      "count": 2
-    },
-    {
-      "code": "cs.NE",
-      "name_zh": "神经与进化计算",
-      "count": 2
     },
     {
       "code": "physics.bio-ph",
       "name_zh": "生物物理",
-      "count": 2
+      "count": 1
+    },
+    {
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 1
+    },
+    {
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
+      "count": 1
+    },
+    {
+      "code": "q-bio.QM",
+      "name_zh": "生物医学定量方法",
+      "count": 1
+    },
+    {
+      "code": "cs.NE",
+      "name_zh": "神经与进化计算",
+      "count": 1
+    },
+    {
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
+      "count": 1
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 1
     },
     {
       "code": "cs.HC",
@@ -727,32 +742,7 @@
       "code": "physics.optics",
       "name_zh": "光学与光子学",
       "count": 1
-    },
-    {
-      "code": "eess.SY",
-      "name_zh": "系统与控制理论 (Systems and Control)",
-      "count": 1
-    },
-    {
-      "code": "cs.RO",
-      "name_zh": "机器人学与具身智能",
-      "count": 1
-    },
-    {
-      "code": "cond-mat.stat-mech",
-      "name_zh": "统计力学",
-      "count": 1
-    },
-    {
-      "code": "cond-mat.dis-nn",
-      "name_zh": "无序系统与神经网络",
-      "count": 1
-    },
-    {
-      "code": "nlin.AO",
-      "name_zh": "自适应与涌现",
-      "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T18:02:08.057039"
+  "snapshot_synced_at": "2026-11-12T20:16:02.918548"
 }

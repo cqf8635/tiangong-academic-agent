@@ -301,20 +301,9 @@
 
         <!-- Tab 2: 证据与页码溯源详情 -->
         <div class="tab-content" id="tab-evidence">
-          <div class="kanban-header evidence-header-bar">
-            <div class="evidence-info-box">
-              <span class="evidence-type-badge" id="evidence-type-badge">📑 研讨证据依据</span>
-              <h4 id="evidence-current-title" class="evidence-title-text">最新检索证据切片 (Grounding)</h4>
-            </div>
-            <span class="sub-label" id="evidence-sub-label">BGE-M3 + BGE-Reranker 重排定位</span>
-          </div>
-          <!-- 研讨轮次快速切换选择器 -->
-          <div class="evidence-turn-bar" id="evidence-turn-bar" style="display: none;">
-            <div class="evidence-turn-select-wrap">
-              <span class="turn-label">📍 研讨轮次:</span>
-              <select id="evidence-turn-select" class="evidence-turn-select" title="快速切换各轮问答检索证据"></select>
-            </div>
-            <span class="evidence-turn-count-badge" id="evidence-turn-count-badge">0 条切片</span>
+          <div class="kanban-header">
+            <h4>最新检索证据切片 (Grounding)</h4>
+            <span class="sub-label">BGE-M3 + BGE-Reranker 重排定位</span>
           </div>
           <div class="evidence-list" id="evidence-panel-list">
             <div class="empty-hint">暂无检索证据。提问时系统将自动在此展示命中切片与精确页码。</div>

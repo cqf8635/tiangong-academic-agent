@@ -1,8 +1,485 @@
 {
   "query_expression": "cat:eess.IV",
   "total_fetched": 25,
-  "total_results": 32085,
+  "total_results": 32110,
   "papers": [
+    {
+      "paper_id": "2611.13971v1",
+      "title": "TransGHOST: Real-Time, Synthesis-Free Reconstruction of Instrument-Occluded Regions in Ophthalmic Microsurgery",
+      "authors": [
+        "Niran Nataraj",
+        "Maina Sogabe",
+        "Masamichi Yamashita",
+        "Norihiko Ito",
+        "Kenji Kawashima"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:08:36Z",
+      "summary": "Intraoperative scene perception in ophthalmic microsurgery is limited by instrument occlusion: when a tool enters the high-magnification field, it conceals tissue from both the surgeon and the perception components of robot-assisted systems that process the video. Generative inpainting can remove the occluder but replaces the missing image content with synthesis, which is unsuitable when visual provenance matters. Many video inpainters also depend on future frames and cannot operate online. We present TransGHOST, a causal reference-guided reconstruction pipeline whose non-generative safe mode operates in real time. Every restored value is obtained by resampling a recorded frame using geometric transforms fitted only to visible regions. The system provides per-pixel confidence and provenance and marks unsupported pixels as abstentions. We evaluate TransGHOST on a new veterinary clinical corpus of canine cataract surgery with pixel-level instrument and anatomy labels. Only the occluded region is scored, and each scoring target is verified to differ from the reference supplied to the system. Safe mode reaches 31.89 dB masked PSNR and 0.915 masked SSIM at 51.7 ms median and 85.5 ms 95th-percentile latency. On a pre-declared held-out cohort using instrument cutouts excluded from segmentation training, it reaches 29.83 dB masked PSNR, while matched-mask evaluation on validation shows a 3.45 dB advantage over LaMa. Region-aware reference selection improves masked PSNR by 3.60 dB over recency when candidate references can themselves be occluded. Reference-age analysis further defines the operating interval for the brief, repeated occlusions targeted by TransGHOST.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13971v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.RO (机器人学与具身智能)"
+      ],
+      "comment": "21 pages, 10 figures, 11 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13970v1",
+      "title": "Counterfactual Analysis of Extent Leakage from Annotation-Derived Prompts in Vision-Language Medical Image Segmentation",
+      "authors": [
+        "Niran Nataraj",
+        "Ankita Das",
+        "C. Krishna Mohan",
+        "Kenji Kawashima"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T12:07:24Z",
+      "summary": "Text-guided segmentation models receive an image and a short caption about the lesion, and on public benchmarks the caption improves accuracy considerably. On colonoscopy and breast ultrasound, however, the size, count and location words of each caption were computed from the mask that later scores the prediction, and the chest X-ray captions were written by benchmark annotators. We tested what two published models take from them. On colonoscopy and chest X-ray, it is mostly the lesion's extent. Keeping only the size word or the lung-zone phrase recovers 84 to 98 percent of the improvement over an empty caption, and removing it loses 52 to 77 percent. The rest matters little, and a polyp called a rock is segmented just as well. We call this extent leakage. On breast ultrasound, nearly half the captions also name the diagnosis, which carries part of the benefit. Retraining on three datasets shows that models pick up this habit from their training captions, though only partly on breast ultrasound, and that it weakens their segmentation from the image alone. The leak can be measured without training a model, since caption words alone predict lesion area (coefficient of determination 0.54 to 0.77 on six of seven test sets). Without the test mask, the best method we tested, which estimates extent from the image, reaches 74.59 Dice on colonoscopy against the published 77.23. We propose an evaluation protocol that keeps what a caption says about the image apart from what it copies from the label.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13970v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": "23 pages, 10 figures, 13 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13707v1",
+      "title": "Joint Activation and Weight Quantization for Learned Image Compression",
+      "authors": [
+        "Yile Tu",
+        "Heming Sun"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T08:00:41Z",
+      "summary": "Learned image compression (LIC) models achieve competitive rate-distortion performance with increasingly large networks, making network quantization important for efficient deployment. Directly quantizing LIC models remains difficult in post-training quantization (PTQ) because compression performance is highly sensitive to quantization noise. Existing methods typically focus on optimizing either the weights or the activations, resulting in substantial rate-distortion degradation. To address this limitation, we introduce a two-stage pipeline that uses SmoothQuant to balance activation and weight ranges, followed by GPTQ to adapt the transformed weights. The proposed joint search framework optimizes the balancing transformation and adapted weights under the rate-distortion objective, accounting for the coupling between the two stages. Experiments across multiple LIC architectures and activation quantization configurations show that the joint search strategy consistently reduces rate-distortion degradation after quantization.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13707v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.MM"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.MM (多媒体系统与编解码)"
+      ],
+      "comment": "Accepted at IEEE VCIP 2026. 5 pages, 3 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13510v1",
+      "title": "Distribution Shift Detection in Remote Sensing Imagery using Machine Learning Models",
+      "authors": [
+        "Abdullah Almansour",
+        "Ozan K. Tonguz"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T03:37:47Z",
+      "summary": "Remote sensing imagery acquired by Unmanned Aerial Vehicles (UAVs) supports wide range of applications; however, deploying machine learning (ML) models on resource-constrained aerial platforms introduces challenges beyond predictive accuracy, particularly when deployment data differ from the distributions observed during training. Such shifts are common in remote sensing due to geographic, sensor, seasonal, and other visual variations. A practical solution is to equip deployed models with mechanisms that detect emerging distribution shifts and support subsequent responsive actions. This paper presents an empirical case study of three open-source detection tools: (i) Alibi-Detect; (ii) NannyML; and (iii) PyTorch-OOD. Using cross-dataset remote-sensing shifts, we evaluate both detection effectiveness and computational latency of these tools. Our results reveal differences in detection behavior and processing cost across methods and implementations, highlighting trade-offs between detection capability and response-time. These findings motivate further work toward lightweight, and latency-aware monitoring mechanisms for resource-constrained systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13510v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG",
+        "eess.IV",
+        "eess.SP"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))",
+        "eess.IV (图像与视频处理)",
+        "eess.SP (信号处理 (Signal Processing))"
+      ],
+      "comment": "Accepted as a short paper at the 4th Workshop on Computer Vision for Earth Observation (CV4EO), held in conjunction with WACV 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13289v1",
+      "title": "MRFoundry: Knowledge-guided agent loops for end-to-end MRI research",
+      "authors": [
+        "Ke Wang",
+        "Atakan Topcu",
+        "Hossein Momeni",
+        "Molin Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T21:54:54Z",
+      "summary": "AI agents can write code, use scientific software, and revise computational workflows, opening new possibilities for MRI research. Effective assistance requires connecting acquisition physics, data conventions, specialized tools, and scientific validation. We present MRFoundry, an open-source, extensible package that connects MRI knowledge to agent actions and output checks. Project-local memory preserves decisions and evidence, while reviewed contributions allow researchers to improve shared guidance. Researcher-supervised examples demonstrate skill-guided sequence auditing and acquired-data reconstruction, connecting tool use, output checks, and documented decisions. Alongside MRFoundry, we introduce MRI Agent Bench to compare agents with and without the package across models and MRI task domains. Across 240 paired Core evaluations spanning 24 task types and ten models, all-checks-passed completion increased from 67.5% without MRFoundry to 78.3% with it. Across 134 Hard pairs, completion increased from 36.6% to 44.8%. MRFoundry makes MRI workflow expertise available as reusable guidance that researchers can inspect, adapt, and extend within existing agent and scientific software environments. MRFoundry is openly available at https://github.com/KeWang0622/MRFoundry.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13289v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.AI (通用人工智能 (AI))"
+      ],
+      "comment": "18 pages, including 6 pages of Supporting Information. Code: https://github.com/KeWang0622/MRFoundry",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13238v1",
+      "title": "STAR: Semantic-Criticality Tiered Allocation of Radio Resources via Zero-Shot Learning",
+      "authors": [
+        "Albert Shaju",
+        "Christo Kurisummoottil Thomas",
+        "Mingzhe Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T21:07:26Z",
+      "summary": "In remote inference, edge devices transmit high-resolution images over wireless links to a receiver, where an artificial intelligence (AI) model answers task-specific questions about these images to enable reliable decisions. These answers are often determined by a small set of task-causal pixels, such as those of text, whose corruption changes the answer, so these pixels must be delivered with high fidelity. Conventional transmission protects every pixel equally, so it either consumes many resource elements (REs) or corrupts these regions at low signal-to-noise ratio (SNR). To overcome these limitations, in this paper, a zero-shot, domain-agnostic framework, termed semantic-criticality tiered allocation of resources (STAR), is proposed. In particular, a per-pixel semantic-criticality indicator (SCI) is derived from the attention of a frozen vision-language model, so new tasks and domains are handled by changing only the prompt, without retraining. The resulting task causality-aware resource allocation problem over protection tiers is solved exactly by a threshold rule on the SCI, realized by a coded tier for the task-causal pixels and an uncoded, downsampled base layer for the full image. Simulations over a 5G New Radio link demonstrate that STAR attains a semantic accuracy of at least 0.98 for $E_s/N_0 \\geq -4$ dB and, at comparable semantic reliability, reduces the REs of robust coded transmission by 59.5% and 91.5% on factory- and vehicle-monitoring datasets, respectively, the latter without any change to the models. Although a deep joint source-channel coding baseline uses fewer REs at comparable semantic accuracy, it must be retrained with labeled data for every new task or domain.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13238v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.AI",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "cs.AI (通用人工智能 (AI))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "6 pages, 9 figures, 1 table. Submitted to IEEE ICC 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13200v1",
+      "title": "Image Quality and the Reliability of Fabric-Density Measurement: Counting Threads from Smartphone Photos Through a Pick Glass",
+      "authors": [
+        "Anoubhav Agarwaal"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T20:24:29Z",
+      "summary": "Thread density, the threads per inch along and across a woven fabric, is a basic specification that buyers check whenever fabric is sold. Without laboratory instruments, inspectors count it slowly, by eye, through a pick glass, a folding 10$\\times$ magnifier with a one-inch window. A smartphone photo through that glass could make the check faster and leave a record. We judge such a photo by what it is used for, as in task-based image quality: it is good if the thread count from it is within $\\pm$5% of the true count, a common tolerance in fabric specifications. We introduce PickGlass-TPI: 76 factory scenes of 44 fabric patches, each counted in an open annotation tool by a textile-trained annotator, whose counts are the reference. On it we benchmark frontier and open vision-language models, CNNs, counting specialists and a training-free spectral counter (PG-Lattice). No method agrees with the reference within the tolerance. The best methods are off by about a quarter: a small open model that we tuned only on synthetic images (Molmo2-4B, 25%) is level with the best frontier model, GPT-6.1-sol (27% when asked directly, 25% given four magnified close-ups of the window). Both err less than a non-expert annotator (37%), but only the tuned model also beats, on both error measures, a baseline that guesses each scene's density as the average of the others. PG-Lattice most often repeats its count within 5% across two photos of the same patch, but its misses, like GPT-6.1-sol's errors, are often a factor of two. Even the reference repeats a count across such re-shoots only to a median 9%, so one photo cannot yet be shown to meet $\\pm$5%; the image quality that matters is reliability across re-shoots. Generic no-reference quality scores chosen before labeling do not rank PG-Lattice's error, and generative enhancement raises perceptual scores but does not reliably improve the count.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13200v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "Accepted at the WVAQ workshop at WACV 2027",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12686v1",
+      "title": "Differentiable Inverse Rendering Recovers Intrinsic Properties from Intravascular Optical Coherence Tomography",
+      "authors": [
+        "Ajay Manicka",
+        "Karim Kadry",
+        "Sebastian Ruiz-Lopera",
+        "Maryam Alsharqi",
+        "Sanjana Arji"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T16:48:30Z",
+      "summary": "Medical images encode intrinsic tissue properties that indicate disease progression, yet these properties remain entangled with the system-dependent physics of image formation. Differentiable inverse rendering asks whether they are recoverable by inverting the imaging system's forward physics rather than through post-hoc correction. We address this in optical coherence tomography (OCT), focusing on the optical attenuation coefficient, a per-pixel marker of pathology and cellular composition. Conventional recovery relies on closed-form inversions limited to simplified light-tissue models, or learned methods coupled to specific imaging configurations. We instead recover per-pixel attenuation from a single OCT image by gradient descent through a differentiable physics-based forward model. We verified the method against analytical solutions, validated it on five in vitro phantoms, and applied it without modification to 29{,}269 clinical intravascular OCT images from 128 patients. The inversion needs no training data or segmentations and is portable across platforms and retrospective archives. Replacing the forward model or recovering another optical parameter leaves the optimization procedure unchanged. We demonstrate per-pixel recovery is tractable because gradient information scales to this high-dimensional problem, where gradient-free methods become intractable. Our work supports quantitative tissue characterization from OCT images and provides a framework for extension across imaging modalities and organ systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12686v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV",
+        "physics.med-ph",
+        "physics.optics"
+      ],
+      "category_names_zh": [
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "eess.IV (图像与视频处理)",
+        "physics.med-ph (医学物理学)",
+        "physics.optics (光学与光子学)"
+      ],
+      "comment": "27 Pages, 6 Figures, Under Review",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12682v1",
+      "title": "A four-step validation protocol for radiomic survival analysis in small cohorts: a body composition case study",
+      "authors": [
+        "Mariela Talavera-Muñoz",
+        "Cecilia Diana-Albelda",
+        "Miguel Antonio Sampedro-Nuñez",
+        "Victor Rodriguez-Laval",
+        "Jesus Bescos"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T16:46:25Z",
+      "summary": "Gastroenteropancreatic neuroendocrine tumors (GEP-NET) lack prognostic biomarkers, and computed tomography (CT)-based body composition radiomics at the third lumbar vertebra (L3) is a promising candidate. Small cohorts make high-dimensional radiomic models prone to overfitting and single-split evaluations variable and optimistic. This methodological study proposes a four-step validation protocol for radiomic survival analysis in small cohorts: (1) false discovery rate (FDR)-corrected feature selection, (2) a dual-path comparison of prior feature selection versus embedded regularization, (3) repeated nested cross-validation (CV) and (4) a negative control with Gaussian noise features. In 78 GEP-NET patients, 535 radiomic features from five L3 compartments were used to evaluate five survival models with Harrell's concordance index (C-index), time-dependent area under the curve (AUC) and integrated Brier score (IBS). Step 1 selected at least one feature in 18% of outer folds under noise (nominal level 20%) versus 84% with radiomic features. The dual-path comparison showed no consistent difference between strategies. Repeated nested CV reduced variability across seeds (41% median reduction in C-index standard deviation), but not enough to distinguish models. The nested CV C-index exceeded chance by 0.07-0.15 with radiomic features but not clearly under noise (0.40-0.42 with prior feature selection, 0.47-0.55 with embedded regularization). Frequently selected features tentatively linked greater subcutaneous fat, skeletal muscle compactness and texture to better prognosis. These findings suggest a modest prognostic signal in L3 radiomics, with considerable uncertainty that the protocol quantifies. The protocol may transfer to other small-cohort radiomic survival studies. Code: https://github.com/marielatalaveram/radiomics-survival-validation-protocol.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12682v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "cs.LG (机器学习 (ML))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13056v1",
+      "title": "SNIF: a Self-Navigator Intelligent Filter correcting off-center and spin-history artifacts in quasi-random radial MRI",
+      "authors": [
+        "Tanguy Boucneau",
+        "Brice Fernandez",
+        "Peder Larson",
+        "Luc Darrasse",
+        "Xavier Ma{î}tre"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T15:50:53Z",
+      "summary": "For self-navigation and self-gating in MRI, self-navigators are extracted from the complex values of the k-space center, called DC-signal, through a temporal frequency analysis. However, this signal often carries artifacts. This paper introduces a Self-Navigator Intelligent Filter (SNIF) that models the physical origin of the k-space center artifacts to properly estimate them and thus more accurately remove them. The artifact affecting the DC-signal $S_{DC}$ generally has two main origins: the jitter of the k-space center (''off-center artifact'') and the cumulative history of the spins (''spin-history artifact''). Both add noise-like artifacts to the signal. The off-center effect can be modeled as a perturbative signal $S_0$ and the spin-history effect as a convolution kernel $h$ so that the measured DC-signal is $S_{DC} = S_m + S_0 \\star h$, where $S_m$ is the motion-related component which effectively contains the expected self-navigators. Methods to compute $h$ and $S_0$ were developed, which gives the possibility to extract $S_m$ from $S_{DC}$. They were implemented and evaluated on thoracic UTE datasets acquired on a healthy volunteer. Qualitative visual comparison and quantitative spectral analysis of the DC-signal before and after SNIF demonstrate that the method improves both the accuracy and the precision of the extracted respiratory and cardiac self-navigators. By considering the physical origin of the DC-signal artifacts, SNIF makes both respiratory and cardiac self-navigators more sensitive to motion, which supports finer MRI motion tracking.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13056v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "10 pages, 6 figures; supplementary material (93 pages): DC-signal spectra for every reception channel",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13029v1",
+      "title": "Artifact Filtering versus Artifact-Compensated Training in JPEG to JPEG AI Recompression",
+      "authors": [
+        "Igor Podtsepko",
+        "Yuriy Kim",
+        "Karam Mahfod",
+        "Evgeny Belyaev",
+        "Kristian Kirs"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T09:10:16Z",
+      "summary": "In this paper, we consider the problem of recompression of images from JPEG to JPEG AI format. We show that direct recompression from JPEG to JPEG~AI trained on uncompressed images is accompanied by the preservation of the JPEG image artifacts in the resulting JPEG~AI image. In order to avoid it, we evaluate an approach where an artifacts removal neural network is first applied to the input JPEG image as an external pre-filter. However, in this case, the processing time is increased by 29 times. Therefore, we propose an artifact-compensated training for JPEG AI and show that it is able to combine pre-filtering against target distortions with efficient compression without increase in the processing time.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13029v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.MM"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.MM (多媒体系统与编解码)"
+      ],
+      "comment": "Preprint. Submitted to IEEE Multimedia on 21 February 2026. This is the author's draft version; it has not undergone peer review. 15 pages, 8 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12085v1",
+      "title": "Next-Generation Segmentation in Radiotherapy: A Narrative Review from Atlas-Based Methods to Agentic Vision-Language Models",
+      "authors": [
+        "Josef A. Buchner",
+        "Richard Osuala",
+        "Ayhan Can Erdur",
+        "Melissa C. Olufs",
+        "Stephanie E. Combs"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T09:04:38Z",
+      "summary": "Precise segmentation of target volumes and organs at risk is an essential prerequisite for modern, high-precision radiation therapy. However, this task has traditionally been time-consuming and subject to high interobserver variability. Motivated by these limitations, more advanced and novel approaches to automating this task have been developed over the past two decades. This narrative review highlights representative milestones, with a focus on the most recent developments. These approaches include atlas-based label propagation, convolutional architectures, promptable foundation models, and, most recently, vision-language models (VLMs), which integrate clinical text with volumetric segmentation. Each methodological generation has addressed limitations of its predecessor while introducing new ones. A substantial gap remains between research progress and clinical deployment, as routine workflows continue to be dominated by atlas-based and narrow task-specific deep-learning tools, which remain strong baselines in geometric overlap metrics but are highly rigid in terms of application, versatility, portability, and interpretability. As contouring systems further grow in complexity, conventional geometric overlap metrics become insufficient, motivating evaluation paradigms that incorporate surface-based, dosimetric, and prompt-adherence assessment. Emerging agentic architectures that combine large language models, retrieval-augmented generation, and vision-language segmentation modules are leading towards more flexible, guideline-aware, interactive contouring workflows. These systems could automate flexible and interpretable knowledge-based contouring and actively support the clinical reasoning underlying target volume definition.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12085v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "physics.med-ph"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "physics.med-ph (医学物理学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12044v1",
+      "title": "Leveraging High-Activity Post-Therapeutic I-131 Scans for Deep Learning Reconstruction of Extremely Sparse Planar Images in Differentiated Thyroid Cancer",
+      "authors": [
+        "Boyang Pan",
+        "Hang Yang",
+        "Jianchen Pan",
+        "Cui Gan",
+        "Lanxi Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T08:21:27Z",
+      "summary": "Background: Diagnostic I-131 whole-body planar imaging in differentiated thyroid cancer (DTC) is count-limited by low administered activity, and quality worsens under rapid acquisition. Models trained on such data struggle because their targets lack photon statistics. Purpose: To test whether high-quality post-therapeutic (PT) I-131 scans can serve as superior training references for enhancing sparse diagnostic planar images, using transfer learning and input-image addition. Methods: In this single-center prospective study, 111 patients were enrolled in PT training (n = 19), diagnostic follow-up (FU) training (n = 58), and FU paired test (n = 34) cohorts. Five Restormer-based models were trained: FU_DLx2 on FU labels; PT_DLx2 transfer-learned on PT data; PT_DLx1+ and PT_DLx2+ with input-image addition; PT_DLx6 as a PT-only reference. Test-time processing used two-step denormalization and Poisson re-scaling to preserve noise statistics. Quality was assessed by PSNR, SSIM, and a blinded dual-reader evaluation of all 34 test-cohort patients. Results: PT_DLx2 achieved the highest PSNR (34.4 +/- 3.6 dB) and SSIM (0.81 +/- 0.07). PT_DLx1+ and PT_DLx2+ were comparable (33.8 and 33.3 dB; SSIM 0.80). FU_DLx2 ranked below the unprocessed fast scan (30.3 vs. 32.0 dB; 0.76 vs. 0.79). Subjectively, PT_DLx2+ scored highest in image quality (4.54 +/- 0.60) and diagnostic confidence (4.54 +/- 0.60), surpassing the reference standard (4.19 +/- 0.83 and 4.31 +/- 0.81; P = 0.005 and P = 0.008). FU_DLx2 and PT_DLx6 scored lowest. Conclusion: Count-rich PT scans provide effective training priors for reconstructing extremely sparse images. Input-image addition and cross-domain transfer learning from PT data outperformed direct training on count-limited diagnostic data, supporting 2x scan acceleration with quality matching or exceeding the unaccelerated standard scan for selected PT-derived configurations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12044v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV",
+        "physics.med-ph"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))",
+        "physics.med-ph (医学物理学)"
+      ],
+      "comment": "12 pages, 2 figures, 3 tables",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13014v1",
+      "title": "Is a CNN-Transformer Ensemble Worth It When a Chest X-Ray Foundation Model Is Available?",
+      "authors": [
+        "Aditya Seelaboyina",
+        "Irfan Khan"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T03:22:12Z",
+      "summary": "Ensembles of ImageNet-pretrained convolutional networks and Vision Transformers are a common way to improve multi-label chest X-ray classification. We ask whether such an ensemble is still worth its cost when a model pretrained on chest radiographs is available. On the official patient-disjoint split of NIH ChestX-ray14 (25,596 test images, 2,797 patients), we train five ImageNet-pretrained backbones and the EVA-X-S foundation model with validation-only model selection, compare five fusion rules, and estimate every difference with a patient-level paired bootstrap. EVA-X-S alone reached a test macro-AUROC of 0.828; the five-model ensemble reached 0.814 (difference -0.0136, 95% CI -0.0178 to -0.0098) at about 7.8 times the summed backbone latency and ten times the parameters. Averaging the five ImageNet models with EVA-X-S changed AUROC by -0.0056 (-0.0095 to -0.0021). With all five ImageNet backbones trained with the EVA-X-S recipe, their ensemble scored 0.817, still -0.0109 (-0.0142 to -0.0076) below EVA-X-S, and across three seeds EVA-X-S varied by at most 0.001 AUROC. Under the ImageNet models' recipe, however, EVA-X-S fell to 0.798. Our full-stacking configuration never outperformed calibrated averaging. In this setting, the tested ImageNet ensembles did not improve on a single chest X-ray foundation model fine-tuned with its own recipe.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13014v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "8 pages, 2 figures, 10 tables. Code: https://github.com/adityaseelaboyina/cxr-ensemble-vs-foundation-model",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11052v1",
+      "title": "Kinematic Total-Body PET Video Reconstruction via Hierarchical List-Mode EM and Validation-Adaptive Space-Time Regularisation",
+      "authors": [
+        "Andrew J. Reader",
+        "Gary J. R. Cook",
+        "Paul K. Marsden",
+        "Sarah-May Gould",
+        "Alexander Hammers"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-08T01:09:17Z",
+      "summary": "Kinematic PET is introduced as an imaging task focused on visualisation of early radiotracer delivery and rapid multi-organ motion without gating. The proposed kinematic video reconstruction method uses 33-ms frames (~30 frames per second), initialised with 3D expectation maximisation (EM) time of flight (TOF) list-mode reconstruction, followed by cycles of a 2-stage update. These 2 stages are i) a hierarchical EM (HEM) update using multiple temporal pooling levels, and ii) a validation-adaptive space-time (VAST) regularisation update. HEM combines frame-specific EM corrections with corrections estimated from higher-count temporal blocks, slowing noise amplification for the ultrashort frames. VAST mixes each 3D target patch in a frame with source patches sampled nearby in space and time. It selects the candidate that best matches the mean of the corresponding patches in the two adjacent frames, with the unchanged patch also eligible. Optional temporal block sum correction uses the initial EM temporal sum as a reference to reduce loss of spatial detail. HEM+VAST was evaluated with a dynamic digital phantom, and demonstrated on human FDG data acquired on a Siemens Biograph Vision Quadra (28 - 58 s post-injection). At a background spatial coefficient of variation of 10%, the temporal full width at half maximum of the fastest phantom bolus was 151 ms with HEM+VAST, compared with 86 ms for the ground truth. The video frame rate FDG images reveal vascular and organ detail, radiotracer bolus passage and respiration-related multi-organ motion. Kinematic PET could complement conventional dynamic PET by supporting the development of image-derived physiological biomarkers and motion estimation for quantitative reconstruction. Future work should compare HEM+VAST with prior 4D PET reconstruction methods at the same 33-ms frame duration and matched noise levels.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11052v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)"
+      ],
+      "comment": "10 pages, 11 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10587v1",
+      "title": "From Discrete Snapshots to Geometric Entity: Motion-Native Channel Tracking for THz Near-Field XL-MIMO",
+      "authors": [
+        "Yuheng Fan",
+        "Chuang Yang",
+        "Mugen Peng"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-07T08:52:06Z",
+      "summary": "Channel tracking in mobile terahertz (THz) near-field extremely large-scale multiple-input multiple-output (XL-MIMO) systems is challenging because spherical-wave propagation couples angle and range, leading to rapid and nonlinear channel evolution under sparse pilot observations. Existing approaches typically estimate pilot-local channel or position snapshots before applying temporal tracking or smoothing, making them vulnerable to information loss during snapshot formation. To break this bottleneck, we propose a paradigm shift from tracking discrete snapshots to estimating a holistic geometric entity, namely, one shared continuous UE trajectory over the tracking window. Specifically, we parameterize the trajectory using a low-dimensional cubic B-spline representation and directly couple the per-pilot profile likelihoods through this shared trajectory before any pilot-local position estimate is finalized, thereby inducing continuous near-field channel evolution. We further characterize the efficient geometric information supplied by each pilot observation and its aggregation in the shared spline-coefficient space. Based on this formulation, we develop a regularized maximum a posteriori estimator and a quadratic-penalty lifted solver that separates parallel pilot-local geometric updates from a structured global spline update. The resulting global system is banded and, for a fixed spline degree, admits linear-complexity factorization, enabling an efficient structured implementation. Simulations demonstrate consistently improved tracking accuracy over representative temporally refined baselines in the tested medium-to-high-SNR regime, together with a favorable accuracy--runtime trade-off. These results highlight the benefit of coupling sparse pilot observations through a shared continuous trajectory rather than temporally processing independently estimated snapshots.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10587v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "eess.AS",
+        "eess.IV",
+        "eess.SY"
+      ],
+      "category_names_zh": [
+        "eess.SP (信号处理 (Signal Processing))",
+        "eess.AS (音频与语音信号处理)",
+        "eess.IV (图像与视频处理)",
+        "eess.SY (系统与控制理论 (Systems and Control))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.10144v1",
+      "title": "Dataset Collections: Challenges of Large-Scale Data Aggregation in 3D Medical Image Datasets",
+      "authors": [
+        "Yannick Kirchhoff",
+        "Saikat Roy",
+        "Elisa Stegmeier",
+        "Hamideh Haghiri",
+        "Constantin Ulrich"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T19:10:40Z",
+      "summary": "The development of deep learning-based medical AI depends on high-quality annotated data. Yet, dataset creation remains constrained by the need for expert radiologist annotations, limiting curated datasets to relatively small cohorts. To overcome this limitation, recent efforts increasingly aggregate disparate public datasets into large-scale dataset collections. However, combining datasets at scale often obscures data provenance, introducing substantial risks of reuse propagation, unintended leakage, bias amplification and distorted data distributions. In this work, we study these problems on a massive collection of 565k 3D radiological images across 1034 public datasets and provide practical resources to address them. Firstly, we formalize dataset collections as a distinct paradigm in medical image analysis and characterize their structural challenges, including reuse propagation, duplication, and provenance fragmentation. Secondly, we perform a large-scale empirical study of duplication on this collection and demonstrate extensive exact and near-duplicate reuse across public datasets via perceptual hashing and manual tracing, identifying a lower bound of 118k duplicate pairs. We make the perceptual hashes publicly accessible for comparison through our website, providing researchers with a standardized reference for identifying potential overlaps and shared provenance. Thirdly, since hashing alone cannot detect all duplicates, we introduce MAP (Metadata for Aggregation and Provenance), a lightweight, portable metadata profile for documenting provenance, known overlaps, and deduplication decisions in dataset collections. Our contributions help dataset collections shift from coarse aggregations to reliable and provenance-aware data scaling mechanisms in medical image analysis. A web tool supporting our work is available at https://mic-dct.dkfz.de/.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10144v1.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": "Accepted at NeurIPS 2026 E&D Track",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.09854v1",
       "title": "Super-resolved digital terrain models for GEDI geolocation correction: agreement with airborne LiDAR DTM-based corrections at the beam level, not the footprint level",
@@ -112,6 +589,34 @@
       "ai_summary": null
     },
     {
+      "paper_id": "2611.10091v2",
+      "title": "Polarization Aware Deep Learning Framework for SAR Despeckling",
+      "authors": [
+        "Gianpaolo Passarello",
+        "Sergio Vitale",
+        "Hossein Aghababei",
+        "Giampaolo Ferraioli",
+        "Vito Pascazio"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-06T16:39:48Z",
+      "summary": "Speckle is an inherent characteristic of synthetic aperture radar (SAR) imagery that complicates image interpretation and the extraction of reliable information. Although deep-learning-based despeckling methods have demonstrated promising performance, their applicability across different polarimetric configurations is often limited by the need for specialized architectures or separate training procedures. This paper presents a unified deep-learning framework for despeckling single-, dual-, and full-polarization SAR data using a single trained convolutional neural network. The proposed approach adopts a common nine-channel representation of the polarimetric covariance matrix and a polarization-aware masking strategy to accommodate different configurations without modifying the network architecture. Qualitative and quantitative comparison on three different scenes from different sensors demonstrate competitive performance across the considered experiments and support the feasibility of a unified, polarization-flexible approach to SAR despeckling across different polarimetric configurations.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10091v2.pdf",
+      "source": "arxiv",
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.CV"
+      ],
+      "category_names_zh": [
+        "eess.IV (图像与视频处理)",
+        "cs.CV (计算机视觉与模式识别 (CV))"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
       "paper_id": "2611.09413v1",
       "title": "SmartBloch-Agent: An Agentic Framework for Automated MRI Sequence Design and Optimization",
       "authors": [
@@ -142,17 +647,17 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09118v1",
-      "title": "Semantic Extraction Framework for Goal-Oriented V2X Communication Supporting Safe Intersection Passage",
+      "paper_id": "2611.10073v1",
+      "title": "Noise-Regularized Training for Learned Image Compression",
       "authors": [
-        "Haoran Yang",
-        "Shan Lu",
-        "Takaya Yamazato"
+        "Renjie Zou",
+        "Zhiwei Huang",
+        "Dong Jiang"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T07:56:31Z",
-      "summary": "This paper proposes a transmitter-side semantic extraction framework for goal-oriented Vehicle-to-Everything (V2X) communication supporting safe intersection passage. Instead of transmitting raw sensory data, roadside infrastructure extracts task-relevant semantic information from video and traffic-signal sequences and organizes them into compact semantic packets for low-latency driving-decision assistance. The intersection-passing problem is formulated as a set of traffic tasks under Japanese traffic regulations, and the proposed pipeline generates perception and intent semantics through object detection, object tracking, region-of-interest (ROI)-based semantic extraction, and recommended-action generation. The framework is implemented and evaluated on a self-constructed, CARLA-based single-vehicle dataset collected under clear weather conditions. Experimental results show high recommended-action accuracy within the tested task set, while the mean processing latency remains below the frame interval of the 15~fps input video.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09118v1.pdf",
+      "published_at": "2026-11-06T11:14:04Z",
+      "summary": "Learned image compression (LIC) is trained almost exclusively on clean images: the only stochastic perturbation in the loop is an additive uniform proxy injected in the latent domain to keep the entropy model differentiable. Outside compression, by contrast, a long line of work---from Tikhonov regularization and contractive autoencoders through denoising score matching and modern diffusion models---has established that Gaussian noise at the input of a network with a clean target acts as a structured probe of the data manifold rather than as data augmentation. Building on this view, we introduce noise-regularized training for LIC: at every training step we add Gaussian noise to the encoder input while keeping the distortion target, the latent uniform proxy, the hyperprior, and the entropy coding pipeline unchanged. The recipe is architecture-agnostic and adds essentially no training or inference overhead. Across backbones and operating regimes it yields consistent BD-Rate gains: -2.60% on a reproduced ELIC and -0.85% / -1.05% / -2.38% on the Base/Medium/Large scales of a variable-rate DMCI codec, with DMCI-Large reaching -22.02% against VTM-22.0. A second-order expansion of the noisy RD loss accounts for these gains: because the noise enters upstream of the analysis transform, it converts the clean RD objective into a structured $O(σ^{2})$ regularizer comprising an information-weighted encoder-Jacobian penalty (rate side) and a Frobenius contractive penalty on the end-to-end reconstruction map (distortion side). A finite-difference Lipschitz analysis shows corresponding sensitivity reductions of ~12% for the encoder and ~8% for the end-to-end codec, while an exact-JVP test further shows preferential contraction of high-information directions. Code and trained models are available at https://github.com/Googolxx/NoiseRegu-LIC.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10073v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.IV",
       "categories": [
@@ -163,47 +668,24 @@
         "eess.IV (图像与视频处理)",
         "cs.CV (计算机视觉与模式识别 (CV))"
       ],
-      "comment": "Accept by 2026 Asia-Pacific Conference on Communications",
+      "comment": "22 pages, 4 figures. Accepted as a Spotlight paper at NeurIPS 2026",
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08927v1",
-      "title": "Quantifying System-Level Performance Bottlenecks in Hyperspectral Target Detection",
+      "paper_id": "2611.10070v1",
+      "title": "Frequency-consistent synthesis and selective transfer for medical image analysis",
       "authors": [
-        "Chase Cañas",
-        "John P. Kerekes"
+        "Zhuhui Wang",
+        "Jianwei Zuo",
+        "Xin Peng",
+        "Kai Zhong",
+        "Xuliang Deng"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T03:18:31Z",
-      "summary": "Discerning core performance bottlenecks in hyperspectral target detection is highly challenging given the complex interplay between sub-systems of the imaging chain (scene, atmosphere, sensor and processing). Prior sensitivity and limitation studies offer narrow insights applicable to specific system configurations. To address the need for broader generalization, an analysis framework was constructed to quantify limitations from large ensembles of model scenarios. Key components of the framework include the use of canonical scene representations and the log-weighted area under the ROC curve (wAUC), a metric well-suited for rare target detection. By analyzing thousands of scenarios, parametric thresholds were quantified where detection performance degrades, corresponding to \"knees\" in performance curves. A knee significance score (KSS) is introduced to assess the relative importance of these thresholds. The framework an airborne VNIR sensor implanted in 28,000 scenarios using seven system parameters spanning the scene, atmosphere and sensor. Results suggest that aerosol visibility in the 2-6 km range is the dominant limiter in detection, followed by subpixel target percentages of 15-35%, and background clutter modeled using a t-distribution with 3-5 degrees of freedom.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08927v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "10 pages, 9 Figures, 4 Tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08754v1",
-      "title": "Measurement-Aware Multimodal LLM for No-Reference Low-Dose CT Quality Assessment",
-      "authors": [
-        "Kerem Basim",
-        "Tolga Demiroglu",
-        "Mehmet Ozan Unal",
-        "Metin Ertas",
-        "Isa Yildirim"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T22:02:11Z",
-      "summary": "No-reference image quality assessment (IQA) of low-dose CT predicts the score that radiologists would assign to a slice without a full-dose reference, as needed to compare dose protocols and denoisers. Trained CT IQA networks agree well with radiologists but output only a score, whereas multimodal large language models (MLLMs) can explain a score but perform poorly on CT when only prompted. We propose a measurement-aware MLLM, built on Qwen3.8-27B, that rates a slice from its image together with six image-domain measurements of noise, sharpness, high-frequency content and streaks, given to the language model as percentiles in text. On the LDCT-IQA 2023 test set, it reaches an Overall score of 2.735, on par with the retrained challenge winner (2.735) and MedSigLIP-FiLM (2.713), and substantially above its base MLLM used as a zero-shot agent. Shuffling the measurements at test time reduces the score by 0.048, mostly through noise, but the same measurements also lead the model to assign higher scores to over-smoothed denoised images.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08754v1.pdf",
+      "published_at": "2026-11-06T10:28:01Z",
+      "summary": "Complementary imaging is not always available, and realistic synthesis does not necessarily improve downstream analysis. Here we introduce a training framework linking medical image synthesis to task learning through adaptive frequency consistency and selective feature transfer. Image-specific frequency constraints encourage consistency of structure and detail. Features are transferred only when a teacher using synthetic images achieves a lower task-error score than the student by a task-specific margin on a labelled training sample. Evaluations across five datasets show improved translation fidelity with three adversarial and diffusion-based translators trained without paired supervision, alongside gains in brain-tumour segmentation on tumour-containing slices and lesion centre-point detection. All 105 reported paired comparisons yielded point estimates favouring the proposed methods, including 36 external translation comparisons on post?treatment MRI without retraining. These findings support synthetic modalities as task-oriented complements to acquired scans when complementary imaging is unavailable.",
+      "pdf_url": "https://arxiv.org/pdf/2611.10070v1.pdf",
       "source": "arxiv",
       "primary_category": "eess.IV",
       "categories": [
@@ -214,464 +696,7 @@
         "eess.IV (图像与视频处理)",
         "cs.CV (计算机视觉与模式识别 (CV))"
       ],
-      "comment": "5 pages, 2 figures, 3 tables. Submitted to IEEE ISBI 2027",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08731v1",
-      "title": "eSharp: Diffusion-based Sharp Monocular Metric Event-to-Depth Estimation",
-      "authors": [
-        "Qiushi Dai",
-        "Aniket Dashpute",
-        "Yuhao Liu",
-        "Rishubh Parihar",
-        "Guha Balakrishnan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T21:27:18Z",
-      "summary": "Depth perception is fundamental for autonomous navigation, industrial inspection, and mixed-reality systems. It often operates under strict constraints on power and form factor. In such cases, monocular depth estimation (MDE) is often used. Even as recent advances continue to improve monocular depth quality, conventional frame-based MDE systems remain challenged by fast motion and high-dynamic-range scenes. This work introduces eSharp, an MDE framework that addresses these problems using an event camera. eSharp repurposes pretrained diffusion priors for event-only MDE and produces accurate metric depth with unparalleled sharpness on real data. Real-world event datasets provide only sparse LiDAR depth maps for ground-truth supervision, making dense prediction challenging. We address this limitation through cross-modal distillation, using LiDAR-calibrated dense pseudo-labels generated from a spatially co-registered frame camera to train eSharp. Experiments show that eSharp outperforms prior event-to-depth baselines in both metric-depth accuracy and spatial fidelity, establishing diffusion models as a promising foundation for event-driven 3D perception.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08731v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08441v1",
-      "title": "Edge-Assisted Crowdsensing for Explainable Cyclist Safety Perception",
-      "authors": [
-        "Hongsen Cao",
-        "Chia-Yen Chiang",
-        "Mona Jaber",
-        "Meihui Wang",
-        "Yasmin Fathy"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T18:33:58Z",
-      "summary": "Cyclist fatality rates remain high despite policy support for active travel, and autonomous vehicles add complexity to mixed traffic. Neither crash statistics nor multi-model detection pipelines scale to continuous monitoring of perceived safety along a route. We present an edge-assisted crowdsensing system: handlebar cameras supply street-level frames, a vision-language model (VLM) turns each frame into structured traffic attributes through a single prompt, and an explainable boosting machine (EBM) combines them with OpenStreetMap road infrastructure and on-bike kinematics to predict a crowdsourced 1-9 safety score. Extraction belongs at the network edge: the fastest self-hosted model needs 2.49 s per frame and scoring takes 0.4 ms on a CPU. On 1,362 annotated frames from two London routes, the EBM regressor reaches 72.2 percent binary accuracy and a mean absolute error of 1.011 under five-fold cross-validation. It is within one accuracy point of black-box ensembles. Its per-feature shape functions give exact attribution: physical lane separation is worth +0.97 rating points, a painted lane +0.70 and a construction site -0.65. Planners can therefore price an infrastructure change in rating points, and the results enter cost-benefit analysis directly. We also report inter-annotator agreement (alpha = 0.4695), an attribute audit, and a sensitivity analysis linking attribute error to accuracy. With re-encoding, a 20 s sampling interval serves 1,000 riders at 54 Mbit/s at a cost of 1.4 accuracy points, making continuous monitoring practical.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08441v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08360v1",
-      "title": "OraRefer: Segmentation-Guided Multi-Photograph Fusion for Oral Cancer Screening with Guaranteed Patient-Level Sensitivity",
-      "authors": [
-        "Rupam Mukherjee",
-        "Mehakdeep Singh",
-        "Shirin Dasgupta",
-        "Subhamoy Mandal"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T17:39:50Z",
-      "summary": "Oral cancer and the oral potentially malignant disorders (OPMD) that can precede it are visible on the oral mucosa, which makes smartphone photographs a promising tool for screening. Deep learning models for this task classify individual photographs. However, screening refers patients, not photographs: a patient is usually photographed several times, and the referral decision must miss no more than a set share of patients with disease. We propose OraRefer, a patient-level screening model that reads each photograph with a segmentation-guided foundation model that conditions its class decision on the predicted lesion, combines all photographs of a patient with risk factors, and refers through a threshold with a finite-sample sensitivity guarantee. The model localizes the mouth itself, so inference needs no annotation. On 3000 photographs of 714 patients, patient-level fusion reaches an AUROC of 0.919 and outperforms attention-based multiple-instance learning. At a 90% sensitivity target, OraRefer detects 95% of patients with OPMD or cancer and misses 3 of 61 patients with cancer, at a specificity of 0.610. Because the threshold is calibrated without retraining, each clinic can set its own guaranteed operating point on a local calibration sample.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08360v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08154v1",
-      "title": "Interpretable Multimodal MRI-Clinical Fusion for Functional Outcome Prediction After Acute Ischemic Stroke",
-      "authors": [
-        "Sina Raeisadigh",
-        "Henning Müller",
-        "Abderrahmane Hedjoudje"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T15:14:58Z",
-      "summary": "This study evaluates the added prognostic value of day-1 multimodal MRI for predicting three-month functional outcome after acute ischemic stroke (AIS). Sixty-six AIS patients with ADC, DWI, FLAIR, and clinical data were analyzed. Three-dimensional pretrained ResNet embeddings were extracted from each MRI modality, reduced using fold-isolated principal component analysis, and combined with structured clinical variables and ADC-derived lesion biomarkers. Linear support vector machines were evaluated using eight-fold stratified group cross-validation across MRI modality combinations. Clinical-only modeling achieved strong performance (AUC = $0.899 \\pm 0.151$), while MRI-only models showed limited discrimination (AUC $\\approx$ $0.67$-$0.73$). Among multimodal configurations, FLAIR-clinical fusion achieved the highest mean cross-validated performance (AUC = $0.948 \\pm 0.061$), followed by ADC-clinical fusion (AUC = $0.941 \\pm 0.094$). Full ADC-DWI-FLAIR fusion did not consistently outperform single-modality clinical fusion. Feature-importance analysis identified age, NIHSS subscores, ADC lesion burden, and learned FLAIR representations as key contributors, while qualitative FLAIR activation maps showed responses over lesion-like regions. These findings suggest that compact day-1 FLAIR and ADC representations provide complementary prognostic information beyond clinical variables and support interpretable, data-efficient outcome prediction in AIS.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08154v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.AI",
-        "cs.CV",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.LG (机器学习 (ML))",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "5 pages, 2 figures, 1 table",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07690v1",
-      "title": "Simulation of Refraction Through Voxel Volumes",
-      "authors": [
-        "Rainier Mobley",
-        "Jean Michel Létang",
-        "Max Langer"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T09:15:53Z",
-      "summary": "Ray tracing in X-ray science has typically been limited to descriptions where refraction occurs only at interfaces, ignoring the refraction occurring due to the continuous variations in index of refraction in the bulk of a material, as are common in biological samples like bone. We propose a method to simulate X-ray images directly on voxel grids using curved rays. We first validate this method compared to a model with an analytical solution, and then investigate the effects of voxel size, interpolation choice, and illumination to grid alignment on a few simulated test objects. From these investigations, we make several recommendations to guide simulations using these techniques.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07690v1.pdf",
-      "source": "arxiv",
-      "primary_category": "physics.optics",
-      "categories": [
-        "physics.optics",
-        "eess.IV",
-        "physics.comp-ph"
-      ],
-      "category_names_zh": [
-        "physics.optics (光学与光子学)",
-        "eess.IV (图像与视频处理)",
-        "physics.comp-ph (计算物理学)"
-      ],
-      "comment": "16 pages, 10 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08544v1",
-      "title": "GenStrain: Multi-Conditional Generative Diffusion Model To Synthesize High-quality Motion and Strain Maps From Cardiac Magnetic Resonance Images",
-      "authors": [
-        "Rishov Paul",
-        "Sona Ghadimi",
-        "Cristiane C. Singulane",
-        "Amit R. Patel",
-        "Frederick H. Epstein"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T04:08:45Z",
-      "summary": "This paper presents GenStrain, a novel method for synthesizing high-quality cardiac motion-based strain maps from routinely collected cine cardiac magnetic resonance (CMR) images. Existing approaches typically rely on image registration to estimate motion (a sequence of displacements) from cine CMR images, but cine CMR presents very sparse trackable intramyocardial features, presenting challenges to estimate intramyocardial motion. An advanced imaging technique, Displacement Encoding with Stimulated Echoes (DENSE) CMR, is considered as the gold standard for strain assessment, but it requires additional acquisitions, which are not ideal for efficient clinical workflows. To address this gap, we introduce GenStrain, a novel framework designed to learn the data distribution of highly accurate cardiac motion captured by DENSE. In particular, we develop a diffusion process in motion space, where spatiotemporal continuity is carefully considered. To fully leverage both cine CMR images and their associated motion patterns, we introduce a multi-conditional conditioning strategy that integrates anatomical features and motion representations learned by a spatiotemporal registration model to guide the generation process. Experimental results demonstrate that our proposed model, GenStrain, outperforms existing strain analysis methods based on displacement estimates from both traditional registration approaches and state-of-the-art (SOTA) deep learning models. Our model represents a promising step toward more accurate cardiac function assessment and holds great potential for clinical translation. Our code is publicly available at https://github.com/Rishov-MIA/GenStrain.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08544v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV",
-        "cs.LG"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)",
-        "cs.LG (机器学习 (ML))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08542v1",
-      "title": "RapidMitDet: Boosting Computational Efficiency for Mitosis Detection via Magnification Alignment",
-      "authors": [
-        "Longfei Wang",
-        "Jiatai Lin",
-        "Junyu Guo",
-        "Chaoqun Chen",
-        "Danyi Li"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T02:23:25Z",
-      "summary": "Automated mitosis detection is a critical research focus, enabling pathologists to rapidly assess mitotic indices for tumor malignancy evaluation. However, most of the existing detection approaches suffer from significant computational inefficiency due to the giga-pixel image resolution of Whole-Slide Images (WSIs), which greatly hinders their clinical applicability. In this study, we propose RapidMitDet, a computational efficient mitosis detection approach. Our method employs a coarse-to-fine framework, first identifying mitotic candidates at lower magnification and then confirming them at higher magnification. In the coarse-detection stage, we introduce magnification-aligned knowledge distillation to reduce the information gap between magnification levels while minimizing the performance degradation in the lower magnification detection model. In the subsequent fine-classification stage, we propose adaptive triplet learning (ATL) to optimize infomative sample selection, thereby enhancing discrimination between mitotic and non-mitotic instances. Experimental results show that RapidMitDet achieves the optimal accuracy-efficiency balance at 20x magnification, improving computational speed by up to 5.62 times over the latest state-of-the-art (SOTA) methods. Due to its lightweight model design, RapidMitDet can also deliver efficient detection at higher magnification (40x) while achieving even higher detection performance. In WSI-level evaluations, our method shows strong agreement with pathologists' diagnoses (ICCs: 0.879 (40x), 0.822 (20x)) while maintaining superior efficiency, highlighting its potential for clinical application. Code is available at https://github.com/logincat/RapidMitDet",
-      "pdf_url": "https://arxiv.org/pdf/2611.08542v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08540v1",
-      "title": "Volumetric Latent Diffusion for Brain Tumour Segmentation with Missing Modalities",
-      "authors": [
-        "Toan Nguyen Hai",
-        "Hung Nguyen Tuan",
-        "Ba Luong Son",
-        "Huynh Trinh Ngoc"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T01:33:55Z",
-      "summary": "Brain tumour segmentation from magnetic resonance imaging normally assumes that all four imaging sequences are available, but in clinical practice one or more are frequently missing. Existing methods for incomplete inputs learn modality-invariant representations or distil from a full-modality teacher, and return a single deterministic mask. Gen- erative formulations instead model a distribution over plausible masks, but the cost of sampling at full resolution has largely confined them to two dimensions. This paper proposes a three-dimensional conditional latent diffusion framework for whole-tumour segmentation from incom- plete multi-sequence MRI. Images and annotations are first compressed by two volumetric autoencoders, which makes diffusion over whole vol- umes affordable, and sequences are dropped at random during training so that a single model handles every combination of missing sequences. Because the model samples rather than predicts, repeated draws also yield a voxel-wise map of disagreement at no extra training cost. Evalu- ations on 2,601 studies from BraTS 2023 and 2024 show that the method reaches 0.955 Dice with all four sequences and 0.904 with FLAIR alone, and that it is the most accurate of the four methods compared in eight of the fifteen configurations. The disagreement between draws widens as sequences are withheld, giving a signal that accompanies the prediction rather than replacing it",
-      "pdf_url": "https://arxiv.org/pdf/2611.08540v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08538v1",
-      "title": "Subliminal Learning in Vision-Language Models",
-      "authors": [
-        "Arman Hatami",
-        "Romina Aalishah",
-        "Ilya E. Monosov"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T23:36:01Z",
-      "summary": "Subliminal learning is a phenomenon in large language models (LLMs) where a teacher passes a hidden preference to a student through training data unrelated to that preference. We study whether subliminal learning also occurs in vision-language models (VLMs). We finetune a teacher VLM to prefer a specific animal or facial attribute and use a control teacher from the same base model. Both teachers generate numbers for an unrelated visual task involving geometric shapes. Two students initialized from the same base VLM are finetuned on the same images, using numbers generated by either the biased or control teacher. Across VLMs ranging from 2B to 7B parameters, we find that both animal and facial preferences can transfer through this unrelated task. Students trained on biased-teacher outputs select the target more often than control students, with a difference of up to $\\sim$10 percentage points in the animal preference task. Transfer can become stronger with more training data and varies with the target preference, model, and how the numbers are generated. Beyond preferences, we show that the biased student's explanations use more of the same words and phrases as the biased teacher's explanations than those of the control student, even when all three models select the same image. These results matter for training VLMs and show that training on unrelated data may change both a VLM's image preferences and how it explains its choices, and that transfer can become stronger with more training samples.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08538v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV",
-        "cs.AI",
-        "cs.CL",
-        "cs.LG",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.CV (计算机视觉与模式识别 (CV))",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.CL (计算语言与大语言模型 (NLP))",
-        "cs.LG (机器学习 (ML))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "Accepted to WACV 2027",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08537v1",
-      "title": "CNVAE: Anatomically Correct Segmentation via Conditional Generative Modeling",
-      "authors": [
-        "Freddy Jiang",
-        "Loic Le Folgoc",
-        "Elsa Angelini"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T22:12:03Z",
-      "summary": "Supervised deep learning segmentation models, although unparalleled in performance, are not immune to anatomical mistakes. We develop a segmentation-by-generation paradigm extending the Nouveau VAE (NVAE) generative framework for anatomically correct cardiac segmentation. In particular, we propose a novel conditional NVAE model (CNVAE) for conditional shape generation, and explore its capabilities for image segmentation in two scenarios: (1) direct image-to-mask CNVAE for one-step segmentation; (2) mask-to-mask CNVAE for refinement of segmentation masks produced by third-party segmentation models. Both models are lightweight and return consistently anatomically valid segmentation masks (> 98% success rate, an improvement of 15% above state-of-the-art segmentation models) on the cardiac segmentation/editing tasks of interest, without loss of accuracy in segmented contours.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08537v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08536v1",
-      "title": "SideAge-RiskNet: Predicted Mammographic-Age Features for Future Breast Cancer Risk and Laterality Prediction",
-      "authors": [
-        "Haoyan Ding",
-        "Encheng Su",
-        "Chaowei Wu",
-        "Lixia Wang",
-        "Qian Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T21:34:49Z",
-      "summary": "Whether breast-specific mammographic aging provides information beyond chronological age for future cancer prediction remains unclear. We propose SideAge-RiskNet, a framework integrating predicted mammographic-age features with breast-specific representations for multi-year breast cancer risk and conditional laterality prediction. A side-aware DenseNet121 trained on never-cancer reference examinations estimates left and right breast ages. Age-adjusted residuals and bilateral age descriptors are subsequently fused with corresponding image representations, while clinical variables contribute through an image--clinical risk branch. The framework jointly predicts cumulative cancer risk over 1--5 years and the subsequently affected breast among unilateral cancer cases. Across 4,480 EMBED and 248 external examinations, pre-cancer scans demonstrated pronounced bilateral age asymmetry. SideAge-RiskNet established state-of-the-art performance in 1--5-year risk assessment over Mirai and AsymMirai with mean risk AUROCs of 81.73% on EMBED and 72.83% on CSMC. Furthermore, it enabled conditional cancer laterality prediction, achieving AUROCs of 73.26% and 82.53%, respectively. This demonstrates the critical utility of bilateral aging phenotypes in localized breast cancer risk surveillance.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08536v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "5 pages, 2 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08535v1",
-      "title": "Destructive augmentations for prostate lesion segmentation on heterogeneous biparametric MRI data",
-      "authors": [
-        "Thibault Heintz",
-        "Rachit Saluja",
-        "Seungbin Park",
-        "Daniel Margolis",
-        "Timothy McClure"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T21:21:21Z",
-      "summary": "Training prostate lesion segmentation models on biparametric MRI (bpMRI) is limited by small datasets with heterogeneous imaging acquisition protocols and annotations. In this work, we train a segmentation model on a combined cohort of 1,579 lesion-containing training cases from five datasets, representing, to our knowledge, the largest collection of prostate lesion annotations used for this task. Additionally, we investigate two complementary improvements to the widely used nnU-Net framework. First, we introduce a random wavelet augmentation and show that random sym4 (Symlet) wavelets outperform random convolution augmentation in terms of average Dice score, with only a modest reduction in F1 score due to lower precision. Second, we evaluate instance-level losses and show that Connected-Component-based Dice (CC-Dice)-CE loss complements BackSplit, yielding better performance than BackSplit alone. Together, these improvements achieve the best overall performance, reaching a Dice score of 0.614 on the public Prostate158 test set and establishing a new state-of-the-art on this benchmark. We publicly release our training code and model weights.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08535v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07135v1",
-      "title": "Finite Element Elastographic Analysis of Kidney MRI for Computational Assessment of Chronic Kidney Disease",
-      "authors": [
-        "A. Bhattacharjee",
-        "M. M. Rahman",
-        "A. Srivastava",
-        "E. H. Bhuiyan"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T21:03:26Z",
-      "summary": "Background and Objective: Bridging kidney MRI with patient-specific computational biomechanics may enable accurate, noninvasive assessment of chronic kidney disease. To develop a finite element method (FEM)-based computational elastography framework for estimating renal biomechanical properties from conventional kidney MRI and to evaluate its ability to differentiate chronic kidney disease (CKD) from healthy controls. Methods: Kidney segmentation masks from healthy control and CKD subjects were converted into triangulated surface meshes, and watertight surfaces were tetrahedralized to create volumetric FEM meshes. Kidney tissue was modeled as a nearly incompressible Kelvin-Voigt viscoelastic material. Harmonic wave propagation simulations were performed using FEM, followed by Helmholtz-based elastographic inversion to estimate complex shear modulus distributions. Derived biomechanical parameters were used for CKD classification using machine learning models. Results: FEM-derived stiffness estimates showed consistency with stiffness ranges previously reported in human renal MRE studies and also showed measurable differences between healthy and CKD groups. Machine learning models trained on FEM-derived features achieved classification performance up to 86.26% cross-validation accuracy with an AUC of 0.92. Conclusion: FEM-derived elastographic parameters showed potential for distinguishing CKD from healthy tissue and may provide an alternative for renal biomechanical assessment without dedicated MRE acquisition.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07135v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "Original research article",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08533v1",
-      "title": "Arctic-SAR: A Cross-Sensor RADARSAT Constellation Mission and Sentinel-1 Dataset and Fusion Benchmark for Multi-Task Sea Ice Mapping",
-      "authors": [
-        "Niloofar Azad",
-        "Kyle Gao",
-        "Javier Noa Turnes",
-        "Youssef Nafea",
-        "Linlin Xu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T19:32:37Z",
-      "summary": "Current sea ice mapping benchmarks are mostly built around single-sensor SAR products, limiting the evaluation of cross-sensor variability and the effectiveness of combining observations from different SAR platforms. Models trained on such datasets may also be sensitive to sensor-specific artifacts, radiometric characteristics, and acquisition conditions, which can reduce robustness and limit generalization. To address these limitations, this study introduces Arctic-SAR, a cross-sensor SAR dataset for Arctic sea ice mapping, constructed by matching RADARSAT Constellation Mission (RCM) dual-polarization imagery with Sentinel-1 scenes from the AI4Arctic Sea Ice Dataset. The dataset consists of 221 co-registered scenes and supports multi-task prediction of sea ice concentration (SIC), stage of development (SOD), and floe size (FLOE). In addition to the dataset, we establish a benchmark for cross-sensor SAR sea ice mapping by quantifying the contribution of RCM imagery and evaluating single-sensor baselines alongside representative input-, feature-, and decision-level fusion strategies within a consistent multi-task U-Net framework. Across three independent runs, the test results show that the effectiveness of cross-sensor fusion is strongly dependent on the fusion strategy and prediction task. Decision-level fusion achieves the highest mean combined score of $77.28\\pm0.29\\%$, essentially matching the Sentinel-1-only baseline at $77.26\\pm0.13\\%$, while achieving the highest SIC \\(R^2\\) score. These findings show that Sentinel-1 and RCM provide task- and class-dependent information, but that simple joint cross-sensor fusion does not consistently improve generalization over a strong single-sensor baseline. Arctic-SAR therefore provides a benchmark for cross-sensor SAR fusion research in automated Arctic sea ice mapping.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08533v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06992v1",
-      "title": "Task-Aware Bitrate Thresholds for Codec-Robust Ultrasound Segmentation",
-      "authors": [
-        "Alireza Siyavashi",
-        "Arman Shirzad",
-        "Christian Herglotz"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T18:06:16Z",
-      "summary": "Remote robot surgery and tele-ultrasound increasingly rely on real-time streaming under strict bandwidth constraints, making lossy compression unavoidable. Since the receiving end of these clinical pipelines is increasingly a machine rather than a human observer, codec selection must be guided by downstream task accuracy rather than perceptual fidelity. We evaluate three widely deployed codecs, H.264/AVC, HEVC, and AV1, on prostate ultrasound segmentation, reporting task-aware compression performance with region overlap (Dice) and boundary accuracy (HD95) as the quality metrics. To compare codecs fairly, we match their operating points at a common perceptual-quality (SSIM) level. We establish, per codec, the lowest bitrate that preserves acceptable segmentation accuracy, reporting the 5th-percentile Dice alongside the mean to expose worst-case degradation. All three codecs preserve segmentation quality (mean Dice $\\geq$ 0.84) down to approximately 0.07-0.20 bits per voxel (bpv). Below this point, AV1's accuracy declines gradually, while H.264's drops sharply. As a result, H.264 needs 82% more bitrate than AV1 to reach the same region-overlap accuracy (Dice), and 104.7% more to reach the same boundary accuracy (HD95).",
-      "pdf_url": "https://arxiv.org/pdf/2611.06992v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "It is already accepted at IEEE Visual Communications and Image Processing Conference",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06791v1",
-      "title": "A Frame-Level View and Image-Quality Annotation Tool for Fetal Echocardiography: Comparison with Spreadsheet Annotation",
-      "authors": [
-        "Mohamed Azzam",
-        "Ziyang Xu",
-        "Quinlan Couch",
-        "Zoe Keese",
-        "Andrea Cadlo"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T17:07:12Z",
-      "summary": "Objective: To develop the Cardiologist Annotation Tool (CAT) for frame-level cardiac view and image-quality annotation in fetal echocardiography and compare it with spreadsheet-based annotation. Methods: CAT provides cine playback, frame navigation, and keyboard-based labeling without manual frame-range entry. Experts annotated 25 studies using both methods, and spreadsheet annotations were audited for predefined data-entry errors. In a randomized crossover study, six medical students annotated two normal studies, one with each method, against an expert reference. Results: Among 1,746 spreadsheet-annotated files, 6.2% contained major or critical data-entry errors, more frequently in congenital heart disease than normal studies (10.9% vs 3.4%). CAT yielded more annotated view segments per clip (3.6 vs 1.5). Rates of labeled and correctly labeled frames per minute were 1.77 and 1.68 times those with spreadsheets, respectively (both P = 0.031), with gains in all six students. No detectable difference in view-label accuracy was observed. Conclusion: CAT eliminates manual frame-range entry and enables finer-grained, structured annotation of fetal echocardiography, providing a practical approach to preparing datasets for AI research.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06791v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.HC",
-      "categories": [
-        "cs.HC",
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "cs.HC (人机交互 (HCI))",
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06570v1",
-      "title": "From Vision to Context: A Review of Prompt-Driven Target Volume Segmentation in Radiotherapy",
-      "authors": [
-        "Bakpen Kombat",
-        "Guus Grimbergen",
-        "Maarten L. Terpstra",
-        "Gert J. Meijer",
-        "Lois"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T14:32:22Z",
-      "summary": "Accurate target volume (TV) segmentation is essential for radiotherapy (RT) planning but remains time-consuming. Moreover, the final contour depends on the expertise of the radiation oncologist. Although deep learning has improved medical image segmentation, image-only models cannot encode the clinical reasoning that governs TV delineation, particularly for the clinical target volume (CTV), where boundaries are defined by clinical knowledge rather than imaging features alone. Prompt-driven segmentation has recently emerged as a strategy to address this limitation. This work aims to review these approaches for RT TV segmentation with four objectives: (1) compare the different prompting techniques used; (2) compare their performance against image-only baselines; (3) assess how they are evaluated against standard metrics, including the Dice similarity coefficient (DSC), 95th Hausdorff distance, sensitivity, precision, and clinical assessment; and (4) identify the gaps needed for clinical translation. We systematically searched PubMed, Embase, and arXiv for studies incorporating geometric, clinical text, or interactive prompts into deep learning models for RT TV delineation. Thirteen studies met the inclusion criteria, spanning head and neck, breast, prostate, lung, cervix, and rectal cancers. Seven studies used clinical text prompting, four used geometric prompting, and two used interactive prompting; three combined modalities. Reported DSC ranged from 0.67 to 0.93, compared to 0.65 to 0.91 for image-only baselines. None reported sensitivity or precision. Clinical text prompting appears well suited to CTV delineation. Evidence remains limited, and standardized prompt engineering and clinical validation are needed before these approaches can be translated into routine RT practice.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06570v1.pdf",
-      "source": "arxiv",
-      "primary_category": "eess.IV",
-      "categories": [
-        "eess.IV"
-      ],
-      "category_names_zh": [
-        "eess.IV (图像与视频处理)"
-      ],
-      "comment": "Submitted to Computerized Medical Imaging and Graphics",
+      "comment": "40 pages, 5 figures",
       "journal_ref": null,
       "ai_summary": null
     }
@@ -685,12 +710,17 @@
     {
       "code": "cs.CV",
       "name_zh": "计算机视觉与模式识别 (CV)",
-      "count": 10
+      "count": 15
     },
     {
       "code": "cs.AI",
       "name_zh": "通用人工智能 (AI)",
-      "count": 3
+      "count": 4
+    },
+    {
+      "code": "physics.med-ph",
+      "name_zh": "医学物理学",
+      "count": 4
     },
     {
       "code": "cs.LG",
@@ -698,13 +728,18 @@
       "count": 3
     },
     {
-      "code": "physics.geo-ph",
-      "name_zh": "地球物理学",
-      "count": 1
+      "code": "eess.SP",
+      "name_zh": "信号处理 (Signal Processing)",
+      "count": 3
     },
     {
-      "code": "physics.med-ph",
-      "name_zh": "医学物理学",
+      "code": "cs.MM",
+      "name_zh": "多媒体系统与编解码",
+      "count": 2
+    },
+    {
+      "code": "cs.RO",
+      "name_zh": "机器人学与具身智能",
       "count": 1
     },
     {
@@ -713,20 +748,20 @@
       "count": 1
     },
     {
-      "code": "physics.comp-ph",
-      "name_zh": "计算物理学",
+      "code": "eess.AS",
+      "name_zh": "音频与语音信号处理",
       "count": 1
     },
     {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
+      "code": "eess.SY",
+      "name_zh": "系统与控制理论 (Systems and Control)",
       "count": 1
     },
     {
-      "code": "cs.HC",
-      "name_zh": "人机交互 (HCI)",
+      "code": "physics.geo-ph",
+      "name_zh": "地球物理学",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T08:30:30.450270"
+  "snapshot_synced_at": "2026-11-12T20:17:10.176398"
 }

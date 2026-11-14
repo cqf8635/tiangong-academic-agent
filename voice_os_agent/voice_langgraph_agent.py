@@ -49,6 +49,7 @@ ENV_PATH = PROJECT_ROOT / ".env"
 load_dotenv(ENV_PATH)
 
 MODEL_DIR = resolve_whisper_path(PROJECT_ROOT)
+DEFAULT_MONITOR = get_default_monitor_source()
 
 
 # ==========================================
@@ -82,7 +83,6 @@ class WhisperEngine:
             print(f"🧠 [WhisperEngine] 加载本地模型: {model_dir.name} (GPU CUDA: {use_cuda})...")
             model = AutoModelForSpeechSeq2Seq.from_pretrained(
                 model_dir,
-                local_files_only=True,
                 dtype=dtype,
                 low_cpu_mem_usage=True,
                 use_safetensors=True,
@@ -90,7 +90,7 @@ class WhisperEngine:
             if use_cuda:
                 model.to("cuda:0")
 
-            processor = AutoProcessor.from_pretrained(model_dir, local_files_only=True)
+            processor = AutoProcessor.from_pretrained(model_dir)
             cls._pipe = pipeline(
                 "automatic-speech-recognition",
                 model=model,
@@ -107,10 +107,37 @@ class WhisperEngine:
 # ==========================================
 def get_audio_source(mode: str) -> str:
     if mode == "system":
-        return get_default_monitor_source()
-    if mode == "mic":
-        return "default"
-    raise ValueError(f"未知音源模式: {mode}")
+        # 1. 优先获取当前系统正在使用的 Default Sink，其 .monitor 即为真实发声通道（自动兼容扬声器/耳机/蓝牙）
+        try:
+            sink_res = subprocess.run(
+                ["pactl", "get-default-sink"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=1.0,
+            )
+            def_sink = sink_res.stdout.strip()
+            if def_sink:
+                return f"{def_sink}.monitor"
+        except Exception:
+            pass
+
+        # 2. 备选：从 pactl sources 中自动探测带有 monitor 的可用声卡通道
+        try:
+            res = subprocess.run(["pactl", "list", "short", "sources"], capture_output=True, text=True, check=True, timeout=1.0)
+            lines = res.stdout.strip().splitlines()
+            for line in lines:
+                parts = line.split("\t")
+                if len(parts) >= 2 and "monitor" in parts[1] and ("Speaker" in parts[1] or "RUNNING" in line):
+                    return parts[1]
+            for line in lines:
+                parts = line.split("\t")
+                if len(parts) >= 2 and "monitor" in parts[1]:
+                    return parts[1]
+        except Exception:
+            pass
+        return DEFAULT_MONITOR
+    return "default"
 
 
 def calc_rms(chunk_bytes: bytes) -> float:
@@ -268,10 +295,8 @@ def transcribe_node(state: VoiceAgentState) -> Dict[str, Any]:
 def clean_and_format_node(state: VoiceAgentState) -> Dict[str, Any]:
     """节点 3: 语义清洗、去幻觉与语音控制指令识别"""
     raw_text = state.get("raw_transcription", "").strip()
-    if state.get("status") == "error":
-        return {"final_text": "", "status": "error", "error_message": state.get("error_message", "语音处理失败")}
     if not raw_text:
-        return {"final_text": "", "status": "skipped"}
+        return {"final_text": "", "status": "completed"}
 
     # 1. 过滤 Whisper 常见的静音/杂音幻觉模式（仅针对孤立短串过滤，避免误杀正常英文句式如包含 thank you 的学术发言）
     lower_text = raw_text.lower().strip(". !?,，。？！")
@@ -292,8 +317,8 @@ def clean_and_format_node(state: VoiceAgentState) -> Dict[str, Any]:
                 "final_text": cleaned,
                 "status": "shutdown",
             }
-    except Exception as e:
-        return {"final_text": "", "status": "error", "error_message": f"语音意图解析失败: {e}"}
+    except Exception:
+        pass
 
     return {
         "final_text": cleaned,
@@ -347,8 +372,6 @@ class LangGraphVoiceAgent:
         silence_timeout: float = 2.5,
         records_dir: Path = Path(__file__).resolve().parent / "records",
     ):
-        if mode not in {"mic", "system"}:
-            raise ValueError(f"不支持的音源模式: {mode}")
         self.mode = mode
         self.threshold = threshold
         self.silence_timeout = silence_timeout

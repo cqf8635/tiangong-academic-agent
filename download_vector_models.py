@@ -152,8 +152,12 @@ def main() -> int:
                 print(f"✅ OpenAI 官方原生模型已就绪: {pt_file} ({pt_file.stat().st_size / 1e9:.2f} GB)，跳过下载。")
             else:
                 print(f"Downloading OpenAI native model from {repo_id} -> {pt_file}", flush=True)
-                import whisper
-                whisper._download(repo_id, str(output_dir), False)
+                try:
+                    import whisper
+                    whisper._download(repo_id, str(output_dir), False)
+                except Exception:
+                    import urllib.request
+                    urllib.request.urlretrieve(repo_id, str(pt_file))
             records.append(
                 {
                     "name": "whisper",

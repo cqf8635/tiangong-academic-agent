@@ -1,78 +1,160 @@
 {
   "query_expression": "cat:econ*",
   "total_fetched": 35,
-  "total_results": 18130,
+  "total_results": 18181,
   "papers": [
     {
-      "paper_id": "2611.09792v1",
-      "title": "Knowing When to Intervene: Causal Evaluation of AI Agents",
+      "paper_id": "2611.14434v1",
+      "title": "Hedging out the HEDGE Bias: Identifying Dynamic Partial-Equilibrium Effects with Panel LP-IV",
       "authors": [
-        "Ayush Sawarni",
-        "Wenqian Xing",
-        "Tijana Zrnic",
-        "Ramesh Johari",
-        "Vasilis Syrgkanis"
+        "Endong Wang",
+        "Ren Zhang"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T17:46:53Z",
-      "summary": "Current evaluations of agentic AI systems primarily rely on benchmarks. However, the static nature of benchmarks makes them uninformative about the value of auditing interventions at deployment time. For reliable deployment, we often need to determine within an agent's trajectory whether or not to intervene, e.g., by verifying the agent's current output or steering it toward different behavior, using either human review or more costly models or time-consuming agentic supervision. The value of such interventions is fundamentally a causal inference question, asking whether the causal effect of such an intervention is beneficial for the final outcome. Estimating this causal effect is particularly challenging due to the dynamic nature of the problem: the impact of an intervention depends on the current context and environment, as well as the agent's future behavior. We develop the first methodologically grounded framework for evaluating the causal effects of randomized interventions within agent trajectories. By leveraging a relatively small dataset of agent trajectories collected under randomized interventions such as verification or screening, we can estimate the dynamic causal effect of a rich class of (contextual) intervention policies. The structural parameters that we estimate can also be used to construct safety leaderboards that capture the risk of various agentic actions, which can be used by practitioners for audit prioritization. Applying our methods to tau-bench Retail, ToolSandbox, and ImpossibleBench, we find that intervention effects vary substantially across agent actions and states. More broadly, our work suggests a rich research agenda at the intersection of causal inference and agentic evaluation, which we believe is essential for the reliable and safe deployment of AI agents in the real world.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09792v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.LG",
-        "econ.EM",
-        "stat.ME"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.LG (机器学习 (ML))",
-        "econ.EM (计量经济学)",
-        "stat.ME (统计推断与方法学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09790v1",
-      "title": "Box-Cox Transformations of Correlation Matrices",
-      "authors": [
-        "Ilya Archakov",
-        "Peter Reinhard Hansen"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T17:45:39Z",
-      "summary": "We consider Box-Cox transformations of correlation matrices, $Φ_α(C)=\\mathrm{vecl}\\{(C^α-I)/α\\}$, with Jacobian $J_α$. The family nests the raw correlations at $α=1$, the generalised Fisher transformation (GFT), $C\\mapsto\\mathrm{vecl}(\\log C)$, at $α=0$, and the negated off-diagonal concentration coordinates at $α=-1$. The inverse problem is a strictly convex program for every $α$, so every member is injective. The map is onto $\\mathbb{R}^{d}$, $d=n(n-1)/2$, if and only if $α\\le0$, such that $α=0$ defines the boundary for unrestricted parametrizations. For $α>0$ the image is bounded. The conditioning obeys the bound $κ(J_α)\\leκ(C)^{|1-α|}$, where $κ(C)=λ_{\\max}(C)/λ_{\\min}(C)$, and on the surjective range the exponent is smallest at $α=0$. Under Gaussian sampling with $n\\geq3$, the asymptotic covariance of the transformed sample correlations is the identity at independence for every member, but only $α=0$ retains the identity to first order in the correlations, whereas the leading joint third cumulant at independence vanishes only at $α=1/3$. Finally, applying the transformation to the diagonal rescaling of $C$ that makes the result hollow adds a new family to the existing correlation parametrizations. For every $α$ the rescaling solves a strictly convex problem and the inverse is explicit, and the scaled coordinates are unrestricted exactly when $α=0$, where they recover the known global normal coordinates, centred at independence, for the efficient information metric of the correlations.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09790v1.pdf",
+      "published_at": "2026-11-10T18:08:13Z",
+      "summary": "Cross-sectional designs are widely used to estimate dynamic partial-equilibrium effects of an aggregate treatment. We show analytically that these estimates are biased when exposures to the treatment and to aggregate confounders are correlated or the confounders feed back into the treatment. This paper develops the heterogeneous-exposure local-projection instrumental variables (HELP-IV) framework, which compares units while holding the confounder path fixed by instrumenting the treatment and this path with exposure-weighted shock proxies. We prove that HELP-IV identifies the partial-equilibrium effect. We further extend the framework, with the corresponding inference, to multiple exposure margins and confounders, forward-looking outcomes, and cumulative multipliers. Finally, we apply HELP-IV to state fiscal multipliers and regional stock-wealth effects, where it yields partial-equilibrium effects that are smaller than conventional estimates and deliver different implications when ported to macroeconomic models.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14434v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
-        "econ.EM",
-        "math.ST",
-        "stat.ME"
+        "econ.EM"
       ],
       "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "math.ST (数理统计理论)",
-        "stat.ME (统计推断与方法学)"
+        "econ.EM (计量经济学)"
       ],
-      "comment": "49 pages, 2 figures, 1 table",
+      "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09685v1",
-      "title": "Who Picks First? Compensatory Fairness When Equal Division Is Impossible",
+      "paper_id": "2611.14385v1",
+      "title": "Semiparametric Inference in Panel Data with Interactive and High-dimensional Confounding",
       "authors": [
-        "Aleksei Chernulich",
-        "M. Bumin Yenmez"
+        "Bin Chen",
+        "Yukun Ma",
+        "Qiyang Yu"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T16:33:21Z",
-      "summary": "When indivisible objects, such as heirlooms or tickets to sports events, do not divide evenly among agents with equal claims, some agents must receive more objects than others. Can picking first compensate those with fewer objects? We propose two principles of compensatory fairness. An agent with fewer objects must not envy a larger bundle with any one of its objects removed, and priority advantages among agents with equally many objects must alternate rather than accumulate. Non-wastefulness, neutrality and an object-wise form of Maskin monotonicity characterize the draft rules, in which agents pick in a fixed sequence. Adding the two principles and envy-freeness up to one object singles out the block--snake draft, in which agents with fewer objects pick first in every round and each group's order reverses between rounds. Among draft rules, compensation is compatible with strategy-proofness, but envy-freeness up to one object is not: once at least two agents receive more than one object, no draft that satisfies it is even weakly strategy-proof, and with two such agents the conflict extends to all non-wasteful and neutral rules. When agents may be indifferent between objects, resolving each tie in favor of the earliest later picker who strictly cares preserves the draft's fairness guarantees and ensures efficiency under pairwise dominance.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09685v1.pdf",
+      "published_at": "2026-11-10T17:37:38Z",
+      "summary": "This paper develops inference for a low-dimensional treatment coefficient in partially linear panel models with high-dimensional observed covariates and latent interactive confounding. Flexible adjustment for observed covariates can leave correlated factor components in treatment and outcome residuals, invalidating standard double/debiased machine learning (DML). We propose Factor-Augmented DML (FA-DML), which estimates treatment-side and reduced-form factor spaces from first-stage residuals. The estimator combines a feasible double projection with three-fold, unit-level cross-fitting. The double projection controls interactions between the two estimated factor spaces. The separate folds eliminate same-training-unit pairings in the leading disturbance components of the factor-estimation errors. Under fixed factor ranks, pervasive factor signals, strict exogeneity, and joint asymptotics in the number of units N and periods T , FA-DML is first-order equivalent to an infeasible oracle, is asymptotically normal, and admits consistent variance estimation. In the baseline simulation design with strong interactive confounding, FA-DML confidence intervals have coverage close to the nominal level. Standard DML and a two-fold variant that estimates both factor spaces on the same units substantially undercover. In an application to U.S. states, FA-DML finds that a 10% increase in the real minimum wage is associated with a roughly 1.1% lower 50/10 wage ratio. The estimate is stable across control sets and first-stage learners.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14385v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14146v1",
+      "title": "Estimating multidimensional poverty under incomplete data in North Macedonia",
+      "authors": [
+        "Maja Gerovska Mitev",
+        "Viktor Stojkoski"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T14:34:02Z",
+      "summary": "Multidimensional Poverty Indices (MPIs) are available for more than 100 countries, but rarely below the national or regional level. Local estimates require knowing how deprivations overlap within households, yet the sources that cover every locality, such as censuses and geospatial data, cannot be linked at the household level. We show how to measure local multidimensional poverty under such incomplete data, using North Macedonia as a case study. Combining settlement-level access to services with municipal census data, we pair an independence-based point estimate with sharp bounds over all joint distributions consistent with the data. We find that, nationally, 5.01 percent of households are multidimensionally poor, with bounds of 2.01 to 17.44 percent. Also, poverty is concentrated in small rural municipalities, which are poorer than nearly all municipalities of the capital city under any dependence structure. Validating our index against official statistics, the Global MPI, and a fieldwork deprivation index indicates that the socio-economic part of the index is consistent with external measures of deprivation, while the geographic part captures a distinct dimension of remoteness. Our approach thus presents a promising way to measure multidimensional poverty at the local level in countries where linked household data are unavailable.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14146v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13882v1",
+      "title": "Backtesting High-Dimensional Expected Shortfall",
+      "authors": [
+        "Zaichao Du",
+        "Juan Carlos Escanciano",
+        "Pei Pei"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T10:40:04Z",
+      "summary": "Forecast evaluation increasingly uses high-dimensional predictors, but estimation and regularization of large predictive models can distort conventional backtests. This issue is particularly important for forecasting downside risk, where the signal-to-noise ratio is low. We develop out-of-sample Expected Shortfall (ES) backtests that remove the large first-order bias effects of estimating high-dimensional Value-at-Risk, ES, and the evaluation instrument. In a linear ES specification, the proposed methods are easily implemented as Double Lasso with a tail-size-adjusted score as a generated dependent variable. More generally, we characterize orthogonal ES backtesting moments, and establish oracle equivalence and valid inference under time-series dependence and repeated estimation with overlapping and expanding training windows. Simulations show that conventional backtests can severely overreject ES optimal forecasts, whereas orthogonalization improves size control. An application to downside-growth forecasting for G7 economies finds evidence against a US growth-only ES specification, even though forecast-oriented regularization selects no additional financial predictors. The application also shows that accounting for estimation can change rejection decisions in either direction. These findings highlight the distinct roles of predictive variable selection and backtesting in the evaluation of high-dimensional tail-risk models.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13882v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13866v1",
+      "title": "Economic Benefits of Cross-Border Electricity Trade and Domestic Electricity Production in Switzerland",
+      "authors": [
+        "Benjamin Lietti",
+        "Ambra Van Liedekerke",
+        "Marino Bucher",
+        "Michael Beer",
+        "Nicolas Eschenbaum"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T10:25:23Z",
+      "summary": "This paper assesses the economic benefits of cross-border electricity trade in the context of rising energy prices and geopolitical uncertainty. Switzerland provides a particularly compelling case because of its geographical location and limited integration into the EU electricity market. We first use the Nexus-e framework to simulate the generation capacity and transmission grid expansion required under autarky and free-trade scenarios. Based on these capacity configurations, a fundamental power market model simulates wholesale market outcomes under projected demand and generation conditions for 2040. By jointly accounting for consumer and producer surplus, as well as investments in generation capacity and grid infrastructure, we provide a comprehensive assessment of the welfare effects of cross-border electricity trade, leading to an estimated EUR 1.5 billion gain. More specifically, open access to cross-border electricity trade implies a EUR 1.8 billion transfer from largely publicly owned producers to consumers. Finally, we provide an illustrative, non-causal mapping of broader macroeconomic effects. Under a price-convergence assumption, the implied demand adjustment corresponds to a GDP-equivalent effect of approximately EUR 7 billion.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13866v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13715v1",
+      "title": "Optimal Regulation and Information Institutions with Hidden Network Equilibria",
+      "authors": [
+        "Christian Jaag"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T08:09:59Z",
+      "summary": "Aggregate outcomes can conceal network configurations that expose households to uninsurable risk and require different public services. We study a regulator's joint choice of a corrective activity charge and an information institution in a two-population network game. Although aggregate behavior follows an exact stable law, distinct specialization equilibria require different targeted interventions. With purchased Gaussian monitoring, primitive conditions imply a discontinuous switch between strong regulation without purchased information and informed specialization. The regulator may alternatively obtain signed certification or elicit a privately known state through a report backed by committed random audits. We characterize the three institutions' optimized values and the cost thresholds at which credible disclosure replaces government monitoring. The institutional choice also changes optimal regulation: even when certification and truthful reporting reveal the same state, costly audits favor less specialization and a higher corrective charge. This ordering and monotonicity in audit costs hold under an explicit interiority condition without global concavity of the audit problem. The institutional comparison is solved in the benchmark without feedback from anticipated policy, while the policy switch and strict institutional rankings admit local persistence under additional regularity conditions. Results depend on enforceable verification, restrictions on data access, and an explicitly limited institutional menu.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13715v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13632v1",
+      "title": "Herding with Multiple States: When the Prior Matters",
+      "authors": [
+        "Xiaoyu Chen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T06:19:41Z",
+      "summary": "In sequential observational learning with more than two states, the same information structure and preferences can yield learning for some full-support priors and herding for others. This disproves a conjecture of Kartik, Lee, Liu, and Rappoport (2024, working-paper version). In the counterexample, the cascade region has nonempty interior, yet learning occurs for generic full-support priors outside it. Focusing on information and preferences, we introduce two necessary conditions for learning. Escapability requires that signals can provide arbitrarily strong evidence that any given action is ex post suboptimal; pairwise escapability is its pairwise variant. If escapability fails, herding occurs for some initial prior; if pairwise escapability fails, it occurs for every full-support prior. For a class of environments with interval optimality and monotone likelihood ratios, escapability completely characterizes learning and herding independently of the full-support initial prior. With location-shift signals, this characterization reduces to pairwise distinguishability, a generalization of unbounded beliefs (Smith and Sørensen, 2000).",
+      "pdf_url": "https://arxiv.org/pdf/2611.13632v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.TH",
       "categories": [
@@ -86,16 +168,65 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09515v1",
-      "title": "Moral Consumers and the Environment",
+      "paper_id": "2611.13616v1",
+      "title": "Optimal Trading Speed on Blockchain",
       "authors": [
-        "Mogens Fosgerau",
-        "Jörgen Weibull"
+        "Ruizhe Jia",
+        "Shihao Yu"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T14:28:46Z",
-      "summary": "We study the taxation of environmentally harmful goods when consumers have a Kantian desire to ``do the right thing''. A consumer evaluates her buying strategy, a rule that specifies whether to buy, by the material payoff she would obtain if others followed the same rule with a probability given by her degree of morality. Equilibrium exists and is unique in finite populations with heterogeneous morality. The optimal tax depends crucially on whether consumers are aware that tax revenue is returned to them. If they are, the Pigovian tax is optimal under homogeneous morality, whatever consumers know about environmental costs, and we give conditions under which it remains the unique optimum under heterogeneous morality. If they are not, the optimal tax is lower, and more so the more moral consumers are. Under a quota system such as the EU Emissions Trading System, any cap at least as stringent as the Pigovian quota admits an equilibrium in which morality has no effect on consumers who are aware of the system.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09515v1.pdf",
+      "published_at": "2026-11-10T05:52:22Z",
+      "summary": "On blockchain-based exchanges, faster blocks weaken the priority-fee competition among arbitrageurs and shift rents from the block producer to them. Equilibrium liquidity peaks at an interior block speed; beyond a threshold, an active liquidity provider cream-skims and passive capital shrinks. Evidence from the Base Flashblocks upgrade, a tenfold block-speed increase, confirms the predictions. Priority-fee bids decrease sharply and arbitrageurs' net profit rises. The active liquidity provider rebalances faster, avoids toxic flow, and earns a higher profit. Pool depth falls and effective spreads widen despite closer tracking of external prices.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13616v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13469v1",
+      "title": "Obvious Group Manipulations and Top Trading Cycles",
+      "authors": [
+        "Ryoga Doi",
+        "Kazumasa Ikeda",
+        "Kensei Nakamura"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T02:24:26Z",
+      "summary": "We introduce a group version of non-obvious manipulability, which is stronger than the original definition by Troyan and Morrill (2020) and weaker than group strategy-proofness, and study its implications in Shapley-Scarf housing markets. We provide several characterizations of the Top Trading Cycles mechanism using the new condition.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13469v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)"
+      ],
+      "comment": "18 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13450v1",
+      "title": "Feedback Design in the Shadow of Strategic Communication",
+      "authors": [
+        "Daiki Kishishita",
+        "Tomoki Tsujita"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T01:52:19Z",
+      "summary": "We study optimal feedback design when evaluations affect subsequent strategic communication within organizations. A firm designs public feedback about an employee's potential before the employee communicates private information about project-specific circumstances to a manager. While more informative feedback helps the manager make better decisions, it can also intensify preference conflicts and undermine the credibility of subsequent communication. We characterize the optimal feedback policy. First, full disclosure is either optimal for all prior beliefs or strictly suboptimal for all of them. In particular, it is optimal when preference conflicts are sufficiently small or sufficiently large. Second, when full disclosure is suboptimal, no disclosure is optimal for some priors, while partial disclosure is strictly optimal for some priors if and only if the number of messages in equilibrium communication varies with posterior beliefs. Third, optimal partial disclosure can conclusively identify low-potential employees when high potential is rare, but high-potential employees when it is common.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13450v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.TH",
       "categories": [
@@ -109,68 +240,365 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09452v1",
-      "title": "Optimal robust comonotonic risk sharing under operational constraints",
+      "paper_id": "2611.13313v1",
+      "title": "Instrumental variables with treatment clusters",
       "authors": [
-        "Carole Bernard",
-        "Christopher Blier-Wong",
-        "Jean-Gabriel Lauzier"
+        "Didier Nibbering",
+        "Matthijs Oosterveen",
+        "Pedro Luis Silva"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T13:26:15Z",
-      "summary": "Risk-sharing arrangements such as reinsurance programs and catastrophe pools must satisfy operational constraints, including capacity limits, attachment bands, retention rules and cession limits. Under distortion risk measures, the unconstrained optimum assigns each loss layer to the participant for whom that layer is least costly, but operational constraints break this layerwise rule, and there is no general method to compute the constrained optimum. We show that, for comonotonic allocations, the participants' distortion risk measures and the operational constraints are linear in the amount of each loss layer held by each participant, so the constrained risk-sharing problem on a discretized loss is a linear program that standard software can solve. Its dual gives supporting prices for the loss layers and the marginal value of relaxing each operational constraint. Where the set of binding constraints changes, the constrained optimal value can have a kink, and the smallest and largest optimal multipliers then give the one-sided effects of relaxing and tightening a constraint. To protect the allocation against disagreement between loss models, we also consider the robust version of the risk-sharing problem, that is, minimizing the worst-case total risk assessment over finitely many probability scenarios. This robust problem is again a linear program, and we quantify the cost of protection against model uncertainty from its optimal value. We illustrate the approach with a catastrophe reinsurance tower.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09452v1.pdf",
+      "published_at": "2026-11-09T22:34:21Z",
+      "summary": "Many policy evaluations include multiple unordered treatments. A common approach is to aggregate these treatments into clusters and apply instrumental variable (IV) methods at the treatment cluster level: The clusters are treated as binary treatments and the IV assumptions are invoked at the cluster level. This paper shows that IV with treatment clusters identifies a weighted average of local average treatment effects (LATEs) under a set of assumptions at the unclustered treatment level. When data on unclustered treatment choice is available, we propose testable necessary conditions for the causal interpretation of IV with treatment clusters. We illustrate our methods with empirical applications to the causal effects of fields of study aggregated into STEM and non-STEM clusters or eight broad study directions.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13313v1.pdf",
       "source": "arxiv",
-      "primary_category": "econ.TH",
+      "primary_category": "econ.EM",
       "categories": [
-        "econ.TH"
+        "econ.EM"
       ],
       "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
+        "econ.EM (计量经济学)"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09399v1",
-      "title": "Artificial Shoppers and Attention Competition",
+      "paper_id": "2611.13259v1",
+      "title": "Choosing Complexity: Cognitive Ability, Overconfidence, and Task Choice",
       "authors": [
-        "Xiaomeng Guo",
-        "Fasheng Xu",
-        "Xiaoli Zhang"
+        "David Gill",
+        "Zhongheng Qiao"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T12:34:40Z",
-      "summary": "We study how AI shopping interfaces affect price competition, platform profit, and consumer welfare. A platform hosts two of three products of different quality. Without AI, consumers compare the hosted pair under salience distortion and overweight whichever attribute, price or quality, stands out. Under assistance, an AI assistant recommends the two products with the highest true utility, leaving consumers to make the same distorted comparison. Under delegation, an AI agent selects the best product, subject to purchase approval. Both modes access all products and know consumers' preferences; firms price strategically. First, assistance can soften competition despite expanded product access. The middle-quality firm may forgo low-valuation consumers because attracting them requires cutting the price paid by higher-valuation consumers as well. Relative to no AI with the same assortment, assistance lowers both hosted prices under the high- and low-quality pair but can raise both under the high- and middle-quality pair. Second, we identify an alignment paradox: some consumers can become worse off than without AI even though their best option remains recommended and becomes cheaper. Salience can induce a switch to a lower-quality product whose quality loss exceeds the saving relative to the original purchase. The assistant ranks products accurately but does not optimize the shortlist for consumers' realized welfare. Third, assistance can raise both platform profit and aggregate consumer surplus with the high- and middle-quality pair; delegation can do so with the high- and low-quality pair. Fourth, among AI designs, the platform weakly prefers delegation with the high- and middle-quality pair wherever all compared pricing equilibria exist. Yet this preferred design can yield lower platform profit and aggregate consumer surplus than the no-AI optimum.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09399v1.pdf",
+      "published_at": "2026-11-09T21:30:14Z",
+      "summary": "Workers and organizations routinely choose between complex tasks that differ in their success-payment tradeoff. We study how cognitive ability and overconfidence shape this choice of task complexity, both theoretically and experimentally. Consistent with our model, we find that more cognitively able individuals choose more complex tasks. Conditional on cognitive ability, we find that more overconfident individuals also choose more complex tasks. In about 75% of the decisions, subjects pick their payoff-maximizing task, and higher cognitive ability is weakly associated with more efficient choices of task complexity. But errors are strikingly one-sided: those who fail to choose optimally pick tasks that are too complex. Our findings suggest that organizations should pair task menus and incentives for choosing more complex tasks with information and feedback that help workers assess their ability and probability of success. This preserves the benefits of self-selection while reducing costly overreach.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13259v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.TH",
       "categories": [
         "econ.TH",
-        "cs.AI",
+        "cs.GT",
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)",
+        "cs.GT (计算机博弈论与算法经济)",
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": "71 pages, including appendices. JEL: C91, D03, D83, D91, J24",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13230v1",
+      "title": "Dynamic investment and coordination in teams: Theory and experimental evidence",
+      "authors": [
+        "David Gill",
+        "Victoria Prowse",
+        "J. Lucas Reddinger"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T20:57:51Z",
+      "summary": "Teamwork requires more than the general skills that team members bring. In successful teams, members invest in team-specific skill or capital that accumulates within the team and raises the return to coordinated production. We provide the first systematic analysis of dynamic investment in such team skill. Adopting a dynamic game approach, we develop a novel theoretical framework where investment in team skill creates persistent benefits but is risky because the benefits depend on successful team coordination. We then take this framework to the laboratory to study empirically the factors that influence dynamic investment in team skill. We find underinvestment compared to the efficient benchmark. However, investment responds strongly to incentives, in line with specific theory-predicted patterns. Pre-registered traits (theory of mind and propensity to coordinate) predict investment and team-level efficiency. We conclude that careful design of team incentives and selection of team members can facilitate the development of team skill.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13230v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN",
         "cs.GT"
       ],
       "category_names_zh": [
-        "econ.TH (微观经济与理论经济)",
-        "cs.AI (通用人工智能 (AI))",
+        "econ.GN (宏观与综合经济学)",
         "cs.GT (计算机博弈论与算法经济)"
+      ],
+      "comment": "90 pages, including appendices. JEL: C73, C92, D91, J24",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13212v1",
+      "title": "Prediction Inference for Hybrid Models on Realized Volatility Forecasting",
+      "authors": [
+        "Kyle Parrella",
+        "Kejin Wu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T20:35:36Z",
+      "summary": "GARCH-LSTM hybrid models have become increasingly popular in the volatility forecasting literature. To date, these models have almost exclusively focused on point estimation and accuracy measures such as RMSE and MAPE, while failing to assess the uncertainty of these point estimates. We approach this gap in two ways. First, we extend the existing GARCH-LSTM model by modeling the conditional mean with an ARMA structure. Second, we develop a forward bootstrap algorithm to build multi-step-ahead prediction intervals for future realized volatility. In order to address the notorious undercoverage of prediction intervals, we implement two solutions. One draws bootstrap innovations from the empirical residual distribution to mimic the fat-tail property of financial series. The other utilizes principles from conformal prediction to systematically extend the prediction interval length. We evaluate the methods in simulations with heavy-tailed and time-varying GARCH processes and in rolling-window forecasts of four U.S. stock indices from 2020 to 2025. The ARMA-based hybrid gives the lowest point-forecast errors in most settings, and combining both remedies with the mean-based hybrid yields intervals closest to the nominal level among competing methods.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13212v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "econ.EM",
+        "stat.CO",
+        "stat.ME",
+        "stat.ML"
+      ],
+      "category_names_zh": [
+        "stat.AP (应用统计学)",
+        "econ.EM (计量经济学)",
+        "stat.CO (计算统计与马尔可夫链)",
+        "stat.ME (统计推断与方法学)",
+        "stat.ML (机器学习统计基础)"
+      ],
+      "comment": "22 pages, 1 figure",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13194v1",
+      "title": "Taste or Strategy? Nationalistic Bias and Competitor Penalties in Figure Skating Judging",
+      "authors": [
+        "Jialin Liu",
+        "Shu Shen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T20:18:20Z",
+      "summary": "Many decisions rest on expert panels whose members have ties to some candidates, and favoritism is hard to tell from shared taste or better information. Using a rich dataset from figure skating, we find evidence of a strategic compatriot premium and a targeted penalty on the compatriot's close rivals. The premium falls along a randomly drawn start order and, before 2022/23, rises when close rivals have their own judges on the panel. The penalty grows with the compatriot's placement chances and fades once she is out of contention. A counterfactual analysis shows that these biases can shape close competitions.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13194v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
       ],
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09381v1",
-      "title": "Decomposing the Cost of Complexity Under Risk",
+      "paper_id": "2611.13189v1",
+      "title": "On the Nonemptiness of the Core: Connecting Cooperative Games and Asset Pricing",
       "authors": [
-        "Xiaoge Dong",
-        "Lasse Mononen"
+        "Bernard Cornet",
+        "Miklós Pintér"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T12:20:48Z",
-      "summary": "We study preferences under risk when the probability structure of a lottery can affect value separately from its final prizes. Our first result characterizes perturbed expected utility representation in which lottery value separates into expected utility over prizes and an additive perturbation term depending only on the probability tree. The key behavioral restrictions are branch cancellation, which separates prize evaluation from probability structure, and within-tree dominance, which captures that evaluations within the same probability tree are simple and follow dominance. Strengthening branch cancellation to lottery cancellation, which extends the invariance requirement from common prizes to common sublotteries, characterizes additive separability of the perturbation across branches. We also characterize when the tree dependent perturbation term depends only on the number of distinct possible prizes: under weaker continuity requirements, adding same-support independence yields a support size representation for nondegenerate lotteries, and a certainty equivalent condition extends it to degenerate lotteries. Finally, concavity gives the perturbation term its interpretation as a complexity cost.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09381v1.pdf",
+      "published_at": "2026-11-09T20:07:51Z",
+      "summary": "We show that the Bondareva--Shapley theorem for infinite cooperative games can be derived from a version of the fundamental theorem of asset pricing. The link is the Choquet extension of a game, viewed as a possibly nonlinear pricing rule on the space of measurable simple payoffs. Under this identification, balancedness translates into no arbitrage, and a linear functional dominated by the pricing rule yields an allocation in the anti-core; the core statement follows by duality. Applying the arbitrage-free pricing theorem of Cornet (2025), we recover the characterization of the nonvacuity of the core initiated by Schmeidler (1967) and established in full generality by Bartl and Pinter (2023) for bounded-below games. Unlike the earlier derivation in Cornet (2025), our argument does not require the game to have bounded variation or the collection of coalitions to be a $σ$-algebra.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13189v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)"
+      ],
+      "comment": "12 pages",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13169v1",
+      "title": "Identification, estimation, and robust inference of structural autoregressions for multidimensional data",
+      "authors": [
+        "Bernhard van der Sluis"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T19:53:21Z",
+      "summary": "Many modern datasets such as cross-country panels have a multidimensional structure. Conventional approaches on structural vector autoregressions for identifying structural shocks are not directly suited to these settings where data are naturally organized as matrices or tensors, since the number of parameters grows rapidly and identifying restrictions become hard to impose. We introduce a class of structural autoregressions for multidimensional data that achieves tractability and global identification by assuming a Kronecker structure on the model coefficients. We develop a minimum-distance estimator and establish its asymptotic distribution. To accommodate approximate Kronecker separability, we develop confidence intervals for the structural impulse response functions that are robust to local misspecification, and we show their asymptotic validity. Monte Carlo simulations demonstrate the validity of the asymptotic approximations and good finite-sample performance of the estimator and their (robust) confidence intervals. We illustrate the methods on a country panel dataset to analyze the dynamic and spillover effects of US monetary policy shocks.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13169v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.EM",
+      "categories": [
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "econ.EM (计量经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12690v1",
+      "title": "Average versus expected causal effects under interference: Modeling assumptions and estimation bottlenecks",
+      "authors": [
+        "Vishesh Karwa",
+        "Edoardo M. Airoldi",
+        "Donald B. Rubin"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T16:50:26Z",
+      "summary": "Causal inference under treatment interference requires assumptions to reduce the exponentially large number of potential outcomes. We develop hierarchical finite-population models for potential outcomes by separating these assumptions into three layers: interference neighborhoods, exposure mappings, and outcome models. Given an interference neighborhood and exposure mapping, we show that potential outcomes admit a nonparametric decomposition into direct, spillover, and treatment--spillover interaction components. This decomposition provides a common coordinate system for nonparametric, semiparametric, and parametric models of finite-population potential outcomes. For a given potential-outcome model, we define two classes of estimands. Average causal effects (ACEs), such as direct and total treatment effects, contrast potential outcomes under fixed treatment--exposure conditions. Expected causal effects (ECEs), such as expected direct and indirect effects, contrast expectations of potential outcomes under a specified allocation policy. For both classes, we bound the variance of the canonical Horvitz--Thompson estimator by three terms: a diagonal weight term, a term from overlapping interference neighborhoods, and a residual design-dependence term. Our upper and lower bounds show that under graph-unaware designs, nonparametric design-unbiased estimation of ACEs can require sample sizes growing exponentially in the interference degree, whereas polynomial growth can suffice for design-aligned ECEs. Under neighborhood interference, we construct graph-aware independent-set designs with variance bounds polynomial in the maximum degree for direct and total treatment effects on every graph, whereas graph cluster randomization can incur worst-case variance exponential in the degree.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12690v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "cs.LG",
+        "econ.EM"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "cs.LG (机器学习 (ML))",
+        "econ.EM (计量经济学)"
+      ],
+      "comment": "42 pages, 4 figures, 30-page appendix",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12565v1",
+      "title": "That Time of the Year Again: Government Pay Revisions in the Aggregate Economy",
+      "authors": [
+        "Faisal Quaiyyum"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T15:28:51Z",
+      "summary": "Public pay is set by law in nominal terms, so inflation erodes its real value between legal acts until the government revises it. I model each revision as the choice of a forward-looking government, shaped by two costs that push in opposite directions. A fixed cost of acting makes revisions large and rare, whereas a convex cost of financing the increase at once makes them small and frequent. Through the budget, each revision also moves debt and the risk of fiscal stress under which the next one is made. In the documented pay decisions of eleven countries, pay set at discretion erodes against prices and private earnings and is restored in discrete steps, every cut was decided during market stress or an adjustment program, and court rulings drove a wedge between the cuts legislated, the cuts paid and the cuts that lasted. Estimated on the legal acts, the model reproduces the documented paths of pay in most countries when data and simulations are measured the same way. In Portugal's estimated model, the savings that the Treasury requires once spreads rise produce the cuts, the debt overhang holds pay down after the crisis, and a court that strikes cuts after they take effect invites cuts it will strike. Review of cuts before they took effect would have lowered the social cost of Portugal's crisis relative to review after the fact, and partial indexation would have paid in Bangladesh unless its automatic increases were costly to finance.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12565v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12534v1",
+      "title": "A Game-Theoretic Framework for Resource Allocation under Institutional Asymmetry",
+      "authors": [
+        "Jorge David Castaño-Yepes",
+        "Marcela Herrera",
+        "Javier Parra-Domínguez"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T15:06:55Z",
+      "summary": "We develop a two-player knapsack game to investigate resource allocation under individual capacity constraints, competition over shared resources, and institutional asymmetry. Players select feasible subsets of resources, while their payoffs depend on competitive losses, allocation rules, and asymmetric institutional benefits and costs. We derive the aggregate welfare function and show that allocation coefficients redistribute payoffs without directly affecting total welfare, whereas institutional parameters influence welfare through their net contribution. Consequently, institutional arrangements with identical welfare effects may induce different strategic incentives and Nash equilibrium outcomes. We analyze how capacity constraints and institutional priority shape equilibrium configurations and their welfare properties. A central result concerns the distinction between the social efficiency and strategic stability of shared resources. We derive conditions under which sharing is socially preferable to exclusive allocation yet remains strategically unstable because the non-priority player can increase their payoff by abandoning the resource. Conversely, sharing may remain strategically stable even when exclusive allocation yields higher aggregate welfare. These findings demonstrate that social efficiency and strategic stability need not coincide under institutional asymmetry.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12534v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)"
+      ],
+      "comment": "19 pages, 3 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12459v1",
+      "title": "Fiscal Commitment and the Additionality of Philanthropy: Heterogeneous Donor Purposes in a Shared Public Budget",
+      "authors": [
+        "Christian Jaag"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T14:11:04Z",
+      "summary": "Philanthropic donors often value different public services, while a budget authority allocates public spending across a shared portfolio. Policy frameworks frequently seek to ensure that private finance supplements rather than displaces public funding. We distinguish baseline additionality, which preserves pre-gift public funding, from portfolio preservation, which preserves a service's provision after all gifts are pooled under discretionary budgeting. A larger gift to one service raises the discretionary provision of every service and reduces the protection slack available to the others. This cross-donor fiscal externality yields an exact feasibility result: if a service's maximum permissible floor lies below its discretionary post-gift provision, every effective protection reform reduces that service relative to the portfolio reference, including full protection of its own appropriation. Conversely, a reform that expands at least one donor-backed service while preserving all others exists exactly when every maximum floor reaches the reference. The paper characterizes the complete preservation set and its welfare-maximizing element. Under logarithmic preferences, donation shares determine protectability, while heterogeneous donor valuations determine welfare incidence. Baseline additionality may therefore hold while a service loses fiscal benefits generated by other gifts.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12459v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12368v1",
+      "title": "Bayesian precision factor models for high-dimensional macroeconomic time series",
+      "authors": [
+        "Peter Dunson"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T13:15:43Z",
+      "summary": "Series in a macroeconomic panel are almost all correlated with one another, which makes correlation a poor guide to which pairs are directly linked. For example, Treasury rates at different maturities are all highly correlated, yet a short and a long rate may be related only through the rates at maturities between them; similarly, sectors of the economy such as output, employment, prices, and interest rates may be related directly or only through other series. Both are questions about the inverse covariance matrix. Recovering it from quarterly data is difficult: contemporaneous dependence is entangled with temporal dynamics, the innovations remain densely dependent once those dynamics are removed, and the number of series is comparable to the number of quarters observed. We propose VAPOR (Vector Autoregressive Precision factOR), a Bayesian model that estimates vector autoregressive dynamics jointly with a factor-structured innovation precision matrix, inferring the partial correlations directly from the fitted precision rather than imposing a zero pattern. Applied to 100 quarterly FRED-QD series, VAPOR learns from the data that each Treasury rate is directly related only to the rates at adjacent maturities, places all 26 selected dependencies within a single FRED-QD group, and attains the lowest held-out prediction error among the estimators compared.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12368v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "econ.EM",
+        "stat.AP"
+      ],
+      "category_names_zh": [
+        "stat.ME (统计推断与方法学)",
+        "econ.EM (计量经济学)",
+        "stat.AP (应用统计学)"
+      ],
+      "comment": "75 pages (35 main text and references, 40 supplementary material), 11 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12347v1",
+      "title": "Fueling Inflation Risks: An Oil Shortage Scenario",
+      "authors": [
+        "Christiane Baumeister",
+        "Todd Clark",
+        "Florian Huber"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T13:01:51Z",
+      "summary": "Central banks routinely use alternative scenarios to assess risks to the economic outlook, but these are usually generated from linear models that are unable to speak to the likelihood of extreme outcomes. We develop a nonlinear modeling framework that turns a narrative oil market scenario into a fully probabilistic assessment of the dynamics of oil and gasoline prices, aggregate inflation, and household inflation expectations. It combines an expert-based path for a tail event, a nonparametric model of the global oil market, and nonlinear Phillips curves for the energy, food, and core components of PCE inflation. We apply it in real time to quantify energy price and inflation risks of a severe oil shortage caused by the closure of the Strait of Hormuz, modeled as a rapid drawdown of global petroleum inventories, using only information available in February 2026. Our analysis shows that once oil reserves hit rock bottom, oil and gasoline prices rise sharply, with risks tilted to the upside. Headline PCE inflation peaks near 4.8% in late 2026, and households expect inflation to rise by about 3 percentage points. Two years out, inflation is still highly likely to exceed the Fed's 2% target.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12347v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12343v1",
+      "title": "The role of administrative costs in policies to improve cooperation",
+      "authors": [
+        "Giacomo Vaccario",
+        "Luca Verginer",
+        "Frank Schweitzer"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T12:58:54Z",
+      "summary": "We use an agent-based model for studying policies of an abstract government to increase the level of cooperation. In situations where defection is the rational choice, agents receive a bonus if they choose to cooperate. The government taxes agents' payoffs from a repeated prisoner's dilemma game to establish a budget that covers the payment of bonuses, but also the administrative costs involved. We consider costs to identify cooperators, and costs to mitigate the consequences of defective behavior. Governmental interventions are fallible, i.e. cooperators and defectors are correctly identified only with a certain accuracy. Hence, the critical bonus needed to let agents cooperate depends on the accuracy, but also on the current level of cooperation. We analyze the cost constraints for the government to pay the critical bonus and different policies to adjust the accuracy dependent on the level of cooperation. We find that perfect cooperation becomes impossible. Instead, high levels of cooperation can be achieved with optimal adjustment policies.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12343v1.pdf",
+      "source": "arxiv",
+      "primary_category": "physics.soc-ph",
+      "categories": [
+        "physics.soc-ph",
+        "econ.TH",
+        "nlin.AO"
+      ],
+      "category_names_zh": [
+        "physics.soc-ph (物理与社会科学 (复杂系统))",
+        "econ.TH (微观经济与理论经济)",
+        "nlin.AO (自适应与涌现)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12301v1",
+      "title": "Inequality-Aware Regulation",
+      "authors": [
+        "Mikael Mäkimattila"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T12:24:52Z",
+      "summary": "I study regulation of a screening monopolist when the regulator cares about the distribution of surplus across heterogeneous consumers and the firm. Consumers privately know their willingness to pay for quality, and the firm privately knows its production costs. Regulatory contracts specify quality-price options that the firm must offer. I show that when the regulator gives greater weight to consumers with lower willingness to pay, baseline regulation is optimal: the regulator requires affordable basic options but leaves the firm free to design and price premium options. Under strong consumer-side redistributive concerns, a single required basic option suffices. The regulator uses the firm's incentive to extract surplus from premium buyers to support low regulated prices for basic options.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12301v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.TH",
       "categories": [
@@ -184,88 +612,15 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.09337v1",
-      "title": "Sanctions, Evasion, and Deterrence: Evidence from Speeding Enforcement",
+      "paper_id": "2611.12255v1",
+      "title": "When the Norm is Wrong: Social Norm Misspecification and Targeting with an Application to Microfinance Adoption",
       "authors": [
-        "Romain Gauriot",
-        "Maria Wisniewska"
+        "Shantanu Chadha"
       ],
       "year": 2026,
-      "published_at": "2026-11-06T11:32:53Z",
-      "summary": "The design of sanctions plays a central role in shaping reoffending behavior. We study the effects of fixed monetary fines and accumulating penalty points on speeding recidivism and liability transfer. Exploiting a large increase in sanctions in Queensland, Australia, we estimate the causal effects of these sanctions on subsequent offending and nomination of other drivers. Higher demerit points increase fine renomination, consistent with strategic blame shifting. Estimated reductions in reoffending are small among offenders facing higher fines alone. Reoffending falls by a substantial 4.6 percentage points when higher fines are accompanied by additional penalty points.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09337v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.GN",
-      "categories": [
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09208v1",
-      "title": "The Network Adaptive Market Hypothesis: Detection, Attribution, and Network-Mediated Efficiency",
-      "authors": [
-        "Hitesh Kumar Sahu",
-        "Avishek Bhandari",
-        "Ipsita Parida"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T09:30:11Z",
-      "summary": "We propose the Network Adaptive Market Hypothesis (NAMH), a novel extension of the adaptive markets framework that conceptualizes market efficiency as a network-dependent equilibrium emerging from long-memory predictability and cross-market information transmission. Using G20 equity indices and five commodity futures over 2001-2026, we identify Japan as the central information hub, while the United States primarily acts as an information broadcaster. Contrary to conventional expectations, systemic crises do not exhibit higher network spectral radii, challenging the assumption that crisis-related fragility necessarily manifests through increased network amplification. Instead, crisis-related spectral contributions are dominated by Australia and the United States. Importantly, variance-decomposition connectedness is more closely associated with network modularity than with spectral radius, with crisis-period increases driven primarily by cross-cluster spillovers. Notably, efficiency-based market groupings explain network connectedness only marginally compared with geography and asset class, while the middle efficiency tier consistently exhibits the greatest idiosyncratic behaviour.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09208v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.GN",
-      "categories": [
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.09023v1",
-      "title": "Constrained Nested-Logit Pricing: An Exact Reformulation and Global Optimization Method",
-      "authors": [
-        "Hoang Giang Pham",
-        "Tien Mai"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T05:54:44Z",
-      "summary": "Sellers must price substitutable products while meeting operational requirements such as price limits and sales targets. Nested logit captures stronger substitution among similar products, but these requirements can undermine the structure used to solve unconstrained pricing problems. We develop an exact reformulation and a global optimization method for a fixed assortment with price bounds and weighted price caps. The key novelty is to concentrate the difficult interactions at the nest level while retaining convex optimization over individual products, without discretizing prices or approximating demand. This structure makes the number of nests, rather than products, govern the exponent in a conditional worst-case complexity bound. The method returns feasible prices together with a bound on how much profit could still be gained, allowing decision makers to assess solution quality even when computation stops early. Extensions cover purchase-probability bounds and price-order rules, with explicit accounts of their computational cost. In synthetic experiments, the method certifies solutions for assortments of up to 500 products with few nests. Projecting unconstrained prices onto the feasible set loses up to 32.60% of profit relative to direct constrained optimization, highlighting the value of jointly optimizing substitution and feasibility.",
-      "pdf_url": "https://arxiv.org/pdf/2611.09023v1.pdf",
-      "source": "arxiv",
-      "primary_category": "math.OC",
-      "categories": [
-        "math.OC",
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "math.OC (运筹学、优化与控制论)",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08859v1",
-      "title": "Instant Payments After a Betting Ban: Evidence from Brazil",
-      "authors": [
-        "Rafael Voigtel",
-        "Guilherme Vianna"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-06T01:36:56Z",
-      "summary": "Brazil has been facing major problems with delinquency, household debt, high interest rates, consumption, and access to credit. Betting has emerged in public debate as a possible contributing factor. On September 25, 2026, the federal government banned betting nationwide. We investigate how the ban affected instant payments (Pix). Our main finding, under the linear-trend specification, is that cumulative transaction counts over 37 days were approximately 8.37% below forecast, while settlement values were 10.83% lower. Both deviations were statistically significant under this specification.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08859v1.pdf",
+      "published_at": "2026-11-09T11:47:27Z",
+      "summary": "Structural models of peer effects typically capture peer influence through the average, aggregate, or in some cases through extreme peer actions. Such specifications, however, are imposed ex ante and are typically ad hoc. We study the consequences of social norm misspecification by extending the constant elasticity of substitution (CES) norm from continuous to discrete choices. Considering a binary-choice game with incomplete information, we derive results on existence and uniqueness of a rational expectations equilibrium and establish conditions for identification of the structural parameters. We estimate the model by the Nested Pseudo-Likelihood estimator, implemented using the spectral algorithm. Monte Carlo simulations show that the CES estimates of the peer effects approach their true values as the sample grows, whereas imposing a linear norm biases them even in large samples. We apply the framework to microfinance adoption in India and find a strongly max-leaning norm, with significant heterogeneity in curvature and peer effects across villages grouped by caste composition and wealth. In a counterfactual exercise that allocates a fixed subsidy budget to maximise adoption, the estimated and linear norms target very different households, with the former favouring village \"leaders\", who are more likely to adopt and were the first to be informed about microfinance.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12255v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
@@ -279,97 +634,21 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.08430v1",
-      "title": "Cross-Border Ownership and Input Access: Evidence from the Lithium Supply Chain",
+      "paper_id": "2611.12151v1",
+      "title": "Individual incentives and uniform gains under symmetric constraints",
       "authors": [
-        "Kei Irizawa"
+        "Siwei Chen"
       ],
       "year": 2026,
-      "published_at": "2026-11-05T18:23:47Z",
-      "summary": "How does cross-border ownership shape the lithium supply chain? Using global data on mines and refineries, I estimate a model in which ownership can lower refiners' effective ore costs, encourage mines to restrict spot sales, and soften competition. To study these effects, I examine policies motivated by national security concerns about reliable access to critical mineral inputs: divestiture of Chinese stakes in overseas producers and a ban on ore exports to China. Divestiture increases spot ore supply but leaves lithium output nearly unchanged, while continued trade preserves Chinese access to ore. The export ban reduces global lithium supply because refining capacity elsewhere cannot fully replace lost Chinese production. Ownership transfers do not reserve ore for domestic production; restricting Chinese access imposes a substantial supply cost at existing capacities.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08430v1.pdf",
+      "published_at": "2026-11-09T10:01:25Z",
+      "summary": "We study the division of a fixed total under symmetric joint constraints when agents have continuous, strictly single-peaked preferences over their own shares. Each agent reports a complete preference, including comparisons across the two sides of her peak. For any finite population and any nonempty closed convex permutation-invariant feasible set, we characterize the uniform-gains rule by efficiency, symmetry, individual strategy-proofness, and own-coordinate peak-onlyness. The last condition requires that a change of preference leaving an agent's peak fixed also leave her own share fixed; it places no direct restriction on others' shares. The characterization separates uniqueness from continuity and yields a continuous characterization with individual incentives for compact feasible sets that are polyhedral or relatively full-dimensional and strictly convex. We then show that, for every population of two through six agents and every nonempty compact convex permutation-invariant feasible set, efficiency, symmetry, and individual strategy-proofness alone characterize uniform gains. The proof recovers allocations from the shares attainable by unilateral reports, feasible transfers, and endpoint reports. A common induction applies at each population, with additional starting configurations for five and six agents.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12151v1.pdf",
       "source": "arxiv",
-      "primary_category": "econ.GN",
+      "primary_category": "econ.TH",
       "categories": [
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08160v1",
-      "title": "Patch Attention Wisely: Understanding Patch Length in Attention-Based Forecasting",
-      "authors": [
-        "Junyu Chen",
-        "Likai Chen",
-        "Weining Wang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T15:18:11Z",
-      "summary": "Attention-based time series forecasters commonly group consecutive observations into patches. Patch length is known to have a substantial impact on forecasting performance, yet its selection remains largely empirical. We develop a theoretical framework that explains why patch length matters for forecasting accuracy and provides a principled basis for its selection. For linear state-space models, we derive an exact factorization of the forecasting coefficient matrix that separates forecast dynamics from filtering dynamics. We show that dominance of a single forecast component at long horizons does not generally imply a rank-one representation. This explains why longer horizons alone need not reduce representational complexity. We combine the factorization with estimation bounds to develop a patch-selection criterion that balances representation and estimation errors under temporal dependence. Our analysis establishes conditions under which balanced patching is justified and clarifies how predictive structure, head count, training sample size, and long-run dependence enter the selection criterion.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08160v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.ML",
-      "categories": [
-        "stat.ML",
-        "cs.LG",
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "stat.ML (机器学习统计基础)",
-        "cs.LG (机器学习 (ML))",
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08031v1",
-      "title": "Economies of scale and the equity-efficiency trade-off: Evidence from a piped water network in rural Bangladesh",
-      "authors": [
-        "Md. Ahasan Habib",
-        "Anna Tompsett"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T13:51:52Z",
-      "summary": "Policymakers who set prices for public infrastructure often anticipate an equity-efficiency trade-off: while higher prices could increase revenues from fee-paying users, helping to offset costs, they may reduce take-up among the poor. But this trade-off is fundamentally altered in the presence of economies of scale, which are common in infrastructure networks. We elicit willingness to pay for a household-level piped drinking water connection in rural Bangladesh, where truthful revelation of preferences is incentivized by the opportunity to connect to a new pipeline network that we construct, and we use project cost data to measure economies of scale. Combining the two, we show that the cost-effectiveness-maximizing price---that which minimizes the cost per connected household---is zero. Economies of scale strongly dominate revenues raised by user fees. More generally, the two conditions needed for a zero price to maximize cost-effectiveness are important economies of scale and high sensitivity of demand to prices near zero, which is well documented across developing countries. Since a zero price naturally maximizes equity, we conclude that economies of scale can eliminate the equity-efficiency trade-off.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08031v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.GN",
-      "categories": [
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07787v1",
-      "title": "Discrete Choice under Congestion: Equilibrium and Welfare",
-      "authors": [
-        "Debopam Bhattacharya",
-        "Matias Makiranta"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T10:27:17Z",
-      "summary": "In many choice settings, a rise in aggregate demand for an option lowers an individual's payoff from choosing it. Driving becomes less attractive than taking a train when more commuters drive, clogging the highway. In such cases, a targeted intervention that mitigates the externality at the congested option can divert it elsewhere and also undermine preference based sorting, making overall welfare effects theoretically ambiguous. We develop an empirical framework to analyze such scenarios of endogenous congestion. We show that in these settings, equilibrium exists and is unique without restrictions on functional-form of utilities or dimension/distribution of preference heterogeneity, and even when congestion at one option affects payoffs from other choices. Under a linear-index structure, micro-data on choice enables semiparametric identification of utility contrasts and welfare effects of some, but not all, interventions. We apply the framework to Cambridge undergraduate admissions, where candidates apply through one constituent college, and admission probability depends on application numbers relative to capacity in that college. Using administrative micro-data on 25,325 applicants, we calculate welfare under two counterfactuals: (i) centralized random allocation and (ii) higher rent at popular colleges. Random allocation reduces welfare for everyone: it removes individual choice without improving admission chances since, by design, lower congestion at a college exactly counterbalances the lower probability of being allocated there. Targeted rent increase produces both gains and losses, with median loss for men and median gain for women. This exercise shows how identified preferences and equilibrium feedback jointly determine welfare when choices entail externalities.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07787v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
         "econ.TH"
       ],
       "category_names_zh": [
-        "econ.EM (计量经济学)",
         "econ.TH (微观经济与理论经济)"
       ],
       "comment": null,
@@ -377,26 +656,141 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.07774v1",
-      "title": "Unobserved Consideration and Consumer Welfare",
+      "paper_id": "2611.12117v1",
+      "title": "Does fare communication format matter? Evidence from a randomised experiment in public transport",
       "authors": [
-        "Debopam Bhattacharya",
-        "Ryan J. Martin"
+        "Hannes Wallimann",
+        "Silvio Sticher",
+        "Christian Weibel"
       ],
       "year": 2026,
-      "published_at": "2026-11-05T10:12:26Z",
-      "summary": "Can welfare effects of price change be identified when consumers' consideration sets are heterogeneous and unobserved? We establish that the welfare distribution is the same functional of structural choice probabilities under stable but limited consideration as under full consideration. The result permits unrestricted income-effects, preference heterogeneity, and dependence between preferences and consideration. Within this class, limited consideration admits a full-consideration representation preserving choice-probabilities and money-metric compensation: consideration/preferences can remain unidentified while demand and welfare are identified. When consideration sets contract as prices rise, the welfare distribution can be bounded using demand and a bound on choice-set attrition.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07774v1.pdf",
+      "published_at": "2026-11-09T09:30:30Z",
+      "summary": "Highly concentrated demand in public transport places pressure on infrastructure and reduces service quality. Pricing instruments-such as discounted off-peak single fare tickets-are a widely used tool for rescheduling demand across time. Yet no study has directly examined whether the price communication format of single fare tickets affects travel behaviour in terms of departure-time rescheduling. To fill this gap, we exploit a randomised stated preference survey conducted in Switzerland based on participants' actual journeys (n = 1,082), assigning participants to one of three price formats: absolute amounts, absolute deviations, or percentage deviations from their current fare. Estimating a multinomial logit model with price-format interaction terms, we find no significant effect of communication format on aggregate price sensitivity. However, for low-fare trips, percentage-based communication substantially amplifies price sensitivity relative to absolute amounts or absolute deviations. Moreover, when prices are shown as percentage deviations, price sensitivity increases for small price spreads and decreases for large price spreads, with a crossover point corresponding to a discount depth of approximately 47%. In summary, these findings suggest that percentage-based price communication has the potential to reinforce the demand-shifting effect of off-peak discounts, particularly for low-fare products and for discounts shallower than approximately 47%.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12117v1.pdf",
       "source": "arxiv",
-      "primary_category": "econ.EM",
+      "primary_category": "econ.GN",
       "categories": [
-        "econ.EM",
-        "econ.TH",
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11864v1",
+      "title": "Separable social welfare evaluation without completeness",
+      "authors": [
+        "Kaname Miyagishima",
+        "Eisuke Uchida",
+        "Kenta Yoshida"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T04:43:43Z",
+      "summary": "In this paper, we study incomplete social evaluation of utility vectors to capture situations in which there is disagreement in society about the degree of inequality aversion. We characterize multi-prioritarian criteria using efficiency, equity, impartiality, separability, and a condition called continuous divisible completion condition. We also provide uniqueness results and investigate comparative inequality aversion.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11864v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11855v1",
+      "title": "Distributionally Robust Rational Inattention",
+      "authors": [
+        "Emerson Melo"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T04:24:21Z",
+      "summary": "We study a rational inattention model in which a decision maker chooses a stochastic choice rule while facing ambiguity about the prior distribution over states. Ambiguity is modeled through a distributionally robust formulation in which the prior belongs to an uncertainty set defined by a general phi-divergence. Our main result establishes an exact Lagrangian dual representation of the resulting max-min problem as a finite-dimensional concave optimization problem. This characterization yields necessary and sufficient conditions for the emergence of robust consideration sets and a tractable one-dimensional dual representation for the Cressie-Read family of divergences. We further connect the model to robust risk measures: Average Value-at-Risk arises from a particular non-smooth divergence, while Kullback-Leibler ambiguity is linked through Lagrangian duality to the entropic-risk multiplier representation. We then develop two extensions. The first allows the attention-cost technology and prior ambiguity to be governed by distinct phi-divergences, while the second introduces a deeper layer of ambiguity over the decision maker's baseline prior. Both extensions preserve the finite-dimensional structure of the model and encompass standard Kullback-Leibler robust rational inattention specifications as special or corresponding multiplier cases.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11855v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.TH",
+      "categories": [
+        "econ.TH"
+      ],
+      "category_names_zh": [
+        "econ.TH (微观经济与理论经济)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11783v1",
+      "title": "Fairness Drift: Assessing Algorithmic Fairness in a Moving Market",
+      "authors": [
+        "Meng Liu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T02:40:46Z",
+      "summary": "Flexible models and richer data can reduce systematic valuation errors and improve fairness. Yet algorithmic values stay fixed between updates while the market moves, so a new algorithm gains most against an intact distortion and least where uneven appreciation has eroded or just reversed it. We study property assessment, which sets tax bills and has long over-assessed cheaper homes. Cook County replaced township regressions and manual adjustments with a gradient-boosted model and richer data on its triennial cycle: Chicago in 2021, northern suburbs in 2022, southern in 2023. We estimate difference-in-differences in how the assessment-to-price ratio varies with sale price and neighborhood minority share. In Chicago, the reform halved the relative over-assessment of cheaper homes and, among equally priced homes, weakened the link to neighborhood racial composition. In the suburbs the price gradient was unchanged: the North's legacy values were already accurate, and the South's cheap neighborhoods had appreciated faster under frozen values, correcting part of the distortion, then stalled in the reassessment year, leaving the new values too high where prices had gained and accuracy unimproved. Fairness thus drifts with the market between updates, and single-deployment evaluations may credit or blame the algorithm for what the market did.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11783v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.11490v1",
+      "title": "Optimal power expansion planning under uncertainty in sub-Saharan Africa: A stochastic dual dynamic programming approach",
+      "authors": [
+        "Arega Getaneh Abate",
+        "Xiao-Bing Zhang",
+        "Xiufeng Liu",
+        "Ruyu Liu",
+        "Per Sieverts Nielsen"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-08T16:33:05Z",
+      "summary": "Universal electricity access and decarbonization are interlinked challenges for sub-Saharan Africa. Generation expansion planning methods used in the region rarely represent sequential and irreversible investment under demand and hydrological uncertainty. This paper develops a multistage stochastic generation expansion model solved with stochastic dual dynamic programming (SDDP) to address the problem. The model represents demand and country-specific Markov hydrological uncertainty, accounts for technology-specific construction lead times, and endogenous reliability. The model is applied to the Ethiopia and Zimbabwe power systems over 2025--2050. The results show that for Ethiopia, the least-cost pathway is hydropower, with wind and solar sources providing increasing diversification. The model reduces cumulative expected unserved energy by about 78 TWh relative to a lower-cost deterministic expected value investment plan. For Zimbabwe, the least-cost pathway expands solar, hydropower, and gas while retaining residual coal as inherited coal capacity retires. Additionally, carbon pricing reduces emissions and increases resource costs by about 3\\% to 5\\%, creating a gradual cost-emissions trade-off. Combining a carbon tax policy with concessional solar financing renders the lowest average annual emissions while keeping resource costs below the baseline, which solves the model without emission constraint. At approximately matched expected emissions, emission caps have higher net resource costs than the corresponding carbon tax scenarios. The overall results imply that adaptive investment model can reduce power shortage exposure, while carbon policy design and lower clean investment costs shape the cost of decarbonization in developing power systems.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11490v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.12987v1",
+      "title": "Global Trends and Heterogeneity in Modified Adjusted Net Savings",
+      "authors": [
+        "Xin Xiao"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-08T09:38:28Z",
+      "summary": "Modified adjusted net savings is a derived weak sustainability indicator obtained by subtracting education expenditure from adjusted net savings (ANS). Because ANS equals net national savings plus education expenditure minus natural-resource depletion and carbon dioxide damage, MANS isolates the savings and depletion components and is useful when education expenditure would otherwise dominate cross-country comparisons. This study documents the global distribution, long-run trends, and cross-country heterogeneity of MANS excluding particulate emission damage over 1990-2021. The accounting base is the World Bank World Development Indicators series NY.ADJ.SVNX.CD, and MANS is constructed by subtracting education expenditure from this series. We combine global maps, aggregate time series, country-level heatmaps, distributional statistics, and income group comparisons. The results show that global MANS has increased substantially in aggregate, but its evolution as a share of nominal GDP has been more volatile and uneven across countries. Per capita MANS and global MANS totals remain concentrated in high-income and large economies, whereas low-income and lower-middle-income groups display persistently lower and more volatile outcomes. Country rankings are highly persistent, and some populous countries exhibit pronounced fluctuations associated with natural-resource dependence and structural change. The study provides a reproducible descriptive benchmark for monitoring sustainable development and highlights the need to interpret MANS in current US dollars alongside income-group and country-specific contexts. The findings are relevant for macroeconomic policy, natural-capital accounting, and the design of sustainability-oriented investment strategies.",
+      "pdf_url": "https://arxiv.org/pdf/2611.12987v1.pdf",
+      "source": "arxiv",
+      "primary_category": "econ.GN",
+      "categories": [
+        "econ.GN",
         "stat.AP"
       ],
       "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "econ.TH (微观经济与理论经济)",
+        "econ.GN (宏观与综合经济学)",
         "stat.AP (应用统计学)"
       ],
       "comment": null,
@@ -404,212 +798,15 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.07744v1",
-      "title": "Designing Public Information for Strategic Advice",
-      "authors": [
-        "Vasudha Jain",
-        "Jaideep Roy"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T09:49:50Z",
-      "summary": "A principal chooses an action using advice from an expert who privately knows local conditions. Before receiving advice, she can commission a public study of an independent state, such as future demand, that changes the expected conflict between their preferred actions. We show that the communication protocol determines the optimal study. Under optimal mediation, the value of advice is convex in conflict, making full revelation optimal. Under commitment to an action rule, the principal may prefer no information, while informative optimal studies include a report certifying high conflict. Under unmediated cheap talk, changes in the number of equilibrium messages create upward kinks in the value of advice. Optimal studies avoid interior communication thresholds and can induce two distant communication regimes while skipping every regime in between, strictly outperforming both full revelation and no information. When the principal retains the raw data, selective public disclosure can improve advice without sacrificing forecasting precision. We discuss implications for fiscal forecasts and spending agencies.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07744v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.TH",
-      "categories": [
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07699v1",
-      "title": "Stay, Reposition, or Recharge: Battery-Aware Operation of Robotaxi Fleets",
-      "authors": [
-        "Philipp Afèche",
-        "Saif Benjaafar",
-        "Jiayu",
-        "Zhao"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T09:23:07Z",
-      "summary": "Electric robotaxis are rapidly expanding from pilots to scaled commercial deployment; unlike traditional human-driven ride-hailing vehicles, they require centralized fleet control and careful management of vehicle state of charge (SoC). We study how a fleet manager should jointly make service, empty repositioning, idling, and charging decisions in such systems. We develop a continuous-time fluid model in which vehicles evolve across location-charge states, and identify two forms of charge-aware control that are absent from classic repositioning models: early return-to-depot (RTD) and charge-aware repositioning. In particular, the optimal solution admits simple threshold structures. Each location has a battery threshold such that vehicles should return to the depot to recharge when their SoC is below it and should not do so when their SoC is above it. Vehicles should not reposition below the same threshold either; above it, the choice of destination depends on whether a vehicle's SoC matches the destination's battery sensitivity, a notion we introduce in the paper. We then quantify the value of charge awareness by comparing fully charge-aware policies with charge-oblivious policies that ignore SoC in RTD and repositioning decisions. We show that the performance gap can be unbounded, driven by a dilemma between under-utilizing high-charge vehicles and over-sending low-charge vehicles to locations from which charging is costly. A numerical case study calibrated using 2025 NYC Taxi and Limousine Commission trip records illustrates these thresholds and shows that charge-aware control can generate substantial gains in a realistic urban network. Importantly, simple threshold-based heuristics recover most of the value of the fully charge-aware solution.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07699v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.AP",
-      "categories": [
-        "stat.AP",
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "stat.AP (应用统计学)",
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07698v1",
-      "title": "Willingness-to-pay space and preference space: a unified treatment of equivalence, heterogeneity and interpretation",
-      "authors": [
-        "Stephane Hess"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T09:22:46Z",
-      "summary": "A growing number of choice modelling studies estimate their models \"in willingness-to-pay (WTP) space\", yet often treat this as a different model that fits better (or worse) than \"preference space\", and misread what its parameters represent. This note brings together and makes precise insights that have mostly been stated only in scattered places, organising them around a single condition for two specifications to be the same model. WTP space is a reparameterisation, and with non-random coefficients the two spaces give identical likelihoods, WTP estimates and standard errors. With deterministic heterogeneity in cost sensitivity, or non-linearity, WTP must still be computed as a ratio of partial derivatives, although a simple normalisation recovers a directly estimated WTP at a reference point. With random heterogeneity, latent class models are equivalent in the two spaces, while other mixtures are equivalent only when the implied distributions match, as with full-covariance lognormals, and independence is not a neutral assumption.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07698v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07572v1",
-      "title": "Cores of $3$-distant convex games",
-      "authors": [
-        "Keisuke Bando",
-        "Toshiyuki Hirai",
-        "Kenzo Imamura",
-        "Ryuhei Mizutani"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T07:20:29Z",
-      "summary": "Convex cooperative games have a nonempty core and admit an efficient construction of core allocations. However, economically natural local frictions may violate convexity. We study the core of $3$-distant convex games, which permit violations of convexity only between closely related coalitions. Although the core of such a game may be empty, we establish a simple necessary and sufficient condition for its nonemptiness. We also develop a strongly polynomial-time combinatorial algorithm for finding a core allocation whenever one exists. Finally, we demonstrate the applicability of the framework to oligopolistic competition with merger synergies and profit allocation of joint production with complementary inputs.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07572v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.GT",
-      "categories": [
-        "cs.GT",
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "cs.GT (计算机博弈论与算法经济)",
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07494v1",
-      "title": "Transparency in Team Contracts",
-      "authors": [
-        "Paul Dütting",
-        "Yingkai Li",
-        "Inbal Talgam-Cohen",
-        "Jinzhao Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T05:58:27Z",
-      "summary": "In contract design, the principal is often better informed about the project's chances of succeeding than the agents. To incentivize effort, the principal has two main tools: first, to design a contract, sharing part of the project's success among the agents; second, to design a (Bayesian) persuasion scheme, selectively sharing information with the agents. In this work we are interested in the optimal combination of both these tools. We tackle the joint problem through the prism of simplicity vs. optimality, and establish a stark dichotomy: The simple disclosure scheme of full transparency achieves a tight $4/3$-approximation to the optimal combination of information disclosure and team contract, when the team's production function is submodular. In contrast, full transparency can be arbitrarily far from optimal when production is supermodular. The techniques that we develop to bound the gap for submodular functions, also yield a new deterministic polynomial-time approximation algorithm for pure multi-agent contract design, with a significantly improved approximation ratio of $2.311$, and thus a $3.081$-approximation algorithm for the joint information and contracting problem.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07494v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.GT",
-      "categories": [
-        "cs.GT",
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "cs.GT (计算机博弈论与算法经济)",
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07419v1",
-      "title": "Robust prizes in all-pay contests with loss aversion",
-      "authors": [
-        "Dmitry Ryvkin",
-        "Qin Wu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T04:16:19Z",
-      "summary": "We study robust prize design in all-pay contests with loss-averse agents when the principal does not know the agents' convex cost of effort, subject to an aggregate productivity constraint. The robustly optimal prize structure awards equal prizes to all contestants except the one ranked last. The optimal bottom prize is zero under moderate loss aversion, but becomes positive and increases with loss aversion when loss aversion is sufficiently strong. Under strong loss aversion, the robust solution involves partial participation in the contest.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07419v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.TH",
-      "categories": [
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07278v1",
-      "title": "Brave New Data: Pricing Expertise and Discovery",
-      "authors": [
-        "Dihan Zou"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-05T00:55:38Z",
-      "summary": "We study the procurement of verifiable evidence from an expert who privately assesses a binary state and chooses the direction and intensity of evidence acquisition. The buyer balances the ease of inducing discovery against its value for decisions beyond the expert's initial assessment. An optimal contract pays only for disclosed evidence, independently of the initial report. When acquisition is cheap, equal rewards for evidence of either state induce intensive search whose failure is informative. As costs rise, rewarding evidence of only one state becomes optimal despite the symmetry of the environment, reducing expected payments at the expense of decision accuracy.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07278v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.TH",
-      "categories": [
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07249v1",
-      "title": "Double Machine Learning for Panel Data: Identification, Specification, and a Bank Regulation Effect",
-      "authors": [
-        "Ali Habibnia",
-        "Esfandiar Maasoumi",
-        "Gaurav Shah"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T23:57:32Z",
-      "summary": "This paper examines robustness and causal interpretation of panel estimates using double/debiased machine learning. The prototype treatment setup is the 2018 US banking regulation. Under common treatment timing, we characterize identification and nuisance restrictions and derive exact bank-level representations of specified \"within\" and \"first-difference\" scores. Simulations assess panel model transformation-induced specification bias and inference under weaker overlap. Empirically, estimates vary with asset-size classification and prior growth. Prior-growth adjustment reduces overlap-weighted estimates across four Machine Learners (ML); doubly robust estimates depend on the fitted propensity and concentrated weights. Both bank groups received relief, so we estimate differential exposure effects. The findings highlight specification issues and the relation between functional-form robustness and causal identification.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07249v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ML"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ML (机器学习统计基础)"
-      ],
-      "comment": "98 pages, including supplementary material; 3 figures",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07240v1",
-      "title": "Nonparametric Subgraph Regression",
+      "paper_id": "2611.11183v1",
+      "title": "Testing Conditional Moment Restrictions in Networks",
       "authors": [
         "Wenxuan Ding"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T23:43:52Z",
-      "summary": "Estimation and inference on a single large network are challenging due to dependence among observations. This paper studies nonparametric regression for outcomes defined on groups of $p$ agents, such as the indicator that three agents in a network form a triangle. Outcomes on groups that share an agent may be dependent, while outcomes on disjoint groups are independent. I call this problem subgraph regression; it nests dyadic regression as the special case $p=2$. Its leading application concerns subgraphs of a network, but the methods apply to any outcome defined on groups of agents. I establish a variance bound, uniform convergence rates in probability, and pointwise asymptotic normality for the subgraph analogue of the Nadaraya-Watson kernel regression estimator. The setting differs from regression with i.i.d. data in two ways: (i) the number of observations, of order $N^p$, overstates the effective sample size, which is $N$, and (ii) the rate of convergence depends on the dimension of the covariates of a single agent rather than of all $p$ agents, which mitigates the curse of dimensionality.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07240v1.pdf",
+      "published_at": "2026-11-08T06:55:17Z",
+      "summary": "Parametric models of network formation, such as dyadic logit models, are increasingly popular, but few tools exist to test their specification. This paper develops a specification test for conditionally independent dyad (CID) models based on the probabilities that these models assign to subgraphs, the patterns of links among small groups of agents. Given the agents' characteristics, a parametric CID model determines not only the probability of each link but also the probability that a group of agents forms a triangle, a star, or any other subgraph. Under correct specification, the expected frequency of each subgraph among agents with given characteristics equals its model-implied probability. This forms the basis of the testable conditional moment restrictions. The test statistic is the weighted integrated squared distance between a nonparametric kernel estimate of these probabilities and the probabilities implied by the estimated parametric model. I derive its asymptotic distribution under the null hypothesis.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11183v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.EM",
       "categories": [
@@ -623,17 +820,15 @@
       "ai_summary": null
     },
     {
-      "paper_id": "2611.07128v1",
-      "title": "Complex Menus in Discriminatory Pricing",
+      "paper_id": "2611.11143v1",
+      "title": "Fair Combinatorial Auctions",
       "authors": [
-        "Patrick Lahr",
-        "Axel Niemeyer",
-        "Marek Pycia"
+        "Karan Maniyar"
       ],
       "year": 2026,
-      "published_at": "2026-11-04T20:53:44Z",
-      "summary": "Advances in technology decrease the costs of offering and choosing from large menus of varieties. As these complexity costs fall, how large are the menus offered by monopolists likely to become? For the multi-product or multi-attribute case, ubiquitous in practice, we show that optimal menus are generically infinite in the absence of complexity costs. Complexity costs can decrease the menu size, but it grows without bound as these costs decrease. These results have no analogue in the single-dimensional model and do not rely on non-linearities in production costs or preferences; the extensive product differentiation is caused by screening considerations alone.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07128v1.pdf",
+      "published_at": "2026-11-08T05:24:20Z",
+      "summary": "An efficient and stable auction can leave the seller with no share of the surplus. We study how the gains from a combinatorial auction can be shared as equally as possible between the seller and buyers while respecting coalitional stability. We show that, when buyers are substitutes, the core is described by individual caps on the buyers' payoffs and contains a unique Lorenz-dominant payoff vector. Each buyer receives the seller's payoff capped at her marginal contribution. The seller consequently receives at least an equal share of the total surplus, without compromising efficiency or stability. We then construct a complete-information bargaining game in which the seller proposes a division of the surplus and rejecting buyers receive exit payments. Without discounting, the game fully implements the Lorenz-dominant vector in pure-strategy subgame-perfect equilibrium: an equilibrium exists, and every such equilibrium yields precisely this division.",
+      "pdf_url": "https://arxiv.org/pdf/2611.11143v1.pdf",
       "source": "arxiv",
       "primary_category": "econ.TH",
       "categories": [
@@ -643,302 +838,71 @@
         "econ.TH (微观经济与理论经济)"
       ],
       "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07089v1",
-      "title": "Polynomial-Time Computation of Extensive-Form Proper Equilibria in Two-Player Zero-Sum Games",
-      "authors": [
-        "Sam Ganzfried"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T19:52:21Z",
-      "summary": "We give a deterministic polynomial-time algorithm for computing an exact extensive-form proper equilibrium in a finite two-player zero-sum extensive-form game with perfect recall and rational data. Properness is understood in the agent normal form: an action at an information set is penalized relative to a better action while all other local behavioral choices, including the player's own future actions, remain fixed. Our algorithm assigns each information set a geometric permutahedron of allowable action probabilities. A scaled doubly stochastic representation embeds these restrictions in a polynomial-size sequence-form polytope; a saddle point then satisfies the local $\\varepsilon$-properness inequalities. To obtain an exact equilibrium rather than a solution at an arbitrarily small numerical perturbation, we establish sign stability of a parametric linear system, construct a persistent feasible basis, and extract the limits of behavioral ratios. The resulting probabilities are rational and have polynomial encoding length, including at information sets whose realization probabilities vanish.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07089v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.GT",
-      "categories": [
-        "cs.GT",
-        "cs.AI",
-        "cs.MA",
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "cs.GT (计算机博弈论与算法经济)",
-        "cs.AI (通用人工智能 (AI))",
-        "cs.MA (多智能体系统 (Multiagent))",
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06888v1",
-      "title": "Dull, Dirty, Dangerous? Working Conditions and the Limits of Occupational AI Exposure",
-      "authors": [
-        "Siyi Yu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T18:41:40Z",
-      "summary": "Automation is often justified as relief from dull, dirty, and dangerous work. I examine how these conditions relate to occupational AI exposure using 21 O*NET items across 754 US occupations. Higher exposure is associated with lower condition scores under a large language model (LLM) measure and AI Occupational Exposure (AIOE), with equal occupation weights and employment weights. Adjustment for physical demands, required education, training and experience, and wages reduces the composite association. The adjusted confidence intervals include zero for LLM exposure and remain below zero for AIOE. Separating repetition from restricted discretion also changes what the combined Dull score conveys. These comparisons show how item groupings and occupational characteristics shape the interpretation of exposure estimates. Occupational profiles offer a starting point for selecting contrasting research settings. Establishing desired automation or realized relief requires evidence about workers' preferences and specific interventions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06888v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI",
-        "cs.HC",
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "cs.AI (通用人工智能 (AI))",
-        "cs.HC (人机交互 (HCI))",
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06855v1",
-      "title": "Regression with Many Generated Controls",
-      "authors": [
-        "Timothy Christensen",
-        "Daniel Vebman"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T18:10:56Z",
-      "summary": "We consider linear regression when some covariates are endogenous, a variable sufficient to control for endogeneity exists but is latent, and the practitioner can generate many proxies for the latent control. For instance, one could cheaply but imperfectly impute the latent control using different AI/ML methods, each generating a different proxy. There are several options the practitioner might consider in this scenario: including all proxies or factors computed from the proxies as controls, instrumental variables estimation, and some nonlinear variants thereof. We use a transparent model to derive the implicit estimand each approach targets, determine when these estimands recover the parameter of interest, and provide some practical recommendations. We show that with a sufficiently rich set of generated controls, practitioners can consistently estimate the parameter of interest without relying on validation data.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06855v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "stat.ML"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "stat.ML (机器学习统计基础)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06775v1",
-      "title": "Stability and Perfection in Constrained Weighted Network Games",
-      "authors": [
-        "Julien Fixary",
-        "Rémi Castera",
-        "Rida Laraki"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:52:33Z",
-      "summary": "We introduce a general framework of constrained weighted network formation in which agents allocate resources across coalitional interactions while facing feasibility constraints. More precisely, we allow arbitrary coalitions of agents to be assigned a continuous weight, and we incorporate both coalitional capacity constraints and individual budget constraints into the model. This framework extends the weighted network formation model of Bich and Morhaim by combining continuous interaction intensities with endogenous feasibility restrictions. Within this setting, we introduce a new notion of stability -- called coalitionwise stability -- extending pairwise stability to constrained network games. Under standard continuity and componentwise quasiconcavity assumptions on payoff functions, we establish the existence of coalitionwise stable networks. We then investigate refinements of stability inspired by the notion of perfect equilibrium introduced by Selten, and by the notion of perfect pairwise stability developed by Bich and Teteryatnikova for network games. The presence of feasibility constraints fundamentally alters the geometry of the feasible set, which no longer possesses a product structure. As a consequence, trembling-hand type refinements become substantially more delicate, since perturbations of some interactions may render other interactions infeasible. Nevertheless, we introduce constrained analogues of both the trembling-hand and perturbative notions of perfect stability considered by Bich and Teteryatnikova, and study their existence and their relationship. In particular, we show the equivalence between these trembling-hand and perturbative formulations under some componentwise monotonicity assumption.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06775v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.GT",
-      "categories": [
-        "cs.GT",
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "cs.GT (计算机博弈论与算法经济)",
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06696v1",
-      "title": "You Know What You Will Like: People Predict Their Own Ratings Better Than Recommender Systems",
-      "authors": [
-        "Zihan Chen",
-        "Lei Nico Zheng",
-        "Di Zhu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T16:00:47Z",
-      "summary": "Recommender systems usually learn what people want from what they have done. Platforms could also ask people directly, but asking is costly: 98.8% of the prompts in our data went unanswered. Theories of statistical prediction imply that a person's own forecast adds little to a recommender algorithm built from many people's behavior. Theories of dispersed knowledge imply that people hold information about their own taste that the data lack. We test the two with the MovieLens Beliefs dataset. In 2023-2024, a homepage prompt asked members how they expected to rate movies they said they had not seen. Of 26,020 such expectations, 551 from 277 members were followed by a rating at least a day later. We compare each expectation with four benchmarks: the platform's own predicted rating, two collaborative-filtering models (matrix factorization and an item neighborhood), and a stack trained on other members' outcomes. The trained models use each member's latest ratings. People predict their own ratings more accurately than all four benchmarks (correlation 0.69, against 0.34 for MovieLens and 0.54 to 0.59 for the trained recommenders). Added to all the machine forecasts and features, the expectation lowers out-of-sample mean squared error by 26%. The gain holds when models are trained on earlier expectations and tested on later ones. A member's earlier expectations about other movies do not replace the current one. In ordering a member's own movies, the trained recommenders are statistically indistinguishable from the person. On old, heavily rated movies, the machines do as well or better. The results reconcile the two theories: the crowd's data suffice where they are rich, and the person adds information about the specific item. We derive four design principles for preference elicitation and recommender evaluation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06696v1.pdf",
-      "source": "arxiv",
-      "primary_category": "cs.HC",
-      "categories": [
-        "cs.HC",
-        "econ.GN"
-      ],
-      "category_names_zh": [
-        "cs.HC (人机交互 (HCI))",
-        "econ.GN (宏观与综合经济学)"
-      ],
-      "comment": "Working paper. 23 pages, 3 figures, 10 tables",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06644v1",
-      "title": "Universal Nonexistence of Monotone Equilibrium in Multiunit Auctions with Risk Aversion",
-      "authors": [
-        "Wei He",
-        "Yeneng Sun",
-        "Hanping Xu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T15:24:27Z",
-      "summary": "We establish universal nonexistence results for monotone pure-strategy equilibrium in multiunit auctions with risk-averse bidders. Fix any number of bidders greater than one and any profile of strictly increasing concave utilities, with at least one strictly risk-averse bidder. Under uniform pricing, for every supply of at least three units, we construct independent, full-support type distributions under which neither lowest-winning-bid nor highest-losing-bid pricing admits an admissible monotone equilibrium. Under discriminatory pricing, we construct a finite supply and independent, full-support type distributions that preclude monotone pure-strategy equilibrium. We extend these results to all-pay auctions and finite bid grids.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06644v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.TH",
-      "categories": [
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06629v1",
-      "title": "Does Frontier AI Strengthen Cyber Defense? Evidence from Project Glasswing",
-      "authors": [
-        "Thomas Mosk"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T15:12:30Z",
-      "summary": "Defenders and attackers race to find the same software flaws. I use the launch of Project Glasswing, which gave a small group of large US tech firms early access to Claude Mythos Preview, a model for finding software vulnerabilities, to study how access to frontier AI affects defenders, external researchers, and attackers. Using the universe of publicly disclosed vulnerabilities, I find that firms with access more than doubled their disclosures relative to Chinese and Russian tech firms without access, disclosed about 150 percent more high-impact vulnerabilities, and fixed reported flaws as quickly as before. As treated firms found more flaws themselves, external researchers, who sell their findings through bug bounties, reported about half as many vulnerabilities in treated firms' code and more in other firms' code, without leaving the market. There is no evidence that attackers exploited the additional vulnerabilities: the share exploited within a month of disclosure fell by about two thirds, mainly because a smaller share was already exploited when disclosed, while the number exploited did not change. Frontier AI helped defenders find and fix more flaws before attackers exploited them, but its restricted release creates an asymmetry in software security between firms in different countries.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06629v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.GN",
-      "categories": [
-        "econ.GN",
-        "cs.AI"
-      ],
-      "category_names_zh": [
-        "econ.GN (宏观与综合经济学)",
-        "cs.AI (通用人工智能 (AI))"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06620v1",
-      "title": "Weak Atomic Continuity and Subgame Perfection",
-      "authors": [
-        "Enxian Chen",
-        "Wei He",
-        "Yeneng Sun",
-        "Hanping Xu"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T15:06:41Z",
-      "summary": "Subgame-perfect equilibrium need not exist in continuous games with perfect information when Nature moves. Under standard regularity assumptions, we prove that weak atomic continuity of Nature's transition probabilities yields a measurable pure-strategy subgame-perfect equilibrium for finite and infinite horizons. The condition, originating in the population genetics literature, is necessary for the existence of subgame-perfect equilibrium uniformly over the remaining primitives: whenever this condition is violated, one can construct a dynamic game with no subgame-perfect equilibrium, even in behavioral strategies. The proof preserves compactness and upper hemicontinuity of continuation payoff correspondences under integration without requiring convexity.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06620v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.TH",
-      "categories": [
-        "econ.TH"
-      ],
-      "category_names_zh": [
-        "econ.TH (微观经济与理论经济)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06557v1",
-      "title": "Approximate minimax regret for conditionally similar tests",
-      "authors": [
-        "Andrés Aradillas Fernández"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T14:21:28Z",
-      "summary": "We construct approximately minimax regret optimal tests in a scalar Gaussian instrumental variables experiment. This example shows how conditionally similar tests allow a novel approximation approach, allowing us to optimize weights over alternatives to minimize worst-case power regret. Stochastic mirror descent and averaging yield finite-iteration guarantees with exact conditional similarity. We establish bounds for exact and simulated powers and illustrate the procedure numerically. This initial algorithm shows how existing nearly-optimal test computation methods can be extended to include composite alternative hypothesis sets without the computational cost associated with maintaining size control.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06557v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)"
-      ],
-      "comment": "7 pages, 2 figures",
       "journal_ref": null,
       "ai_summary": null
     }
   ],
   "sub_distribution": [
     {
+      "code": "econ.GN",
+      "name_zh": "宏观与综合经济学",
+      "count": 14
+    },
+    {
       "code": "econ.TH",
       "name_zh": "微观经济与理论经济",
-      "count": 17
+      "count": 12
     },
     {
       "code": "econ.EM",
       "name_zh": "计量经济学",
-      "count": 12
-    },
-    {
-      "code": "econ.GN",
-      "name_zh": "宏观与综合经济学",
-      "count": 8
-    },
-    {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
-      "count": 5
-    },
-    {
-      "code": "cs.GT",
-      "name_zh": "计算机博弈论与算法经济",
-      "count": 5
-    },
-    {
-      "code": "stat.ML",
-      "name_zh": "机器学习统计基础",
-      "count": 3
-    },
-    {
-      "code": "cs.LG",
-      "name_zh": "机器学习 (ML)",
-      "count": 2
-    },
-    {
-      "code": "stat.ME",
-      "name_zh": "统计推断与方法学",
-      "count": 2
+      "count": 10
     },
     {
       "code": "stat.AP",
       "name_zh": "应用统计学",
+      "count": 3
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 3
+    },
+    {
+      "code": "cs.GT",
+      "name_zh": "计算机博弈论与算法经济",
       "count": 2
     },
     {
-      "code": "cs.HC",
-      "name_zh": "人机交互 (HCI)",
-      "count": 2
-    },
-    {
-      "code": "math.ST",
-      "name_zh": "数理统计理论",
+      "code": "q-fin.TR",
+      "name_zh": "交易策略与市场微观结构",
       "count": 1
     },
     {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
+      "code": "stat.CO",
+      "name_zh": "计算统计与马尔可夫链",
       "count": 1
     },
     {
-      "code": "cs.MA",
-      "name_zh": "多智能体系统 (Multiagent)",
+      "code": "stat.ML",
+      "name_zh": "机器学习统计基础",
+      "count": 1
+    },
+    {
+      "code": "cs.LG",
+      "name_zh": "机器学习 (ML)",
+      "count": 1
+    },
+    {
+      "code": "physics.soc-ph",
+      "name_zh": "物理与社会科学 (复杂系统)",
+      "count": 1
+    },
+    {
+      "code": "nlin.AO",
+      "name_zh": "自适应与涌现",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T08:30:40.923294"
+  "snapshot_synced_at": "2026-11-12T20:17:20.782332"
 }

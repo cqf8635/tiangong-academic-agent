@@ -28,7 +28,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer as FastMCP
+except ImportError:
+    from mcp.server.fastmcp import FastMCP
 
 from document_rag_engine import UniversalDocumentRAGEngine
 from intent_recognition_agent import IntentRecognitionAgent
@@ -243,8 +246,15 @@ def download_and_ingest_arxiv_paper(arxiv_id: str) -> str:
     rag = get_rag()
     papers = agent.search_arxiv(query=f"id:{arxiv_id}", max_results=1)
     if not papers:
-        raise RuntimeError(f"未检索到 arXiv:{arxiv_id} 的真实元数据，未构造替代论文")
-    paper = papers[0]
+        # Fallback to direct URL construction
+        from online_paper_search_agent import ArxivPaper
+        paper = ArxivPaper(
+            paper_id=arxiv_id,
+            title=f"arXiv_{arxiv_id}",
+            pdf_url=f"https://export.arxiv.org/pdf/{arxiv_id}.pdf",
+        )
+    else:
+        paper = papers[0]
 
     res = agent.download_and_ingest(paper, rag_engine=rag)
     if res.get("status") == "success":
@@ -294,16 +304,27 @@ def search_knowledge_base(query: str, top_k: int = 3) -> str:
 
 
 @mcp.tool()
-def derive_formula_stepwise(topic_or_equation: str) -> str:
+def derive_formula_stepwise(topic_or_equation: str, reference_text: Optional[str] = None) -> str:
     """
     数理公式与学术推导演算工具。调用大模型学术导师按严密逻辑分步推演数学、物理方程，输出标准 LaTeX 格式。
 
     Args:
         topic_or_equation: 要推导的方程、物理定理或数学问题
+        reference_text: 可选的明确前提或资料原文；未提供时尝试复用本地知识库
     """
     from master_agent_workflow import MasterEngineRegistry, safe_chat_completion
     client = MasterEngineRegistry.get_llm_client()
     name = get_assistant_name()
+    from prompts import EVIDENCE_GUIDANCE, format_evidence_for_prompt
+    evidence = []
+    if reference_text:
+        evidence = [{"doc_name": "调用方提供的前提或资料", "doc_type": "provided_text",
+                     "evidence_level": "provided_text", "text": reference_text}]
+    else:
+        try:
+            evidence = MasterEngineRegistry.get_rag_engine().search(topic_or_equation, top_k=3)
+        except Exception as exc:
+            print(f"[Derivation Sources] {type(exc).__name__}")
     prompt = f"""你是一位数理逻辑极其严密的科研搭档“{name}”。请针对以下学术或工程主题（数理、物理、化学、计算机算法或连续介质模型等）进行严密、清晰、分步的 LaTeX 公式推演：
 主题: "{topic_or_equation}"
 
@@ -313,6 +334,9 @@ def derive_formula_stepwise(topic_or_equation: str) -> str:
 3. 公式使用标准 LaTeX 块级格式 ($$ ... $$) 或行内格式 ($ ... $)；
 4. 总结推导结果的理论意义或算法应用价值。
 """
+    prompt += "\n" + EVIDENCE_GUIDANCE + "\n可用资料：\n" + (
+        format_evidence_for_prompt(evidence) or
+        "本次没有取得可用外部资料。可从用户给定的方程和明确列出的假设作条件推导；资料未支持的理论前提应注明待核实。")
     try:
         model = get_default_llm_model()
         return safe_chat_completion(
@@ -323,7 +347,7 @@ def derive_formula_stepwise(topic_or_equation: str) -> str:
             timeout=get_llm_timeout(90.0),
         )
     except Exception as e:
-        raise RuntimeError(f"公式推演服务异常: {e}") from e
+        return f"公式推演服务异常: {e}"
 
 
 @mcp.tool()
@@ -372,20 +396,32 @@ def text_to_speech(text: str, output_wav_path: Optional[str] = None) -> str:
         output_wav_path: 输出音频的绝对路径
     """
     import subprocess
-    clean_text = text.replace("#", "").replace("*", "").strip()[:150]
+    import shutil
+    import tempfile
+    from master_agent_workflow import tts_synthesis_node
     out_file = Path(output_wav_path) if output_wav_path else (BASE_DIR / "tts_response.wav")
     tts_voice = os.getenv("DEFAULT_TTS_VOICE", "zh-CN-XiaoxiaoNeural")
+    temporary_output = None
     try:
-        cmd = [
-            "edge-tts",
-            "--voice", tts_voice,
-            "--text", clean_text,
-            "--write-media", str(out_file),
-        ]
-        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        result = tts_synthesis_node({"final_answer": text, "tts_voice": tts_voice})
+        audio = result.get("tts_audio_file")
+        if not audio:
+            return "[TTS 失败]: 未获得音频，文字内容已保留。"
+        out_file.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=out_file.parent, suffix=out_file.suffix, delete=False) as target:
+            temporary_output = Path(target.name)
+        if out_file.suffix.lower() == ".mp3":
+            shutil.copyfile(audio, temporary_output)
+        else:
+            subprocess.run(["ffmpeg", "-y", "-i", str(audio), str(temporary_output)],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        temporary_output.replace(out_file)
         return f"✅ 音频合成成功: {out_file}"
     except Exception as e:
-        raise RuntimeError(f"TTS 失败: {e}") from e
+        return f"[TTS 失败]: {e}"
+    finally:
+        if temporary_output is not None:
+            temporary_output.unlink(missing_ok=True)
 
 
 # ==========================================

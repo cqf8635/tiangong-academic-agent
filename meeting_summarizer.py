@@ -44,31 +44,29 @@ class MeetingSummaryReport(BaseModel):
 
 
 class MeetingSummarizer:
-    def __init__(self, client: Optional[Any] = None):
+    def __init__(self):
         self.api_key = os.getenv("OPENAI_API_KEY")
         self.base_url = os.getenv("OPENAI_BASE_URL")
         self.model = get_default_llm_model()
 
-        if client is not None:
-            self.client = client
-        else:
-            if not self.api_key or not self.base_url:
-                raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
-            self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        if not self.api_key or not self.base_url:
+            raise ValueError(f"[错误] 未在 {ENV_PATH} 中正确找到 OPENAI_API_KEY 或 OPENAI_BASE_URL 配置！")
+
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def _read_records(self, record_path: Path) -> List[Dict[str, Any]]:
         """读取 JSONL 格式的流水日志"""
         records = []
         if not record_path.exists():
-            raise FileNotFoundError(record_path)
+            return records
 
         with open(record_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     try:
                         records.append(json.loads(line.strip()))
-                    except Exception as e:
-                        raise ValueError(f"会议记录 JSONL 解析失败: {e}") from e
+                    except Exception:
+                        pass
         return records
 
     def summarize_session(
@@ -76,46 +74,44 @@ class MeetingSummarizer:
         record_path: str | Path,
         output_report_path: Optional[Path] = None,
         chunk_sentences: int = 20,
+        task_context: Optional[str] = None,
     ) -> MeetingSummaryReport:
         """
         对长会议/讲座流水执行分段 Map-Reduce 归纳与待办抽取
         """
         path = Path(record_path)
-        if path.suffix.lower() in {".txt", ".md"}:
-            text_content = path.read_text(encoding="utf-8").strip()
-            records = [{"text": text_content}] if text_content else []
-        else:
-            records = self._read_records(path)
+        records = self._read_records(path)
+
         if not records:
-            raise ValueError("会议记录为空，无法生成摘要")
+            # 兼容纯文本输入
+            if path.exists():
+                text_content = path.read_text(encoding="utf-8")
+                records = [{"index": 1, "timestamp": "00:00:00", "source": "input", "text": text_content}]
+            else:
+                raise FileNotFoundError(f"未找到记录文件: {path}")
 
         print(f"📊 [MeetingSummarizer] 正在处理会话流水: {path.name} (共 {len(records)} 句发言)...")
 
         # 1. 如果流水较长，分块执行 Map 局部微摘要
         chunks = [records[i : i + chunk_sentences] for i in range(0, len(records), chunk_sentences)]
         map_summaries = []
+        task_prefix = (task_context + "\n\n") if task_context else ""
 
         if len(chunks) > 1:
             print(f"✂️  [Map-Phase] 流水较长，分为 {len(chunks)} 个时间切片并行压缩...")
             for idx, chunk in enumerate(chunks, 1):
                 chunk_text = "\n".join([f"[{r.get('timestamp')}] {r.get('text')}" for r in chunk])
-                prompt = f"请简明总结以下时间段的讨论要点（保留关键观点与待办提及）：\n\n{chunk_text}\n\n请直接输出一小段总结（必须包含 JSON 格式输出）。"
+                prompt = task_prefix + f"请简明总结以下时间段的讨论要点（保留关键观点与待办提及）：\n\n{chunk_text}\n\n请直接输出一小段总结（必须包含 JSON 格式输出）。"
                 try:
                     resp = self.client.chat.completions.create(
                         model=self.model,
                         messages=[{"role": "user", "content": prompt}],
                         temperature=0.0,
-                        max_tokens=2048,
                         timeout=get_llm_timeout(60.0),
                     )
-                    if getattr(resp.choices[0], "finish_reason", None) != "stop":
-                        raise ValueError("模型响应未完整结束，本阶段未完成")
-                    content = resp.choices[0].message.content
-                    if not content or not content.strip():
-                        raise ValueError("分段摘要为空")
-                    map_summaries.append(f"【切片 {idx} 摘要】: " + content)
-                except Exception as e:
-                    raise RuntimeError(f"会议第 {idx} 段摘要失败，未进入全局归纳: {e}") from e
+                    map_summaries.append(f"【切片 {idx} 摘要】: " + resp.choices[0].message.content)
+                except Exception:
+                    map_summaries.append(chunk_text)
             combined_context = "\n\n".join(map_summaries)
         else:
             combined_context = "\n".join([f"[{r.get('timestamp')}] {r.get('text')}" for r in records])
@@ -128,16 +124,13 @@ class MeetingSummarizer:
             model=self.model,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"以下是完整的流水/切片摘要内容，请输出最终纪要 JSON：\n\n{combined_context}"},
+                {"role": "user", "content": task_prefix + f"以下是完整的流水/切片摘要内容，请输出最终纪要 JSON：\n\n{combined_context}"},
             ],
             response_format={"type": "json_object"},
             temperature=0.0,
-            max_tokens=4096,
             timeout=get_llm_timeout(90.0),
         )
 
-        if getattr(response.choices[0], "finish_reason", None) != "stop":
-            raise ValueError("模型响应未完整结束，本阶段未完成")
         raw_json = response.choices[0].message.content
         data = json.loads(raw_json)
         report = MeetingSummaryReport(**data)

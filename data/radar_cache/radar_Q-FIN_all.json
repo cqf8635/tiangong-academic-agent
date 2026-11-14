@@ -1,8 +1,215 @@
 {
   "query_expression": "cat:q-fin*",
   "total_fetched": 35,
-  "total_results": 19470,
+  "total_results": 19479,
   "papers": [
+    {
+      "paper_id": "2611.14325v1",
+      "title": "Point-in-Time Encoders for Earnings Calls",
+      "authors": [
+        "Alessio Brini"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T16:49:15Z",
+      "summary": "Text encoders turn earnings calls into vectors for search, for language models that answer from retrieved passages, and for forecasting models. A live retriever can use an encoder trained once on all available text, as finance retrievers are, but a backtest needs an encoder that read no text written after the date of each vector. To address this look-ahead bias, from 412,248 calls we train vintages under four pretraining recipes, with yearly cutoffs from 2010 to 2024, and each vintage reads only text dated on or before its cutoff. We then fine-tune each vintage on the question-answer pairs of the calls themselves. The vintages we train on calls alone, with 33.8M parameters, retrieve answers on held-out calls better than the general retrievers we tested in every test quarter. Their vectors also raise by about half the rank correlation between next-day returns and forecasts built from past returns and firm size. When each vintage continues the previous one, a later vintage retrieves better on earlier quarters than the vintage available at the time, and a point-in-time language model that answers from the passages the later vintage retrieves inherits the gain. The 2024 vintage of our families also forecasts earnings surprises better, although the interval of this gain includes zero on calls that no vintage read. It forecasts returns no better, so point-in-time vintages matter most for retrieval and little for forecasts of returns.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14325v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.IR",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "cs.CL (计算语言与大语言模型 (NLP))",
+        "cs.IR (信息检索与推荐系统)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "10 pages, 3 figures, 7 tables. Accepted at the 3rd IEEE International Workshop on Large Language Models for Finance, IEEE BigData 2026. Code: https://github.com/Alessiobrini/point-in-time-encoders-for-earnings-calls",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14245v1",
+      "title": "Deep Learning for Operator Maps in Optimal Liquidation",
+      "authors": [
+        "Ryan Donnelly",
+        "Luca Galimberti",
+        "Brian Healy",
+        "Siqi Zhang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T15:56:41Z",
+      "summary": "We analyze the solution map of a optimal execution problem in which price dynamics are subject to a general transient impact kernel. Given the structure of the optimal trading strategy derived by Abi Jaber and Neuman in \\cite{https://doi.org/10.1111/mafi.12465}, we show that the strategy is locally Lipschitz continuous with respect to the underlying model parameters governing temporary and transient price impact as well as the fundamental price process. Continuity of this map justifies the application of neural-net based approximations which take model parameters as inputs. We propose a method generating samples of the transient price impact kernel for the purposes of creating training data, and a method of projecting the kernel to a finite dimensional representation appropriate for input to a neural net, and a dimensional reduction based on the relationship between inventory and trade signal. We demonstrate the effectiveness of the trained neural net and use it to quantify the potential financial costs associated with misspecifying the transient impact kernel.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14245v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "math.PR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "math.PR (概率论与随机过程)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.14117v1",
+      "title": "Fine-Tuning an Order-Flow Foundation Model for Sub-Second Forecasting",
+      "authors": [
+        "Fedor Shabashev"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T14:07:39Z",
+      "summary": "Generative models have become the standard approach in language and vision. These models are typically pretrained first and then fine-tuned. Recent work demonstrates how to pretrain an autoregressive generative model on Level-3 order-flow data. However, to our knowledge, no one has fine-tuned such a model yet for downstream tasks. Here we first pretrain a 300M-parameter generative model on Level-3 order-flow data collected from two crypto exchanges, Bitstamp and Bitfinex. Then we fine-tune the pretrained model to predict the microprice return and its realized volatility. We show that our fine-tuned model outperforms classical baselines, such as gradient boosting on handcrafted features, in predicting microprice returns over sub-second horizons. Furthermore, the predictive ability of the model transfers zero-shot to assets it was never fine-tuned on. Due to the short-term nature of these forecasts, the predicted microprice moves are smaller than the bid-ask spread plus fees, so the natural applications are in execution and market making. These results indicate that a pretrained generative model can be turned into a competitive short-horizon price forecaster via fine-tuning.",
+      "pdf_url": "https://arxiv.org/pdf/2611.14117v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13962v1",
+      "title": "Deceleration without identification: testing a power-law trend in Bitcoin prices under persistent noise",
+      "authors": [
+        "Carlos Baquero",
+        "Raquel Menezes"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T11:56:26Z",
+      "summary": "Plotted against time since its first block on logarithmic axes, the price of Bitcoin lies close to a straight line, and a power law in time has been proposed as its long-run trend. A good fit is weak evidence: when deviations from a trend are as persistent as a random walk, regressions on time find trends and high $R^2$ where none exist. We first bound what fifteen years of weekly prices can reveal, then test only what is answerable. Using a few low-frequency averages, invariant to the noise scale and calibrated over a declared family of persistent deviations with a four-year cycle and declining volatility, we test constant drift in expected log price against an added log-age term. The procedure was fixed, validated and publicly hashed before it was applied once. Constant drift is rejected under this family at nominal 5%, and a log-age coefficient of 5.7, close to the published exponent, is not rejected. The rejection does not survive allowing persistence beyond a random walk, and a Gompertz curve with a ceiling fits about as well as the power law. Whether deviations revert to the trend cannot be decided. Registered forecasts for 2027-2030 will be scored by future prices.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13962v1.pdf",
+      "source": "arxiv",
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "q-fin.ST",
+        "stat.ME"
+      ],
+      "category_names_zh": [
+        "stat.AP (应用统计学)",
+        "q-fin.ST (统计金融学与高频数据)",
+        "stat.ME (统计推断与方法学)"
+      ],
+      "comment": "25 pages, 6 figures. Pre-registered protocol and forecasts: https://osf.io/2rdty. Replication package: https://doi.org/10.5281/zenodo.23218897",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13841v1",
+      "title": "Nonzero-Sum Stochastic Exit Games with Singular Belief Dynamics",
+      "authors": [
+        "Yukun Cao",
+        "Jan Palczewski"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T10:03:49Z",
+      "summary": "We study a two-player nonzero-sum stochastic exit game with asymmetric information. Each firm chooses the time to exit a duopoly and, conditional on remaining active, when to exit a monopoly. The asymmetry stems from privately observed exit values, while profit flows are driven by a general one-dimensional diffusion. Allowing for exit from monopoly induces singular dynamics of the associated belief process, so we construct it as a limit of regular approximations. The underlying dynamics are not described by a system of SDEs, which requires a new mathematical approach. We construct a symmetric Nash equilibrium in which the duopoly exit is a hitting time of the belief process while the monopoly exit is described through the underlying diffusion. Our equilibrium exhibits novel phenomena: the market may be abandoned by both firms in finite time (market collapse), and firms with heterogeneous exit values may optimally exit simultaneously (clustering). These features are absent when monopoly is always preferred to exit.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13841v1.pdf",
+      "source": "arxiv",
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "math.PR",
+        "q-fin.MF"
+      ],
+      "category_names_zh": [
+        "math.OC (运筹学、优化与控制论)",
+        "math.PR (概率论与随机过程)",
+        "q-fin.MF (数理金融学)"
+      ],
+      "comment": "48 pages, 3 figures",
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13616v1",
+      "title": "Optimal Trading Speed on Blockchain",
+      "authors": [
+        "Ruizhe Jia",
+        "Shihao Yu"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T05:52:22Z",
+      "summary": "On blockchain-based exchanges, faster blocks weaken the priority-fee competition among arbitrageurs and shift rents from the block producer to them. Equilibrium liquidity peaks at an interior block speed; beyond a threshold, an active liquidity provider cream-skims and passive capital shrinks. Evidence from the Base Flashblocks upgrade, a tenfold block-speed increase, confirms the predictions. Priority-fee bids decrease sharply and arbitrageurs' net profit rises. The active liquidity provider rebalances faster, avoids toxic flow, and earns a higher profit. Pool depth falls and effective spreads widen despite closer tracking of external prices.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13616v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "econ.GN"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "econ.GN (宏观与综合经济学)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13550v1",
+      "title": "Tabular Foundation Models in Financial Predictions",
+      "authors": [
+        "Ed deHaan",
+        "Allen H. Huang"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-10T04:09:40Z",
+      "summary": "This technical note introduces tabular foundation models (TFMs) to accounting research and evaluates their performance in one common benchmark task: predicting firms' next-year earnings changes. TFMs produce numeric predictions and learn in context, without post-release training or tuning, making them natural and easy to use for forecasting. The TFMs we study are pretrained on synthetic tabular data, so they avoid look-ahead bias from memorizing firms' outcomes. We compare Google Research's TabFM with a fine-tuned open-weight large language model developed in recent accounting research and with several tree-based models. TabFM is more accurate than all comparison models. It is also faster and less computationally intensive than the large language model. Several tree-based specifications produce predictions more quickly than TabFM, so choosing between them involves a trade-off between accuracy and speed. We conclude that TFMs have promise as a new tool for forecasting in accounting and finance. However, our evaluation is based on a single benchmark task, and no class of models is likely to dominate in all settings.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13550v1.pdf",
+      "source": "arxiv",
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "cs.LG (机器学习 (ML))",
+        "q-fin.CP (计算金融与量化模拟)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": null,
+      "journal_ref": null,
+      "ai_summary": null
+    },
+    {
+      "paper_id": "2611.13365v1",
+      "title": "Making sense of rule 605",
+      "authors": [
+        "Peter B. Lerner"
+      ],
+      "year": 2026,
+      "published_at": "2026-11-09T23:38:44Z",
+      "summary": "The paper analyzes monthly reports of two companies: one market maker, Virtu, and one broker-dealer, SoHo, in the period between January 2021 and March 2024. The predictive power of standard methods for the probability laws of stock orders- linear regression and LSTM- is poor, despite their probability laws being relatively stable. However, the month-to-month correlations are highly stable and predictable. In this paper, we study the distributions of the sixteen datasets resulting from the 26 stock-trading parameters reported by brokerages under regulatory requirements.",
+      "pdf_url": "https://arxiv.org/pdf/2611.13365v1.pdf",
+      "source": "arxiv",
+      "primary_category": "q-fin.TR",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.GN",
+        "q-fin.ST"
+      ],
+      "category_names_zh": [
+        "q-fin.TR (交易策略与市场微观结构)",
+        "q-fin.GN (普通宏观金融与经济)",
+        "q-fin.ST (统计金融学与高频数据)"
+      ],
+      "comment": "First version of the manuscript. Comments welcome",
+      "journal_ref": null,
+      "ai_summary": null
+    },
     {
       "paper_id": "2611.12389v1",
       "title": "Diversification Across Predictors: Heterogeneous Ensemble Learning for Cross-Sectional Return Prediction",
@@ -731,216 +938,17 @@
       "comment": null,
       "journal_ref": null,
       "ai_summary": null
-    },
-    {
-      "paper_id": "2611.07083v2",
-      "title": "Necessary and sufficient conditions for the martingale property of stochastic exponentials driven by multi-dimensional diffusions",
-      "authors": [
-        "Erhan Bayraktar",
-        "Hao Xing"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T19:37:54Z",
-      "summary": "We give necessary and sufficient coefficient conditions for stochastic exponentials driven by multidimensional diffusions to be true martingales. The classical reduction to non-exit of the diffusion with Girsanov-shifted drift separates the analysis into smooth boundary points, infinity, and nonsmooth boundary pieces. On smooth domains, under regularity and non-explosion hypotheses, martingality is equivalent to nonpositivity of the shifted Fichera drift, provided an explicit local condition holds where that drift vanishes and the stochastic integrand is unbounded. At infinity, Feller's test gives exact criteria when a scalar function of the diffusion reduces to a one-dimensional diffusion up to a time change with rate comparable to a positive function of the scalar coordinate. General radial and projection tests supply sufficient conditions. Applications give explicit necessary and sufficient conditions for inverse-CIR and $4/2$ models with correlated factors and singular stochastic integrands, including critical equality cases. The coupled non-affine examples go beyond direct scalar Feller tests and affine Riccati criteria, and exhibit boundary exits not decided by tests at infinity. Further exact criteria cover logarithmic boundary singularities, weighted distances, and an absorbed factor. The martingale conditions also yield uniqueness criteria for associated valuation equations.",
-      "pdf_url": "https://arxiv.org/pdf/2611.07083v2.pdf",
-      "source": "arxiv",
-      "primary_category": "math.PR",
-      "categories": [
-        "math.PR",
-        "q-fin.MF"
-      ],
-      "category_names_zh": [
-        "math.PR (概率论与随机过程)",
-        "q-fin.MF (数理金融学)"
-      ],
-      "comment": "Revised literature discussion; added results on uniform integrability and martingality under variable time changes",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06607v1",
-      "title": "Hard to Fool: A Bounded LLM Research Loop for Quantitative Finance, and What Two Dozen Campaigns Found",
-      "authors": [
-        "Henry Zhang"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T14:57:39Z",
-      "summary": "Agentic research loops that let a language model propose a change, run a fixed experiment and keep whatever improves the metric work well in machine learning. In trading research the same loop is a machine for producing false discoveries: a backtest that \"improves the metric\" is, by default, overfit, look-ahead, a multiple-comparisons artifact, cost-free, or market drift wearing a strategy. We describe Autonomous Quant Researcher, an open-source loop built on the opposite premise: the model proposes, and only trusted code decides. Proposals are strict declarative JSON over a fixed vocabulary, so there is no model-written code to sandbox. Evaluation runs on immutable chronological stores split into discovery, validation and a final holdout that can be opened exactly once, after a durable receipt is written. Acceptance is a conjunction of absolute gates (positive edge and net P&L after costs, a positive weekly-cluster bootstrap lower bound, survival at elevated costs, per-year stability and sample floors), never a single score. Duplicates are refused before they spend a trial, and every formulation, refusal, crash and result is kept in a hash-chained, append-only ledger. We report every campaign run to date, across 0DTE options priced from traded option bars, overnight SPX verticals, daily ETF rules, technical-analysis premises, Kalshi crypto binaries, earnings options, off-exchange volume and a pre-registered alternative-data campaign. Most hypotheses fail, and we report them. Two results survive their pre-registered bars. The clearest example of the loop working is a failure: a language-model survivor that passed discovery and validation with Sharpe ratios near 3 and fell to 0.26 on its single holdout use. The value of such a loop lies less in what it finds than in how hard it is to make it report something that is not there.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06607v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.CP",
-      "categories": [
-        "q-fin.CP",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "q-fin.CP (计算金融与量化模拟)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "10 pages, 2 tables. Code: https://github.com/henryzhangpku/autonomous-quant-researcher",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06495v1",
-      "title": "Constrained defined-contribution pension management: A reparameterized neural network approach",
-      "authors": [
-        "Yueman Feng",
-        "Wenyuan Li"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T13:30:05Z",
-      "summary": "This paper studies constrained defined contribution (DC) pension management under a two-factor financial market model. The pension participant is allowed to invest in cash, two nominal bonds, an inflation-linked bond, and a stock index. Moreover, they can also purchase term life insurance to manage pre-retirement death risk. Unlike traditional literature, we consider a pension member restricted to a general non-empty, closed, and convex trading constraint set that includes no short-selling, no borrowing, and portfolio-mix constraints as special cases. Such restrictions reflect common limits on pension-account trading. To solve the problem, we construct a family of unconstrained artificial markets, in which the original trading constraints are satisfied by adjusting the drift terms of the risky assets. Using a duality transformation, we derive the Lagrangian dual problem and propose a reparameterized neural network method to compute lower and upper bounds on the primal value function. We calibrate our model with U.S. data using a Kalman filter method, and find that our method produces a smaller duality gap than the benchmark methods. We also compare the constrained results with the unconstrained explicit solution and find that trading constraints substantially change wealth accumulation, portfolio strategies, and insurance demand. This highlights that unconstrained solutions may provide misleading guidance for pension management in practice.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06495v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM",
-        "math.OC"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)",
-        "math.OC (运筹学、优化与控制论)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06459v1",
-      "title": "A general technique for explicit quantile representations",
-      "authors": [
-        "Wolfgang Schadner"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T12:56:31Z",
-      "summary": "This work proves existence of contours independent of probability level for exact quantile integrals of strictly positive real-analytic densities. Explicit constructions cover five broad distribution families and yield a finite-interval representation of Black-Scholes implied volatility using forward functions.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06459v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.ST",
-      "categories": [
-        "q-fin.ST",
-        "math.PR"
-      ],
-      "category_names_zh": [
-        "q-fin.ST (统计金融学与高频数据)",
-        "math.PR (概率论与随机过程)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.08528v1",
-      "title": "Price-Volume Correlations Are Always Zero",
-      "authors": [
-        "Victor Olkhov"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T10:08:04Z",
-      "summary": "We argue that the use of the empirical time series of values, volumes, and prices of consecutive trades made during the averaging interval to calculate the price-volume correlation in a way that follows the definition of correlation always gives zero correlation. We show that the usual expression for the empirical calculation of the correlation misleads the researchers and doesn't fulfill the definition of price-volume correlation. The mistake has its origin in the dependence of volume weighted average price on the mean values and volumes of trades during the averaging interval but not on time series of prices only. The true sense of the declared positive or negative results of the empirical calculations of price-volume correlations made by numerous researchers in reality is determined by the difference between the volume weighted average price and its limiting expression of average price, which is correct only when all volumes of consecutive trades are constant, and multiplication of this difference by the mean trade volume. To empirically determine the statistical dependence between time series of prices and trade volumes, one should calculate the correlations between prices and squares of trade volumes or correlations between squares of prices and squares of volumes. We derive the expressions for empirical calculations of these correlations.",
-      "pdf_url": "https://arxiv.org/pdf/2611.08528v1.pdf",
-      "source": "arxiv",
-      "primary_category": "econ.EM",
-      "categories": [
-        "econ.EM",
-        "q-fin.PM",
-        "q-fin.PR",
-        "q-fin.ST",
-        "q-fin.TR"
-      ],
-      "category_names_zh": [
-        "econ.EM (计量经济学)",
-        "q-fin.PM (资产组合管理)",
-        "q-fin.PR (衍生品与资产定价)",
-        "q-fin.ST (统计金融学与高频数据)",
-        "q-fin.TR (交易策略与市场微观结构)"
-      ],
-      "comment": "12 pages",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.06126v1",
-      "title": "Exponential Seniority Weighting Chain-Ladder Reserving",
-      "authors": [
-        "Mario V. Wüthrich"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-04T08:11:02Z",
-      "summary": "We develop a tractable state-space version of the chain-ladder model. The state-space dynamics acts on the accident year axis which, in contrast to the classical chain-ladder model, makes accident years dependent. This state-space version yields an exponential seniority weighting in the chain-ladder factor estimation, and it admits an analytical likelihood representation that enables us to compute the seniority weighted chain-ladder reserves and their prediction uncertainty: the one-year uncertainty is available in closed form and the total uncertainty requires a Monte Carlo simulation from the fully tractable likelihood representation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.06126v1.pdf",
-      "source": "arxiv",
-      "primary_category": "stat.AP",
-      "categories": [
-        "stat.AP",
-        "q-fin.RM"
-      ],
-      "category_names_zh": [
-        "stat.AP (应用统计学)",
-        "q-fin.RM (风险管理与控制)"
-      ],
-      "comment": null,
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05310v1",
-      "title": "Mitigating Return Drag and Regime Whipsaws in Sector Rotation: An Asymmetric Downside-Aware Nested Clustered Optimization Framework",
-      "authors": [
-        "Supriadi"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T18:19:23Z",
-      "summary": "Hierarchical clustering and Nested Clustered Optimization (NCO) mitigate the mathematical ill-conditioning of classical Markowitz covariance matrices. However, two structural vulnerabilities persist in equity markets: (1) symmetric variance penalizes upside and downside return dispersion identically, inducing acute return drag against soaring momentum sectors; and (2) unconstrained Hidden Markov Models (HMM) exhibit hyper-active regime switching (whipsaw instability), incurring excessive turnover and transaction drag. We propose Asymmetric Downside-Risk Nested Clustered Optimization with Sticky Regime Dynamics (Asym-Sticky-NCO) for tactical sector rotation across all 11 S&P 500 GICS sectors. The framework substitutes symmetric covariance with the Bawa-Lindenberg downside semi-covariance matrix across both hierarchical tree clustering and two-stage allocation. Furthermore, we introduce a Sticky Gaussian HMM incorporating a diagonal self-transition persistence prior (\\k{appa}) and confidence-adaptive boundaries (δ) to enforce macroeconomic persistence. Strictly non-anticipative walk-forward backtesting across 65 out-of-sample months (August 2020 to December 2025) demonstrates that the architecture elevates CAGR from 10.65% (Plain NCO) to 13.41% (+276 bps/year), delivers a 97.74% total return versus 72.99%, suppresses maximum drawdown to 14.22% (versus 23.93% for the S&P 500), and achieves a Calmar ratio of 0.94 (+38.2% over S&P 500; +84.3% over Baseline Regime-NCO). Crucially, sticky dynamics cut regime whipsaws by 75.0% (from 16 to 4 switches) and reduce monthly turnover from 60.78% to 30.48%, addressing core limitations of machine learning asset allocation.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05310v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.PM",
-      "categories": [
-        "q-fin.PM"
-      ],
-      "category_names_zh": [
-        "q-fin.PM (资产组合管理)"
-      ],
-      "comment": "7 pages, 6 figures, 4 tables. Code available at: https://github.com/obo-cloud/sp500-asymmetric-nco",
-      "journal_ref": null,
-      "ai_summary": null
-    },
-    {
-      "paper_id": "2611.05218v1",
-      "title": "Beyond Anonymous Order Flow: Wallet Identity as a Feature for Short-Horizon Return Prediction",
-      "authors": [
-        "Jingqiu Ding",
-        "Daojing Zhai"
-      ],
-      "year": 2026,
-      "published_at": "2026-11-03T17:03:36Z",
-      "summary": "Conventional public order-book data summarize trading without identifying the accounts behind it. Hyperliquid's Level-4 record also exposes persistent pseudonymous wallet addresses. We reconstruct full-depth books from consensus-ordered messages and evaluate wallet identity as a feature for short-horizon return prediction. The July 1-27, 2026 record covers 17.1 billion messages, 14.3 million aggressive orders by 147,113 wallets, and $84.3 billion in taker notional across ten markets. In the three model markets, notional-weighted ten-second markout rankings persist across adjacent ten-day windows (Spearman rho = 0.52); covariate-adjusted validation markouts reach 3.11 basis points in the top ventile. On a 100-millisecond grid, eleven features describing previously scored top-decile wallets raise one-second out-of-sample R2 from 10.88% to 12.",
-      "pdf_url": "https://arxiv.org/pdf/2611.05218v1.pdf",
-      "source": "arxiv",
-      "primary_category": "q-fin.TR",
-      "categories": [
-        "q-fin.TR",
-        "q-fin.ST"
-      ],
-      "category_names_zh": [
-        "q-fin.TR (交易策略与市场微观结构)",
-        "q-fin.ST (统计金融学与高频数据)"
-      ],
-      "comment": "8 pages, 5 figures, 3 tables. Accepted at ACM ICAIF '26",
-      "journal_ref": null,
-      "ai_summary": null
     }
   ],
   "sub_distribution": [
     {
       "code": "q-fin.TR",
       "name_zh": "交易策略与市场微观结构",
-      "count": 10
+      "count": 11
     },
     {
-      "code": "q-fin.RM",
-      "name_zh": "风险管理与控制",
+      "code": "q-fin.ST",
+      "name_zh": "统计金融学与高频数据",
       "count": 9
     },
     {
@@ -949,8 +957,8 @@
       "count": 8
     },
     {
-      "code": "q-fin.ST",
-      "name_zh": "统计金融学与高频数据",
+      "code": "q-fin.RM",
+      "name_zh": "风险管理与控制",
       "count": 8
     },
     {
@@ -961,11 +969,11 @@
     {
       "code": "cs.LG",
       "name_zh": "机器学习 (ML)",
-      "count": 5
+      "count": 6
     },
     {
-      "code": "cs.AI",
-      "name_zh": "通用人工智能 (AI)",
+      "code": "cs.CL",
+      "name_zh": "计算语言与大语言模型 (NLP)",
       "count": 4
     },
     {
@@ -974,9 +982,14 @@
       "count": 4
     },
     {
-      "code": "q-fin.PM",
-      "name_zh": "资产组合管理",
+      "code": "cs.AI",
+      "name_zh": "通用人工智能 (AI)",
       "count": 4
+    },
+    {
+      "code": "q-fin.GN",
+      "name_zh": "普通宏观金融与经济",
+      "count": 3
     },
     {
       "code": "stat.ML",
@@ -984,28 +997,18 @@
       "count": 3
     },
     {
-      "code": "cs.CL",
-      "name_zh": "计算语言与大语言模型 (NLP)",
-      "count": 3
+      "code": "cs.IR",
+      "name_zh": "信息检索与推荐系统",
+      "count": 2
     },
     {
-      "code": "q-fin.PR",
-      "name_zh": "衍生品与资产定价",
-      "count": 3
+      "code": "stat.AP",
+      "name_zh": "应用统计学",
+      "count": 2
     },
     {
       "code": "physics.soc-ph",
       "name_zh": "物理与社会科学 (复杂系统)",
-      "count": 2
-    },
-    {
-      "code": "econ.EM",
-      "name_zh": "计量经济学",
-      "count": 2
-    },
-    {
-      "code": "q-fin.GN",
-      "name_zh": "普通宏观金融与经济",
       "count": 2
     },
     {
@@ -1014,9 +1017,24 @@
       "count": 2
     },
     {
-      "code": "stat.AP",
-      "name_zh": "应用统计学",
+      "code": "q-fin.PR",
+      "name_zh": "衍生品与资产定价",
       "count": 2
+    },
+    {
+      "code": "stat.ME",
+      "name_zh": "统计推断与方法学",
+      "count": 1
+    },
+    {
+      "code": "math.OC",
+      "name_zh": "运筹学、优化与控制论",
+      "count": 1
+    },
+    {
+      "code": "econ.GN",
+      "name_zh": "宏观与综合经济学",
+      "count": 1
     },
     {
       "code": "math.FA",
@@ -1031,6 +1049,11 @@
     {
       "code": "cs.SI",
       "name_zh": "社交网络与信息网络",
+      "count": 1
+    },
+    {
+      "code": "econ.EM",
+      "name_zh": "计量经济学",
       "count": 1
     },
     {
@@ -1054,15 +1077,10 @@
       "count": 1
     },
     {
-      "code": "cs.IR",
-      "name_zh": "信息检索与推荐系统",
-      "count": 1
-    },
-    {
-      "code": "math.OC",
-      "name_zh": "运筹学、优化与控制论",
+      "code": "q-fin.PM",
+      "name_zh": "资产组合管理",
       "count": 1
     }
   ],
-  "snapshot_synced_at": "2026-11-10T18:02:18.660313"
+  "snapshot_synced_at": "2026-11-12T20:16:13.534507"
 }

@@ -9,19 +9,17 @@ Implements:
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 import difflib
-import hashlib
 import json
-import math
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor
 
 from document_rag_engine import UniversalDocumentRAGEngine
 from online_paper_search_agent import OnlinePaperSearchAgent
-from evidence_scoring import score_evidence
+from config_utils import resolve_retrieval_time_constraint, retrieval_date_bounds
 
 
 def normalize_title(title: str) -> str:
@@ -43,8 +41,6 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
         return 0.0
     if norm1 == norm2:
         return 1.0
-    if title1.startswith("未命名文献 [") or title2.startswith("未命名文献 ["):
-        return 0.0
 
     # 1. 词袋 Jaccard 相似度
     words1 = set(norm1.split())
@@ -81,13 +77,17 @@ class UnifiedEvidenceCard:
         is_local_indexed: bool = False,
         summary: str = "",
         page_or_slide: Optional[Any] = None,
-        score_method: str = "",
+        evidence_level: Optional[str] = None,
+        content_scope: Optional[str] = None,
+        version_ref: Optional[str] = None,
+        version_ref_type: Optional[str] = None,
+        published_at: Optional[str] = None,
+        temporal_match: Optional[str] = None,
     ):
         self.doc_name = doc_name
         self.doc_type = doc_type  # local_pdf | arxiv | openalex | crossref | github | fused_academic
         self.text = text
         self.score = score
-        self.score_method = score_method
         self.year = year
         self.location_label = location_label
         self.section = section
@@ -100,6 +100,12 @@ class UnifiedEvidenceCard:
         self.authors = authors or []
         self.is_local_indexed = is_local_indexed
         self.summary = summary
+        self.evidence_level = evidence_level
+        self.content_scope = content_scope
+        self.version_ref = version_ref
+        self.version_ref_type = version_ref_type
+        self.published_at = published_at
+        self.temporal_match = temporal_match
         self.sources_merged = [doc_type]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -121,21 +127,48 @@ class UnifiedEvidenceCard:
             "doc_name": self.doc_name,
             "doc_type": self.doc_type,
             "location_label": fused_label,
-            "year": self.year,
-            "page_or_slide": self.page_or_slide,
+            "page_or_slide": self.page_or_slide if self.page_or_slide is not None else self.year,
             "section": self.section or "Core Theory",
             "score": self.score,
-            "score_method": self.score_method,
             "text": self.text,
             "summary": self.summary,
             "arxiv_id": self.arxiv_id,
             "doi": self.doi,
             "pdf_url": self.pdf_url,
+            "url": self.pdf_url or self.github_url,
+            "version_ref": self.version_ref,
+            "version_ref_type": self.version_ref_type,
             "github_url": self.github_url,
             "stars": self.stars,
             "authors": self.authors,
             "is_local_indexed": self.is_local_indexed,
             "sources_merged": list(set(self.sources_merged)),
+            "evidence_level": self.evidence_level or (
+                "local_snippet" if self.is_local_indexed else
+                "repository_metadata" if self.github_url else
+                "dataset_repository_metadata" if self.doc_type == "dataset" else
+                "web_search_snippet" if self.doc_type == "web" else
+                "abstract" if self.doc_type == "arxiv" else
+                "index_metadata_or_abstract" if self.doc_type in {"openalex", "crossref", "fused_academic"} else
+                "unknown"
+            ),
+            "provenance": {
+                "source_types": list(dict.fromkeys(self.sources_merged)),
+                "location": self.location_label,
+                "url": self.pdf_url or self.github_url,
+                "year": self.year,
+                "published_at": self.published_at,
+                "temporal_match": self.temporal_match,
+                "version_ref": self.version_ref,
+                "version_ref_type": self.version_ref_type,
+                "content_scope": self.content_scope or (
+                    "indexed local passage" if self.is_local_indexed else
+                    "repository metadata; source code not inspected" if self.github_url else
+                    "dataset repository metadata; dataset content not fetched" if self.doc_type == "dataset" else
+                    "web result snippet; destination page not fetched" if self.doc_type == "web" else
+                    "abstract or bibliographic record; full text not confirmed"
+                ),
+            },
         }
 
 
@@ -149,6 +182,8 @@ class CrossSourceHybridRetriever:
     ):
         self.rag_engine = rag_engine
         self.paper_agent = paper_agent
+        self.last_source_errors: Dict[str, str] = {}
+        self.last_source_counts: Dict[str, int] = {}
 
     def hybrid_search_and_deduplicate(
         self,
@@ -160,18 +195,24 @@ class CrossSourceHybridRetriever:
         time_constraint: Optional[Dict[str, Any]] = None,
         english_query: Optional[str] = None,
         max_chunks_per_doc: int = 4,
+        include_github: bool = True,
+        include_web: bool = False,
+        include_datasets: bool = False,
         discipline_filter: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
-        """混合召回、去重与重排；time_constraint 仅用于在线检索，discipline_filter 传递至本地领域分流。"""
+        """执行全源混合并发召回、跨源语义去重与全局融合重排 (同文献多页保护，支持全面文献深读)"""
+        time_constraint = resolve_retrieval_time_constraint(time_constraint)
+        self.last_source_errors = {}
+        self.last_source_counts = {}
         raw_candidates: List[UnifiedEvidenceCard] = []
 
         # 1. 并发执行多路召回
         with ThreadPoolExecutor(max_workers=2) as executor:
             # 路线 A: 本地 RAG 语义检索 (扩大候选窗口至 max(top_k, 8)，获取同文献更多代表性页面)
             local_limit = max(top_k, 8)
-            fut_local = executor.submit(self._fetch_local_evidence, query, negative_keywords, local_limit, discipline_filter) if include_local else None
+            fut_local = executor.submit(self._fetch_local_evidence, query, negative_keywords, time_constraint, local_limit, discipline_filter) if include_local else None
             # 路线 B: 线上多源学术与开源工程探针
-            fut_online = executor.submit(self._fetch_online_evidence, query, time_constraint, english_query) if include_online else None
+            fut_online = executor.submit(self._fetch_online_evidence, query, time_constraint, english_query, include_github, include_web, include_datasets) if include_online else None
 
             local_cards = fut_local.result() if fut_local else []
             online_cards = fut_online.result() if fut_online else []
@@ -179,38 +220,29 @@ class CrossSourceHybridRetriever:
         raw_candidates.extend(local_cards)
         raw_candidates.extend(online_cards)
 
-        print(f"📦 [CrossSourceHybrid] 多路召回原始候选总数: {len(raw_candidates)} 项 (本地切片: {len(local_cards)} 个, 线上文献候选: {len(online_cards)} 篇)")
+        print(f"📦 [CrossSourceHybrid] 多路召回原始候选总数: {len(raw_candidates)} 项 (本地符合时间切片: {len(local_cards)} 个, 线上文献候选: {len(online_cards)} 篇)")
 
         if not raw_candidates:
             return []
-
-        # Mixed candidates need the same metric; reuse configured models without
-        # loading a separate reranker or adding an online relevance threshold.
-        if online_cards:
-            scored = score_evidence(query, [card.to_dict() for card in raw_candidates], self.rag_engine)
-            for card, result in zip(raw_candidates, scored):
-                card.score = result["score"]
-                card.score_method = result["score_method"]
 
         # 2. 执行跨源多维去重与节点属性融合 (保留同文献不同页码的互补切片)
         deduped_cards = self._deduplicate_and_merge(raw_candidates, max_chunks_per_doc=max_chunks_per_doc)
         print(f"✨ [CrossSourceHybrid] 跨源去重与融合后唯一候选数: {len(deduped_cards)} 个 (消除冗余 {len(raw_candidates) - len(deduped_cards)} 个)")
 
-        # 来源与重复次数不代表内容相关性，按实际评分排序。
-        deduped_cards.sort(key=lambda c: c.score, reverse=True)
+        # 3. 全局重排 (基于分数与多源权重)
+        deduped_cards.sort(key=lambda c: (c.is_local_indexed * 0.15 + (1 if c.github_url else 0) * 0.05 + c.score), reverse=True)
 
         return [c.to_dict() for c in deduped_cards[:top_k]]
 
     @staticmethod
     def _resolve_local_doc_year(doc_name: str, chunk_meta: Dict[str, Any]) -> Optional[int]:
         """解析本地文献的真实发表年份 (优先侧车元数据/文件名/arXiv号，拒绝盲目填充当前年份)"""
-        doc_name = str(doc_name or "")
         # 1. 切片自带年份
         if chunk_meta.get("year"):
             try:
                 return int(chunk_meta["year"])
-            except Exception as e:
-                raise ValueError("文献年份元数据无效") from e
+            except Exception:
+                pass
         # 2. 检查 uploads 目录下的下载论文侧车元数据
         try:
             from online_paper_search_agent import UPLOADS_DIR
@@ -220,8 +252,8 @@ class CrossSourceHybridRetriever:
                 meta_dict = json.loads(meta_path.read_text(encoding="utf-8"))
                 if meta_dict.get("year"):
                     return int(meta_dict["year"])
-        except Exception as e:
-            raise RuntimeError(f"文献年份侧车元数据读取失败: {e}") from e
+        except Exception:
+            pass
         # 3. 从文件名提取 arXiv 年份 (如 2403.xxxx -> 2024, 2501.xxxx -> 2025)
         m_arxiv = re.search(r'\b(2[0-9])(0[1-9]|1[0-2])\.[0-9]{4,5}\b', doc_name)
         if m_arxiv:
@@ -232,79 +264,124 @@ class CrossSourceHybridRetriever:
             return int(m_yr.group(1))
         return None
 
+    @classmethod
+    def filter_local_dates(cls, chunks, time_constraint):
+        bounds = retrieval_date_bounds(resolve_retrieval_time_constraint(time_constraint))
+        filtered = []
+        for raw in chunks:
+            item = dict(raw)
+            name = item.get("doc_name", "")
+            year = cls._resolve_local_doc_year(name, item)
+            published = cls._resolve_local_publication_date(name, item)
+            if published:
+                year = int(published[:4])
+            match = None
+            if bounds:
+                start, end = bounds
+                if published and not start <= published <= end:
+                    continue
+                if not published and year is not None and not int(start[:4]) <= year <= int(end[:4]):
+                    continue
+                match = ("within_range" if published or year is not None and
+                    start <= f"{year:04d}-01-01" and f"{year:04d}-12-31" <= end
+                    else "requires_date_verification")
+            filtered.append({**item, "year": year, "published_at": published, "temporal_match": match})
+        return filtered
+
     def _fetch_local_evidence(
         self,
         query: str,
         negative_keywords: Optional[List[str]],
+        time_constraint: Optional[Dict[str, Any]] = None,
         limit: int = 8,
         discipline_filter: Optional[str] = None,
     ) -> List[UnifiedEvidenceCard]:
-        """获取本地切片并转换为统一卡片，透传学科过滤参数，不按发表年份过滤。"""
+        """获取本地精准切片并转换为统一卡片 (基于真实年份严格执行时效过滤，支持同文献多页召回)"""
         if not self.rag_engine:
-            raise RuntimeError("本地检索引擎不可用")
+            return []
         try:
+            time_constraint = resolve_retrieval_time_constraint(time_constraint)
             candidate_k = max(25, limit * 3)
             chunks = self.rag_engine.search(
                 query,
                 top_k=limit,
                 candidate_k=candidate_k,
-                negative_keywords=negative_keywords,
                 discipline_filter=discipline_filter,
+                negative_keywords=negative_keywords,
             )
-            # Missing scores must be computed, never replaced with a fixed high value.
-            unscored = []
-            for chunk in chunks:
-                try:
-                    valid_score = math.isfinite(float(chunk.get("score")))
-                except (TypeError, ValueError):
-                    valid_score = False
-                if not valid_score:
-                    unscored.append(chunk)
-            if unscored:
-                scored = score_evidence(query, unscored, self.rag_engine)
-                replacements = {id(original): result for original, result in zip(unscored, scored)}
-                chunks = [replacements.get(id(chunk), chunk) for chunk in chunks]
             cards = []
-            for c in chunks:
-                original_name = str(c.get("doc_name") or "").strip()
-                doc_year = self._resolve_local_doc_year(original_name, c)
-                identity = c.get("doc_id") or c.get("chunk_id") or hashlib.sha256(
-                    str(c.get("text") or "").encode("utf-8")
-                ).hexdigest()[:16]
-                doc_name = original_name or f"未命名文献 [{identity}]"
+            for c in self.filter_local_dates(chunks, time_constraint):
+                doc_name = c.get("doc_name", "本地文献")
+                doc_year = c.get("year")
+                published_at = c.get("published_at")
+                temporal_match = c.get("temporal_match")
 
                 cards.append(UnifiedEvidenceCard(
                     doc_name=doc_name,
                     doc_type="local_pdf",
                     text=c.get("text", ""),
-                    score=float(c["score"]),
-                    score_method=c.get("score_method", ""),
+                    score=c.get("score", 0.8),
                     year=doc_year,
                     location_label=c.get("location_label", "本地切片"),
                     section=c.get("section", ""),
                     page_or_slide=c.get("page_or_slide"),
                     is_local_indexed=True,
+                    doi=c.get("doi"),
+                    arxiv_id=c.get("arxiv_id"),
+                    summary=c.get("summary", ""),
+                    published_at=published_at,
+                    temporal_match=temporal_match,
                 ))
             return cards
         except Exception as e:
-            raise RuntimeError(f"本地检索失败: {e}") from e
+            print(f"⚠️ [LocalEvidenceFetch Note]: {e}")
+            return []
+
+    @staticmethod
+    def _resolve_local_publication_date(doc_name: str, chunk_meta: Dict[str, Any]) -> Optional[str]:
+        """Use publication metadata only; ingestion/download timestamps are not publication dates."""
+        metadata = [chunk_meta]
+        try:
+            from online_paper_search_agent import UPLOADS_DIR
+            sidecar = UPLOADS_DIR / f"{Path(doc_name).stem}.json"
+            if sidecar.exists():
+                metadata.append(json.loads(sidecar.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            pass
+        for item in metadata:
+            for key in ("published_at", "publication_date", "published_date"):
+                try:
+                    return date.fromisoformat(str(item.get(key) or "")[:10]).isoformat()
+                except ValueError:
+                    continue
+        return None
 
     def _fetch_online_evidence(
         self,
         query: str,
         time_constraint: Optional[Dict[str, Any]] = None,
         english_query: Optional[str] = None,
+        include_github: bool = True,
+        include_web: bool = False,
+        include_datasets: bool = False,
     ) -> List[UnifiedEvidenceCard]:
         """获取线上多源资产 (arXiv, CrossRef, GitHub) 并转换为统一卡片"""
         if not self.paper_agent:
-            raise RuntimeError("在线检索引擎不可用")
+            return []
         try:
             bundle = self.paper_agent.search_multisource(
                 query,
-                include_github=True,
+                include_github=include_github,
+                include_web=include_web,
+                include_datasets=include_datasets,
                 time_constraint=time_constraint,
                 english_query=english_query,
             )
+            self.last_source_errors = dict(bundle.get("source_errors") or {})
+            self.last_source_counts = {
+                key: len(bundle.get(key) or []) for key in
+                ("arxiv_papers", "openalex_papers", "crossref_papers", "github_repos", "web_results", "datasets")
+            }
             cards = []
 
             # 1. arXiv
@@ -313,9 +390,10 @@ class CrossSourceHybridRetriever:
                     doc_name=p.get("title", ""),
                     doc_type="arxiv",
                     text=f"【arXiv 论文题目】: {p.get('title')}\n【主要作者】: {', '.join(p.get('authors', [])[:3])}\n【发表年份】: {p.get('year')}\n【核心摘要】: {p.get('summary')}\n【PDF链接】: {p.get('pdf_url')}",
+                    score=0.92,
                     year=p.get("year"),
                     location_label=f"arXiv:{p.get('paper_id')} ({p.get('year')}年)",
-                    section="Preprint Abstract",
+                    section="预印本摘要",
                     arxiv_id=p.get("paper_id"),
                     pdf_url=p.get("pdf_url"),
                     authors=p.get("authors", []),
@@ -324,51 +402,93 @@ class CrossSourceHybridRetriever:
 
             # 2. OpenAlex
             for op in bundle.get("openalex_papers", []):
+                op_level = op.get("evidence_level")
+                op_score = 0.91 if op_level == "abstract" else 0.68
                 cards.append(UnifiedEvidenceCard(
                     doc_name=op.get("title", ""),
                     doc_type="openalex",
                     text=f"【OpenAlex 期刊/会议】: {op.get('title')}\n【主要作者】: {', '.join(op.get('authors', [])[:3])}\n【发表年份】: {op.get('year')}\n【出版/收录】: {op.get('summary')}\n【URL】: {op.get('url')}",
+                    score=op_score,
                     year=op.get("year"),
                     location_label=f"OpenAlex ({op.get('year')}年)",
-                    section="OpenAlex Index",
+                    section="OpenAlex 学术索引",
                     doi=op.get("doi"),
                     pdf_url=op.get("url"),
                     authors=op.get("authors", []),
                     summary=op.get("summary", ""),
+                    evidence_level=op_level,
+                    content_scope=op.get("content_scope"),
+                    published_at=op.get("published_at"),
                 ))
 
             # 3. CrossRef
             for c in bundle.get("crossref_papers", []):
+                c_title = (c.get("title") or "").strip()
+                if c_title.startswith("语料："):
+                    continue
+                c_level = c.get("evidence_level")
+                c_score = 0.90 if c_level == "abstract" else 0.64
                 cards.append(UnifiedEvidenceCard(
-                    doc_name=c.get("title", ""),
+                    doc_name=c_title,
                     doc_type="crossref",
-                    text=f"【已发表论文】: {c.get('title')}\n【作者团队】: {', '.join(c.get('authors', [])[:3])}\n【出版信息】: {c.get('summary')}\n【DOI链接】: {c.get('url')}",
+                    text=f"【CrossRef 收录】: {c_title}\n【作者团队】: {', '.join(c.get('authors', [])[:3])}\n【来源信息】: {c.get('summary')}\n【DOI链接】: {c.get('url')}",
+                    score=c_score,
                     year=c.get("year"),
                     location_label=f"DOI 出版文献 ({c.get('year')}年)",
-                    section="Published DOI",
+                    section="DOI 已出版文献",
                     doi=c.get("doi"),
                     pdf_url=c.get("url"),
-                    authors=c.get("authors", []),
+                    authors=op_authors if (op_authors := c.get("authors", [])) else [],
                     summary=c.get("summary", ""),
+                    evidence_level=c_level,
+                    content_scope=c.get("content_scope"),
+                    published_at=c.get("published_at"),
                 ))
 
             # 4. GitHub
             for g in bundle.get("github_repos", []):
                 cards.append(UnifiedEvidenceCard(
-                    doc_name=f"GitHub Repo: {g.get('id')}",
+                    doc_name=f"GitHub 开源仓库: {g.get('id')}",
                     doc_type="github",
                     text=f"【开源仓库】: {g.get('title')}\n【技术简介】: {g.get('summary')}\n【项目链接】: {g.get('url')}",
-                    year=g.get("year"),
+                    score=0.88,
+                    year=None,
                     location_label=f"GitHub ⭐{g.get('stars', 0)}",
-                    section="Open Source Code",
+                    section="开源代码仓库",
                     github_url=g.get("url"),
                     stars=g.get("stars", 0),
                     summary=g.get("summary", ""),
+                    evidence_level=g.get("evidence_level", "repository_metadata"),
+                    content_scope=g.get("content_scope", "仓库元数据与说明；未执行源码验证"),
+                    version_ref=g.get("version_ref"),
+                    version_ref_type=g.get("version_ref_type"),
+                ))
+
+            for result in bundle.get("web_results", []):
+                cards.append(UnifiedEvidenceCard(
+                    doc_name=result.get("title", "网页检索结果"), doc_type="web",
+                    text=result.get("summary", ""), score=0.72,
+                    location_label="网页检索摘要" if result.get("evidence_level") == "search_snippet" else "公开网页正文",
+                    section="网页检索结果",
+                    pdf_url=result.get("url"), summary=result.get("summary", ""),
+                    evidence_level=result.get("evidence_level", "search_snippet"),
+                    content_scope=result.get("content_scope", "网页检索摘要片段"),
+                ))
+            for result in bundle.get("datasets", []):
+                cards.append(UnifiedEvidenceCard(
+                    doc_name=result.get("title", "公开数据集"), doc_type="dataset",
+                    text=result.get("summary", ""), score=0.78,
+                    location_label="Hugging Face 数据集元数据",
+                    section="数据集元数据", pdf_url=result.get("url"),
+                    summary=result.get("summary", ""),
+                    evidence_level=result.get("evidence_level", "dataset_repository_metadata"),
+                    content_scope="公开数据集仓库元数据（未下载原始数据文件）",
                 ))
 
             return cards
         except Exception as e:
-            raise RuntimeError(f"在线检索失败: {e}") from e
+            print(f"⚠️ [OnlineEvidenceFetch Note]: {e}")
+            return []
 
     def _deduplicate_and_merge(
         self,
@@ -448,37 +568,28 @@ class CrossSourceHybridRetriever:
         return merged_cards
 
     def _merge_two_cards(self, base: UnifiedEvidenceCard, incoming: UnifiedEvidenceCard) -> None:
-        """属性合并：将两个同源切片/线上条目融合为一体"""
+        """Keep all inspected passages while merging source identity and provenance."""
+        from workflow_contracts import merge_text
+        was_local = base.is_local_indexed
         base.doc_type = "fused_academic"
-        base.sources_merged.extend(incoming.sources_merged)
-
-        # 补充缺失字段
-        if not base.arxiv_id and incoming.arxiv_id:
-            base.arxiv_id = incoming.arxiv_id
-        if not base.doi and incoming.doi:
-            base.doi = incoming.doi
-        if not base.pdf_url and incoming.pdf_url:
-            base.pdf_url = incoming.pdf_url
-        if not base.github_url and incoming.github_url:
-            base.github_url = incoming.github_url
-            base.stars = incoming.stars
-        if not base.is_local_indexed and incoming.is_local_indexed:
-            base.is_local_indexed = True
-
-        # 合并正文论述
-        if incoming.is_local_indexed and not base.is_local_indexed:
-            # 本地精读内容优先作为正文展示
-            base.text = f"{incoming.text}\n\n[多源在线互证] {base.text}"
-            base.location_label = f"{incoming.location_label} (已对齐线上 DOI/arXiv)"
-        elif not incoming.is_local_indexed and base.is_local_indexed:
-            base.text = f"{base.text}\n\n[多源在线互证] {incoming.text}"
-            base.location_label = f"{base.location_label} (已对齐线上 DOI/arXiv)"
-        elif incoming.is_local_indexed and base.is_local_indexed:
-            # 双方都是同位置的本地切片，去重拼接
-            if incoming.text and incoming.text not in base.text:
-                base.text = f"{base.text}\n\n{incoming.text}"
-
-        # 重复来源只补全材料，不给相关性分数增加固定奖励。
-        if incoming.score > base.score:
-            base.score = incoming.score
-            base.score_method = incoming.score_method
+        base.sources_merged = list(dict.fromkeys([*base.sources_merged, *incoming.sources_merged]))
+        for field in ("arxiv_id", "doi", "pdf_url", "github_url", "stars", "authors", "year",
+                      "published_at", "temporal_match", "version_ref", "version_ref_type"):
+            if not getattr(base, field) and getattr(incoming, field):
+                setattr(base, field, getattr(incoming, field))
+        if incoming.is_local_indexed and not was_local:
+            base.text, _ = merge_text(incoming.text, base.text)
+            base.location_label = incoming.location_label
+            base.page_or_slide = incoming.page_or_slide
+        else:
+            base.text, _ = merge_text(base.text, incoming.text)
+        base.summary, _ = merge_text(base.summary, incoming.summary)
+        base.content_scope, _ = merge_text(base.content_scope, incoming.content_scope)
+        base.is_local_indexed = was_local or incoming.is_local_indexed
+        if base.is_local_indexed:
+            base.evidence_level = "local_snippet"
+        elif incoming.evidence_level == "abstract" or base.evidence_level == "abstract":
+            base.evidence_level = "abstract"
+        elif not base.evidence_level:
+            base.evidence_level = incoming.evidence_level
+        base.score = max(base.score, incoming.score) + 0.05
