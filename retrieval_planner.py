@@ -219,7 +219,9 @@ class RetrievalPlannerAgent:
 
     SYSTEM_PROMPT = """请围绕【主体是什么 -> 任务是什么 -> 要做什么】独立规划本轮任务的资料检索方案，不受分类器标签限制，所有说明字段（reasoning、issues、summary、note 等）统一使用中文。
 1. 忠实原话与共享任务：优先依据用户原话和 shared_task；若存在 evidence_gap（补证缺口），仅针对该具体缺口选择检索渠道与可复用记录，绝不替换原任务或重新发起宽泛普查。历史记录仅用于辅助理解上下文，不得覆盖当前请求；已被替代的旧记录（superseded_by）仅在用户明确要求历史对比时选用。
-2. 原话对齐核验：当 verify_task_against_original=true 时，将候选解析的【主体、任务动作、研究对象、期望产出、限定条件】与用户原话逐一比对，返回 task_alignment {status:matched|corrected|unresolved, issues:[具体偏差中文说明], corrected_fields:{仅包含修正后的字段}}。若为 corrected，本轮检索计划必须直接服务于修正后的真实任务；若为 unresolved，则不生成可执行检索计划。切勿凭空捏造前置条件。
+2. 原话对齐核验（极重要）：当 verify_task_against_original=true 时，检查 proposed_intent 是否符合用户原话的核心意图：
+   - 【默认判为 matched】：只要 proposed_intent 的学科方向、核心主体与用户原话一致（即使 proposed_intent 对宽泛课题合理拆解了细分子方向或补充了常规检索词），必须返回 task_alignment: {"status": "matched", "issues": [], "corrected_fields": {}}！切勿吹毛求疵将正常的子方向展开判为偏差。
+   - 【仅在严重跑偏时判为 corrected】：仅当 proposed_intent 完全认错学科主体、捏造了用户未要求的编程/证明前置条件、或遗漏了原话明确排除项时，才返回 status="corrected"。此时 corrected_fields 的 JSON 键名必须严格使用 proposed_intent 原有的英文属性名（仅限 domain, intent, subject_entity, target_topic, sub_topic, search_query, online_search_query, negative_constraints, task_segments，严禁自造“主体”“任务动作”等中文键名）。
 3. 渠道能力按需选择：local_search（检索本地文档/知识库）、online_search（外部学术检索）、include_github（代码仓库与工程实现）、include_web（机构官网/技术规范/通用网页）、include_datasets（数据集与基准）。通过 selected_shared_item_ids 独立勾选可直接复用的共享池记录；当本地与在线检索互补时可开启 parallel_search。
 4. 区分基础理论与文献查证：对专业学术文献调研、前沿方法对比或指定资料分析任务，设 requires_evidence=true；对基础教科书概念导引、经典定理推导或常规机理讲解（未要求外部最新论文或特定文档），优先使用本地知识库（若 local_material_available=true），避免不必要的多路外部在线检索。对日常寒暄、纯文本改写或完全基于给定前提的推演，设 requires_evidence=false。
 5. 优先复用与遵循约束：优先复用已覆盖当前任务的共享池证据，缺省时优先查本地资料，当本地/共享池范围或时效不足及用户明确要求时查在线渠道。严格遵守用户指定的来源、文档、时间或排除限制；若已查看证据足以支撑任务，不再重复检索。
@@ -321,6 +323,12 @@ class RetrievalPlannerAgent:
         plan = RetrievalPlan(**data)
         if verify_task:
             alignment = plan.task_alignment
+            if alignment is not None and isinstance(alignment.corrected_fields, dict) and alignment.corrected_fields:
+                zh_rubric_keys = {"主体", "任务", "任务动作", "要做什么", "研究对象", "期望产出", "限定条件", "要验证什么", "实证分析", "得到什么结论"}
+                if alignment.status == "corrected" and set(alignment.corrected_fields).issubset(zh_rubric_keys):
+                    # 模型将中文核对维度名称当成了 corrected_fields 键名，说明并非实质 schema 字段冲突，自动归一为 matched
+                    alignment = TaskAlignment(status="matched", issues=[], corrected_fields={})
+                    plan.task_alignment = alignment
             if alignment is None or alignment.status == "unresolved" or (
                     alignment.status == "corrected" and not alignment.corrected_fields) or (
                     alignment.status == "matched" and alignment.corrected_fields):
