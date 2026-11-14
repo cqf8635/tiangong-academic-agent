@@ -1314,17 +1314,34 @@ def _build_deterministic_evidence_slate(
         }
         valid_papers.append(item)
 
-    # 处理本地检索切片
+    # 处理主证据列表（保留原始 [i] 编号与证据深度，对齐 Consensus / Elicit 结构化核验）
     local_evidence = []
-    for ev in (evidence or []):
+    depth_counts = {"full": 0, "abstract": 0, "metadata": 0}
+    for idx, ev in enumerate(evidence or [], 1):
         if ev.get("excluded_as_irrelevant"):
             continue
         doc = ev.get("doc_name") or ev.get("title") or "资料切片"
         loc = ev.get("location_label") or ""
-        txt = (ev.get("text") or "").strip()
+        txt = (ev.get("text") or ev.get("summary") or "").strip()
+        level_raw = str(ev.get("evidence_level") or (ev.get("provenance") or {}).get("content_scope") or "").lower()
+        src_type = str(ev.get("doc_type") or ev.get("source") or "").lower()
+        year = ev.get("year") or (ev.get("provenance") or {}).get("year") or "-"
+        if any(k in level_raw for k in ("full", "local", "chunk", "transcript", "text")) or src_type in ("local", "pdf", "meeting_transcript"):
+            depth_label = "全文/本地原文"
+            depth_counts["full"] += 1
+        elif "abstract" in level_raw or (txt and "metadata" not in level_raw):
+            depth_label = "仅摘要"
+            depth_counts["abstract"] += 1
+        else:
+            depth_label = "题录/元数据"
+            depth_counts["metadata"] += 1
         local_evidence.append({
+            "idx": idx,
             "doc": doc,
             "loc": loc,
+            "year": year,
+            "src": src_type or "evidence",
+            "depth": depth_label,
             "text": txt[:300],
         })
 
@@ -1333,7 +1350,13 @@ def _build_deterministic_evidence_slate(
         lines.append(f"- 剔除噪声：{noise_titles} 已被覆盖检查或审核明确判为与本轮任务无关，不作为回答依据；")
 
     total_valid = len(valid_papers) + len(local_evidence)
-    lines.append(f"- 待核验资料记录：{total_valid} 项（候选与证据可能重叠）。本备忘录仅作导航，记录数量不代表任务覆盖或事实已核实。\n")
+    lines.append(f"- 待核验资料记录：{total_valid} 项（候选与证据可能重叠）。本备忘录仅作导航，记录数量不代表任务覆盖或事实已核实。")
+    if local_evidence:
+        lines.append(
+            f"- 证据深度分布（Consensus 核验标尺）：全文/本地原文 {depth_counts['full']} 项"
+            f" | 仅摘要 {depth_counts['abstract']} 项 | 题录/元数据 {depth_counts['metadata']} 项"
+        )
+    lines.append("")
 
     lines.append("#### 2. 📚 资料层级分类 (Taxonomy & Categorization)")
     arxiv_list = [p for p in valid_papers if p["src"] == "arxiv"]
@@ -1345,7 +1368,7 @@ def _build_deterministic_evidence_slate(
     if journal_list:
         lines.append("- 【正式期刊/国际学术文献】：" + "；".join([f"{p['authors']}《{p['title']}》({p['year']})" for p in journal_list[:3]]))
     if local_evidence:
-        lines.append("- 【精读专著/教材讲义/知识库切片】：" + "；".join([f"《{ev['doc']}》{ev['loc']}" for ev in local_evidence[:3]]))
+        lines.append("- 【主证据列表（含编号与深度）】：" + "；".join([f"[{ev['idx']}]《{ev['doc']}》({ev['depth']})" for ev in local_evidence[:5]]))
     if code_list:
         lines.append("- 【代码仓库元数据（尚未核验实现与基准）】：" + "；".join([f"《{p['title']}》" for p in code_list[:2]]))
     if not (arxiv_list or journal_list or local_evidence or code_list):
@@ -1353,13 +1376,18 @@ def _build_deterministic_evidence_slate(
     lines.append("")
 
     lines.append("#### 3. 🔬 核心机理、方程与边界条件骨架 (Core Mechanisms & Boundary Slate)")
+    if local_evidence:
+        lines.append("| 编号 | 资料/文献 | 年份 | 来源与证据深度 | 核心内容与可核验依据 |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- |")
+        for ev in local_evidence:
+            safe_doc = ev["doc"].replace("|", "｜").replace("\n", " ")[:60]
+            safe_txt = (ev["text"][:160].replace("|", "｜").replace("\n", " ") or "仅有标识，暂无正文/摘要")
+            loc_suffix = f" ({ev['loc']})" if ev["loc"] else ""
+            lines.append(f"| [{ev['idx']}] | 《{safe_doc}》{loc_suffix} | {ev['year']} | {ev['src']} · {ev['depth']} | {safe_txt} |")
     for p in valid_papers[:4]:
         lines.append(f"- **《{p['title']}》** ({p['year']}):")
         if p['summary']:
             lines.append(f"  * 核心机制与发现: {p['summary'][:180]}...")
-    for ev in local_evidence[:3]:
-        lines.append(f"- **《{ev['doc']}》** ({ev['loc']}):")
-        lines.append(f"  * 支撑依据: {ev['text'][:180]}...")
 
     if not valid_papers and not local_evidence and final_ans:
         lines.append("- 主研初稿是生成内容，只能辅助定位待核查主张，不能作为独立验证。")
