@@ -2139,11 +2139,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function updateEvidencePanel(evidences) {
-    if (!evidences || evidences.length === 0) {
+    const visibleEvidences = (evidences || [])
+      .map((ev, i) => ({ ev, origIdx: i + 1 }))
+      .filter(({ ev }) => ev && !ev.excluded_as_irrelevant);
+    if (visibleEvidences.length === 0) {
       evidencePanelList.innerHTML = '<div class="empty-hint">🎋 当前轮次研讨依据先验理论与第一性原理推演，暂无引用的外部切片。<br><span style="font-size:0.75rem;color:var(--color-ink-muted);">若研讨结合专著教材或文献考据，将在此处实时联动段落快照与精确页码。</span></div>';
       return;
     }
-    evidencePanelList.innerHTML = evidences.map((ev, i) => {
+    evidencePanelList.innerHTML = visibleEvidences.map(({ ev, origIdx }) => {
       let imgHtml = '';
       if (ev.image_url) {
         imgHtml = `
@@ -2170,7 +2173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="evidence-card">
           <div class="evidence-card-header">
-            [${i + 1}] 《${formatMathInText(docName)}》 ${escapeHtml(locLabel)}${scoreText}
+            [${origIdx}] 《${formatMathInText(docName)}》 ${escapeHtml(locLabel)}${scoreText}
           </div>
           <div class="evidence-card-body">${formatMathInText(ev.text || ev.summary || '')}</div>
           ${linkHtml}
