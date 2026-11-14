@@ -2,7 +2,12 @@ import io
 import json
 from email.message import Message
 
-from online_resource_adapters import fetch_web_page, search_datasets, search_web
+from online_resource_adapters import (
+    fetch_arxiv_html_sections,
+    fetch_web_page,
+    search_datasets,
+    search_web,
+)
 
 
 class _Response(io.BytesIO):
@@ -58,3 +63,136 @@ def test_public_page_fetch_marks_inspected_text_and_rejects_local_addresses(monk
         pass
     else:
         raise AssertionError("local/private URLs must not be fetched")
+
+
+def test_search_web_prefers_tavily_and_tags_web_commentary(monkeypatch):
+    monkeypatch.setenv("TAVILY_API_KEY", "tvly-test-key")
+    monkeypatch.delenv("SEARXNG_URL", raising=False)
+    seen_urls = []
+
+    def fake_urlopen(request, timeout=10):
+        seen_urls.append(request.full_url)
+        if "api.tavily.com/search" in request.full_url:
+            body = json.dumps({
+                "results": [
+                    {
+                        "title": "FlashAttention architecture intuition",
+                        "url": "https://example.com/flashattention-blog",
+                        "content": "Explains IO-aware tiling and SRAM usage.",
+                    }
+                ]
+            }).encode("utf-8")
+            return _Response(body)
+        raise RuntimeError("fallback should not fail test")
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", fake_urlopen)
+    results = search_web("FlashAttention", limit=1)
+    assert seen_urls == ["https://api.tavily.com/search"]
+    assert len(results) == 1
+    assert results[0]["provider"] == "tavily"
+    assert results[0]["evidence_level"] == "web_commentary"
+
+
+def test_search_web_uses_searxng_when_configured(monkeypatch):
+    monkeypatch.delenv("TAVILY_API_KEY", raising=False)
+    monkeypatch.setenv("SEARXNG_URL", "https://searx.example.org")
+
+    def fake_urlopen(request, timeout=10):
+        if "searx.example.org/search" in request.full_url:
+            return _Response(json.dumps({
+                "results": [
+                    {
+                        "title": "Mamba engineering comparison",
+                        "url": "https://example.org/mamba-notes",
+                        "content": "Compares selective SSM vs Transformer KV cache.",
+                    }
+                ]
+            }).encode("utf-8"))
+        raise RuntimeError("unused")
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", fake_urlopen)
+    results = search_web("Mamba", limit=1)
+    assert len(results) == 1
+    assert results[0]["provider"] == "searxng"
+    assert results[0]["evidence_level"] == "web_commentary"
+
+
+def test_search_web_huggingface_papers_and_isolates_ddg_failure(monkeypatch):
+    monkeypatch.delenv("TAVILY_API_KEY", raising=False)
+    monkeypatch.delenv("SEARXNG_URL", raising=False)
+
+    def fake_urlopen(request, timeout=10):
+        if "huggingface.co/api/papers/search" in request.full_url:
+            payload = [
+                {
+                    "title": "Longformer: The Long-Document Transformer",
+                    "numComments": 5,
+                    "paper": {
+                        "id": "2004.05150",
+                        "upvotes": 42,
+                        "ai_summary": "Combines local windowed attention with global attention.",
+                        "ai_keywords": ["sparse attention", "long context"],
+                    },
+                }
+            ]
+            return _Response(json.dumps(payload).encode("utf-8"))
+        if "html.duckduckgo.com" in request.full_url:
+            raise TimeoutError("DuckDuckGo blocked")
+        raise AssertionError(f"Unexpected URL: {request.full_url}")
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", fake_urlopen)
+    results = search_web("Longformer", limit=3)
+    assert len(results) == 1
+    assert results[0]["provider"] == "huggingface_papers"
+    assert results[0]["evidence_level"] == "web_commentary"
+    assert results[0]["arxiv_id"] == "2004.05150"
+    assert "upvotes=42" in results[0]["summary"]
+    assert "comments=5" in results[0]["summary"]
+
+
+def test_fetch_arxiv_html_sections_extracts_method_and_experiment_only(monkeypatch):
+    class Response(_Response):
+        headers = Message()
+
+    Response.headers.add_header("Content-Type", "text/html; charset=utf-8")
+    html = (
+        "<html><body>"
+        "<h2>Abstract</h2><p>Abstract text that should be skipped because it is already available elsewhere.</p>"
+        "<h2>2 Methodology</h2><p>" + ("We propose a sparse routing mechanism with O(N) complexity. " * 4) + "</p>"
+        "<h2>4 Experiments</h2><p>" + ("On Wikitext-103 our model achieves 18.2 perplexity across benchmarks. " * 4) + "</p>"
+        "<h2>References</h2><p>" + ("Author et al. 2023. " * 10) + "</p>"
+        "</body></html>"
+    ).encode("utf-8")
+    monkeypatch.setattr("online_resource_adapters.urlopen", lambda *args, **kwargs: Response(html))
+    res = fetch_arxiv_html_sections("arXiv:2401.12345v1")
+    assert res["arxiv_id"] == "2401.12345v1"
+    assert res["evidence_level"] == "full_text_excerpt"
+    assert "2 Methodology" in res["sections"] and "4 Experiments" in res["sections"]
+    assert "sparse routing mechanism" in res["text"]
+    assert "18.2 perplexity" in res["text"]
+    assert "Abstract text" not in res["text"]
+    assert "Author et al." not in res["text"]
+
+
+def test_fetch_arxiv_html_sections_rejects_invalid_id():
+    assert fetch_arxiv_html_sections("http://127.0.0.1/private") == {}
+    assert fetch_arxiv_html_sections("not-an-arxiv-id") == {}
+
+
+def test_enrich_top_arxiv_html_upgrades_top_two_cards_only(monkeypatch):
+    from cross_source_hybrid_retriever import CrossSourceHybridRetriever, UnifiedEvidenceCard
+
+    retriever = CrossSourceHybridRetriever.__new__(CrossSourceHybridRetriever)
+    cards = [
+        UnifiedEvidenceCard(doc_name="Paper A", doc_type="arxiv", text="abs A", score=0.95, arxiv_id="2401.00001", evidence_level="abstract"),
+        UnifiedEvidenceCard(doc_name="Paper B", doc_type="arxiv", text="abs B", score=0.88, arxiv_id="2401.00002", evidence_level="abstract"),
+        UnifiedEvidenceCard(doc_name="Paper C", doc_type="arxiv", text="abs C", score=0.70, arxiv_id="2401.00003", evidence_level="abstract"),
+    ]
+    monkeypatch.setattr(
+        "online_resource_adapters.fetch_arxiv_html_sections",
+        lambda aid: {"text": f"Method details for {aid}", "evidence_level": "full_text_excerpt", "content_scope": "arXiv HTML"},
+    )
+    retriever._enrich_top_arxiv_html(cards, max_papers=2)
+    assert cards[0].evidence_level == "full_text_excerpt" and "Method details for 2401.00001" in cards[0].text
+    assert cards[1].evidence_level == "full_text_excerpt" and "Method details for 2401.00002" in cards[1].text
+    assert cards[2].evidence_level == "abstract" and "Method details" not in cards[2].text

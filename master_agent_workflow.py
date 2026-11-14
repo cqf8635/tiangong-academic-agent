@@ -1316,7 +1316,7 @@ def _build_deterministic_evidence_slate(
 
     # 处理主证据列表（保留原始 [i] 编号与证据深度，对齐 Consensus / Elicit 结构化核验）
     local_evidence = []
-    depth_counts = {"full": 0, "abstract": 0, "metadata": 0}
+    depth_counts = {"full": 0, "abstract": 0, "commentary": 0, "metadata": 0}
     for idx, ev in enumerate(evidence or [], 1):
         if ev.get("excluded_as_irrelevant"):
             continue
@@ -1326,7 +1326,10 @@ def _build_deterministic_evidence_slate(
         level_raw = str(ev.get("evidence_level") or (ev.get("provenance") or {}).get("content_scope") or "").lower()
         src_type = str(ev.get("doc_type") or ev.get("source") or "").lower()
         year = ev.get("year") or (ev.get("provenance") or {}).get("year") or "-"
-        if any(k in level_raw for k in ("full", "local", "chunk", "transcript", "text")) or src_type in ("local", "pdf", "meeting_transcript"):
+        if any(k in level_raw for k in ("web_commentary", "search_snippet")):
+            depth_label = "网页/社区解读"
+            depth_counts["commentary"] += 1
+        elif any(k in level_raw for k in ("full", "local", "chunk", "transcript", "text")) or src_type in ("local", "pdf", "meeting_transcript"):
             depth_label = "全文/本地原文"
             depth_counts["full"] += 1
         elif "abstract" in level_raw or (txt and "metadata" not in level_raw):
@@ -1352,9 +1355,10 @@ def _build_deterministic_evidence_slate(
     total_valid = len(valid_papers) + len(local_evidence)
     lines.append(f"- 待核验资料记录：{total_valid} 项（候选与证据可能重叠）。本备忘录仅作导航，记录数量不代表任务覆盖或事实已核实。")
     if local_evidence:
+        commentary_part = f" | 网页/社区解读 {depth_counts['commentary']} 项" if depth_counts["commentary"] else ""
         lines.append(
             f"- 证据深度分布（Consensus 核验标尺）：全文/本地原文 {depth_counts['full']} 项"
-            f" | 仅摘要 {depth_counts['abstract']} 项 | 题录/元数据 {depth_counts['metadata']} 项"
+            f" | 仅摘要 {depth_counts['abstract']} 项{commentary_part} | 题录/元数据 {depth_counts['metadata']} 项"
         )
     lines.append("")
 
@@ -3116,7 +3120,10 @@ def run_end_to_end_test():
         }
 
         start_t = time.time()
-        final_state = app.invoke(initial_state, config={"recursion_limit": 100})
+        final_state = app.invoke(
+            initial_state,
+            config={"recursion_limit": 100, "configurable": {"thread_id": f"e2e_test_{hash(q) & 0xffff}"}},
+        )
         elapsed = time.time() - start_t
 
         print(f"\n🤖 【最终回复】 (耗时: {elapsed:.2f}s | 状态: {final_state['status']}):")
@@ -3136,7 +3143,10 @@ if __name__ == "__main__":
 
     if args.query:
         app = build_master_workflow()
-        res = app.invoke({"user_query": args.query, "intent_decision": None, "retrieval_plan": None, "retrieval_queries": [], "retrieval_probes": [], "retrieved_evidence": [], "final_answer": "", "target_agent": "", "tts_audio_file": None, "status": "init"}, config={"recursion_limit": 100})
+        res = app.invoke(
+            {"user_query": args.query, "intent_decision": None, "retrieval_plan": None, "retrieval_queries": [], "retrieval_probes": [], "retrieved_evidence": [], "final_answer": "", "target_agent": "", "tts_audio_file": None, "status": "init"},
+            config={"recursion_limit": 100, "configurable": {"thread_id": "cli_query"}},
+        )
         print("\n" + res["final_answer"])
     else:
         run_end_to_end_test()

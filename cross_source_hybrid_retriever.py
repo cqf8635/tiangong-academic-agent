@@ -12,6 +12,7 @@ from __future__ import annotations
 from datetime import date, datetime
 import difflib
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -231,7 +232,49 @@ class CrossSourceHybridRetriever:
 
         # 3. 全局重排：BGE-M3 MMR 横向去冗 + 纵向时间演进脉络排序
         selected_cards = self._mmr_and_evolution_rank(query, deduped_cards, top_k)
+        # 4. 按需临时抓取 Top 1~2 篇核心 arXiv 论文的 HTML 方法/实验节（不入本地库）
+        self._enrich_top_arxiv_html(selected_cards)
         return [c.to_dict() for c in selected_cards]
+
+    def _enrich_top_arxiv_html(self, cards: List[UnifiedEvidenceCard], max_papers: int = 2) -> None:
+        if os.getenv("ENABLE_ARXIV_HTML_ENRICHMENT", "true").lower() in ("0", "false", "no"):
+            return
+        try:
+            limit = max(0, min(int(os.getenv("ARXIV_HTML_ENRICH_LIMIT", str(max_papers))), 3))
+        except ValueError:
+            limit = max_papers
+        if limit <= 0:
+            return
+        targets = sorted(
+            [
+                c for c in cards
+                if c.doc_type == "arxiv"
+                and c.arxiv_id
+                and not c.is_local_indexed
+                and c.evidence_level == "abstract"
+            ],
+            key=lambda c: float(c.score),
+            reverse=True,
+        )[:limit]
+        if not targets:
+            return
+
+        from online_resource_adapters import fetch_arxiv_html_sections
+
+        with ThreadPoolExecutor(max_workers=len(targets)) as executor:
+            futures = {executor.submit(fetch_arxiv_html_sections, c.arxiv_id): c for c in targets}
+            for fut, card in futures.items():
+                try:
+                    enriched = fut.result(timeout=10)
+                except Exception:
+                    continue
+                if not enriched or not enriched.get("text"):
+                    continue
+                card.text = f"{card.text}\n\n【arXiv HTML 方法/实验节临时摘录】\n{enriched['text']}".strip()
+                card.evidence_level = enriched.get("evidence_level", "full_text_excerpt")
+                card.content_scope = enriched.get("content_scope", "arXiv HTML 临时抓取方法/实验节（未入本地库）")
+                if "[HTML" not in card.location_label:
+                    card.location_label = f"{card.location_label} [HTML 方法/实验节]"
 
     def _mmr_and_evolution_rank(
         self,
@@ -554,14 +597,25 @@ class CrossSourceHybridRetriever:
                 ))
 
             for result in bundle.get("web_results", []):
+                ev_level = result.get("evidence_level", "search_snippet")
+                if ev_level == "web_commentary":
+                    loc_label = result.get("location_label") or "网页/社区解读 (web_commentary)"
+                    sec_label = "网页/社区解读"
+                elif ev_level == "search_snippet":
+                    loc_label = "网页检索摘要"
+                    sec_label = "网页检索结果"
+                else:
+                    loc_label = "公开网页正文"
+                    sec_label = "网页检索结果"
                 cards.append(UnifiedEvidenceCard(
                     doc_name=result.get("title", "网页检索结果"), doc_type="web",
                     text=result.get("summary", ""), score=0.72,
-                    location_label="网页检索摘要" if result.get("evidence_level") == "search_snippet" else "公开网页正文",
-                    section="网页检索结果",
+                    location_label=loc_label,
+                    section=sec_label,
                     pdf_url=result.get("url"), summary=result.get("summary", ""),
-                    evidence_level=result.get("evidence_level", "search_snippet"),
+                    evidence_level=ev_level,
                     content_scope=result.get("content_scope", "网页检索摘要片段"),
+                    arxiv_id=result.get("arxiv_id"),
                 ))
             for result in bundle.get("datasets", []):
                 cards.append(UnifiedEvidenceCard(
