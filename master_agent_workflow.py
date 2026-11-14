@@ -1938,7 +1938,7 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
     rag_context_str = prompts.format_evidence_for_prompt(evidence_chunks)
     if rag_context_str:
         user_prompt = (
-            f"【本轮已检索资料（请将检索资料与学科公认基础理论有机结合，按 [证据N] 规范标注具体文献论断，无需逐条宣称未查看全文）】：\n{rag_context_str}\n\n"
+            f"【本轮已检索资料（请将检索资料与学科公认基础理论有机结合，按资料编号 [1]、[2] 规范标注具体文献论断，无需逐条宣称未查看全文）】：\n{rag_context_str}\n\n"
             + user_prompt
         )
     elif retrieval_plan.get("requires_evidence", True):
