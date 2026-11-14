@@ -340,8 +340,8 @@ def _format_single_arxiv_clause(phrase: str) -> str:
     words = [w for w in re.findall(r"[A-Za-z0-9][\w-]*", phrase) if w.lower() not in _QUERY_STOP_WORDS and not re.fullmatch(r"20\d{2}", w)]
     if not words:
         return f'all:"{phrase}"'
-    if len(words) <= 4:
-        return f'all:"{" ".join(words)}"'
+    if len(words) == 1:
+        return f"all:{words[0]}"
     core_terms = words[:6]
     return f"all:({' AND '.join(core_terms)})"
 

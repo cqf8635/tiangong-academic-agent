@@ -57,6 +57,19 @@ def calculate_title_similarity(title1: str, title2: str) -> float:
     return 0.6 * seq_sim + 0.4 * jaccard
 
 
+def _extract_arxiv_id_from_record(rec: Dict[str, Any]) -> Optional[str]:
+    for val in (rec.get("arxiv_id"), rec.get("doi"), rec.get("url"), rec.get("pdf_url")):
+        text = str(val or "").strip()
+        if not text:
+            continue
+        m = re.search(r"(?:arxiv\.org/(?:abs|pdf|html)/|10\.48550/arXiv\.|arXiv:)(\d{4}\.\d{4,5}(?:v\d+)?)", text, re.IGNORECASE)
+        if m:
+            return m.group(1)
+        if re.fullmatch(r"\d{4}\.\d{4,5}(?:v\d+)?", text):
+            return text
+    return None
+
+
 class UnifiedEvidenceCard:
     """多源融合后的黄金证据节点"""
 
@@ -248,10 +261,10 @@ class CrossSourceHybridRetriever:
         targets = sorted(
             [
                 c for c in cards
-                if c.doc_type == "arxiv"
+                if c.doc_type in ("arxiv", "openalex", "crossref", "web")
                 and c.arxiv_id
                 and not c.is_local_indexed
-                and c.evidence_level == "abstract"
+                and c.evidence_level in ("abstract", "web_commentary")
             ],
             key=lambda c: float(c.score),
             reverse=True,
@@ -291,8 +304,8 @@ class CrossSourceHybridRetriever:
             title_low = (c.doc_name or "").lower()
             is_survey = 1.0 if any(kw in title_low for kw in ("survey", "review", "overview", "综述", "进展")) else 0.0
             return (
-                0.55 * float(c.score)
-                + 0.45 * q_sim
+                0.40 * float(c.score)
+                + 0.60 * q_sim
                 + (0.15 if c.is_local_indexed else 0.0)
                 + (0.05 if c.github_url else 0.0)
                 + (0.06 * is_survey)
@@ -545,6 +558,7 @@ class CrossSourceHybridRetriever:
                     location_label=f"OpenAlex ({op.get('year')}年)",
                     section="OpenAlex 学术索引",
                     doi=op.get("doi"),
+                    arxiv_id=_extract_arxiv_id_from_record(op),
                     pdf_url=op.get("url"),
                     authors=op.get("authors", []),
                     summary=op.get("summary", ""),
@@ -569,6 +583,7 @@ class CrossSourceHybridRetriever:
                     location_label=f"DOI 出版文献 ({c.get('year')}年)",
                     section="DOI 已出版文献",
                     doi=c.get("doi"),
+                    arxiv_id=_extract_arxiv_id_from_record(c),
                     pdf_url=c.get("url"),
                     authors=op_authors if (op_authors := c.get("authors", [])) else [],
                     summary=c.get("summary", ""),
