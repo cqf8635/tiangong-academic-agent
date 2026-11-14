@@ -382,6 +382,9 @@ class CrossSourceHybridRetriever:
             )
             cards = []
             for c in self.filter_local_dates(chunks, time_constraint):
+                text = c.get("text", "")
+                if self._is_low_info_toc_snippet(text):
+                    continue
                 doc_name = c.get("doc_name", "本地文献")
                 doc_year = c.get("year")
                 published_at = c.get("published_at")
@@ -390,7 +393,7 @@ class CrossSourceHybridRetriever:
                 cards.append(UnifiedEvidenceCard(
                     doc_name=doc_name,
                     doc_type="local_pdf",
-                    text=c.get("text", ""),
+                    text=text,
                     score=c.get("score", 0.8),
                     year=doc_year,
                     location_label=c.get("location_label", "本地切片"),
@@ -407,6 +410,21 @@ class CrossSourceHybridRetriever:
         except Exception as e:
             print(f"⚠️ [LocalEvidenceFetch Note]: {e}")
             return []
+
+    @staticmethod
+    def _is_low_info_toc_snippet(text: str) -> bool:
+        """过滤纯目录/页码引导线切片（如 '11.2.3 多智能体系统的构建 . . . 268'），避免低信息密度索引页污染主证据。"""
+        raw = (text or "").strip()
+        if not raw:
+            return False
+        lines = [ln.strip() for ln in raw.splitlines() if ln.strip()]
+        if not lines:
+            return False
+        toc_pat = re.compile(r"(?:\.\s*){4,}\s*\d+\s*$|…{2,}\s*\d+\s*$")
+        non_toc = [ln for ln in lines if not toc_pat.search(ln)]
+        if not non_toc:
+            return True
+        return len(lines) - len(non_toc) >= 2 and sum(len(ln) for ln in non_toc) < 30
 
     @staticmethod
     def _resolve_local_publication_date(doc_name: str, chunk_meta: Dict[str, Any]) -> Optional[str]:

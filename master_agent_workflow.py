@@ -1477,7 +1477,7 @@ def _local_fallback_evidence(state, rag_engine=None, top_k=6, candidate_k=20):
     for query in state.get("retrieval_queries") or [decision.get("search_query") or state["user_query"]]:
         try:
             found = rag.search(query, top_k=top_k, candidate_k=candidate_k,
-                doc_filter=state.get("active_doc"), discipline_filter=decision.get("domain"),
+                doc_filter=state.get("active_doc"),
                 negative_keywords=decision.get("negative_constraints") or [])
             # Reuse the main retrieval's date interpretation; missing dates stay visible as uncertain.
             found = CrossSourceHybridRetriever.filter_local_dates(found, decision.get("time_constraint"))
