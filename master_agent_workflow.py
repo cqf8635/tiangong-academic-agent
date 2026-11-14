@@ -2223,19 +2223,39 @@ def dialectical_inquiry_node(state: MasterAgentState) -> Dict[str, Any]:
 
     print(f"🧐 [DialecticalInquiry] 审核 {target_agent} 的任务匹配、展开范围、理论依据与完整性...")
 
-    # 提取文献核心线索（优先采用整理归纳智能体清洗提炼的证据备忘录）
-    slate = state.get("synthesized_evidence_slate")
+    # 共享池与已检索证据作为唯一权威证据源：对候选资源做 ID/标题去重差集，不再重复拼接衍生 slate
     evidence_blocks = [prompts.format_evidence_for_prompt(evidence_list)] if evidence_list else []
     candidates = filter_irrelevant_candidates(state.get("recent_paper_candidates") or [], evidence_list)
-    if candidates:
-        evidence_blocks.append("候选资源记录（通常为摘要/元数据，不表示已查看全文、代码或数据）：\n" + "\n".join(
-            f"- {item.get('title')} | source={item.get('source')} | level={item.get('evidence_level', 'metadata/abstract unknown')} | url={item.get('url') or item.get('pdf_url') or ''} | {(item.get('summary') or '')[:350]}"
-            for item in candidates
+    seen_evidence_keys = set()
+    for ev in evidence_list:
+        if not isinstance(ev, dict):
+            continue
+        for k in ("arxiv_id", "paper_id", "doi", "url", "pdf_url"):
+            val = str(ev.get(k) or "").strip().casefold()
+            if val:
+                seen_evidence_keys.add(val)
+        title_val = re.sub(r"\s+", " ", str(ev.get("doc_name") or ev.get("title") or "")).strip().casefold()
+        if title_val:
+            seen_evidence_keys.add(title_val)
+    extra_candidates = []
+    for item in candidates:
+        if not isinstance(item, dict):
+            continue
+        item_keys = [
+            str(item.get(k) or "").strip().casefold()
+            for k in ("arxiv_id", "paper_id", "doi", "url", "pdf_url")
+            if item.get(k)
+        ]
+        item_title = re.sub(r"\s+", " ", str(item.get("title") or item.get("doc_name") or "")).strip().casefold()
+        if item_title:
+            item_keys.append(item_title)
+        if not any(k in seen_evidence_keys for k in item_keys):
+            extra_candidates.append(item)
+    if extra_candidates:
+        evidence_blocks.append("未入主证据列表的补充候选（仅作线索参考）：\n" + "\n".join(
+            f"- {item.get('title')} | source={item.get('source')} | level={item.get('evidence_level', 'metadata/abstract unknown')} | url={item.get('url') or item.get('pdf_url') or ''} | {(item.get('summary') or '')[:220]}"
+            for item in extra_candidates
         ))
-    if slate:
-        evidence_blocks.append(
-            "证据归纳摘要（由主研答案与检索素材整理而成，仅作导航，不能作为独立证据）：\n" + str(slate)[:2500]
-        )
     evidence_text = "\n\n".join(evidence_blocks) if evidence_blocks else "本轮没有可用的独立来源证据。"
 
     # This is an actual review gate: findings must be grounded in this request,

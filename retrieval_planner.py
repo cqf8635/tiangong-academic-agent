@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Literal
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-from config_utils import get_default_llm_model, get_llm_timeout
+from config_utils import get_default_llm_model, get_llm_timeout, resolve_retrieval_time_constraint
 from prompts import TASK_COVERAGE_GUIDANCE, EVIDENCE_GUIDANCE
 
 
@@ -223,8 +223,8 @@ class RetrievalPlannerAgent:
    - 【默认判为 matched】：只要 proposed_intent 的学科方向、核心主体与用户原话一致（即使 proposed_intent 对宽泛课题合理拆解了细分子方向或补充了常规检索词），必须返回 task_alignment: {"status": "matched", "issues": [], "corrected_fields": {}}！切勿吹毛求疵将正常的子方向展开判为偏差。
    - 【仅在严重跑偏时判为 corrected】：仅当 proposed_intent 完全认错学科主体、捏造了用户未要求的编程/证明前置条件、或遗漏了原话明确排除项时，才返回 status="corrected"。此时 corrected_fields 的 JSON 键名必须严格使用 proposed_intent 原有的英文属性名（仅限 domain, intent, subject_entity, target_topic, sub_topic, search_query, online_search_query, negative_constraints, task_segments，严禁自造“主体”“任务动作”等中文键名）。
 3. 渠道能力按需选择：local_search（检索本地文档/知识库）、online_search（外部学术检索）、include_github（代码仓库与工程实现）、include_web（机构官网/技术规范/通用网页）、include_datasets（数据集与基准）。通过 selected_shared_item_ids 独立勾选可直接复用的共享池记录；当本地与在线检索互补时可开启 parallel_search。
-4. 区分基础理论与文献查证：对专业学术文献调研、前沿方法对比或指定资料分析任务，设 requires_evidence=true；对基础教科书概念导引、经典定理推导或常规机理讲解（未要求外部最新论文或特定文档），优先使用本地知识库（若 local_material_available=true），避免不必要的多路外部在线检索。对日常寒暄、纯文本改写或完全基于给定前提的推演，设 requires_evidence=false。
-5. 优先复用与遵循约束：优先复用已覆盖当前任务的共享池证据，缺省时优先查本地资料，当本地/共享池范围或时效不足及用户明确要求时查在线渠道。严格遵守用户指定的来源、文档、时间或排除限制；若已查看证据足以支撑任务，不再重复检索。
+4. 专业任务全面检索原则：凡属学术研究、领域探讨、理论推导、方法剖析、方案对比或实证分析等专业任务，一律设 requires_evidence=true、is_resolved=true。只要用户未明确限制“仅使用本地文档”且共享池现有证据尚未完全覆盖当前问题，均应开启 online_search=true 检索外部学术文献（不得仅限含“最新/近期”字眼才检索；若 local_material_available=true，可同时开启 local_search=true 与 parallel_search=true 实现本地与在线互补检索，切勿因 local_material_available=true 而关闭 online_search）。仅对纯日常寒暄、纯文本改写或完全基于用户给定前提的推演，设 requires_evidence=false。
+5. 优先复用与遵循约束：优先勾选可服务于当前任务的共享池证据（selected_shared_item_ids），当共享池证据不足以完整支撑本轮验证命题与实证分析时，主动通过在线与本地渠道检索补充。严格遵守用户指定的来源、文档、时间或排除限制；若已查看证据已充分覆盖任务，不再重复检索。
 6. 精简检索词（极重要）：合并同义子任务视角，仅生成 1～2 条精炼互补的可执行查询（绝不把同一主题拆成 5～6 条冗余查询）。query 使用中文核心学术词；english_query 仅供底层国际论文 API（arXiv/OpenAlex）检索使用，必须是 2～5 个词的精炼英文学术短语（严禁包含 site: 语法、布尔 OR 长链、自然语言时间状语或超过 6 个词的英文长句）。绝不使用未解析的标题/DOI 占位符。
 7. 严格返回 JSON：requires_evidence, local_search, online_search, include_github, include_web, include_datasets, parallel_search, selected_shared_item_ids, queries [{query,english_query}], reasoning（中文）, is_resolved，以及按需返回 task_alignment。
 """ + TASK_COVERAGE_GUIDANCE + "\n" + EVIDENCE_GUIDANCE
@@ -286,7 +286,7 @@ class RetrievalPlannerAgent:
             "task_segments": intent.get("task_segments", []),
             "query_views": build_retrieval_probes(user_query, intent),
             "constraints": intent.get("negative_constraints", []),
-            "time_requirement": intent.get("time_constraint"),
+            "time_requirement": resolve_retrieval_time_constraint(intent.get("time_constraint")),
             "time_requirement_note": intent.get("time_constraint_note"),
             "active_subject": (state_context or {}).get("active_subject"),
             "active_doc": (state_context or {}).get("active_doc"),
@@ -325,10 +325,11 @@ class RetrievalPlannerAgent:
             alignment = plan.task_alignment
             if alignment is not None and isinstance(alignment.corrected_fields, dict) and alignment.corrected_fields:
                 zh_rubric_keys = {"主体", "任务", "任务动作", "要做什么", "研究对象", "期望产出", "限定条件", "要验证什么", "实证分析", "得到什么结论"}
-                if alignment.status == "corrected" and set(alignment.corrected_fields).issubset(zh_rubric_keys):
+                if alignment.status in {"corrected", "matched"} and set(alignment.corrected_fields).issubset(zh_rubric_keys):
                     # 模型将中文核对维度名称当成了 corrected_fields 键名，说明并非实质 schema 字段冲突，自动归一为 matched
                     alignment = TaskAlignment(status="matched", issues=[], corrected_fields={})
                     plan.task_alignment = alignment
+                    plan.is_resolved = True
             if alignment is None or alignment.status == "unresolved" or (
                     alignment.status == "corrected" and not alignment.corrected_fields) or (
                     alignment.status == "matched" and alignment.corrected_fields):

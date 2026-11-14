@@ -96,6 +96,7 @@ subject_action 只控制主体存储：INIT 首次、INHERIT 延续、APPEND 加
 - 是否联网与检索时间范围分开判断。用户未指定检索时间时留 null，由程序统一计算最近三年。用户明确的时间范围优先；明确不限时间时填写 has_time_constraint=false,unrestricted=true。时间范围本身不强制触发检索。
 - 时间锚点必须忠实于用户表达。“某方法之后三年的研究”是相对该方法的研究时间线，不是“当前最近三年”；若锚点年份未知，保留该条件供理解，不把确认论文身份和年份擅自追加成独立的前置任务。公历日期过滤只在明确的绝对日期/年份可确定时写入 time_constraint；相对时间条件原文放入 time_constraint_note。
 - 仅在任务确实针对已有论文候选、指定全文下载或指定本地文档时，分别标记对应字段。不要把摘要、元数据、用户粘贴文本和论文全文混为一类。
+- 区分学科内细分与跨学科交叉（is_cross_disciplinary）：同一主学科下的分支方向（如量子力学下的量子计算、量子信息、量子光学、凝聚态物理）属于同源学科细分，必须设 is_cross_disciplinary=false；仅当问题真正横跨两个及以上不同一级学科（如“量子计算+药物分子筛选”或“深度学习+宏观经济预测”）时才设 is_cross_disciplinary=true。
 - framework_reference 只能为 null 或对象，只有明确借用已有文档的分析框架时才填 doc_name 和 usage=structure_only；提到一个模型名称不是文档结构引用。time_constraint 只能为对象，使用 has_time_constraint、start_date、end_date、start_year、end_year、sort_by_date 字段；不能把解释句直接填入这两个字段。
 
 当前日期：{current_date}。
