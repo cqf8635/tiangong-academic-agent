@@ -229,10 +229,81 @@ class CrossSourceHybridRetriever:
         deduped_cards = self._deduplicate_and_merge(raw_candidates, max_chunks_per_doc=max_chunks_per_doc)
         print(f"✨ [CrossSourceHybrid] 跨源去重与融合后唯一候选数: {len(deduped_cards)} 个 (消除冗余 {len(raw_candidates) - len(deduped_cards)} 个)")
 
-        # 3. 全局重排 (基于分数与多源权重)
-        deduped_cards.sort(key=lambda c: (c.is_local_indexed * 0.15 + (1 if c.github_url else 0) * 0.05 + c.score), reverse=True)
+        # 3. 全局重排：BGE-M3 MMR 横向去冗 + 纵向时间演进脉络排序
+        selected_cards = self._mmr_and_evolution_rank(query, deduped_cards, top_k)
+        return [c.to_dict() for c in selected_cards]
 
-        return [c.to_dict() for c in deduped_cards[:top_k]]
+    def _mmr_and_evolution_rank(
+        self,
+        query: str,
+        cards: List[UnifiedEvidenceCard],
+        top_k: int,
+        lambda_param: float = 0.72,
+    ) -> List[UnifiedEvidenceCard]:
+        """利用 BGE-M3 向量执行最大边界相关性 (MMR) 过滤高度同质论文，并按年份正序保留技术演进脉络。"""
+        if not cards:
+            return []
+
+        def _base_priority(c: UnifiedEvidenceCard, q_sim: float = 0.0) -> float:
+            title_low = (c.doc_name or "").lower()
+            is_survey = 1.0 if any(kw in title_low for kw in ("survey", "review", "overview", "综述", "进展")) else 0.0
+            return (
+                0.55 * float(c.score)
+                + 0.45 * q_sim
+                + (0.15 if c.is_local_indexed else 0.0)
+                + (0.05 if c.github_url else 0.0)
+                + (0.06 * is_survey)
+            )
+
+        emb_model = getattr(self.rag_engine, "embedding_model", None) if self.rag_engine else None
+        selected: List[UnifiedEvidenceCard] = []
+
+        if emb_model is not None and len(cards) > 2:
+            try:
+                texts = [query] + [
+                    f"{c.doc_name}. {(c.summary or c.text or '')[:450]}".strip()
+                    for c in cards
+                ]
+                encoded = emb_model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
+                vecs = encoded.tolist() if hasattr(encoded, "tolist") else list(encoded)
+                if len(vecs) == len(texts) and len(vecs[0]) > 4:
+                    q_vec = vecs[0]
+                    doc_vecs = vecs[1:]
+
+                    def _dot(a, b) -> float:
+                        return sum(float(x) * float(y) for x, y in zip(a, b))
+
+                    q_sims = [_dot(q_vec, dv) for dv in doc_vecs]
+                    base_scores = [_base_priority(c, qs) for c, qs in zip(cards, q_sims)]
+                    remaining = list(range(len(cards)))
+                    selected_indices: List[int] = []
+
+                    while remaining and len(selected_indices) < top_k:
+                        if not selected_indices:
+                            best_idx = max(remaining, key=lambda idx: base_scores[idx])
+                        else:
+                            best_idx = max(
+                                remaining,
+                                key=lambda idx: (
+                                    lambda_param * base_scores[idx]
+                                    - (1.0 - lambda_param) * max(_dot(doc_vecs[idx], doc_vecs[s]) for s in selected_indices)
+                                ),
+                            )
+                        selected_indices.append(best_idx)
+                        remaining.remove(best_idx)
+                    selected = [cards[i] for i in selected_indices]
+            except Exception:
+                selected = []
+
+        if not selected:
+            ranked = sorted(cards, key=lambda c: _base_priority(c), reverse=True)
+            selected = ranked[:top_k]
+
+        # 按纵向演进脉络排序：本地精读在前，在线文献按发表年份从旧到新排列，方便模型识别“背景->突破->前沿”演进链
+        local_cards = [c for c in selected if c.is_local_indexed]
+        online_cards = [c for c in selected if not c.is_local_indexed]
+        online_cards.sort(key=lambda c: (c.year if isinstance(c.year, int) else 9999, -float(c.score)))
+        return local_cards + online_cards
 
     @staticmethod
     def _resolve_local_doc_year(doc_name: str, chunk_meta: Dict[str, Any]) -> Optional[int]:
