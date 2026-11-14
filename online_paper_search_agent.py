@@ -1219,8 +1219,9 @@ class OnlinePaperSearchAgent:
             fut_github = executor.submit(self.search_github, github_query, limit_per_source) if include_github else None
             if include_web or include_datasets:
                 from online_resource_adapters import search_datasets, search_web
-                fut_web = executor.submit(search_web, query, limit_per_source) if include_web else None
-                fut_datasets = executor.submit(search_datasets, query, limit_per_source) if include_datasets else None
+                web_query = effective_query or query
+                fut_web = executor.submit(search_web, web_query, limit_per_source) if include_web else None
+                fut_datasets = executor.submit(search_datasets, web_query, limit_per_source) if include_datasets else None
             else:
                 fut_web = fut_datasets = None
 

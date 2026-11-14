@@ -5,10 +5,12 @@ was read in full or independently verified.
 """
 from __future__ import annotations
 
+import html as html_lib
 import json
 import ipaddress
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor
 from html.parser import HTMLParser
 from typing import Any, Dict, List
 from urllib.parse import parse_qs, quote_plus, urlsplit
@@ -211,10 +213,16 @@ def _search_searxng(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
+def _clean_html_text(raw: str) -> str:
+    text = html_lib.unescape(str(raw or ""))
+    text = re.sub(r"<[^>]+>", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
     url = f"https://huggingface.co/api/papers/search?q={quote_plus(query)}&limit={max(1, min(limit, 15))}"
     request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
-    with urlopen(request, timeout=10) as response:
+    with urlopen(request, timeout=6) as response:
         payload = json.loads(response.read(2_000_000).decode("utf-8", errors="replace"))
     results: List[Dict[str, Any]] = []
     for raw_item in payload if isinstance(payload, list) else []:
@@ -222,7 +230,7 @@ def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
             continue
         paper = raw_item.get("paper") if isinstance(raw_item.get("paper"), dict) else raw_item
         paper_id = str(paper.get("id") or "").strip()
-        title = str(raw_item.get("title") or paper.get("title") or "").strip()
+        title = re.sub(r"\s+", " ", str(raw_item.get("title") or paper.get("title") or "")).strip()
         if not paper_id or not title:
             continue
         ai_summary = re.sub(r"\s+", " ", str(paper.get("ai_summary") or "")).strip()
@@ -254,6 +262,180 @@ def _search_huggingface_papers(query: str, limit: int) -> List[Dict[str, Any]]:
     return results[:limit]
 
 
+def _search_quanta_magazine(query: str, limit: int) -> List[Dict[str, Any]]:
+    url = (
+        "https://www.quantamagazine.org/wp-json/wp/v2/posts"
+        f"?search={quote_plus(query)}&per_page={max(1, min(limit, 5))}&_fields=title,link,excerpt,date"
+    )
+    request = Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; ResearchAssistant/1.0)"})
+    with urlopen(request, timeout=6) as response:
+        payload = json.loads(response.read(1_000_000).decode("utf-8", errors="replace"))
+    results: List[Dict[str, Any]] = []
+    for item in payload if isinstance(payload, list) else []:
+        if not isinstance(item, dict):
+            continue
+        title = _clean_html_text((item.get("title") or {}).get("rendered") or "")
+        link = str(item.get("link") or "").strip()
+        excerpt = _clean_html_text((item.get("excerpt") or {}).get("rendered") or "")
+        date_str = str(item.get("date") or "")[:10]
+        if not title or not link:
+            continue
+        summary = f"[Quanta Magazine {date_str}] {excerpt}".strip() if date_str else excerpt
+        results.append({
+            "title": title,
+            "url": link,
+            "summary": summary,
+            "source": "web",
+            "provider": "quanta_magazine",
+            "location_label": "Quanta Magazine 科学深度解读",
+            "evidence_level": "web_commentary",
+            "content_scope": "Quanta Magazine 物理/数学/生物/计算机科学解读（仅用于研究脉络与直觉理解，实验指标以论文原文/摘要为准）",
+        })
+    return results[:limit]
+
+
+def _search_wikipedia(query: str, limit: int) -> List[Dict[str, Any]]:
+    url = (
+        "https://en.wikipedia.org/w/api.php?action=query&list=search"
+        f"&srsearch={quote_plus(query)}&srlimit={max(1, min(limit, 4))}&format=json"
+    )
+    request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
+    with urlopen(request, timeout=6) as response:
+        payload = json.loads(response.read(1_000_000).decode("utf-8", errors="replace"))
+    results: List[Dict[str, Any]] = []
+    for item in (payload.get("query") or {}).get("search") or []:
+        title = str(item.get("title") or "").strip()
+        snippet = _clean_html_text(item.get("snippet") or "")
+        if not title:
+            continue
+        page_url = "https://en.wikipedia.org/wiki/" + quote_plus(title.replace(" ", "_"))
+        results.append({
+            "title": title,
+            "url": page_url,
+            "summary": f"[Wikipedia 学科百科] {snippet}".strip(),
+            "source": "web",
+            "provider": "wikipedia",
+            "location_label": "Wikipedia 学科百科",
+            "evidence_level": "web_commentary",
+            "content_scope": "Wikipedia 全学科概念百科（仅用于背景与理论脉络补充，前沿进展与指标以论文原文/摘要为准）",
+        })
+    return results[:limit]
+
+
+def _search_europe_pmc(query: str, limit: int) -> List[Dict[str, Any]]:
+    url = (
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+        f"?query={quote_plus(query)}&format=json&pageSize={max(1, min(limit, 4))}"
+    )
+    request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
+    with urlopen(request, timeout=6) as response:
+        payload = json.loads(response.read(1_000_000).decode("utf-8", errors="replace"))
+    results: List[Dict[str, Any]] = []
+    for item in (payload.get("resultList") or {}).get("result") or []:
+        title = _clean_html_text(item.get("title") or "")
+        pmid = str(item.get("pmid") or "").strip()
+        pmcid = str(item.get("pmcid") or "").strip()
+        doi = str(item.get("doi") or "").strip()
+        journal = str(item.get("journalTitle") or "").strip()
+        year = str(item.get("pubYear") or "").strip()
+        if not title:
+            continue
+        if pmcid:
+            item_url = f"https://europepmc.org/article/PMC/{pmcid}"
+        elif pmid:
+            item_url = f"https://europepmc.org/article/MED/{pmid}"
+        elif doi:
+            item_url = f"https://doi.org/{doi}"
+        else:
+            continue
+        meta = " | ".join(p for p in (journal, year, f"DOI:{doi}" if doi else "") if p)
+        results.append({
+            "title": title,
+            "url": item_url,
+            "doi": doi or None,
+            "summary": f"[Europe PMC {meta}] {title}".strip() if meta else title,
+            "source": "web",
+            "provider": "europe_pmc",
+            "location_label": "Europe PMC 生物医学/交叉学科",
+            "evidence_level": "web_commentary",
+            "content_scope": "Europe PMC 生命科学/交叉学科网页索引（仅用于跨学科线索与脉络补充）",
+        })
+    return results[:limit]
+
+
+def _search_inspire_hep(query: str, limit: int) -> List[Dict[str, Any]]:
+    url = f"https://inspirehep.net/api/literature?q={quote_plus(query)}&size={max(1, min(limit, 4))}"
+    request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0"})
+    with urlopen(request, timeout=6) as response:
+        payload = json.loads(response.read(1_500_000).decode("utf-8", errors="replace"))
+    results: List[Dict[str, Any]] = []
+    for hit in (payload.get("hits") or {}).get("hits") or []:
+        hit_id = str(hit.get("id") or "").strip()
+        meta = hit.get("metadata") or {}
+        titles = meta.get("titles") or []
+        title = _clean_html_text(titles[0].get("title") if titles and isinstance(titles[0], dict) else "")
+        if not hit_id or not title:
+            continue
+        abstracts = meta.get("abstracts") or []
+        abstract = _clean_html_text(abstracts[0].get("value") if abstracts and isinstance(abstracts[0], dict) else "")
+        eprints = meta.get("arxiv_eprints") or []
+        arxiv_id = str(eprints[0].get("value") if eprints and isinstance(eprints[0], dict) else "").strip() or None
+        cites = meta.get("citation_count")
+        date_str = str(meta.get("earliest_date") or meta.get("preprint_date") or "")[:10]
+        tags = [p for p in (date_str, f"cites={cites}" if cites is not None else "", f"arXiv:{arxiv_id}" if arxiv_id else "") if p]
+        prefix = f"[INSPIRE-HEP {' | '.join(tags)}]" if tags else "[INSPIRE-HEP]"
+        results.append({
+            "title": title,
+            "url": f"https://inspirehep.net/literature/{hit_id}",
+            "arxiv_id": arxiv_id,
+            "summary": f"{prefix} {abstract or title}".strip(),
+            "source": "web",
+            "provider": "inspire_hep",
+            "location_label": "INSPIRE-HEP 物理学专门库",
+            "evidence_level": "web_commentary",
+            "content_scope": "INSPIRE-HEP 物理学专门数据库（高能/理论/量子物理线索与摘要）",
+        })
+    return results[:limit]
+
+
+def _search_zbmath(query: str, limit: int) -> List[Dict[str, Any]]:
+    url = (
+        "https://api.zbmath.org/v1/document/_search"
+        f"?search_string={quote_plus(query)}&results_per_page={max(1, min(limit, 3))}"
+    )
+    request = Request(url, headers={"User-Agent": "ResearchAssistant/1.0", "Accept": "application/json"})
+    with urlopen(request, timeout=6) as response:
+        payload = json.loads(response.read(1_000_000).decode("utf-8", errors="replace"))
+    results: List[Dict[str, Any]] = []
+    for item in payload.get("result") or []:
+        if not isinstance(item, dict):
+            continue
+        doc_id = str(item.get("id") or "").strip()
+        raw_title = item.get("title")
+        title = _clean_html_text(raw_title.get("title") if isinstance(raw_title, dict) else raw_title or "")
+        if not doc_id or not title:
+            continue
+        contribs = item.get("editorial_contributions") or []
+        review_text = ""
+        for c in contribs:
+            if isinstance(c, dict) and c.get("text"):
+                review_text = _clean_html_text(c.get("text"))
+                break
+        year = str(item.get("year") or "").strip()
+        prefix = f"[zbMATH {year}]" if year else "[zbMATH]"
+        results.append({
+            "title": title,
+            "url": f"https://zbmath.org/{doc_id}",
+            "summary": f"{prefix} {review_text or title}".strip(),
+            "source": "web",
+            "provider": "zbmath",
+            "location_label": "zbMATH Open 数学专门库",
+            "evidence_level": "web_commentary",
+            "content_scope": "zbMATH Open 数学专门文摘与专家评论库",
+        })
+    return results[:limit]
+
+
 def _search_duckduckgo_html(query: str, limit: int) -> List[Dict[str, Any]]:
     request = Request(
         "https://html.duckduckgo.com/html/?q=" + quote_plus(query),
@@ -281,9 +463,9 @@ def _search_duckduckgo_html(query: str, limit: int) -> List[Dict[str, Any]]:
 
 
 def search_web(query: str, limit: int = 8) -> List[Dict[str, Any]]:
-    """Three-tier web & paper commentary discovery:
+    """Three-tier multidisciplinary web & paper commentary discovery:
     1) Optional Tavily / SearXNG API (if configured),
-    2) Zero-config Hugging Face Papers community discussions,
+    2) Zero-config multidisciplinary commentary pool (Quanta Magazine, Wikipedia, Europe PMC, HF Papers),
     3) Isolated DuckDuckGo HTML fallback.
     """
     limit = max(1, min(limit, 15))
@@ -300,14 +482,50 @@ def search_web(query: str, limit: int = 8) -> List[Dict[str, Any]]:
             if len(combined) >= limit:
                 break
 
-    for provider_fn in (_search_tavily, _search_searxng, _search_huggingface_papers, _search_duckduckgo_html):
+    # Layer 1: Optional Tavily / SearXNG API
+    for provider_fn in (_search_tavily, _search_searxng):
         if len(combined) >= limit:
             break
         try:
-            items = provider_fn(query, limit - len(combined))
-            _append_unique(items)
+            _append_unique(provider_fn(query, limit - len(combined)))
         except Exception:
             continue
+
+    # Layer 2: Zero-config multidisciplinary commentary pool (run concurrently)
+    if len(combined) < limit:
+        per_source = max(2, min(4, limit))
+        layer2_providers = (
+            _search_inspire_hep,
+            _search_quanta_magazine,
+            _search_huggingface_papers,
+            _search_zbmath,
+            _search_europe_pmc,
+            _search_wikipedia,
+        )
+        layer2_lists: List[List[Dict[str, Any]]] = []
+        with ThreadPoolExecutor(max_workers=len(layer2_providers)) as executor:
+            futures = [executor.submit(fn, query, per_source) for fn in layer2_providers]
+            for fut in futures:
+                try:
+                    items = fut.result(timeout=7)
+                    if items:
+                        layer2_lists.append(items)
+                except Exception:
+                    continue
+        if layer2_lists:
+            max_len = max(len(lst) for lst in layer2_lists)
+            for idx in range(max_len):
+                if len(combined) >= limit:
+                    break
+                round_items = [lst[idx] for lst in layer2_lists if idx < len(lst)]
+                _append_unique(round_items)
+
+    # Layer 3: Isolated DuckDuckGo HTML fallback
+    if len(combined) < limit:
+        try:
+            _append_unique(_search_duckduckgo_html(query, limit - len(combined)))
+        except Exception:
+            pass
 
     return combined[:limit]
 

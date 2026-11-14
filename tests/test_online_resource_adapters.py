@@ -196,3 +196,82 @@ def test_enrich_top_arxiv_html_upgrades_top_two_cards_only(monkeypatch):
     assert cards[0].evidence_level == "full_text_excerpt" and "Method details for 2401.00001" in cards[0].text
     assert cards[1].evidence_level == "full_text_excerpt" and "Method details for 2401.00002" in cards[1].text
     assert cards[2].evidence_level == "abstract" and "Method details" not in cards[2].text
+
+
+def test_search_web_multidisciplinary_sources_quanta_wiki_epmc(monkeypatch):
+    monkeypatch.delenv("TAVILY_API_KEY", raising=False)
+    monkeypatch.delenv("SEARXNG_URL", raising=False)
+
+    def fake_urlopen(request, timeout=10):
+        url = request.full_url
+        if "quantamagazine.org" in url:
+            return _Response(json.dumps([
+                {
+                    "title": {"rendered": "Quantum Theorem &#8217;s Test"},
+                    "link": "https://www.quantamagazine.org/quantum-test/",
+                    "excerpt": {"rendered": "<p>Physicists test Bell bounds.</p>"},
+                    "date": "2026-11-06T10:00:00",
+                }
+            ]).encode("utf-8"))
+        if "en.wikipedia.org" in url:
+            return _Response(json.dumps({
+                "query": {
+                    "search": [
+                        {
+                            "title": "Quantum foundations",
+                            "snippet": "<span class=\"searchmatch\">Quantum</span> foundations studies axioms.",
+                        }
+                    ]
+                }
+            }).encode("utf-8"))
+        if "ebi.ac.uk/europepmc" in url:
+            return _Response(json.dumps({
+                "resultList": {
+                    "result": [
+                        {
+                            "title": "Quantum biology review",
+                            "pmcid": "PMC123456",
+                            "journalTitle": "Nature Reviews",
+                            "pubYear": "2025",
+                        }
+                    ]
+                }
+            }).encode("utf-8"))
+        if "inspirehep.net" in url:
+            return _Response(json.dumps({
+                "hits": {
+                    "hits": [
+                        {
+                            "id": "812316",
+                            "metadata": {
+                                "titles": [{"title": "Quantum Gravity Foundations"}],
+                                "abstracts": [{"value": "Review of spacetime quantization."}],
+                                "citation_count": 42,
+                                "arxiv_eprints": [{"value": "0902.0190"}],
+                            },
+                        }
+                    ]
+                }
+            }).encode("utf-8"))
+        if "api.zbmath.org" in url:
+            return _Response(json.dumps({
+                "result": [
+                    {
+                        "id": 2192486,
+                        "title": {"title": "Mathematical Quantum Gravity"},
+                        "year": "2024",
+                        "editorial_contributions": [{"text": "Rigorous operator algebra review."}],
+                    }
+                ]
+            }).encode("utf-8"))
+        if "huggingface.co" in url:
+            return _Response(b"[]")
+        return _Response(b"")
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", fake_urlopen)
+    results = search_web("quantum mechanics", limit=8)
+    providers = {r["provider"] for r in results}
+    assert {"quanta_magazine", "wikipedia", "europe_pmc", "inspire_hep", "zbmath"} <= providers
+    quanta_item = next(r for r in results if r["provider"] == "quanta_magazine")
+    assert quanta_item["evidence_level"] == "web_commentary"
+    assert "<p>" not in quanta_item["summary"]
