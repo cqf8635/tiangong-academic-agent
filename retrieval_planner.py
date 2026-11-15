@@ -517,7 +517,7 @@ class RetrievalPlannerAgent:
                 "【核心准则】：本学科公认的基础理论、数学公式推导与标准算法机理不需要外部论文逐句背书；只要相应任务已有相关论文摘要或本地教材片段支撑，即应判定为 status='supported'，并返回 sufficient=true、gaps=[]。"
                 "先检查 search_history；仅当用户明确要求的子任务完全缺乏相关资料，且存在实质不同的检索策略（materially different strategy）时，才提出补充检索。"
                 "绝不要仅仅为了给已有摘要索取全文、或为了穷尽整个学科综述而追加 gap 查询。"
-                "对于 irrelevant_evidence（明确无关资料），凡属主题明显跨界或毫不相干的误检条目（例如本地向量库强行召回的非本学科书籍、或关键词偶合的无关学科综述），必须主动列入 irrelevant_evidence 并给出具体的主题不匹配中文原因，同时在 basis 中分别引用 request/visual_context 原句与目标资料（标题或正文）原句；仅当主题确实相关但细节不确定或缺少全文时才保留。"
+                "对于 irrelevant_evidence（明确无关资料），仅当资料与本轮全部任务要求及交叉学科视角均毫无关联时（例如单学科提问时本地向量库强行召回的非相关书籍、或关键词偶合的无关学科综述），才必须列入 irrelevant_evidence 并给出具体的主题不匹配中文原因，同时在 basis 中分别引用 request/visual_context 原句与目标资料（标题或正文）原句；若当前为跨学科/交叉研究问题，服务于任一子学科或交叉背景的资料均应保留，不得仅因属于另一学科而排除；主题相关但细节不确定或缺少全文时也应保留。"
                 "返回 JSON：sufficient, task_checks [{requirement,task_ids,status,evidence_ids,supported_facts,note}], "
                 "irrelevant_evidence [{evidence_id,reason,basis:[{source,quote,evidence_id}]}], gaps [{query,rationale,sources,requirement,strategy}], unresolved, summary。"
                 "sources 可选用 local,academic,web,github,datasets 或留空。"

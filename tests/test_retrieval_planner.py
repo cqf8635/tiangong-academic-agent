@@ -366,3 +366,38 @@ def test_finalize_answer_markdown_fixes_glued_headings_and_appends_reference_lin
     assert "### 参考资料链接" in out
     assert "**[1]** [Floquet ground state order](https://arxiv.org/pdf/2601.00001) (2026)" in out
     assert "大语言模型" not in out
+
+
+def test_cross_disciplinary_evidence_is_retained_and_prompt_guards_against_misfiltering():
+    captured = {}
+
+    def fake_create(**kwargs):
+        captured["messages"] = kwargs["messages"]
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps({
+            "sufficient": True,
+            "task_checks": [
+                {"requirement": "结合大语言模型与量子计算", "task_ids": [1], "status": "supported", "evidence_ids": [1, 2], "supported_facts": ["双学科均有支撑"]},
+            ],
+            "irrelevant_evidence": [],
+            "gaps": [],
+            "unresolved": [],
+            "summary": "跨学科资料均相关且已保留。",
+        })))])
+
+    planner = RetrievalPlannerAgent.__new__(RetrievalPlannerAgent)
+    planner.model = "test-model"
+    planner.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=fake_create)))
+    evidence = [
+        {"doc_name": "大语言模型", "text": "大语言模型结构与推理能力"},
+        {"doc_name": "Quantum Circuit Optimization", "text": "Variational quantum circuit design"},
+    ]
+    coverage = planner.assess_coverage(
+        "大语言模型如何用于量子计算线路优化？",
+        {"task_segments": ["大语言模型用于量子计算线路优化"], "is_cross_disciplinary": True},
+        evidence,
+    )
+    sent_payload = json.loads(captured["messages"][1]["content"])
+    assert "不得仅因属于另一学科而排除" in sent_payload["instructions"]
+    assert coverage.sufficient is True
+    assert coverage.irrelevant_evidence == []
+    assert coverage.task_checks[0].evidence_ids == [1, 2]
