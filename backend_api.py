@@ -382,6 +382,24 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
     turn_num = len([m for m in (s_now.messages if s_now else []) if m.sender == "agent"])
     SessionManager.publish_turn_to_shared_pool(session_id, turn_num, req.query, agent_msg, turn_state=turn_snapshot)
 
+    if os.getenv("ENABLE_AUTO_SYNC_ONLINE_EVIDENCE", "1") != "0" and result_state.get("retrieved_evidence"):
+        import re as _re
+        import threading as _threading
+        _evidence_snapshot = [dict(item) for item in (result_state.get("retrieved_evidence") or []) if isinstance(item, dict)]
+        _cited_indices = [int(m.group(1)) for m in _re.finditer(r"\[(\d+)\]", final_ans)]
+
+        def _bg_sync_online_evidence():
+            try:
+                from master_agent_workflow import MasterEngineRegistry
+                MasterEngineRegistry.get_rag_engine().ingest_online_evidence(
+                    _evidence_snapshot,
+                    cited_indices=_cited_indices,
+                )
+            except Exception as _sync_exc:
+                print(f"⚠️ [AutoSync Note]: {_sync_exc}")
+
+        _threading.Thread(target=_bg_sync_online_evidence, daemon=True).start()
+
     return {
         "session_id": session_id,
         "query": req.query,

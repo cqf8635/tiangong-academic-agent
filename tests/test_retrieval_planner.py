@@ -401,3 +401,42 @@ def test_cross_disciplinary_evidence_is_retained_and_prompt_guards_against_misfi
     assert coverage.sufficient is True
     assert coverage.irrelevant_evidence == []
     assert coverage.task_checks[0].evidence_ids == [1, 2]
+
+
+def test_ingest_online_evidence_filters_noise_prioritizes_cited_and_tags_metadata():
+    from document_rag_engine import UniversalDocumentRAGEngine
+
+    upserted = {}
+
+    class FakeCollection:
+        def upsert(self, *, ids, embeddings, documents, metadatas):
+            upserted["ids"] = ids
+            upserted["embeddings"] = embeddings
+            upserted["documents"] = documents
+            upserted["metadatas"] = metadatas
+
+    class FakeEmbedder:
+        def encode(self, texts, **_kwargs):
+            return [[0.1, 0.2] for _ in texts]
+
+    engine = UniversalDocumentRAGEngine.__new__(UniversalDocumentRAGEngine)
+    engine.collection = FakeCollection()
+    engine.embedding_model = FakeEmbedder()
+
+    long_abstract = "Unified transformer architecture for sequential and non-sequential recommendation modeling. " * 3
+    evidence_items = [
+        {"doc_name": "LocalBook.pdf", "doc_type": "local_pdf", "text": long_abstract},
+        {"doc_name": "WebPage", "doc_type": "web", "summary": long_abstract},
+        {"doc_name": "ShortMeta", "doc_type": "arxiv", "summary": "too short"},
+        {"doc_name": "NoisePaper", "doc_type": "crossref", "summary": long_abstract, "excluded_as_irrelevant": "无关"},
+        {"doc_name": "UncitedPaper", "doc_type": "arxiv", "arxiv_id": "2601.11111", "summary": long_abstract, "year": 2026, "rerank_score": 0.91},
+        {"doc_name": "OneTrans-V2", "doc_type": "fused_academic", "arxiv_id": "2609.28589", "summary": long_abstract, "year": 2026, "url": "https://arxiv.org/pdf/2609.28589"},
+    ]
+
+    count = engine.ingest_online_evidence(evidence_items, cited_indices=[6], max_items=2)
+    assert count == 2
+    assert len(upserted["ids"]) == 2
+    assert upserted["metadatas"][0]["doc_name"] == "OneTrans-V2"
+    assert upserted["metadatas"][0]["doc_type"] == "online_synced_paper"
+    assert upserted["metadatas"][0]["arxiv_id"] == "2609.28589"
+    assert upserted["metadatas"][1]["doc_name"] == "UncitedPaper"

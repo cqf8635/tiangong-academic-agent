@@ -864,6 +864,104 @@ class UniversalDocumentRAGEngine:
         print(f"✅ [Ingest] 成功入库: {path.name} ({len(chunks)} 个切片已就绪，已关联学科标签)")
         return len(chunks)
 
+    def ingest_online_evidence(
+        self,
+        evidence_items: List[Dict[str, Any]],
+        cited_indices: Optional[List[int]] = None,
+        max_items: int = 8,
+        min_text_len: int = 150,
+    ) -> int:
+        """Persist high-relevance online academic papers into local ChromaDB with isolated metadata."""
+        if not evidence_items:
+            return 0
+        cited_set = set(cited_indices or [])
+        def _score_of(item: Dict[str, Any]) -> float:
+            for key in ("rerank_score", "score", "rrf_score"):
+                val = item.get(key)
+                if isinstance(val, (int, float)):
+                    return float(val)
+            return 0.0
+
+        indexed = list(enumerate(evidence_items, 1))
+        cited_pairs = [(idx, item) for idx, item in indexed if idx in cited_set and isinstance(item, dict)]
+        uncited_pairs = sorted(
+            [(idx, item) for idx, item in indexed if idx not in cited_set and isinstance(item, dict)],
+            key=lambda pair: _score_of(pair[1]),
+            reverse=True,
+        )
+        prioritized = cited_pairs + uncited_pairs
+
+        local_types = {"local", "local_pdf", "document", "pdf", "docx", "pptx", "md", "txt", "online_synced_paper"}
+        paper_sources = {
+            "arxiv", "openalex", "crossref", "semanticscholar", "dblp",
+            "citation_snowball", "europe_pmc", "fused_academic",
+        }
+        ids: List[str] = []
+        texts: List[str] = []
+        metadatas: List[Dict[str, Any]] = []
+        seen_doc_ids = set()
+
+        for idx, item in prioritized:
+            if idx not in cited_set and len(ids) >= max_items:
+                break
+            if not isinstance(item, dict) or item.get("excluded_as_irrelevant"):
+                continue
+            doc_type = str(item.get("doc_type") or "").strip().casefold()
+            source = str(item.get("source") or doc_type or "online").strip()
+            if doc_type in local_types or source.casefold() in {"local", "local_pdf"}:
+                continue
+            arxiv_id = str(item.get("arxiv_id") or "").strip()
+            doi = str(item.get("doi") or "").strip()
+            if doc_type not in paper_sources and source.casefold() not in paper_sources and not (arxiv_id or doi):
+                continue
+            title = str(item.get("title") or item.get("doc_name") or "").strip()
+            body = str(item.get("text") or item.get("summary") or "").strip()
+            if not title or len(body) < min_text_len:
+                continue
+
+            identity = arxiv_id or doi or re.sub(r"\s+", " ", title.casefold())
+            doc_id = f"online_{hashlib.md5(identity.encode('utf-8')).hexdigest()[:16]}"
+            if doc_id in seen_doc_ids:
+                continue
+            seen_doc_ids.add(doc_id)
+
+            year = item.get("year") or (item.get("provenance") or {}).get("year") or ""
+            url = str(item.get("url") or item.get("pdf_url") or "").strip()
+            chunk_text = f"Title: {title}\nYear: {year}\nSource: {source}\nURL: {url}\n\n{body}"[:6000]
+            ids.append(f"{doc_id}_0")
+            texts.append(chunk_text)
+            metadatas.append({
+                "doc_id": doc_id,
+                "doc_name": title[:200],
+                "doc_type": "online_synced_paper",
+                "source": source,
+                "year": str(year),
+                "url": url,
+                "arxiv_id": arxiv_id,
+                "doi": doi,
+                "page_or_slide": str(year or "online"),
+                "section": "Abstract / Synced Online Paper",
+                "image_url": "",
+            })
+
+        if not ids:
+            return 0
+        embeddings = self.embedding_model.encode(
+            texts,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        )
+        if hasattr(embeddings, "tolist"):
+            embeddings = embeddings.tolist()
+        self.collection.upsert(
+            ids=ids,
+            embeddings=embeddings,
+            documents=texts,
+            metadatas=metadatas,
+        )
+        print(f"📥 [AutoSync] 已将 {len(ids)} 篇高相关在线文献沉淀至本地知识库 (doc_type=online_synced_paper)")
+        return len(ids)
+
     def search(
         self,
         query: str,
