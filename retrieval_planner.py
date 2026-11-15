@@ -237,6 +237,69 @@ class RetrievalPlannerAgent:
         self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = get_default_llm_model()
 
+    @staticmethod
+    def _extract_json_dict(raw_text: str) -> Dict[str, Any]:
+        """Extract a JSON object from LLM output, tolerating think tags, code fences, prose, or trailing commas."""
+        text = (raw_text or "").strip()
+        text = re.sub(r"<think>[\s\S]*?</think>", "", text, flags=re.IGNORECASE).strip()
+        if text.startswith("```"):
+            text = re.sub(r"^```[a-zA-Z]*\n?", "", text)
+            text = re.sub(r"\n?```$", "", text).strip()
+        if not text:
+            raise ValueError("Empty JSON response from retrieval planner")
+        try:
+            parsed = json.loads(text)
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            pass
+
+        decoder = json.JSONDecoder()
+        start = text.find("{")
+        if start != -1:
+            candidate = text[start:]
+            for attempt_text in (candidate, re.sub(r",\s*([}\]])", r"\1", candidate)):
+                try:
+                    parsed, _ = decoder.raw_decode(attempt_text)
+                    if isinstance(parsed, dict):
+                        return parsed
+                except json.JSONDecodeError:
+                    continue
+        raise json.JSONDecodeError("Expecting JSON object in retrieval planner response", text, 0)
+
+    def _chat_json(self, messages: List[Dict[str, str]], max_retries: int = 3) -> Dict[str, Any]:
+        """Call chat completions for JSON output with retry and fallback model support."""
+        primary_model = getattr(self, "model", None) or get_default_llm_model()
+        fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
+        last_err: Exception | None = None
+        for attempt in range(1, max_retries + 1):
+            active_model = (
+                fallback_model
+                if (attempt >= 2 and fallback_model and fallback_model != primary_model)
+                else primary_model
+            )
+            try:
+                response = self.client.chat.completions.create(
+                    model=active_model,
+                    messages=messages,
+                    response_format={"type": "json_object"},
+                    temperature=0,
+                    max_tokens=get_llm_max_tokens(8192),
+                    timeout=min(get_llm_timeout(60), 60),
+                )
+                choice = response.choices[0]
+                content = (choice.message.content or "").strip()
+                if not content:
+                    finish_reason = getattr(choice, "finish_reason", None)
+                    raise RuntimeError(f"Empty response from {active_model} (finish_reason={finish_reason})")
+                return self._extract_json_dict(content)
+            except Exception as exc:
+                last_err = exc
+                if attempt < max_retries:
+                    time.sleep(0.5 * attempt)
+        assert last_err is not None
+        raise last_err
+
     def plan(
         self,
         user_query: str,
@@ -304,22 +367,10 @@ class RetrievalPlannerAgent:
                 previous_subject=(state_context or {}).get("previous_subject"),
                 history_context=(state_context or {}).get("history_context") or "",
             )
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": self.SYSTEM_PROMPT},
-                {"role": "user", "content": json.dumps(task_context, ensure_ascii=False)},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0,
-            max_tokens=get_llm_max_tokens(8192),
-            timeout=min(get_llm_timeout(60), 60),
-        )
-        content = (response.choices[0].message.content or "").strip()
-        if content.startswith("```"):
-            content = re.sub(r"^```[a-zA-Z]*\n?", "", content)
-            content = re.sub(r"\n?```$", "", content).strip()
-        data = json.loads(content)
+        data = self._chat_json([
+            {"role": "system", "content": self.SYSTEM_PROMPT},
+            {"role": "user", "content": json.dumps(task_context, ensure_ascii=False)},
+        ])
         plan = RetrievalPlan(**data)
         if verify_task:
             alignment = plan.task_alignment
@@ -410,22 +461,10 @@ class RetrievalPlannerAgent:
                 + TASK_COVERAGE_GUIDANCE + "\n" + EVIDENCE_GUIDANCE
             ),
         }
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": "你是学术检索证据覆盖度评估专家。请严格基于已检出资料与学科理论边界进行评估，统一使用中文说明，绝不捏造事实。"},
-                {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0,
-            max_tokens=get_llm_max_tokens(8192),
-            timeout=min(get_llm_timeout(60), 60),
-        )
-        content = (response.choices[0].message.content or "{}").strip()
-        if content.startswith("```"):
-            content = re.sub(r"^```[a-zA-Z]*\n?", "", content)
-            content = re.sub(r"\n?```$", "", content).strip()
-        coverage = RetrievalCoverage(**json.loads(content))
+        coverage = RetrievalCoverage(**self._chat_json([
+            {"role": "system", "content": "你是学术检索证据覆盖度评估专家。请严格基于已检出资料与学科理论边界进行评估，统一使用中文说明，绝不捏造事实。"},
+            {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+        ]))
         inspected_evidence = apply_evidence_relevance(evidence, coverage.irrelevant_evidence,
             request_text, (intent.get("shared_task") or {}).get("visual_context", ""))
         available_ids = {idx for idx, item in enumerate(evidence, 1) if isinstance(item, dict)

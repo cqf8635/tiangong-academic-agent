@@ -275,3 +275,51 @@ def test_shared_sources_can_cover_task_without_search_and_conversation_needs_non
         assert plan.local_search is False
         assert plan.online_search is False
         assert plan.selected_shared_item_ids == selected_ids
+
+
+def test_retrieval_planner_parses_think_tags_prose_and_trailing_commas():
+    planner = RetrievalPlannerAgent.__new__(RetrievalPlannerAgent)
+    planner.model = "primary-model"
+    planner.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(
+        create=lambda **kwargs: SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(
+            content=(
+                "<think>分析检索需求</think>\n"
+                "规划结果如下：\n"
+                "```json\n"
+                '{"requires_evidence": true, "online_search": true, "is_resolved": true, '
+                '"queries": [{"query": "OneTrans 推荐模型迭代", "english_query": "OneTrans sequential recommendation"}],}\n'
+                "```\n"
+                "以上为规划。"
+            )
+        ))])
+    )))
+    plan = planner.plan("OneTrans之后还有什么迭代?", {"intent": "调研模型迭代"})
+    assert plan.is_resolved is True
+    assert plan.online_search is True
+    assert len(plan.queries) == 1
+    assert plan.queries[0].english_query == "OneTrans sequential recommendation"
+
+
+def test_retrieval_planner_retries_with_fallback_model_on_empty_or_invalid_json(monkeypatch):
+    monkeypatch.setenv("OPENAI_FALLBACK_MODEL", "fallback-model")
+    monkeypatch.setattr("retrieval_planner.time.sleep", lambda _s: None)
+    called_models = []
+
+    def fake_create(**kwargs):
+        called_models.append(kwargs["model"])
+        if len(called_models) == 1:
+            return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=""), finish_reason="stop")])
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps({
+            "requires_evidence": True,
+            "online_search": True,
+            "is_resolved": True,
+            "queries": [{"query": "OneTrans 迭代", "english_query": "OneTrans recommendation"}],
+        })))])
+
+    planner = RetrievalPlannerAgent.__new__(RetrievalPlannerAgent)
+    planner.model = "primary-model"
+    planner.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=fake_create)))
+    plan = planner.plan("OneTrans之后还有什么迭代?", {"intent": "调研模型迭代"})
+    assert called_models == ["primary-model", "fallback-model"]
+    assert plan.is_resolved is True
+    assert plan.online_search is True
