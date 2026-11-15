@@ -323,3 +323,46 @@ def test_retrieval_planner_retries_with_fallback_model_on_empty_or_invalid_json(
     assert called_models == ["primary-model", "fallback-model"]
     assert plan.is_resolved is True
     assert plan.online_search is True
+
+
+def test_retrieval_planner_deduplicates_paired_pool_items_and_skips_excluded():
+    from retrieval_planner import finalize_answer_markdown
+
+    captured = {}
+
+    def fake_create(**kwargs):
+        captured["messages"] = kwargs["messages"]
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps({
+            "requires_evidence": True, "online_search": True, "is_resolved": True,
+        })))])
+
+    planner = RetrievalPlannerAgent.__new__(RetrievalPlannerAgent)
+    planner.model = "test-model"
+    planner.client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=fake_create)))
+    planner.plan("量子力学最新研究", {"intent": "调研进展"}, {
+        "shared_pool": [
+            {"item_id": "abc", "kind": "evidence", "title": "Floquet order", "source": "arxiv"},
+            {"item_id": "candidate:abc", "kind": "candidate", "title": "Floquet order", "year": 2026},
+            {"item_id": "bad", "kind": "evidence", "title": "大语言模型", "excluded_as_irrelevant": "跨学科无关"},
+        ]
+    })
+    sent = json.loads(captured["messages"][1]["content"])
+    resources = sent["available_shared_resources"]
+    assert len(resources) == 1
+    assert resources[0]["item_id"] == "abc"
+    assert resources[0]["year"] == 2026
+
+
+def test_finalize_answer_markdown_fixes_glued_headings_and_appends_reference_links():
+    from retrieval_planner import finalize_answer_markdown
+
+    raw = "我会依据资料介绍。## 一、概念与研究主体\n\n核心结论见 [1] 与 [2]。"
+    evidence = [
+        {"title": "Floquet ground state order", "url": "https://arxiv.org/pdf/2601.00001", "year": 2026},
+        {"title": "大语言模型", "url": "https://example.com/llm.pdf", "excluded_as_irrelevant": "无关"},
+    ]
+    out = finalize_answer_markdown(raw, evidence)
+    assert "我会依据资料介绍。\n\n## 一、概念与研究主体" in out
+    assert "### 参考资料链接" in out
+    assert "**[1]** [Floquet ground state order](https://arxiv.org/pdf/2601.00001) (2026)" in out
+    assert "大语言模型" not in out

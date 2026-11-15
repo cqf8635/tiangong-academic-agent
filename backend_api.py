@@ -334,7 +334,12 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
         audio_url = f"/api/audio/{audio_name}"
 
     from document_rag_engine import extract_answer_mindmap
-    final_ans = result_state.get("final_answer", "")
+    from retrieval_planner import finalize_answer_markdown
+    final_ans = finalize_answer_markdown(
+        result_state.get("final_answer", ""),
+        result_state.get("retrieved_evidence") or [],
+        result_state.get("recent_paper_candidates") or [],
+    )
     mindmap_md = extract_answer_mindmap(final_ans, req.query)
     turn_snapshot = {
         key: result_state.get(key)

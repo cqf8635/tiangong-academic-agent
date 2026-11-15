@@ -462,6 +462,9 @@ class SessionManager:
             key = cls._resource_identity(item)
             if not key:
                 continue
+            if item.get("excluded_as_irrelevant"):
+                indexed.pop(key, None)
+                continue
             existing = indexed.get(key)
             if existing:
                 provenance = list(existing.get("provenance_records") or [])
@@ -594,6 +597,10 @@ class SessionManager:
                 continue
             rid = evidence.get("resource_id") or cls._resource_identity(evidence)
             if not rid:
+                continue
+            if evidence.get("excluded_as_irrelevant"):
+                pool.pop(rid, None)
+                pool.pop(f"candidate:{rid}", None)
                 continue
             resource = dict(evidence)
             resource.setdefault("resource_id", rid)

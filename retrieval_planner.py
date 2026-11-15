@@ -130,6 +130,45 @@ def filter_irrelevant_candidates(candidates, evidence):
             if str(c.get("title") or "").strip().casefold() not in rejected_titles]
 
 
+def finalize_answer_markdown(
+    answer: str,
+    evidence: List[Dict[str, Any]] | None = None,
+    candidates: List[Dict[str, Any]] | None = None,
+) -> str:
+    """Fix glued Markdown headings and append clickable reference links for cited [n] sources."""
+    text = (answer or "").strip()
+    if not text:
+        return text
+    text = re.sub(r"([。！？.!?:：])\s*(#{1,6}\s+)", r"\1\n\n\2", text)
+    if re.search(r"^#{1,6}\s*参考资料(?:链接)?", text, re.M):
+        return text
+    pool = [item for item in (evidence or candidates or []) if isinstance(item, dict)]
+    if not pool:
+        return text
+    cited_indices: List[int] = []
+    seen_idx = set()
+    for m in re.finditer(r"\[(\d+)\]", text):
+        idx = int(m.group(1))
+        if 1 <= idx <= len(pool) and idx not in seen_idx:
+            seen_idx.add(idx)
+            cited_indices.append(idx)
+    ref_lines: List[str] = []
+    for idx in sorted(cited_indices):
+        item = pool[idx - 1]
+        if item.get("excluded_as_irrelevant"):
+            continue
+        url = str(item.get("url") or item.get("pdf_url") or "").strip()
+        if not url.startswith(("http://", "https://")):
+            continue
+        title = str(item.get("title") or item.get("doc_name") or f"资料 {idx}").strip()
+        year = item.get("year") or (item.get("provenance") or {}).get("year")
+        year_suffix = f" ({year})" if year else ""
+        ref_lines.append(f"- **[{idx}]** [{title}]({url}){year_suffix}")
+    if ref_lines:
+        text = text.rstrip() + "\n\n---\n\n### 参考资料链接\n" + "\n".join(ref_lines)
+    return text
+
+
 def is_executable_retrieval_query(query: str) -> bool:
     """Reject unresolved templates and clarification requests before source calls."""
     query = str(query or "").strip()
@@ -313,13 +352,37 @@ class RetrievalPlannerAgent:
         shared_pool = (state_context or {}).get("shared_pool") or []
         recent_candidates = (state_context or {}).get("recent_paper_candidates") or []
         pool_ids = {item.get("item_id") for item in shared_pool if isinstance(item, dict)}
-        all_resources = list(shared_pool)
-        all_resources.extend(
+        raw_resources = list(shared_pool)
+        raw_resources.extend(
             candidate for candidate in recent_candidates
             if isinstance(candidate, dict) and candidate.get("shared_item_id") not in pool_ids
         )
-        if not all_resources:
-            all_resources = (state_context or {}).get("shared_resources") or []
+        if not raw_resources:
+            raw_resources = (state_context or {}).get("shared_resources") or []
+        # Deduplicate paired evidence + candidate:<id> records before passing to the planner LLM.
+        deduped_by_base: Dict[str, Dict[str, Any]] = {}
+        all_resources: List[Dict[str, Any]] = []
+        for item in raw_resources:
+            if not isinstance(item, dict) or item.get("excluded_as_irrelevant"):
+                continue
+            iid = str(item.get("item_id") or item.get("shared_item_id") or item.get("resource_id") or "")
+            if not iid:
+                all_resources.append(item)
+                continue
+            base_id = iid[len("candidate:"):] if iid.startswith("candidate:") else iid
+            existing = deduped_by_base.get(base_id)
+            if existing is None:
+                copy_item = dict(item)
+                deduped_by_base[base_id] = copy_item
+                all_resources.append(copy_item)
+            else:
+                # Prefer evidence item_id as primary selectable id, enrich missing year/url from candidate.
+                if str(existing.get("item_id") or "").startswith("candidate:") and not iid.startswith("candidate:"):
+                    existing["item_id"] = iid
+                    existing["kind"] = item.get("kind", existing.get("kind", "evidence"))
+                for field in ("year", "evidence_level", "superseded_by", "source"):
+                    if not existing.get(field) and item.get(field):
+                        existing[field] = item[field]
         for item in all_resources:
             if not isinstance(item, dict):
                 continue
@@ -454,7 +517,7 @@ class RetrievalPlannerAgent:
                 "【核心准则】：本学科公认的基础理论、数学公式推导与标准算法机理不需要外部论文逐句背书；只要相应任务已有相关论文摘要或本地教材片段支撑，即应判定为 status='supported'，并返回 sufficient=true、gaps=[]。"
                 "先检查 search_history；仅当用户明确要求的子任务完全缺乏相关资料，且存在实质不同的检索策略（materially different strategy）时，才提出补充检索。"
                 "绝不要仅仅为了给已有摘要索取全文、或为了穷尽整个学科综述而追加 gap 查询。"
-                "对于 irrelevant_evidence（明确无关资料），必须给出具体的主题不匹配中文原因，同时在 basis 中分别引用 request/visual_context 原句与目标资料（标题或正文）原句；保留相关背景、基础理论与局部支撑资料，相关性不确定或缺少全文不作为排除理由。"
+                "对于 irrelevant_evidence（明确无关资料），凡属主题明显跨界或毫不相干的误检条目（例如本地向量库强行召回的非本学科书籍、或关键词偶合的无关学科综述），必须主动列入 irrelevant_evidence 并给出具体的主题不匹配中文原因，同时在 basis 中分别引用 request/visual_context 原句与目标资料（标题或正文）原句；仅当主题确实相关但细节不确定或缺少全文时才保留。"
                 "返回 JSON：sufficient, task_checks [{requirement,task_ids,status,evidence_ids,supported_facts,note}], "
                 "irrelevant_evidence [{evidence_id,reason,basis:[{source,quote,evidence_id}]}], gaps [{query,rationale,sources,requirement,strategy}], unresolved, summary。"
                 "sources 可选用 local,academic,web,github,datasets 或留空。"
