@@ -234,6 +234,16 @@ class CrossSourceHybridRetriever:
         raw_candidates.extend(local_cards)
         raw_candidates.extend(online_cards)
 
+        if include_online and online_cards and self.paper_agent:
+            expanded_cards = self._expand_with_prf_and_snowball(
+                query=query,
+                online_cards=online_cards,
+                time_constraint=time_constraint,
+                top_k=top_k,
+            )
+            if expanded_cards:
+                raw_candidates.extend(expanded_cards)
+
         print(f"📦 [CrossSourceHybrid] 多路召回原始候选总数: {len(raw_candidates)} 项 (本地符合时间切片: {len(local_cards)} 个, 线上文献候选: {len(online_cards)} 篇)")
 
         if not raw_candidates:
@@ -248,6 +258,100 @@ class CrossSourceHybridRetriever:
         # 4. 按需临时抓取 Top 1~2 篇核心 arXiv 论文的 HTML 方法/实验节（不入本地库）
         self._enrich_top_arxiv_html(selected_cards)
         return [c.to_dict() for c in selected_cards]
+
+    def _expand_with_prf_and_snowball(
+        self,
+        query: str,
+        online_cards: List[UnifiedEvidenceCard],
+        time_constraint: Optional[Dict[str, Any]],
+        top_k: int,
+    ) -> List[UnifiedEvidenceCard]:
+        """Beyond keyword guessing: run PRF term feedback on thin recall and citation snowballing from top seeds."""
+        extra_cards: List[UnifiedEvidenceCard] = []
+
+        # 1. 真实摘要术语反哺 (PRF): 首轮召回偏少时，从已命中论文的真实术语发起二轮定向补充
+        if 1 <= len(online_cards) < max(top_k, 5):
+            try:
+                from online_paper_search_agent import extract_prf_terms_from_papers
+                seed_records = [{"title": c.doc_name, "summary": c.summary or c.text} for c in online_cards]
+                prf_terms = extract_prf_terms_from_papers(query, seed_records, max_terms=4)
+                if prf_terms:
+                    print(f"🔁 [PRF 术语反哺] 从首轮真实论文中提炼领域术语进行二轮补充: \"{prf_terms}\"")
+                    if hasattr(self.paper_agent, "search_semanticscholar"):
+                        for sp in self.paper_agent.search_semanticscholar(prf_terms, max_results=5):
+                            extra_cards.append(UnifiedEvidenceCard(
+                                doc_name=sp.title,
+                                doc_type="semanticscholar",
+                                text=f"【Semantic Scholar (PRF 二轮)】: {sp.title}\n【主要作者】: {', '.join(sp.authors[:3])}\n【发表年份】: {sp.year}\n【摘要与影响】: {sp.summary}\n【URL】: {sp.url}",
+                                score=0.88 if sp.evidence_level == "abstract" else 0.68,
+                                year=sp.year,
+                                location_label=f"Semantic Scholar PRF ({sp.year or 'Recent'}年)",
+                                section="PRF 真实术语扩展",
+                                doi=sp.doi,
+                                pdf_url=sp.url,
+                                authors=sp.authors,
+                                summary=sp.summary,
+                                evidence_level=sp.evidence_level,
+                                content_scope=sp.content_scope,
+                            ))
+                    if hasattr(self.paper_agent, "search_arxiv") and getattr(self.paper_agent, "arxiv_cooldown_remaining", lambda: 0)() <= 0:
+                        for ap in self.paper_agent.search_arxiv(prf_terms, max_results=4, time_constraint=time_constraint):
+                            extra_cards.append(UnifiedEvidenceCard(
+                                doc_name=ap.title,
+                                doc_type="arxiv",
+                                text=f"【arXiv (PRF 二轮)】: {ap.title}\n【主要作者】: {', '.join(ap.authors[:3])}\n【发表年份】: {ap.year}\n【核心摘要】: {ap.summary}\n【PDF链接】: {ap.pdf_url}",
+                                score=0.89,
+                                year=ap.year,
+                                location_label=f"arXiv:{ap.paper_id} PRF ({ap.year}年)",
+                                section="PRF 真实术语扩展",
+                                arxiv_id=ap.paper_id,
+                                pdf_url=ap.pdf_url,
+                                authors=ap.authors,
+                                summary=ap.summary,
+                                evidence_level="abstract",
+                            ))
+            except Exception as e:
+                print(f"ℹ️ [PRF Expansion Note]: {e}")
+
+        # 2. 引文雪球扩展 (Citation Snowballing): 顺着种子论文的 Citations / References 抓取关联工作
+        if os.getenv("ENABLE_CITATION_SNOWBALL", "true").lower() not in ("0", "false", "no") and hasattr(self.paper_agent, "search_citation_snowball"):
+            try:
+                seed_dicts = [
+                    {
+                        "title": c.doc_name,
+                        "arxiv_id": c.arxiv_id,
+                        "doi": c.doi,
+                        "paper_id": c.arxiv_id or c.doi or "",
+                    }
+                    for c in sorted(online_cards, key=lambda x: float(x.score), reverse=True)
+                    if c.arxiv_id or c.doi
+                ][:2]
+                if seed_dicts:
+                    snowballed = self.paper_agent.search_citation_snowball(
+                        seed_dicts, max_per_seed=3, time_constraint=time_constraint
+                    )
+                    if snowballed:
+                        print(f"🕸️ [CitationSnowball] 基于 {len(seed_dicts)} 篇种子论文顺藤摸瓜扩展出 {len(snowballed)} 篇引文关联论文")
+                    for sb in snowballed:
+                        extra_cards.append(UnifiedEvidenceCard(
+                            doc_name=sb.title,
+                            doc_type="citation_snowball",
+                            text=f"【引文图谱扩展】: {sb.title}\n【主要作者】: {', '.join(sb.authors[:3])}\n【发表年份】: {sb.year}\n【摘要与关联】: {sb.summary}\n【URL】: {sb.url}",
+                            score=0.85 if sb.evidence_level == "abstract" else 0.66,
+                            year=sb.year,
+                            location_label=f"引文雪球 ({sb.year or 'Recent'}年)",
+                            section="引文图谱扩展",
+                            doi=sb.doi,
+                            pdf_url=sb.url,
+                            authors=sb.authors,
+                            summary=sb.summary,
+                            evidence_level=sb.evidence_level,
+                            content_scope=sb.content_scope,
+                        ))
+            except Exception as e:
+                print(f"ℹ️ [CitationSnowball Note]: {e}")
+
+        return extra_cards
 
     def _enrich_top_arxiv_html(self, cards: List[UnifiedEvidenceCard], max_papers: int = 2) -> None:
         if os.getenv("ENABLE_ARXIV_HTML_ENRICHMENT", "true").lower() in ("0", "false", "no"):
@@ -312,14 +416,16 @@ class CrossSourceHybridRetriever:
             )
 
         emb_model = getattr(self.rag_engine, "embedding_model", None) if self.rag_engine else None
+        reranker = getattr(self.rag_engine, "reranker", None) if self.rag_engine else None
         selected: List[UnifiedEvidenceCard] = []
 
         if emb_model is not None and len(cards) > 2:
             try:
-                texts = [query] + [
+                doc_texts = [
                     f"{c.doc_name}. {(c.summary or c.text or '')[:450]}".strip()
                     for c in cards
                 ]
+                texts = [query] + doc_texts
                 encoded = emb_model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
                 vecs = encoded.tolist() if hasattr(encoded, "tolist") else list(encoded)
                 if len(vecs) == len(texts) and len(vecs[0]) > 4:
@@ -330,6 +436,14 @@ class CrossSourceHybridRetriever:
                         return sum(float(x) * float(y) for x, y in zip(a, b))
 
                     q_sims = [_dot(q_vec, dv) for dv in doc_vecs]
+                    if reranker is not None:
+                        try:
+                            import math
+                            raw_scores = reranker.predict([(query, dt) for dt in doc_texts])
+                            rerank_sims = [1.0 / (1.0 + math.exp(-max(-20.0, min(20.0, float(s))))) for s in raw_scores]
+                            q_sims = [0.45 * qs + 0.55 * rs for qs, rs in zip(q_sims, rerank_sims)]
+                        except Exception:
+                            pass
                     base_scores = [_base_priority(c, qs) for c, qs in zip(cards, q_sims)]
                     remaining = list(range(len(cards)))
                     selected_indices: List[int] = []
@@ -525,7 +639,7 @@ class CrossSourceHybridRetriever:
             self.last_source_errors = dict(bundle.get("source_errors") or {})
             self.last_source_counts = {
                 key: len(bundle.get(key) or []) for key in
-                ("arxiv_papers", "openalex_papers", "crossref_papers", "github_repos", "web_results", "datasets")
+                ("arxiv_papers", "openalex_papers", "crossref_papers", "semanticscholar_papers", "dblp_papers", "github_repos", "web_results", "datasets")
             }
             cards = []
 
@@ -590,6 +704,46 @@ class CrossSourceHybridRetriever:
                     evidence_level=c_level,
                     content_scope=c.get("content_scope"),
                     published_at=c.get("published_at"),
+                ))
+
+            # 3.5 Semantic Scholar
+            for sp in bundle.get("semanticscholar_papers", []):
+                sp_level = sp.get("evidence_level")
+                sp_score = 0.91 if sp_level == "abstract" else 0.70
+                cards.append(UnifiedEvidenceCard(
+                    doc_name=sp.get("title", ""),
+                    doc_type="semanticscholar",
+                    text=f"【Semantic Scholar】: {sp.get('title')}\n【主要作者】: {', '.join(sp.get('authors', [])[:3])}\n【发表年份】: {sp.get('year')}\n【摘要与影响】: {sp.get('summary')}\n【URL】: {sp.get('url')}",
+                    score=sp_score,
+                    year=sp.get("year"),
+                    location_label=f"Semantic Scholar ({sp.get('year') or 'Recent'}年)",
+                    section="Semantic Scholar 学术图谱",
+                    doi=sp.get("doi"),
+                    arxiv_id=_extract_arxiv_id_from_record(sp),
+                    pdf_url=sp.get("url"),
+                    authors=sp.get("authors", []),
+                    summary=sp.get("summary", ""),
+                    evidence_level=sp_level,
+                    content_scope=sp.get("content_scope"),
+                ))
+
+            # 3.6 DBLP
+            for dp in bundle.get("dblp_papers", []):
+                cards.append(UnifiedEvidenceCard(
+                    doc_name=dp.get("title", ""),
+                    doc_type="dblp",
+                    text=f"【DBLP 顶会/期刊】: {dp.get('title')}\n【主要作者】: {', '.join(dp.get('authors', [])[:3])}\n【发表年份】: {dp.get('year')}\n【出版信息】: {dp.get('summary')}\n【URL】: {dp.get('url')}",
+                    score=0.66,
+                    year=dp.get("year"),
+                    location_label=f"DBLP ({dp.get('year') or 'Recent'}年)",
+                    section="DBLP 计算机学术索引",
+                    doi=dp.get("doi"),
+                    arxiv_id=_extract_arxiv_id_from_record(dp),
+                    pdf_url=dp.get("url"),
+                    authors=dp.get("authors", []),
+                    summary=dp.get("summary", ""),
+                    evidence_level=dp.get("evidence_level") or "bibliographic_metadata",
+                    content_scope=dp.get("content_scope") or "bibliographic record only",
                 ))
 
             # 4. GitHub

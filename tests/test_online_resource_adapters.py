@@ -324,3 +324,56 @@ def test_search_web_respects_time_constraint_and_keeps_undated_encyclopedia(monk
     assert "Quantum mechanics" in titles
     assert any("inspirehep.net" in u and "sort=mostrecent" in u for u in seen_urls)
     assert any("quantamagazine.org" in u and "after=2024-01-01T00:00:00" in u for u in seen_urls)
+
+
+def test_dblp_handles_non_json_antibot_html_without_json_error(monkeypatch):
+    import online_paper_search_agent as ops
+
+    class HtmlResp(_Response):
+        status = 202
+        headers = Message()
+
+    HtmlResp.headers.add_header("Content-Type", "text/html; charset=utf-8")
+    monkeypatch.setattr(ops.urllib.request, "urlopen", lambda *args, **kwargs: HtmlResp(b"<html>Making sure you're not a bot!</html>"))
+    agent = ops.OnlinePaperSearchAgent.__new__(ops.OnlinePaperSearchAgent)
+    res = agent.search_dblp("OneTrans", max_results=3)
+    assert res == []
+    assert res.source_error == "Http202NonJson"
+
+
+def test_semanticscholar_429_triggers_cooldown_and_snowball_falls_back_to_openalex(monkeypatch):
+    import urllib.error
+    import online_paper_search_agent as ops
+
+    monkeypatch.setattr(ops, "_S2_COOLDOWN_UNTIL", 0.0)
+
+    def fake_urlopen(req, timeout=10):
+        url = req.full_url
+        if "api.semanticscholar.org" in url:
+            raise urllib.error.HTTPError(url, 429, "Too Many Requests", {}, None)
+        if "api.openalex.org/works?filter=doi:" in url:
+            return _Response(json.dumps({"results": [{"id": "https://openalex.org/W12345"}]}).encode("utf-8"))
+        if "api.openalex.org/works?filter=cites:W12345" in url:
+            return _Response(json.dumps({
+                "results": [{
+                    "id": "https://openalex.org/W99999",
+                    "title": "Follow-up Paper from OpenAlex",
+                    "publication_year": 2026,
+                    "cited_by_count": 5,
+                    "doi": "https://doi.org/10.1000/test",
+                    "authorships": [{"author": {"display_name": "Alice"}}],
+                    "primary_location": {"source": {"display_name": "SIGIR"}},
+                }]
+            }).encode("utf-8"))
+        raise AssertionError(f"Unexpected URL: {url}")
+
+    monkeypatch.setattr(ops.urllib.request, "urlopen", fake_urlopen)
+    agent = ops.OnlinePaperSearchAgent.__new__(ops.OnlinePaperSearchAgent)
+    s2_res = agent.search_semanticscholar("OneTrans", max_results=3)
+    assert s2_res == []
+    assert s2_res.source_error == "RateLimited"
+    assert ops._s2_in_cooldown() is True
+
+    snowball_res = agent.search_citation_snowball([{"title": "Seed", "doi": "10.1000/seed"}])
+    assert len(snowball_res) == 1
+    assert snowball_res[0].title == "Follow-up Paper from OpenAlex"

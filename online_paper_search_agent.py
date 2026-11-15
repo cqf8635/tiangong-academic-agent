@@ -32,7 +32,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from config_utils import (
-    get_default_llm_model, get_llm_timeout,
+    get_default_llm_model, get_llm_max_tokens, get_llm_timeout,
     resolve_retrieval_time_constraint, retrieval_date_bounds,
 )
 from prompts import build_academic_keyword_prompt, get_assistant_name, format_evidence_for_prompt, build_lead_tutor_system_prompt
@@ -48,10 +48,31 @@ ARXIV_MAX_RETRIES = int(os.getenv("ARXIV_MAX_RETRIES", "1"))
 ARXIV_MIN_INTERVAL = float(os.getenv("ARXIV_MIN_INTERVAL", "3.2"))
 ARXIV_RATE_LIMIT_COOLDOWN = float(os.getenv("ARXIV_RATE_LIMIT_COOLDOWN", "900"))
 ARXIV_CACHE_TTL = float(os.getenv("ARXIV_CACHE_TTL", "900"))
-ARXIV_EMPTY_CACHE_TTL = float(os.getenv("ARXIV_EMPTY_CACHE_TTL", "60"))
+ARXIV_EMPTY_CACHE_TTL = float(os.getenv("ARXIV_EMPTY_CACHE_TTL", "15"))
 ARXIV_CACHE_MAX_ENTRIES = 64
 _ARXIV_CACHE: "OrderedDict[tuple[str, int], tuple[float, List['ArxivPaper']]]" = OrderedDict()
 _ARXIV_CACHE_LOCK = threading.Lock()
+_S2_COOLDOWN_UNTIL = 0.0
+_S2_LOCK = threading.Lock()
+
+
+def _s2_headers() -> Dict[str, str]:
+    headers = {"User-Agent": "ResearchScholar/1.0", "Accept": "application/json"}
+    api_key = (os.getenv("SEMANTICSCHOLAR_API_KEY") or "").strip()
+    if api_key:
+        headers["x-api-key"] = api_key
+    return headers
+
+
+def _s2_in_cooldown() -> bool:
+    with _S2_LOCK:
+        return time.monotonic() < _S2_COOLDOWN_UNTIL
+
+
+def _s2_trigger_cooldown(seconds: float = 60.0) -> None:
+    global _S2_COOLDOWN_UNTIL
+    with _S2_LOCK:
+        _S2_COOLDOWN_UNTIL = max(_S2_COOLDOWN_UNTIL, time.monotonic() + max(10.0, seconds))
 
 
 def _arxiv_retry_after_seconds(headers) -> float:
@@ -354,12 +375,65 @@ def _build_arxiv_search_expression(phrases: List[str]) -> str:
     return " OR ".join(_format_single_arxiv_clause(phrase) for phrase in phrases[:3])
 
 
+def _build_arxiv_fallback_expressions(phrases: List[str], primary_expr: str) -> List[str]:
+    """Build progressively relaxed arXiv clauses when an over-constrained AND query yields 0 hits."""
+    candidates: List[str] = []
+    if not phrases:
+        return candidates
+    if len(phrases) > 1:
+        candidates.append(_format_single_arxiv_clause(phrases[0]))
+    words = [
+        w for w in re.findall(r"[A-Za-z0-9][\w-]*", phrases[0])
+        if w.lower() not in _QUERY_STOP_WORDS and not re.fullmatch(r"20\d{2}", w)
+    ]
+    if len(words) >= 3:
+        candidates.append(f"all:({' AND '.join(words[:2])})")
+    seen = {primary_expr}
+    unique: List[str] = []
+    for expr in candidates:
+        if expr and expr not in seen:
+            seen.add(expr)
+            unique.append(expr)
+    return unique
+
+
 def _build_github_repository_query(query: str) -> str:
     """Keep full semantic expressions; semicolon-separated expressions are alternatives."""
     phrases = _extract_academic_phrases(query)
     if not phrases:
         return query.strip()
     return " OR ".join(phrases[:3])
+
+
+def extract_prf_terms_from_papers(query: str, records: List[Dict[str, Any]], max_terms: int = 4) -> str:
+    """Pseudo-Relevance Feedback: extract real subfield terms from initial retrieved titles/abstracts."""
+    from collections import Counter
+    if not records:
+        return ""
+    query_tokens = {w.lower() for w in re.findall(r"[A-Za-z0-9][A-Za-z0-9_-]*", query or "")}
+    phrase_counts: Counter[str] = Counter()
+    for rec in records[:6]:
+        text = f"{rec.get('title') or rec.get('doc_name') or ''} {(rec.get('summary') or rec.get('text') or '')[:900]}"
+        # Capture hyphenated terms, acronyms (len>=2), and capitalized multi-word technical phrases
+        candidates = re.findall(
+            r"\b(?:[A-Z][A-Za-z0-9]+(?:[- ][A-Z][A-Za-z0-9]+){1,2}|[A-Z]{2,8}|[A-Za-z0-9]+-[A-Za-z0-9-]+)\b",
+            text,
+        )
+        seen_in_doc = set()
+        for cand in candidates:
+            norm = cand.strip()
+            low = norm.lower()
+            if len(norm) < 2 or low in _QUERY_STOP_WORDS or low in query_tokens:
+                continue
+            if any(tok in _QUERY_STOP_WORDS for tok in low.split()):
+                continue
+            if re.fullmatch(r"(?:DOI|URL|PDF|HTTP|HTTPS|API|TL|DR|ARXIV|GITHUB|OPENALEX|CROSSREF)", norm, re.I):
+                continue
+            if low not in seen_in_doc:
+                seen_in_doc.add(low)
+                phrase_counts[norm] += 1
+    ranked = [term for term, _ in phrase_counts.most_common(max_terms)]
+    return " ".join(ranked)
 
 
 class OnlinePaperSearchAgent:
@@ -396,7 +470,7 @@ class OnlinePaperSearchAgent:
             return self._keyword_cache[cache_k]
 
         prompt = build_academic_keyword_prompt(query)
-        max_retries = 1
+        max_retries = 2
         for attempt in range(1, max_retries + 1):
             try:
                 resp = self.llm_client.chat.completions.create(
@@ -404,7 +478,7 @@ class OnlinePaperSearchAgent:
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.1,
                 max_tokens=256,
-                    timeout=min(get_llm_timeout(100.0), 15.0),
+                    timeout=min(get_llm_timeout(100.0), 25.0),
                 )
                 raw = (resp.choices[0].message.content or "").strip()
                 clean_terms = raw.replace('"', '').replace("'", "").replace("\n", " ").strip()
@@ -413,8 +487,14 @@ class OnlinePaperSearchAgent:
                     self._keyword_cache[cache_k] = clean_terms
                     return clean_terms
             except Exception as e:
-                print(f"⚠️ [Keyword Extraction Fast Fallback]: {e}")
+                print(f"⚠️ [Keyword Extraction Fast Fallback (attempt {attempt}/{max_retries})]: {e}")
 
+        # 兜底保留原句中的英文专有术语/缩写，避免因翻译超时而彻底跳过 arXiv 等英文学术库
+        ascii_terms = re.findall(r"[A-Za-z][A-Za-z0-9_+-]{1,}", query)
+        if ascii_terms:
+            dedup_ascii = " ".join(dict.fromkeys(ascii_terms))
+            print(f"ℹ️ [Keyword Extraction ASCII Fallback] 保留英文学术词: \"{dedup_ascii}\"")
+            return dedup_ascii
         return query.strip()
 
     def search_arxiv(
@@ -485,35 +565,39 @@ class OnlinePaperSearchAgent:
                     is_background=False,
                 )
                 papers = self._parse_atom_feed(xml_data)
-                if not papers and len(phrases) > 1:
-                    fallback_query = f'all:"{phrases[0]}"'
-                    fallback_query += date_filter
-                    fb_params = {
-                        "search_query": fallback_query,
-                        "start": 0,
-                        "max_results": max_results,
-                        "sortBy": "submittedDate" if sort_by_date else "relevance",
-                        "sortOrder": "descending",
-                    }
-                    fb_url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(fb_params)}"
-                    fb_req = urllib.request.Request(
-                        fb_url,
-                        headers={
-                            "User-Agent": ARXIV_USER_AGENT,
-                            "Accept": "application/atom+xml, application/xml",
-                        },
-                    )
-                    try:
-                        fb_xml = _ARXIV_SCHEDULER.execute(
-                            fb_req,
-                            timeout=ARXIV_REQUEST_TIMEOUT,
-                            is_background=False,
+                if not papers:
+                    primary_expr = arxiv_query[:-len(date_filter)] if date_filter else arxiv_query
+                    for relaxed_expr in _build_arxiv_fallback_expressions(phrases, primary_expr):
+                        fallback_query = relaxed_expr + date_filter
+                        fb_params = {
+                            "search_query": fallback_query,
+                            "start": 0,
+                            "max_results": max_results,
+                            "sortBy": "submittedDate" if sort_by_date else "relevance",
+                            "sortOrder": "descending",
+                        }
+                        fb_url = f"{ARXIV_API_URL}?{urllib.parse.urlencode(fb_params)}"
+                        fb_req = urllib.request.Request(
+                            fb_url,
+                            headers={
+                                "User-Agent": ARXIV_USER_AGENT,
+                                "Accept": "application/atom+xml, application/xml",
+                            },
                         )
-                        fb_papers = self._parse_atom_feed(fb_xml)
-                        if fb_papers:
-                            papers = fb_papers
-                    except Exception as fb_err:
-                        print(f"ℹ️ [ArxivSearch] 双短语回退单核心短语提示: {fb_err}")
+                        try:
+                            fb_xml = _ARXIV_SCHEDULER.execute(
+                                fb_req,
+                                timeout=ARXIV_REQUEST_TIMEOUT,
+                                is_background=False,
+                            )
+                            fb_papers = self._parse_atom_feed(fb_xml)
+                            if fb_papers:
+                                papers = fb_papers
+                                print(f"🔄 [ArxivSearch] 逐级放宽检索命中 {len(papers)} 篇: {relaxed_expr}")
+                                break
+                        except Exception as fb_err:
+                            print(f"ℹ️ [ArxivSearch] 逐级放宽检索提示: {fb_err}")
+                            break
 
                 with _ARXIV_CACHE_LOCK:
                     _ARXIV_CACHE[cache_key] = (time.monotonic(), papers)
@@ -863,6 +947,8 @@ class OnlinePaperSearchAgent:
 
     def search_semanticscholar(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 Semantic Scholar API 检索文献极速摘要与学术引用影响力 (防噪高信噪比)"""
+        if _s2_in_cooldown():
+            return SearchResults([], "RateLimited")
         clean_q = re.sub(r"[\"'`]", "", query).strip()
         params = {
             "query": clean_q,
@@ -870,12 +956,10 @@ class OnlinePaperSearchAgent:
             "fields": "title,authors,year,abstract,citationCount,influentialCitationCount,venue,url,tldr"
         }
         url = f"https://api.semanticscholar.org/graph/v1/paper/search?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(
-            url,
-            headers={"User-Agent": "ResearchScholar/1.0"}
-        )
+        req = urllib.request.Request(url, headers=_s2_headers())
 
         resources = []
+        source_error = None
         try:
             with urllib.request.urlopen(req, timeout=10) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
@@ -887,22 +971,219 @@ class OnlinePaperSearchAgent:
                 cited = it.get("citationCount", 0)
                 venue = it.get("venue") or "国际同行评议学术出版物"
                 authors = [a.get("name", "") for a in it.get("authors", []) if a.get("name")]
-                tldr = (it.get("tldr") or {}).get("text") or it.get("abstract") or ""
-                summary = f"📌 TL;DR: {tldr[:200]}... | 📊 引用: {cited} 次 | 录用: {venue}"
+                tldr = ((it.get("tldr") or {}).get("text") or "").strip()
+                abstract = (it.get("abstract") or "").strip()
+                body_parts = []
+                if tldr:
+                    body_parts.append(f"📌 TL;DR: {tldr}")
+                if abstract:
+                    body_parts.append(abstract[:1200])
+                body_parts.append(f"📊 引用: {cited} 次 | 录用: {venue}")
+                summary = "\n".join(body_parts)
                 resources.append(AcademicResource(
                     id=it.get("paperId", title),
                     title=title,
                     authors=authors[:4],
                     year=year,
                     source="semanticscholar",
+                    evidence_level="abstract" if (abstract or tldr) else "bibliographic_metadata",
+                    content_scope="indexed abstract" if (abstract or tldr) else "bibliographic record only",
                     summary=summary,
                     url=it.get("url") or "",
                     citation_count=cited,
                     venue=venue
                 ))
+        except urllib.error.HTTPError as he:
+            source_error = "RateLimited" if he.code == 429 else type(he).__name__
+            if he.code == 429:
+                _s2_trigger_cooldown(60.0)
+                print("ℹ️ [SemanticScholar Note]: 公共接口触发限流 (429)，已进入 60s 冷却并由 OpenAlex/CrossRef 接管。")
+            else:
+                print(f"⚠️ [SemanticScholar Note]: {he}")
         except Exception as e:
+            source_error = type(e).__name__
             print(f"⚠️ [SemanticScholar Note]: {e}")
-        return resources
+        return SearchResults(resources, source_error)
+
+    def search_citation_snowball(
+        self,
+        seed_cards: List[Dict[str, Any]],
+        max_per_seed: int = 4,
+        time_constraint: Optional[Dict[str, Any]] = None,
+    ) -> List[AcademicResource]:
+        """引文雪球扩展：基于首轮种子论文在 Semantic Scholar 图谱中抓取前向引用与后向参考文献，突破关键词猜词限制。"""
+        from concurrent.futures import ThreadPoolExecutor
+
+        time_constraint = resolve_retrieval_time_constraint(time_constraint)
+        is_explicit_tc = bool(time_constraint and time_constraint.get("basis") != "default_three_years")
+        date_bounds = retrieval_date_bounds(time_constraint) if is_explicit_tc else None
+        min_year = int(date_bounds[0][:4]) if date_bounds else None
+        max_year = int(date_bounds[1][:4]) if date_bounds else None
+
+        seed_refs: List[tuple[str, str]] = []
+        seen_refs = set()
+        for card in seed_cards or []:
+            if not isinstance(card, dict):
+                continue
+            title = str(card.get("title") or card.get("doc_name") or "").strip()
+            arxiv_id = str(card.get("arxiv_id") or "").strip()
+            doi = str(card.get("doi") or "").strip()
+            raw_id = str(card.get("paper_id") or card.get("id") or "").strip()
+            ref = ""
+            if arxiv_id:
+                clean_arx = re.sub(r"v\d+$", "", arxiv_id, flags=re.I)
+                ref = f"ARXIV:{clean_arx}"
+            elif doi:
+                clean_doi = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", doi, flags=re.I)
+                ref = f"DOI:{clean_doi}"
+            elif re.fullmatch(r"[0-9a-f]{40}", raw_id, re.I):
+                ref = raw_id
+            if ref and ref not in seen_refs:
+                seen_refs.add(ref)
+                seed_refs.append((ref, title))
+            if len(seed_refs) >= 2:
+                break
+
+        if not seed_refs:
+            return SearchResults()
+
+        def _fetch_openalex_citations(paper_ref: str, seed_title: str) -> List[AcademicResource]:
+            doi = ""
+            if paper_ref.startswith("DOI:"):
+                doi = paper_ref[4:]
+            elif paper_ref.startswith("ARXIV:"):
+                doi = f"10.48550/arXiv.{paper_ref[6:]}"
+            if not doi:
+                return []
+            lookup_url = f"https://api.openalex.org/works?filter=doi:{urllib.parse.quote(doi)}&per-page=1"
+            lookup_req = urllib.request.Request(lookup_url, headers={"User-Agent": "ResearchScholar/1.0 (mailto:research@example.org)"})
+            with urllib.request.urlopen(lookup_req, timeout=6) as resp:
+                wdata = json.loads(resp.read().decode("utf-8"))
+            works = wdata.get("results") or []
+            if not works:
+                return []
+            work_id = str(works[0].get("id") or "").rstrip("/").split("/")[-1]
+            if not work_id:
+                return []
+            cites_url = (
+                f"https://api.openalex.org/works?filter=cites:{work_id}"
+                f"&sort=cited_by_count:desc&per-page={max_per_seed}"
+            )
+            cites_req = urllib.request.Request(cites_url, headers={"User-Agent": "ResearchScholar/1.0 (mailto:research@example.org)"})
+            with urllib.request.urlopen(cites_req, timeout=6) as resp:
+                cdata = json.loads(resp.read().decode("utf-8"))
+            out: List[AcademicResource] = []
+            scope_seed = f"《{seed_title[:45]}》" if seed_title else paper_ref
+            for w in cdata.get("results") or []:
+                p_title = (w.get("title") or "").strip()
+                if not p_title:
+                    continue
+                year = w.get("publication_year")
+                if isinstance(year, int):
+                    if min_year and year < min_year:
+                        continue
+                    if max_year and year > max_year:
+                        continue
+                cited = w.get("cited_by_count", 0)
+                p_doi = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", str(w.get("doi") or ""), flags=re.I)
+                authors = [((a.get("author") or {}).get("display_name") or "") for a in (w.get("authorships") or [])[:4]]
+                authors = [a for a in authors if a]
+                venue = (((w.get("primary_location") or {}).get("source") or {}).get("display_name") or "国际学术出版物")
+                inv_abs = w.get("abstract_inverted_index")
+                abstract = ""
+                if isinstance(inv_abs, dict) and inv_abs:
+                    pos_words = [(pos, word) for word, positions in inv_abs.items() for pos in positions]
+                    pos_words.sort(key=lambda x: x[0])
+                    abstract = " ".join(word for _, word in pos_words)
+                summary = (
+                    f"{abstract[:1000]}\n" if abstract else ""
+                ) + f"🕸️ 引文雪球[前向引用(后续工作) <- {scope_seed}] | 📊 引用: {cited} 次 | 载体: {venue}"
+                out.append(AcademicResource(
+                    id=str(w.get("id") or p_doi or p_title),
+                    title=p_title,
+                    authors=authors,
+                    year=year,
+                    source="citation_snowball",
+                    doi=p_doi or None,
+                    evidence_level="abstract" if abstract else "bibliographic_metadata",
+                    content_scope=f"openalex citation snowball from {paper_ref}",
+                    summary=summary,
+                    url=str(w.get("id") or (f"https://doi.org/{p_doi}" if p_doi else "")),
+                    citation_count=cited,
+                    venue=venue,
+                ))
+            return out
+
+        def _fetch_edge(paper_ref: str, seed_title: str, edge: str) -> List[AcademicResource]:
+            if _s2_in_cooldown():
+                return _fetch_openalex_citations(paper_ref, seed_title) if edge == "citations" else []
+            rel_key = "citingPaper" if edge == "citations" else "citedPaper"
+            fields = "title,authors,year,abstract,citationCount,venue,url,externalIds"
+            url = (
+                f"https://api.semanticscholar.org/graph/v1/paper/{urllib.parse.quote(paper_ref, safe=':')}/{edge}"
+                f"?fields={fields}&limit={max_per_seed}"
+            )
+            req = urllib.request.Request(url, headers=_s2_headers())
+            out: List[AcademicResource] = []
+            try:
+                with urllib.request.urlopen(req, timeout=6) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as he:
+                if he.code == 429:
+                    _s2_trigger_cooldown(60.0)
+                    return _fetch_openalex_citations(paper_ref, seed_title) if edge == "citations" else []
+                raise
+            for row in data.get("data", []):
+                p = row.get(rel_key) if isinstance(row, dict) else None
+                if not isinstance(p, dict):
+                    continue
+                p_title = (p.get("title") or "").strip()
+                if not p_title:
+                    continue
+                year = p.get("year")
+                if edge == "citations" and isinstance(year, int):
+                    if min_year and year < min_year:
+                        continue
+                    if max_year and year > max_year:
+                        continue
+                cited = p.get("citationCount", 0)
+                venue = p.get("venue") or "国际学术出版物"
+                authors = [a.get("name", "") for a in (p.get("authors") or []) if a.get("name")]
+                abstract = (p.get("abstract") or "").strip()
+                ext = p.get("externalIds") or {}
+                p_doi = ext.get("DOI") or ""
+                rel_label = "前向引用(后续工作)" if edge == "citations" else "后向参考文献(基线/源头)"
+                scope_seed = f"《{seed_title[:45]}》" if seed_title else paper_ref
+                summary = (
+                    f"{abstract[:1000]}\n" if abstract else ""
+                ) + f"🕸️ 引文雪球[{rel_label} <- {scope_seed}] | 📊 引用: {cited} 次 | 载体: {venue}"
+                out.append(AcademicResource(
+                    id=p.get("paperId") or p_doi or p_title,
+                    title=p_title,
+                    authors=authors[:4],
+                    year=year,
+                    source="citation_snowball",
+                    doi=p_doi or None,
+                    evidence_level="abstract" if abstract else "bibliographic_metadata",
+                    content_scope=f"citation snowball ({edge}) from {paper_ref}",
+                    summary=summary,
+                    url=p.get("url") or (f"https://doi.org/{p_doi}" if p_doi else ""),
+                    citation_count=cited,
+                    venue=venue,
+                ))
+            return out
+
+        resources: List[AcademicResource] = []
+        source_error = None
+        tasks = [(ref, title, edge) for ref, title in seed_refs for edge in ("citations", "references")]
+        with ThreadPoolExecutor(max_workers=len(tasks)) as executor:
+            futures = [executor.submit(_fetch_edge, ref, title, edge) for ref, title, edge in tasks]
+            for fut in futures:
+                try:
+                    resources.extend(fut.result(timeout=7))
+                except Exception as e:
+                    source_error = source_error or type(e).__name__
+        return SearchResults(resources, source_error)
 
     def search_europe_pmc(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 Europe PMC / PubMed API 检索全球生物医药、临床健康与生命科学顶刊 (免登录)"""
@@ -1040,12 +1321,25 @@ class OnlinePaperSearchAgent:
         clean_q = re.sub(r"[\"'`]", "", query).strip()
         params = {"q": clean_q, "format": "json", "h": max_results}
         url = f"https://dblp.org/search/publ/api?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(url, headers={"User-Agent": "ResearchScholar/1.0"})
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "ResearchScholar/1.0", "Accept": "application/json"},
+        )
 
         resources = []
+        source_error = None
         try:
             with urllib.request.urlopen(req, timeout=10) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+                status = getattr(resp, "status", 200)
+                content_type = str(resp.headers.get("Content-Type", "")).casefold()
+                raw_text = resp.read().decode("utf-8", errors="replace").strip()
+            if status != 200 or ("json" not in content_type and not raw_text.startswith("{")):
+                source_error = f"Http{status}NonJson"
+                print(f"ℹ️ [DBLPSearch Note]: 接口返回非 JSON 响应 (HTTP {status})，已跳过由 OpenAlex/CrossRef 接管。")
+                return SearchResults(resources, source_error)
+            if not raw_text:
+                return SearchResults(resources, "EmptyResponse")
+            data = json.loads(raw_text)
             hits = data.get("result", {}).get("hits", {}).get("hit", [])
             for h in hits:
                 info = h.get("info", {})
@@ -1071,14 +1365,17 @@ class OnlinePaperSearchAgent:
                     authors=authors,
                     year=year,
                     source="dblp",
+                    evidence_level="bibliographic_metadata",
+                    content_scope="bibliographic record only",
                     summary=summary,
                     url=info.get("ee") or info.get("url") or "",
                     doi=doi,
                     venue=venue
                 ))
         except Exception as e:
+            source_error = type(e).__name__
             print(f"⚠️ [DBLPSearch Note]: {e}")
-        return resources
+        return SearchResults(resources, source_error)
 
     def search_github(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 GitHub API 检索开源代码仓库、论文官方实现与 Star 趋势"""
@@ -1106,7 +1403,7 @@ class OnlinePaperSearchAgent:
             with urllib.request.urlopen(req, timeout=8) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             resources = []
-            detail_limit = max(0, min(int(os.getenv("GITHUB_DETAIL_FETCH_LIMIT", "2")), max_results, 4))
+            detail_limit = max(0, min(int(os.getenv("GITHUB_DETAIL_FETCH_LIMIT", "1")), max_results, 4))
             for index, repo in enumerate(data.get("items", [])):
                 full_name = repo.get("full_name", "")
                 desc = repo.get("description") or "无描述"
@@ -1127,7 +1424,7 @@ class OnlinePaperSearchAgent:
                         readme_req = urllib.request.Request(
                             f"https://api.github.com/repos/{full_name}/readme", headers=api_headers
                         )
-                        with urllib.request.urlopen(readme_req, timeout=8) as readme_resp:
+                        with urllib.request.urlopen(readme_req, timeout=4) as readme_resp:
                             readme_data = json.loads(readme_resp.read().decode("utf-8"))
                         encoded = readme_data.get("content", "")
                         if encoded:
@@ -1139,7 +1436,7 @@ class OnlinePaperSearchAgent:
                         commit_req = urllib.request.Request(
                             f"https://api.github.com/repos/{full_name}/commits?per_page=1", headers=api_headers
                         )
-                        with urllib.request.urlopen(commit_req, timeout=8) as commit_resp:
+                        with urllib.request.urlopen(commit_req, timeout=4) as commit_resp:
                             commits = json.loads(commit_resp.read().decode("utf-8"))
                         if commits:
                             sha = str(commits[0].get("sha") or "")
@@ -1206,15 +1503,19 @@ class OnlinePaperSearchAgent:
         arxiv_papers = []
         openalex_papers = []
         crossref_papers = []
+        semanticscholar_papers = []
+        dblp_papers = []
         github_repos = []
         web_results = []
         datasets = []
         source_errors = {}
 
-        with ThreadPoolExecutor(max_workers=6) as executor:
+        with ThreadPoolExecutor(max_workers=8) as executor:
             fut_arxiv = executor.submit(self.search_arxiv, academic_target, limit_per_source, time_constraint) if academic_target else None
             fut_openalex = executor.submit(self.search_openalex, effective_query, limit_per_source, time_constraint)
             fut_crossref = executor.submit(self.search_crossref, effective_query, limit_per_source, time_constraint)
+            fut_s2 = executor.submit(self.search_semanticscholar, effective_query, min(limit_per_source, 6))
+            fut_dblp = executor.submit(self.search_dblp, effective_query, min(limit_per_source, 5))
             github_query = f"{query.strip()} {academic_target}".strip()
             fut_github = executor.submit(self.search_github, github_query, limit_per_source) if include_github else None
             if include_web or include_datasets:
@@ -1227,7 +1528,7 @@ class OnlinePaperSearchAgent:
 
             if fut_arxiv:
                 try:
-                    arxiv_papers = fut_arxiv.result(timeout=15)
+                    arxiv_papers = fut_arxiv.result(timeout=22)
                 except Exception as e:
                     source_errors["arxiv"] = type(e).__name__
                     print(f"⚠️ [ArXiv Thread Note]: {e or type(e).__name__}")
@@ -1243,6 +1544,18 @@ class OnlinePaperSearchAgent:
             except Exception as e:
                 source_errors["crossref"] = type(e).__name__
                 print(f"⚠️ [CrossRef Thread Note]: {e or type(e).__name__}")
+
+            try:
+                semanticscholar_papers = fut_s2.result(timeout=15)
+            except Exception as e:
+                source_errors["semanticscholar"] = type(e).__name__
+                print(f"⚠️ [SemanticScholar Thread Note]: {e or type(e).__name__}")
+
+            try:
+                dblp_papers = fut_dblp.result(timeout=15)
+            except Exception as e:
+                source_errors["dblp"] = type(e).__name__
+                print(f"⚠️ [DBLP Thread Note]: {e or type(e).__name__}")
 
             if fut_github:
                 try:
@@ -1264,7 +1577,8 @@ class OnlinePaperSearchAgent:
                         print(f"⚠️ [{source_name} Thread Note]: {e or type(e).__name__}")
 
         for source, records in (("arxiv", arxiv_papers), ("openalex", openalex_papers),
-                ("crossref", crossref_papers), ("github", github_repos), ("web", web_results), ("datasets", datasets)):
+                ("crossref", crossref_papers), ("semanticscholar", semanticscholar_papers),
+                ("dblp", dblp_papers), ("github", github_repos), ("web", web_results), ("datasets", datasets)):
             if getattr(records, "source_error", None):
                 source_errors[source] = records.source_error
 
@@ -1272,11 +1586,13 @@ class OnlinePaperSearchAgent:
             "arxiv_papers": [p.model_dump() for p in arxiv_papers],
             "openalex_papers": [p.model_dump() for p in openalex_papers],
             "crossref_papers": [p.model_dump() for p in crossref_papers],
+            "semanticscholar_papers": [p.model_dump() for p in semanticscholar_papers],
+            "dblp_papers": [p.model_dump() for p in dblp_papers],
             "github_repos": [r.model_dump() for r in github_repos],
             "web_results": web_results,
             "datasets": datasets,
             "source_errors": source_errors,
-            "total_found": len(arxiv_papers) + len(openalex_papers) + len(crossref_papers) + len(github_repos) + len(web_results) + len(datasets)
+            "total_found": len(arxiv_papers) + len(openalex_papers) + len(crossref_papers) + len(semanticscholar_papers) + len(dblp_papers) + len(github_repos) + len(web_results) + len(datasets)
         }
 
     def _parse_atom_feed(self, xml_bytes: bytes) -> List[ArxivPaper]:
@@ -1577,7 +1893,7 @@ class OnlinePaperSearchAgent:
                 model=model_name,
                 messages=[{"role": "user", "content": system_prompt + "\n\n" + prompt}],
                 temperature=0.3,
-                max_tokens=4096,
+                max_tokens=get_llm_max_tokens(),
                 timeout=get_llm_timeout(100.0),
             )
             return res_str or f"{partner_name}已完成文献检索研讨分析。"

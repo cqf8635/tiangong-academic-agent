@@ -42,7 +42,7 @@ from subject_memory import transition_subject_state
 from workflow_contracts import (build_task_snapshot, task_decision, task_payload, task_prompt,
                                 citation_integrity, append_answer, merge_evidence, merge_text, completion_checks)
 
-from config_utils import get_default_llm_model, get_llm_timeout, resolve_retrieval_time_constraint
+from config_utils import get_default_llm_model, get_llm_max_tokens, get_llm_timeout, resolve_retrieval_time_constraint
 import prompts
 from prompts import (
     build_lead_tutor_system_prompt,
@@ -783,10 +783,10 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
         incoming_candidates = []
         for c in evidence_chunks:
             kind = c.get("doc_type", "")
-            if c.get("excluded_as_irrelevant") or kind not in {"arxiv", "openalex", "crossref", "github", "web", "dataset", "fused_academic"}:
+            if c.get("excluded_as_irrelevant") or kind not in {"arxiv", "openalex", "crossref", "semanticscholar", "dblp", "citation_snowball", "github", "web", "dataset", "fused_academic"}:
                 continue
             sources = c.get("sources_merged") or []
-            source = next((v for v in sources if v in {"arxiv", "openalex", "crossref", "github"}), kind) if kind == "fused_academic" else kind
+            source = next((v for v in sources if v in {"arxiv", "openalex", "crossref", "semanticscholar", "dblp", "citation_snowball", "github"}), kind) if kind == "fused_academic" else kind
             incoming_candidates.append({"paper_id": str(c.get("arxiv_id") or c.get("doi") or c.get("doc_name") or ""),
                 "title": c.get("doc_name") or "未命名文献", "authors": c.get("authors") or [],
                 "year": c.get("year") or (c.get("provenance") or {}).get("year") or c.get("page_or_slide"),
@@ -1191,11 +1191,12 @@ def safe_chat_completion(
     temperature: float = 0.3,
     max_retries: int = 3,
     timeout: Optional[float] = None,
-    max_tokens: Optional[int] = 12288,
+    max_tokens: Optional[int] = None,
     broadcast: bool = True,
 ) -> str:
     """带全局并发流控、智能错峰退避、实时 SSE 广播与精准分类熔断的 LLM 安全调用封装"""
     eff_timeout = timeout if timeout is not None else DEFAULT_LLM_TIMEOUT
+    eff_max_tokens = max_tokens if max_tokens is not None else get_llm_max_tokens()
     prompt_chars = sum(len(str(m.get("content", ""))) for m in messages if isinstance(m, dict))
     fallback_model = os.getenv("OPENAI_FALLBACK_MODEL", "").strip()
     last_err = None
@@ -1204,7 +1205,7 @@ def safe_chat_completion(
         attempt_started = time.monotonic()
         try:
             with GLOBAL_LLM_SEMAPHORE:
-                print(f"🌐 [LLM-API] 正在调用大模型 ({active_model} | 尝试 {attempt}/{max_retries} | 单次时限: {eff_timeout}s)...")
+                print(f"🌐 [LLM-API] 正在调用大模型 ({active_model} | 尝试 {attempt}/{max_retries} | 单次时限: {eff_timeout}s | max_tokens={eff_max_tokens})...")
                 kwargs = {
                     "model": active_model,
                     "messages": messages,
@@ -1212,8 +1213,8 @@ def safe_chat_completion(
                     "timeout": eff_timeout,
                     "stream": True,
                 }
-                if max_tokens:
-                    kwargs["max_tokens"] = max_tokens
+                if eff_max_tokens:
+                    kwargs["max_tokens"] = eff_max_tokens
 
                 stream = client.chat.completions.create(**kwargs)
                 collected = []
@@ -1233,6 +1234,8 @@ def safe_chat_completion(
                 res_str = "".join(collected).strip()
                 if res_str:
                     print(f"✅ [LLM-API] 收到大模型回复 (总字数: {len(res_str)}, finish_reason={finish_reason or 'unknown'})")
+                    if finish_reason == "length":
+                        print(f"⚠️ [LLM-API TRUNCATED] 输出因达到 max_tokens={eff_max_tokens} 上限被截断 (finish_reason=length)")
                     print(
                         f"📊 [LLM-UsageEstimate] model={active_model} elapsed_s={time.monotonic() - attempt_started:.2f} "
                         f"prompt_chars={prompt_chars} output_chars={len(res_str)} "
@@ -1853,7 +1856,6 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
                     model=model,
                     messages=[{"role": "user", "content": spec_prompt}],
                     temperature=0.2,
-                    max_tokens=6144,
                     broadcast=False,
                     timeout=get_llm_timeout(),
                 )
@@ -2052,7 +2054,6 @@ def evidence_synthesis_node(state: MasterAgentState) -> Dict[str, Any]:
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
             broadcast=False,
-            max_tokens=600,
             timeout=get_llm_timeout(),
         )
         clean_slate = slate_raw.strip()
@@ -2342,7 +2343,7 @@ def dialectical_inquiry_node(state: MasterAgentState) -> Dict[str, Any]:
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
             broadcast=False,
-            max_tokens=4096,
+            max_tokens=get_llm_max_tokens(8192),
             timeout=get_llm_timeout(),
         )
 
@@ -2531,7 +2532,7 @@ def evidence_append_node(state: MasterAgentState) -> Dict[str, Any]:
     )
     try:
         addition = safe_chat_completion(client=MasterEngineRegistry.get_llm_client(), model=get_default_llm_model(),
-            messages=[{"role": "user", "content": prompt}], temperature=0.2, max_tokens=6144, timeout=get_llm_timeout())
+            messages=[{"role": "user", "content": prompt}], temperature=0.2, timeout=get_llm_timeout())
         append_checks = {"supplement_completion": completion_checks(addition)["model_completion"]} if completion_checks(addition) else {}
         addition = (addition or "").strip()
         if "【搭档提示】" in addition:

@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-from config_utils import get_default_llm_model, get_llm_timeout
+from config_utils import get_default_llm_model, get_llm_max_tokens, get_llm_timeout
 from prompts import build_meeting_reduce_system_prompt
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -107,6 +107,7 @@ class MeetingSummarizer:
                         model=self.model,
                         messages=[{"role": "user", "content": prompt}],
                         temperature=0.0,
+                        max_tokens=get_llm_max_tokens(),
                         timeout=get_llm_timeout(60.0),
                     )
                     map_summaries.append(f"【切片 {idx} 摘要】: " + resp.choices[0].message.content)
@@ -128,6 +129,7 @@ class MeetingSummarizer:
             ],
             response_format={"type": "json_object"},
             temperature=0.0,
+            max_tokens=get_llm_max_tokens(),
             timeout=get_llm_timeout(90.0),
         )
 

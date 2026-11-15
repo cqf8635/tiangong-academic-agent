@@ -66,6 +66,19 @@ def get_llm_timeout(default: float = 100.0) -> float:
     return float(default)
 
 
+def get_llm_max_tokens(default: int = 12288) -> int:
+    """统一解析全局大模型单次生成最大 token 上限，避免各节点硬编码低上限导致隐蔽截断"""
+    val = os.getenv("LLM_MAX_TOKENS")
+    if val:
+        try:
+            parsed = int(val)
+            if parsed > 0:
+                return parsed
+        except (ValueError, TypeError):
+            pass
+    return int(default)
+
+
 def resolve_model_path(
     env_key: str,
     local_subpath: str,

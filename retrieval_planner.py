@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Literal
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-from config_utils import get_default_llm_model, get_llm_timeout, resolve_retrieval_time_constraint
+from config_utils import get_default_llm_model, get_llm_max_tokens, get_llm_timeout, resolve_retrieval_time_constraint
 from prompts import TASK_COVERAGE_GUIDANCE, EVIDENCE_GUIDANCE
 
 
@@ -312,7 +312,7 @@ class RetrievalPlannerAgent:
             ],
             response_format={"type": "json_object"},
             temperature=0,
-            max_tokens=4096,
+            max_tokens=get_llm_max_tokens(8192),
             timeout=min(get_llm_timeout(60), 60),
         )
         content = (response.choices[0].message.content or "").strip()
@@ -418,7 +418,7 @@ class RetrievalPlannerAgent:
             ],
             response_format={"type": "json_object"},
             temperature=0,
-            max_tokens=4096,
+            max_tokens=get_llm_max_tokens(8192),
             timeout=min(get_llm_timeout(60), 60),
         )
         content = (response.choices[0].message.content or "{}").strip()
