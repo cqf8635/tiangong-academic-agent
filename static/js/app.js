@@ -2056,9 +2056,9 @@ document.addEventListener('DOMContentLoaded', () => {
               🧹 清空
             </button>
           </summary>
-          <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
+          <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 5px;">
             ${synced.map(sp => `
-              <div class="doc-item synced-item" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; font-size: 0.72rem; opacity: 0.9;">
+              <div class="doc-item synced-item" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; font-size: 0.76rem; opacity: 0.92;">
                 <div style="display: flex; align-items: center; gap: 4px; flex: 1; overflow: hidden;">
                   <span class="doc-name" title="${escapeHtml(sp.doc_name)}${sp.year ? ' (' + escapeHtml(sp.year) + ')' : ''}" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(sp.doc_name)}</span>
                   ${sp.year ? `<span class="doc-badge" style="font-size: 0.62rem;">${escapeHtml(sp.year)}</span>` : ''}
