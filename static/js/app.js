@@ -1788,8 +1788,62 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.retrieved_evidence) {
           updateEvidencePanel(data.retrieved_evidence);
         }
+        if (evTabContent) {
+          evTabContent.scrollTop = 0;
+        }
       });
     });
+
+    // 允许点击正文中的 [n] 引用角标直接跳转到右侧对应证据卡片
+    const bodyEl = msgDiv.querySelector('.markdown-body-text');
+    if (bodyEl && data.retrieved_evidence && data.retrieved_evidence.length > 0) {
+      const walker = document.createTreeWalker(bodyEl, NodeFilter.SHOW_TEXT, null);
+      const textNodes = [];
+      let n;
+      while ((n = walker.nextNode())) {
+        if (!n.parentElement.closest('a, code, pre') && /\[\d+\]/.test(n.nodeValue)) {
+          textNodes.push(n);
+        }
+      }
+      textNodes.forEach((tn) => {
+        const frag = document.createDocumentFragment();
+        const parts = tn.nodeValue.split(/(\[\d+\])/g);
+        parts.forEach((part) => {
+          const m = part.match(/^\[(\d+)\]$/);
+          if (m) {
+            const idx = parseInt(m[1], 10);
+            if (idx >= 1 && idx <= data.retrieved_evidence.length) {
+              const btn = document.createElement('span');
+              btn.className = 'inline-cite-jump';
+              btn.textContent = part;
+              btn.title = `点击查看右侧第 [${idx}] 条证据详情`;
+              btn.style.cssText = 'color:#0284c7;cursor:pointer;font-weight:600;text-decoration:underline dotted;';
+              btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                const evTabBtn = document.querySelector('[data-tab="tab-evidence"]');
+                const evTabContent = document.getElementById('tab-evidence');
+                if (evTabBtn && evTabContent) {
+                  evTabBtn.classList.add('active');
+                  evTabContent.classList.add('active');
+                }
+                updateEvidencePanel(data.retrieved_evidence);
+                const card = document.getElementById(`evidence-card-${idx}`);
+                if (card) {
+                  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  card.style.outline = '2px solid #0284c7';
+                  setTimeout(() => { card.style.outline = ''; }, 1800);
+                }
+              });
+              frag.appendChild(btn);
+              return;
+            }
+          }
+          frag.appendChild(document.createTextNode(part));
+        });
+        tn.parentNode.replaceChild(frag, tn);
+      });
+    }
 
     if (window.renderMathInElement) {
       const badgesContainer = msgDiv.querySelector('.evidence-badges');
@@ -2219,7 +2273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
       return `
-        <div class="evidence-card">
+        <div class="evidence-card" id="evidence-card-${origIdx}">
           <div class="evidence-card-header">
             [${origIdx}] 《${formatMathInText(docName)}》 ${escapeHtml(locLabel)}${scoreText}
           </div>
@@ -2935,8 +2989,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatMathInText(text) {
     if (!text) return '';
     let src = String(text);
-    // 规范化双反斜杠转义与连字符
+    // 规范化双反斜杠转义、连字符以及 KaTeX 不支持的 \ensuremath 宏
     src = src.replace(/\\\\([a-zA-Z()\[\]{}])/g, '\\$1').replace(/\\([-_])/g, '$1');
+    src = src.replace(/\\ensuremath\{([^{}]*)\}/g, '$1').replace(/\\ensuremath\b\s*/g, '');
     const mathTokens = [];
 
     // 1. 提取 display math: $$...$$, \\[...\\]
