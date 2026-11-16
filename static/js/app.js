@@ -3009,8 +3009,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return id;
     });
 
-    // 3. 转义非公式部分的 HTML 字符
+    // 3. 转义非公式部分的 HTML 字符（允许安全的 <br> 换行标签还原）
     src = escapeHtml(src);
+    src = src.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
     // 将换行转换为 <br/>
     src = src.replace(/\n/g, '<br/>');
 
