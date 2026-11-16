@@ -377,3 +377,42 @@ def test_semanticscholar_429_triggers_cooldown_and_snowball_falls_back_to_openal
     snowball_res = agent.search_citation_snowball([{"title": "Seed", "doi": "10.1000/seed"}])
     assert len(snowball_res) == 1
     assert snowball_res[0].title == "Follow-up Paper from OpenAlex"
+
+
+def test_enrich_top_arxiv_html_includes_fused_academic_and_balanced_sections(monkeypatch):
+    from cross_source_hybrid_retriever import CrossSourceHybridRetriever, UnifiedEvidenceCard
+    from online_resource_adapters import fetch_arxiv_html_sections
+
+    retriever = CrossSourceHybridRetriever.__new__(CrossSourceHybridRetriever)
+    cards = [
+        UnifiedEvidenceCard(
+            doc_name="OneTrans-V2",
+            doc_type="fused_academic",
+            text="abs V2",
+            score=0.98,
+            arxiv_id="2609.28589",
+            evidence_level="bibliographic_metadata_or_abstract",
+        ),
+    ]
+    monkeypatch.setattr(
+        "online_resource_adapters.fetch_arxiv_html_sections",
+        lambda aid: {"text": f"Balanced method for {aid}", "evidence_level": "full_text_excerpt", "content_scope": "arXiv HTML"},
+    )
+    retriever._enrich_top_arxiv_html(cards, max_papers=4)
+    assert cards[0].evidence_level == "full_text_excerpt"
+    assert "Balanced method for 2609.28589" in cards[0].text
+
+    html = (
+        "<html><body>"
+        "<section><h2>1 Introduction</h2><p>" + ("Intro background context. " * 200) + "</p></section>"
+        "<section><h2>2 Method</h2><p>" + ("Core unified transformer architecture details. " * 20) + "</p></section>"
+        "<section><h2>3 Experiments</h2><p>" + ("Ablation results show +2.3% AUC gain. " * 20) + "</p></section>"
+        "</body></html>"
+    ).encode("utf-8")
+    class _HtmlResp(_Response):
+        headers = type("_Hdrs", (), {"get": lambda self, k, d="": "text/html; charset=utf-8" if k == "Content-Type" else d, "get_content_charset": lambda self: "utf-8"})()
+
+    monkeypatch.setattr("online_resource_adapters.urlopen", lambda req, timeout=10: _HtmlResp(html))
+    parsed = fetch_arxiv_html_sections("2609.28589", max_chars=2400)
+    assert "[2 Method]" in parsed["text"]
+    assert "[3 Experiments]" in parsed["text"]

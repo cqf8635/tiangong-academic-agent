@@ -709,7 +709,17 @@ def fetch_arxiv_html_sections(arxiv_id: str, max_chars: int = 4500) -> Dict[str,
     if not chosen_chunks:
         return {}
 
-    combined = "\n\n".join(chosen_chunks).strip()[:max_chars]
+    # Allocate budget across selected sections so Introduction does not starve Method/Experiments.
+    per_section_budget = max(500, max_chars // min(len(chosen_chunks), 4))
+    balanced_chunks: List[str] = []
+    remaining = max_chars
+    for chunk in chosen_chunks:
+        if remaining <= 120:
+            break
+        take = min(len(chunk), per_section_budget, remaining)
+        balanced_chunks.append(chunk[:take].rstrip())
+        remaining -= take + 2
+    combined = "\n\n".join(balanced_chunks).strip()[:max_chars]
     return {
         "arxiv_id": clean_id,
         "url": url,

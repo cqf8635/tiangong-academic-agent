@@ -34,7 +34,7 @@ from document_rag_engine import UniversalDocumentRAGEngine
 from intent_recognition_agent import IntentDecision, IntentRecognitionAgent
 from retrieval_planner import (
     RetrievalPlan, RetrievalQuery, RetrievalPlannerAgent, TaskAlignment, retrieval_query_key, select_retrieval_probes,
-    apply_evidence_relevance, filter_irrelevant_candidates, is_executable_retrieval_query,
+    apply_evidence_relevance, filter_irrelevant_candidates, filter_probes_by_semantic_alignment, is_executable_retrieval_query,
 )
 from meeting_summarizer import MeetingSummarizer
 from online_paper_search_agent import OnlinePaperSearchAgent
@@ -588,6 +588,12 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
 
         try:
             hybrid_retriever = MasterEngineRegistry.get_hybrid_retriever()
+            semantic_scorer = getattr(hybrid_retriever, "rag_engine", None) or MasterEngineRegistry.rag_engine
+            retrieval_probes, dropped_probes = filter_probes_by_semantic_alignment(
+                retrieval_probes, query, decision.model_dump(), scorer=semantic_scorer
+            )
+            if dropped_probes:
+                print(f"🧹 [RetrievalAlign] 剥离偏离主题任务的检索词: {[p.get('query') for p in dropped_probes]}")
             if is_cross and filtered_sub_qs:
                 all_raw_chunks = []
                 main_en = (getattr(decision, "online_search_query", "") or "").strip()
@@ -739,6 +745,16 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
                     executed, last_added = 0, 0
                     for gap in assessment.gaps:
                         if not is_executable_retrieval_query(gap.query):
+                            continue
+                        gap_kept, gap_dropped = filter_probes_by_semantic_alignment(
+                            [{"query": gap.query, "english_query": ""}],
+                            query,
+                            decision.model_dump(),
+                            scorer=semantic_scorer,
+                            allow_fallback=False,
+                        )
+                        if gap_dropped or not gap_kept:
+                            print(f"🧹 [RetrievalAlign] 剥离偏离主题任务的补搜词: {gap.query}")
                             continue
                         sources = {source.casefold() for source in gap.sources}
                         local = need_local_search and (not sources or "local" in sources)

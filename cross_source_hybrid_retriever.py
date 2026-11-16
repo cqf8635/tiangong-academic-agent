@@ -255,8 +255,8 @@ class CrossSourceHybridRetriever:
 
         # 3. 全局重排：BGE-M3 MMR 横向去冗 + 纵向时间演进脉络排序
         selected_cards = self._mmr_and_evolution_rank(query, deduped_cards, top_k)
-        # 4. 按需临时抓取 Top 1~2 篇核心 arXiv 论文的 HTML 方法/实验节（不入本地库）
-        self._enrich_top_arxiv_html(selected_cards)
+        # 4. 按需临时抓取 Top 4 篇核心 arXiv 论文的 HTML 方法/实验节（不入本地库）
+        self._enrich_top_arxiv_html(selected_cards, max_papers=4)
         return [c.to_dict() for c in selected_cards]
 
     def _expand_with_prf_and_snowball(
@@ -357,7 +357,7 @@ class CrossSourceHybridRetriever:
         if os.getenv("ENABLE_ARXIV_HTML_ENRICHMENT", "true").lower() in ("0", "false", "no"):
             return
         try:
-            limit = max(0, min(int(os.getenv("ARXIV_HTML_ENRICH_LIMIT", str(max_papers))), 3))
+            limit = max(0, min(int(os.getenv("ARXIV_HTML_ENRICH_LIMIT", str(max_papers))), 5))
         except ValueError:
             limit = max_papers
         if limit <= 0:
@@ -365,10 +365,10 @@ class CrossSourceHybridRetriever:
         targets = sorted(
             [
                 c for c in cards
-                if c.doc_type in ("arxiv", "openalex", "crossref", "web")
+                if c.doc_type in ("arxiv", "openalex", "crossref", "semanticscholar", "fused_academic", "web")
                 and c.arxiv_id
                 and not c.is_local_indexed
-                and c.evidence_level in ("abstract", "web_commentary")
+                and c.evidence_level in ("abstract", "bibliographic_metadata_or_abstract", "web_commentary")
             ],
             key=lambda c: float(c.score),
             reverse=True,
@@ -404,13 +404,14 @@ class CrossSourceHybridRetriever:
         if not cards:
             return []
 
-        def _base_priority(c: UnifiedEvidenceCard, q_sim: float = 0.0) -> float:
+        def _base_priority(c: UnifiedEvidenceCard, q_sim: float = 0.0, emb_sim: Optional[float] = None) -> float:
             title_low = (c.doc_name or "").lower()
             is_survey = 1.0 if any(kw in title_low for kw in ("survey", "review", "overview", "综述", "进展")) else 0.0
+            local_bonus = 0.15 if (c.is_local_indexed and (emb_sim is None or emb_sim >= 0.45)) else 0.0
             return (
                 0.40 * float(c.score)
                 + 0.60 * q_sim
-                + (0.15 if c.is_local_indexed else 0.0)
+                + local_bonus
                 + (0.05 if c.github_url else 0.0)
                 + (0.06 * is_survey)
             )
@@ -421,10 +422,13 @@ class CrossSourceHybridRetriever:
 
         if emb_model is not None and len(cards) > 2:
             try:
-                doc_texts = [
-                    f"{c.doc_name}. {(c.summary or c.text or '')[:450]}".strip()
-                    for c in cards
-                ]
+                def _gist(c: UnifiedEvidenceCard) -> str:
+                    body = str(c.summary or c.text or "").strip()
+                    if len(body) <= 550:
+                        return f"{c.doc_name}. {body}".strip()
+                    return f"{c.doc_name}. {body[:320]} ... {body[-220:]}".strip()
+
+                doc_texts = [_gist(c) for c in cards]
                 texts = [query] + doc_texts
                 encoded = emb_model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
                 vecs = encoded.tolist() if hasattr(encoded, "tolist") else list(encoded)
@@ -435,7 +439,8 @@ class CrossSourceHybridRetriever:
                     def _dot(a, b) -> float:
                         return sum(float(x) * float(y) for x, y in zip(a, b))
 
-                    q_sims = [_dot(q_vec, dv) for dv in doc_vecs]
+                    emb_sims = [_dot(q_vec, dv) for dv in doc_vecs]
+                    q_sims = list(emb_sims)
                     if reranker is not None:
                         try:
                             import math
@@ -444,8 +449,12 @@ class CrossSourceHybridRetriever:
                             q_sims = [0.45 * qs + 0.55 * rs for qs, rs in zip(q_sims, rerank_sims)]
                         except Exception:
                             pass
-                    base_scores = [_base_priority(c, qs) for c, qs in zip(cards, q_sims)]
-                    remaining = list(range(len(cards)))
+                    base_scores = [_base_priority(c, qs, es) for c, qs, es in zip(cards, q_sims, emb_sims)]
+                    best_emb = max(emb_sims) if emb_sims else 0.0
+                    remaining = [
+                        idx for idx in range(len(cards))
+                        if not (emb_sims[idx] < 0.36 and (best_emb - emb_sims[idx]) > 0.25)
+                    ] or [max(range(len(cards)), key=lambda idx: base_scores[idx])]
                     selected_indices: List[int] = []
 
                     while remaining and len(selected_indices) < top_k:

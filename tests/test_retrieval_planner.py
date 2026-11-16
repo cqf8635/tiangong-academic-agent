@@ -440,3 +440,49 @@ def test_ingest_online_evidence_filters_noise_prioritizes_cited_and_tags_metadat
     assert upserted["metadatas"][0]["doc_type"] == "online_synced_paper"
     assert upserted["metadatas"][0]["arxiv_id"] == "2609.28589"
     assert upserted["metadatas"][1]["doc_name"] == "UncitedPaper"
+
+
+def test_filter_probes_by_semantic_alignment_reranker_and_fallback():
+    from retrieval_planner import filter_probes_by_semantic_alignment
+
+    class FakeReranker:
+        def predict(self, pairs):
+            # First probe matches task (high logit), second drifts off-topic (low negative logit).
+            return [3.8 if "OneTrans" in pt else -5.2 for _task, pt in pairs]
+
+    scorer = SimpleNamespace(reranker=FakeReranker(), embedding_model=None)
+    probes = [
+        {"query": "OneTrans 推荐模型迭代", "english_query": "OneTrans sequential recommendation"},
+        {"query": "旅游景点路径规划综述", "english_query": "tourism destination recommendation"},
+    ]
+    kept, dropped = filter_probes_by_semantic_alignment(
+        probes,
+        "推荐场景用户序列和非序列交互，OneTrans之后推荐模型还有什么迭代?",
+        {"intent": "调研OneTrans后续推荐模型迭代"},
+        scorer=scorer,
+    )
+    assert len(kept) == 1
+    assert kept[0]["query"] == "OneTrans 推荐模型迭代"
+    assert len(dropped) == 1
+    assert dropped[0]["query"] == "旅游景点路径规划综述"
+
+    # Single off-topic gap query with allow_fallback=False must be stripped cleanly.
+    gap_kept, gap_dropped = filter_probes_by_semantic_alignment(
+        [{"query": "旅游景点路径规划综述", "english_query": ""}],
+        "OneTrans之后推荐模型还有什么迭代?",
+        scorer=scorer,
+        allow_fallback=False,
+    )
+    assert gap_kept == []
+    assert len(gap_dropped) == 1
+
+    # All-drifted initial probes with allow_fallback=True fall back to user_query/search_query.
+    fb_kept, fb_dropped = filter_probes_by_semantic_alignment(
+        [{"query": "完全跑偏的词", "english_query": ""}],
+        "OneTrans之后推荐模型还有什么迭代?",
+        {"search_query": "OneTrans 推荐模型演进"},
+        scorer=lambda _task, pts: [0.05 for _ in pts],
+        allow_fallback=True,
+    )
+    assert len(fb_dropped) == 1
+    assert fb_kept == [{"query": "OneTrans 推荐模型演进", "english_query": ""}]

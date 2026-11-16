@@ -228,6 +228,83 @@ def retrieval_query_key(query: str) -> str:
     return " ".join(sorted(re.findall(r"[\w]+", query.casefold())))
 
 
+def filter_probes_by_semantic_alignment(
+    probes: List[Dict[str, str]],
+    user_query: str,
+    intent: Dict[str, Any] | None = None,
+    scorer: Any = None,
+    min_cosine: float = 0.48,
+    cosine_drop_gap: float = 0.28,
+    min_rerank_prob: float = 0.40,
+    allow_fallback: bool = True,
+) -> tuple[List[Dict[str, str]], List[Dict[str, str]]]:
+    """Match retrieval probes against the active task via semantic scorer and strip off-topic drift."""
+    if not probes or scorer is None:
+        return probes, []
+
+    intent = intent or {}
+    task_parts = [
+        str(user_query or "").strip(),
+        str(intent.get("intent") or "").strip(),
+        str(intent.get("subject_entity") or intent.get("target_topic") or "").strip(),
+    ]
+    task_text = " | ".join(p for p in task_parts if p)
+    if not task_text:
+        return probes, []
+
+    probe_texts = [
+        " / ".join(p for p in (str(item.get("query") or "").strip(), str(item.get("english_query") or "").strip()) if p)
+        for item in probes
+    ]
+    scores: List[float] = []
+    mode = "cosine"
+    try:
+        if callable(scorer):
+            scores = [float(s) for s in scorer(task_text, probe_texts)]
+        elif getattr(scorer, "embedding_model", None) is not None and hasattr(scorer.embedding_model, "encode"):
+            t_vec = scorer.embedding_model.encode([task_text], normalize_embeddings=True)[0]
+            p_vecs = scorer.embedding_model.encode(probe_texts, normalize_embeddings=True)
+            scores = [float(sum(a * b for a, b in zip(t_vec, pv))) for pv in p_vecs]
+        elif getattr(scorer, "reranker", None) is not None and hasattr(scorer.reranker, "predict"):
+            mode = "rerank"
+            pairs = [[task_text, pt] for pt in probe_texts]
+            raw = scorer.reranker.predict(pairs)
+            scores = [float(x) for x in raw]
+        else:
+            return probes, []
+    except Exception:
+        return probes, []
+
+    if len(scores) != len(probes) or not scores:
+        return probes, []
+
+    best = max(scores)
+    is_prob_rerank = mode == "rerank" and all(0.0 <= s <= 1.0 for s in scores)
+    kept: List[Dict[str, str]] = []
+    dropped: List[Dict[str, str]] = []
+    for item, score in zip(probes, scores):
+        if mode == "rerank":
+            if is_prob_rerank:
+                is_off = (score < min_rerank_prob) or (len(probes) > 1 and score < best - 0.35 and score < 0.55)
+            else:
+                is_off = (score < -4.0) or (len(probes) > 1 and score < best - 4.5 and score < -1.0)
+        else:
+            is_off = (score < min_cosine) or (len(probes) > 1 and score < best - cosine_drop_gap and score < 0.52)
+        if is_off:
+            dropped.append(item)
+        else:
+            kept.append(item)
+
+    if not kept and allow_fallback:
+        fallback_q = str(intent.get("search_query") or user_query or "").strip()
+        fallback_en = str(intent.get("online_search_query") or "").strip()
+        if fallback_q:
+            kept = [{"query": fallback_q, "english_query": fallback_en}]
+        else:
+            kept = [probes[0]]
+    return kept, dropped
+
+
 def select_retrieval_probes(user_query: str, intent: Dict[str, Any], plan: RetrievalPlan) -> List[Dict[str, str]]:
     """Execute a small plan, not every alternative wording produced by intent parsing."""
     probes = [item.model_dump() for item in plan.queries if item.query.strip()]
@@ -264,7 +341,7 @@ class RetrievalPlannerAgent:
 3. 渠道能力按需选择：local_search（检索本地文档/知识库）、online_search（外部学术检索）、include_github（代码仓库与工程实现）、include_web（机构官网/技术规范/通用网页）、include_datasets（数据集与基准）。通过 selected_shared_item_ids 独立勾选可直接复用的共享池记录；当本地与在线检索互补时可开启 parallel_search。
 4. 专业任务全面检索原则：凡属学术研究、领域探讨、理论推导、方法剖析、方案对比或实证分析等专业任务，一律设 requires_evidence=true、is_resolved=true。只要用户未明确限制“仅使用本地文档”且共享池现有证据尚未完全覆盖当前问题，均应开启 online_search=true 检索外部学术文献（不得仅限含“最新/近期”字眼才检索；若 local_material_available=true，可同时开启 local_search=true 与 parallel_search=true 实现本地与在线互补检索，切勿因 local_material_available=true 而关闭 online_search）。仅对纯日常寒暄、纯文本改写或完全基于用户给定前提的推演，设 requires_evidence=false。
 5. 优先复用与遵循约束：优先勾选可服务于当前任务的共享池证据（selected_shared_item_ids），当共享池证据不足以完整支撑本轮验证命题与实证分析时，主动通过在线与本地渠道检索补充。严格遵守用户指定的来源、文档、时间或排除限制；若已查看证据已充分覆盖任务，不再重复检索。
-6. 精简检索词（极重要）：合并同义子任务视角，仅生成 1～2 条精炼互补的可执行查询（绝不把同一主题拆成 5～6 条冗余查询）。query 使用中文核心学术词；english_query 仅供底层国际论文 API（arXiv/OpenAlex）检索使用，应使用 1～5 个目标学科国际文献常用的规范英文学术术语（保留必要场景词，若存在特定方法或专有对象名可单独成词或用分号与方向词并列，严禁中文逐字直译空泛词或生造拼接词，严禁 site: 语法、布尔 OR 长链或超过 6 个词的英文长句）。绝不使用未解析的标题/DOI 占位符。
+6. 精简检索词（极重要）：合并同义子任务视角，仅生成 1～2 条精炼互补的可执行查询（绝不把同一主题拆成 5～6 条冗余查询）。每条检索词必须对照当前主体与任务语义核验，剥离偏离核心主体的修饰语或无关子句。query 使用中文核心学术词；english_query 仅供底层国际论文 API（arXiv/OpenAlex）检索使用，应使用 1～5 个目标学科国际文献常用的规范英文学术术语（保留必要场景词，若存在特定方法或专有对象名可单独成词或用分号与方向词并列，严禁中文逐字直译空泛词或生造拼接词，严禁 site: 语法、布尔 OR 长链或超过 6 个词的英文长句）。绝不使用未解析的标题/DOI 占位符。
 7. 严格返回 JSON：requires_evidence, local_search, online_search, include_github, include_web, include_datasets, parallel_search, selected_shared_item_ids, queries [{query,english_query}], reasoning（中文）, is_resolved，以及按需返回 task_alignment。
 """ + TASK_COVERAGE_GUIDANCE + "\n" + EVIDENCE_GUIDANCE
 
