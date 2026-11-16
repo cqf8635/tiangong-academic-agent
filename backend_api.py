@@ -534,7 +534,22 @@ async def list_documents():
                 "type": f.suffix.lstrip(".").lower()
             })
     docs.sort(key=lambda x: x["modified_at"], reverse=True)
-    return {"documents": docs}
+    synced_papers = rag_engine.list_online_synced_papers() if hasattr(rag_engine, "list_online_synced_papers") else []
+    return {"documents": docs, "synced_papers": synced_papers}
+
+
+@app.get("/api/documents/synced")
+async def list_synced_documents():
+    """列出本地知识库中自动沉淀的在线高相关论文 (doc_type=online_synced_paper)"""
+    papers = rag_engine.list_online_synced_papers() if hasattr(rag_engine, "list_online_synced_papers") else []
+    return {"synced_papers": papers, "count": len(papers)}
+
+
+@app.delete("/api/documents/synced")
+async def clear_synced_documents(doc_name: Optional[str] = None):
+    """删除单篇或一键清空所有自动沉淀的在线论文记忆（不影响用户上传的物理文档）"""
+    deleted = rag_engine.clear_online_synced_papers(doc_name=doc_name) if hasattr(rag_engine, "clear_online_synced_papers") else 0
+    return {"deleted_count": deleted, "doc_name": doc_name, "success": True}
 
 
 @app.get("/api/documents/{doc_name}/mindmap")

@@ -508,3 +508,42 @@ def test_apply_evidence_relevance_tolerates_punctuation_and_case_differences():
     out = apply_evidence_relevance(evidence, exclusions, user_query="你好，介绍大模型的微调！")
     assert out[0].get("excluded_as_irrelevant")
     assert out[0]["relevance_review"]["basis_status"] == "located"
+
+
+def test_prune_list_and_clear_online_synced_papers():
+    import time
+    from document_rag_engine import UniversalDocumentRAGEngine
+
+    now = time.time()
+    store = {
+        "old_1": {"doc_name": "Old Paper", "doc_type": "online_synced_paper", "synced_at": now - 40 * 86400, "year": "2024", "source": "arxiv", "url": "https://arxiv.org/pdf/2401.00001"},
+        "fresh_1": {"doc_name": "Fresh Paper 1", "doc_type": "online_synced_paper", "synced_at": now - 100, "year": "2026", "source": "arxiv", "url": "https://arxiv.org/pdf/2601.00001", "synced_date": "2026-11-16"},
+        "fresh_2": {"doc_name": "Fresh Paper 2", "doc_type": "online_synced_paper", "synced_at": now - 10, "year": "2026", "source": "openalex", "url": "https://doi.org/10.1000/2", "synced_date": "2026-11-16"},
+    }
+
+    class FakeCollection:
+        def get(self, where=None, include=None):
+            if where and "$and" in where:
+                target = where["$and"][1]["doc_name"]
+                ids = [k for k, v in store.items() if v["doc_name"] == target]
+            else:
+                ids = list(store.keys())
+            return {"ids": ids, "metadatas": [store[k] for k in ids]}
+
+        def delete(self, ids=None):
+            for k in (ids or []):
+                store.pop(k, None)
+
+    eng = UniversalDocumentRAGEngine.__new__(UniversalDocumentRAGEngine)
+    eng.collection = FakeCollection()
+
+    pruned = eng.prune_online_synced_papers(ttl_days=30, max_papers=10)
+    assert pruned == 1 and "old_1" not in store
+
+    listed = eng.list_online_synced_papers()
+    assert [x["doc_name"] for x in listed] == ["Fresh Paper 2", "Fresh Paper 1"]
+
+    assert eng.clear_online_synced_papers("Fresh Paper 1") == 1
+    assert "fresh_1" not in store
+    assert eng.clear_online_synced_papers() == 1
+    assert store == {}

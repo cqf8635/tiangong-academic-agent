@@ -2019,15 +2019,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const resp = await fetch('/api/documents');
       const data = await resp.json();
       const docs = data.documents || [];
-      docCountBadge.textContent = `${docs.length} 篇`;
-      if (docs.length === 0) {
+      const synced = data.synced_papers || [];
+      docCountBadge.textContent = synced.length > 0 ? `${docs.length} 篇 + ${synced.length} 沉淀` : `${docs.length} 篇`;
+      if (docs.length === 0 && synced.length === 0) {
         documentList.innerHTML = '<div class="empty-hint">暂未上传资料，支持随时投递专著、论文或全格式资料</div>';
         return;
       }
       if (docs.length > 0 && !currentActiveDocumentName) {
         currentActiveDocumentName = docs[0].filename;
       }
-      documentList.innerHTML = docs.map(doc => `
+      const docsHtml = docs.map(doc => `
         <div class="doc-item" data-filename="${escapeHtml(doc.filename)}" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 6px; flex: 1; overflow: hidden;">
             <span class="doc-name" title="${escapeHtml(doc.filename)}" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(doc.filename)}</span>
@@ -2046,6 +2047,56 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `).join('');
+
+      const syncedHtml = synced.length > 0 ? `
+        <details class="synced-papers-box" style="margin-top: 8px; border-top: 1px dashed rgba(148,163,184,0.3); padding-top: 6px;">
+          <summary style="cursor: pointer; font-size: 0.72rem; color: var(--text-muted, #64748b); display: flex; align-items: center; justify-content: space-between; list-style: none;">
+            <span>🧠 在线沉淀记忆 (${synced.length} 篇)</span>
+            <button type="button" id="btn-clear-all-synced" class="action-btn-mini danger" title="一键清空所有自动沉淀的在线论文记忆（不影响本地 PDF）" style="padding: 1px 6px; font-size: 0.64rem; color: #ef4444; border-color: rgba(239,68,68,0.3);">
+              🧹 清空
+            </button>
+          </summary>
+          <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
+            ${synced.map(sp => `
+              <div class="doc-item synced-item" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; font-size: 0.72rem; opacity: 0.9;">
+                <div style="display: flex; align-items: center; gap: 4px; flex: 1; overflow: hidden;">
+                  <span class="doc-name" title="${escapeHtml(sp.doc_name)}${sp.year ? ' (' + escapeHtml(sp.year) + ')' : ''}" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(sp.doc_name)}</span>
+                  ${sp.year ? `<span class="doc-badge" style="font-size: 0.62rem;">${escapeHtml(sp.year)}</span>` : ''}
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  ${sp.url ? `<a href="${escapeHtml(sp.url)}" target="_blank" rel="noopener noreferrer" class="action-btn-mini" title="打开在线原文链接" style="padding: 1px 5px; font-size: 0.64rem; text-decoration: none; color: inherit;">🔗</a>` : ''}
+                  <button type="button" class="action-btn-mini btn-delete-synced danger" data-docname="${escapeHtml(sp.doc_name)}" title="删除该条在线沉淀记忆" style="padding: 1px 5px; font-size: 0.64rem; color: #ef4444; border-color: rgba(239,68,68,0.3);">🗑️</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </details>
+      ` : '';
+
+      documentList.innerHTML = docsHtml + syncedHtml;
+
+      const clearAllBtn = document.getElementById('btn-clear-all-synced');
+      if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!confirm(`确定要清空全部 ${synced.length} 篇在线自动沉淀论文记忆吗？\n（不会删除你手动上传的本地文档）`)) {
+            return;
+          }
+          const r = await fetch('/api/documents/synced', { method: 'DELETE' });
+          if (r.ok) await loadDocumentList();
+        });
+      }
+
+      documentList.querySelectorAll('.btn-delete-synced').forEach(el => {
+        el.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const name = el.dataset.docname;
+          if (!name) return;
+          const r = await fetch(`/api/documents/synced?doc_name=${encodeURIComponent(name)}`, { method: 'DELETE' });
+          if (r.ok) await loadDocumentList();
+        });
+      });
 
       documentList.querySelectorAll('.btn-view-doc-mindmap').forEach(el => {
         el.addEventListener('click', (e) => {

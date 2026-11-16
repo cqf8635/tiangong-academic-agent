@@ -936,6 +936,9 @@ class UniversalDocumentRAGEngine:
             year = item.get("year") or (item.get("provenance") or {}).get("year") or ""
             url = str(item.get("url") or item.get("pdf_url") or "").strip()
             chunk_text = f"Title: {title}\nYear: {year}\nSource: {source}\nURL: {url}\n\n{body}"[:6000]
+            import time as _time
+            from datetime import datetime as _dt
+            now_ts = _time.time()
             ids.append(f"{doc_id}_0")
             texts.append(chunk_text)
             metadatas.append({
@@ -950,6 +953,8 @@ class UniversalDocumentRAGEngine:
                 "page_or_slide": str(year or "online"),
                 "section": "Abstract / Synced Online Paper",
                 "image_url": "",
+                "synced_at": now_ts,
+                "synced_date": _dt.fromtimestamp(now_ts).strftime("%Y-%m-%d"),
             })
 
         if not ids:
@@ -968,7 +973,90 @@ class UniversalDocumentRAGEngine:
             metadatas=metadatas,
         )
         print(f"📥 [AutoSync] 已将 {len(ids)} 篇高相关在线文献沉淀至本地知识库 (doc_type=online_synced_paper)")
+        self.prune_online_synced_papers()
         return len(ids)
+
+    def prune_online_synced_papers(
+        self,
+        ttl_days: Optional[int] = None,
+        max_papers: Optional[int] = None,
+    ) -> int:
+        """Auto-expire stale or excess online_synced_paper entries without touching user uploads."""
+        import time as _time
+        try:
+            eff_ttl = int(ttl_days if ttl_days is not None else os.getenv("ONLINE_SYNC_TTL_DAYS", "30"))
+        except ValueError:
+            eff_ttl = 30
+        try:
+            eff_max = int(max_papers if max_papers is not None else os.getenv("ONLINE_SYNC_MAX_PAPERS", "200"))
+        except ValueError:
+            eff_max = 200
+        try:
+            res = self.collection.get(where={"doc_type": "online_synced_paper"}, include=["metadatas"])
+        except Exception:
+            return 0
+        raw_ids = res.get("ids") or []
+        metas = res.get("metadatas") or []
+        if not raw_ids:
+            return 0
+        cutoff = _time.time() - (eff_ttl * 86400) if eff_ttl > 0 else 0.0
+        records = []
+        to_delete: List[str] = []
+        for cid, meta in zip(raw_ids, metas):
+            ts = float((meta or {}).get("synced_at") or 0.0)
+            if cutoff > 0 and ts > 0 and ts < cutoff:
+                to_delete.append(cid)
+            else:
+                records.append((cid, ts))
+        if eff_max > 0 and len(records) > eff_max:
+            records.sort(key=lambda pair: pair[1], reverse=True)
+            to_delete.extend(cid for cid, _ts in records[eff_max:])
+        if to_delete:
+            self.collection.delete(ids=to_delete)
+            print(f"🧹 [AutoSync] 已自动清理 {len(to_delete)} 条过期/超限的在线沉淀论文")
+        return len(to_delete)
+
+    def list_online_synced_papers(self) -> List[Dict[str, Any]]:
+        """List all online_synced_paper records stored in ChromaDB, newest first."""
+        try:
+            res = self.collection.get(where={"doc_type": "online_synced_paper"}, include=["metadatas"])
+        except Exception:
+            return []
+        metas = res.get("metadatas") or []
+        by_name: Dict[str, Dict[str, Any]] = {}
+        for meta in metas:
+            if not isinstance(meta, dict):
+                continue
+            name = str(meta.get("doc_name") or "").strip()
+            if not name:
+                continue
+            ts = float(meta.get("synced_at") or 0.0)
+            if name not in by_name or ts > float(by_name[name].get("synced_at") or 0.0):
+                by_name[name] = {
+                    "doc_name": name,
+                    "year": str(meta.get("year") or ""),
+                    "source": str(meta.get("source") or "online"),
+                    "url": str(meta.get("url") or ""),
+                    "synced_at": ts,
+                    "synced_date": str(meta.get("synced_date") or ""),
+                }
+        return sorted(by_name.values(), key=lambda x: x["synced_at"], reverse=True)
+
+    def clear_online_synced_papers(self, doc_name: Optional[str] = None) -> int:
+        """Delete a single online_synced_paper by doc_name, or all of them when doc_name is None."""
+        where_clause: Dict[str, Any] = (
+            {"$and": [{"doc_type": "online_synced_paper"}, {"doc_name": doc_name}]}
+            if doc_name
+            else {"doc_type": "online_synced_paper"}
+        )
+        try:
+            res = self.collection.get(where=where_clause, include=[])
+            ids = res.get("ids") or []
+            if ids:
+                self.collection.delete(ids=ids)
+            return len(ids)
+        except Exception:
+            return 0
 
     def search(
         self,
