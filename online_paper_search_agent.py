@@ -1883,6 +1883,11 @@ class OnlinePaperSearchAgent:
         task = shared_task or {"original_user_query": query}
         prompt = ("本轮共享任务（原话为准）：\n" + json.dumps(task, ensure_ascii=False)
                   + "\n\n检索资料：\n" + (evidence_section or "本次未取得可用来源。"))
+        if evidence_section:
+            prompt += (
+                "\n\n【生成执行硬要求（务必落实）】：概念科普简明带过，主要篇幅用于深入剖析核心机制与检索文献的具体方法/实验对比；"
+                "必须在「前沿研究路线与实证分析」中给出「核心文献实证对照表」（文献 [n] | 针对痛点 | 核心方法/模块 | 原文已证实结论，未披露数字直写“未披露”），不得只把 [n] 当作句尾装饰。"
+            )
 
         try:
             from master_agent_workflow import safe_chat_completion

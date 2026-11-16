@@ -1965,6 +1965,11 @@ def general_tutor_node(state: MasterAgentState) -> Dict[str, Any]:
     if coverage.get("status") in {"unresolved", "gaps_found", "budget_exhausted", "assessment_unavailable"} or coverage.get("unresolved"):
         gaps = coverage.get("unresolved") or [coverage.get("summary", "部分子项外部文献未完全覆盖")]
         user_prompt += "\n\n【检索覆盖提示（仅供把握论述边界，切勿在正文中反复自证缺陷或刷屏免责）】：\n- " + "\n- ".join(str(x) for x in gaps)
+    if rag_context_str:
+        user_prompt += (
+            "\n\n【生成执行硬要求（务必落实）】：概念科普简明带过，主要篇幅用于深入剖析核心机制与检索文献的具体方法/实验对比；"
+            "必须在「前沿研究路线与实证分析」中给出「核心文献实证对照表」（文献 [n] | 针对痛点 | 核心方法/模块 | 原文已证实结论，未披露数字直写“未披露”），不得只把 [n] 当作句尾装饰。"
+        )
 
     messages = [
         {"role": "system", "content": system_prompt},
