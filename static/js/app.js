@@ -2020,7 +2020,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await resp.json();
       const docs = data.documents || [];
       const synced = data.synced_papers || [];
-      docCountBadge.textContent = synced.length > 0 ? `${docs.length} 篇 + ${synced.length} 沉淀` : `${docs.length} 篇`;
+      docCountBadge.textContent = `${docs.length} 篇`;
+      docCountBadge.title = synced.length > 0 ? `物理文档 ${docs.length} 篇，另有 ${synced.length} 篇在线沉淀记忆` : '';
       if (docs.length === 0 && synced.length === 0) {
         documentList.innerHTML = '<div class="empty-hint">暂未上传资料，支持随时投递专著、论文或全格式资料</div>';
         return;
