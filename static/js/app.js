@@ -1577,9 +1577,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let formattedText = formatMarkdown(data.final_answer);
 
     let evidenceTagsHtml = '';
-    if (data.retrieved_evidence && data.retrieved_evidence.length > 0) {
-      evidenceTagsHtml = `<div class="evidence-badges"><span class="evidence-badge" data-doc="evidence-panel">📌 在右侧「证据与页码」查看本轮 ${data.retrieved_evidence.length} 条依据</span></div>`;
-    }
 
     // 渲染证据整理归纳备忘录 (去噪/分类/机制提炼)
     let evidenceSlateHtml = '';
