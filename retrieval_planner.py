@@ -82,6 +82,7 @@ def apply_evidence_relevance(evidence, exclusions, user_query="", visual_context
     """
     decisions = {}
     normalize = lambda value: re.sub(r"\s+", " ", str(value or "")).strip()
+    normalize_loose = lambda value: re.sub(r"[\s\W_]+", "", str(value or "").casefold())
     for item in exclusions or []:
         item = item.model_dump() if isinstance(item, BaseModel) else item
         if not isinstance(item, dict):
@@ -102,7 +103,11 @@ def apply_evidence_relevance(evidence, exclusions, user_query="", visual_context
                 content = "\n".join(str(record.get(k) or "") for k in ("doc_name", "title", "text", "summary"))
             else:
                 continue
-            if quote and quote in normalize(content):
+            loose_q = normalize_loose(quote)
+            if quote and (
+                quote in normalize(content)
+                or (len(loose_q) >= 4 and loose_q in normalize_loose(content))
+            ):
                 basis.append(dict(ref))
         located = (any(ref["source"] in {"request", "visual_context", "attachment"} for ref in basis)
                    and any(ref["source"] == "evidence" for ref in basis))

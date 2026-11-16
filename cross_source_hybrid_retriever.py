@@ -451,9 +451,13 @@ class CrossSourceHybridRetriever:
                             pass
                     base_scores = [_base_priority(c, qs, es) for c, qs, es in zip(cards, q_sims, emb_sims)]
                     best_emb = max(emb_sims) if emb_sims else 0.0
+                    best_base = max(base_scores) if base_scores else 0.0
                     remaining = [
                         idx for idx in range(len(cards))
-                        if not (emb_sims[idx] < 0.36 and (best_emb - emb_sims[idx]) > 0.25)
+                        if not (
+                            emb_sims[idx] < 0.40
+                            or ((best_emb - emb_sims[idx]) > 0.24 and emb_sims[idx] < 0.52)
+                        )
                     ] or [max(range(len(cards)), key=lambda idx: base_scores[idx])]
                     selected_indices: List[int] = []
 
@@ -468,6 +472,8 @@ class CrossSourceHybridRetriever:
                                     - (1.0 - lambda_param) * max(_dot(doc_vecs[idx], doc_vecs[s]) for s in selected_indices)
                                 ),
                             )
+                            if len(selected_indices) >= 4 and best_base > 0 and base_scores[best_idx] < best_base * 0.68:
+                                break
                         selected_indices.append(best_idx)
                         remaining.remove(best_idx)
                     selected = [cards[i] for i in selected_indices]

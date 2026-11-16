@@ -426,6 +426,7 @@ def test_ingest_online_evidence_filters_noise_prioritizes_cited_and_tags_metadat
     long_abstract = "Unified transformer architecture for sequential and non-sequential recommendation modeling. " * 3
     evidence_items = [
         {"doc_name": "LocalBook.pdf", "doc_type": "local_pdf", "text": long_abstract},
+        {"doc_name": "FusedLocalBook.pdf", "doc_type": "fused_academic", "evidence_level": "local_snippet", "text": long_abstract},
         {"doc_name": "WebPage", "doc_type": "web", "summary": long_abstract},
         {"doc_name": "ShortMeta", "doc_type": "arxiv", "summary": "too short"},
         {"doc_name": "NoisePaper", "doc_type": "crossref", "summary": long_abstract, "excluded_as_irrelevant": "无关"},
@@ -433,7 +434,7 @@ def test_ingest_online_evidence_filters_noise_prioritizes_cited_and_tags_metadat
         {"doc_name": "OneTrans-V2", "doc_type": "fused_academic", "arxiv_id": "2609.28589", "summary": long_abstract, "year": 2026, "url": "https://arxiv.org/pdf/2609.28589"},
     ]
 
-    count = engine.ingest_online_evidence(evidence_items, cited_indices=[6], max_items=2)
+    count = engine.ingest_online_evidence(evidence_items, cited_indices=[7], max_items=2)
     assert count == 2
     assert len(upserted["ids"]) == 2
     assert upserted["metadatas"][0]["doc_name"] == "OneTrans-V2"
@@ -486,3 +487,24 @@ def test_filter_probes_by_semantic_alignment_reranker_and_fallback():
     )
     assert len(fb_dropped) == 1
     assert fb_kept == [{"query": "OneTrans 推荐模型演进", "english_query": ""}]
+
+
+def test_apply_evidence_relevance_tolerates_punctuation_and_case_differences():
+    from retrieval_planner import apply_evidence_relevance
+
+    evidence = [
+        {"doc_name": "PEFT for Photovoltaic Cell Classification", "text": "We compare LoRA, QLoRA on ConvNeXt-Tiny."},
+    ]
+    exclusions = [
+        {
+            "evidence_id": 1,
+            "reason": "光伏电池缺陷分类属于工业视觉，与大语言模型微调无关",
+            "basis": [
+                {"source": "request", "quote": "介绍大模型的微调"},
+                {"source": "evidence", "evidence_id": 1, "quote": "peft for photovoltaic cell classification we compare lora qlora"},
+            ],
+        }
+    ]
+    out = apply_evidence_relevance(evidence, exclusions, user_query="你好，介绍大模型的微调！")
+    assert out[0].get("excluded_as_irrelevant")
+    assert out[0]["relevance_review"]["basis_status"] == "located"

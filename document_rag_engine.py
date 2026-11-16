@@ -908,13 +908,21 @@ class UniversalDocumentRAGEngine:
                 continue
             doc_type = str(item.get("doc_type") or "").strip().casefold()
             source = str(item.get("source") or doc_type or "online").strip()
-            if doc_type in local_types or source.casefold() in {"local", "local_pdf"}:
+            evidence_level = str(item.get("evidence_level") or "").strip().casefold()
+            if (
+                doc_type in local_types
+                or source.casefold() in {"local", "local_pdf"}
+                or evidence_level == "local_snippet"
+                or bool(item.get("is_local_indexed"))
+            ):
                 continue
             arxiv_id = str(item.get("arxiv_id") or "").strip()
             doi = str(item.get("doi") or "").strip()
             if doc_type not in paper_sources and source.casefold() not in paper_sources and not (arxiv_id or doi):
                 continue
             title = str(item.get("title") or item.get("doc_name") or "").strip()
+            if title.casefold().endswith(".pdf") and not (arxiv_id or doi):
+                continue
             body = str(item.get("text") or item.get("summary") or "").strip()
             if not title or len(body) < min_text_len:
                 continue
