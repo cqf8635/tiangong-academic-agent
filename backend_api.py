@@ -335,10 +335,16 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
 
     from document_rag_engine import extract_answer_mindmap
     from retrieval_planner import finalize_answer_markdown
+    _raw_evidence = result_state.get("retrieved_evidence") or []
+    _raw_candidates = result_state.get("recent_paper_candidates") or []
+    _sync_snapshot = [
+        dict(item) for item in (_raw_evidence if any(item.get("text") or item.get("summary") for item in _raw_evidence if isinstance(item, dict)) else _raw_candidates)
+        if isinstance(item, dict)
+    ]
     final_ans = finalize_answer_markdown(
         result_state.get("final_answer", ""),
-        result_state.get("retrieved_evidence") or [],
-        result_state.get("recent_paper_candidates") or [],
+        _raw_evidence,
+        _raw_candidates,
     )
     mindmap_md = extract_answer_mindmap(final_ans, req.query)
     turn_snapshot = {
@@ -382,17 +388,16 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
     turn_num = len([m for m in (s_now.messages if s_now else []) if m.sender == "agent"])
     SessionManager.publish_turn_to_shared_pool(session_id, turn_num, req.query, agent_msg, turn_state=turn_snapshot)
 
-    if os.getenv("ENABLE_AUTO_SYNC_ONLINE_EVIDENCE", "1") != "0" and result_state.get("retrieved_evidence"):
+    if os.getenv("ENABLE_AUTO_SYNC_ONLINE_EVIDENCE", "1") != "0" and _sync_snapshot:
         import re as _re
         import threading as _threading
-        _evidence_snapshot = [dict(item) for item in (result_state.get("retrieved_evidence") or []) if isinstance(item, dict)]
         _cited_indices = [int(m.group(1)) for m in _re.finditer(r"\[(\d+)\]", final_ans)]
 
         def _bg_sync_online_evidence():
             try:
                 from master_agent_workflow import MasterEngineRegistry
                 MasterEngineRegistry.get_rag_engine().ingest_online_evidence(
-                    _evidence_snapshot,
+                    _sync_snapshot,
                     cited_indices=_cited_indices,
                 )
             except Exception as _sync_exc:
