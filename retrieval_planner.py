@@ -135,6 +135,39 @@ def filter_irrelevant_candidates(candidates, evidence):
             if str(c.get("title") or "").strip().casefold() not in rejected_titles]
 
 
+def renumber_citations_and_evidence(
+    answer: str,
+    evidence: List[Dict[str, Any]] | None = None,
+) -> tuple[str, List[Dict[str, Any]]]:
+    """Renumber cited [n] markers to contiguous 1..K order and reorder evidence to match."""
+    text = str(answer or "")
+    ev_list = [item for item in (evidence or []) if isinstance(item, dict)]
+    if not text or not ev_list:
+        return text, list(evidence or [])
+
+    cited_order: List[int] = []
+    seen = set()
+    for m in re.finditer(r"\[(\d+)\](?!\()", text):
+        idx = int(m.group(1))
+        if 1 <= idx <= len(ev_list) and idx not in seen and not ev_list[idx - 1].get("excluded_as_irrelevant"):
+            seen.add(idx)
+            cited_order.append(idx)
+
+    if not cited_order:
+        return text, list(evidence or [])
+
+    mapping = {old_idx: new_idx for new_idx, old_idx in enumerate(cited_order, 1)}
+    renumbered_text = re.sub(
+        r"\[(\d+)\](?!\()",
+        lambda m: f"[{mapping[int(m.group(1))]}]" if int(m.group(1)) in mapping else m.group(0),
+        text,
+    )
+    reordered_evidence = [ev_list[i - 1] for i in cited_order] + [
+        ev_list[i - 1] for i in range(1, len(ev_list) + 1) if i not in seen
+    ]
+    return renumbered_text, reordered_evidence
+
+
 def finalize_answer_markdown(
     answer: str,
     evidence: List[Dict[str, Any]] | None = None,

@@ -547,3 +547,25 @@ def test_prune_list_and_clear_online_synced_papers():
     assert "fresh_1" not in store
     assert eng.clear_online_synced_papers() == 1
     assert store == {}
+
+
+def test_renumber_citations_and_evidence_produces_contiguous_order():
+    from retrieval_planner import finalize_answer_markdown, renumber_citations_and_evidence
+
+    evidence = [
+        {"title": "Paper 1", "url": "https://arxiv.org/pdf/2601.00001"},
+        {"title": "Paper 2", "url": "https://arxiv.org/pdf/2601.00002"},
+        {"title": "Paper 3", "url": "https://arxiv.org/pdf/2601.00003", "year": 2026},
+        {"title": "Paper 4", "url": "https://arxiv.org/pdf/2601.00004"},
+        {"title": "Paper 5", "url": "https://arxiv.org/pdf/2601.00005", "year": 2026},
+    ]
+    raw = "核心结论来自 [3] 与 [5]，进一步验证见 [3]。"
+    renum_text, ordered_ev = renumber_citations_and_evidence(raw, evidence)
+    assert renum_text == "核心结论来自 [1] 与 [2]，进一步验证见 [1]。"
+    assert [e["title"] for e in ordered_ev[:2]] == ["Paper 3", "Paper 5"]
+    assert [e["title"] for e in ordered_ev[2:]] == ["Paper 1", "Paper 2", "Paper 4"]
+
+    final = finalize_answer_markdown(renum_text, ordered_ev)
+    assert "**[1]** [Paper 3](https://arxiv.org/pdf/2601.00003) (2026)" in final
+    assert "**[2]** [Paper 5](https://arxiv.org/pdf/2601.00005) (2026)" in final
+    assert "[3]" not in final

@@ -334,16 +334,20 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
         audio_url = f"/api/audio/{audio_name}"
 
     from document_rag_engine import extract_answer_mindmap
-    from retrieval_planner import finalize_answer_markdown
+    from retrieval_planner import finalize_answer_markdown, renumber_citations_and_evidence
     _raw_evidence = result_state.get("retrieved_evidence") or []
     _raw_candidates = result_state.get("recent_paper_candidates") or []
+    _renumbered_ans, _ordered_evidence = renumber_citations_and_evidence(
+        result_state.get("final_answer", ""),
+        _raw_evidence,
+    )
     _sync_snapshot = [
-        dict(item) for item in (_raw_evidence if any(item.get("text") or item.get("summary") for item in _raw_evidence if isinstance(item, dict)) else _raw_candidates)
+        dict(item) for item in (_ordered_evidence if any(item.get("text") or item.get("summary") for item in _ordered_evidence if isinstance(item, dict)) else _raw_candidates)
         if isinstance(item, dict)
     ]
     final_ans = finalize_answer_markdown(
-        result_state.get("final_answer", ""),
-        _raw_evidence,
+        _renumbered_ans,
+        _ordered_evidence,
         _raw_candidates,
     )
     mindmap_md = extract_answer_mindmap(final_ans, req.query)
@@ -367,7 +371,7 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
         meeting_record_path=result_state.get("meeting_record_path"),
         control_result=result_state.get("control_result"),
         target_agent=result_state.get("target_agent"),
-        retrieved_evidence=result_state.get("retrieved_evidence", []),
+        retrieved_evidence=_ordered_evidence,
         mindmap_markdown=mindmap_md,
         audio_url=audio_url,
         agent_dialogue_history=result_state.get("agent_dialogue_history", []),
@@ -417,7 +421,7 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
         "meeting_record_path": result_state.get("meeting_record_path"),
         "control_result": result_state.get("control_result"),
         "target_agent": result_state.get("target_agent"),
-        "retrieved_evidence": result_state.get("retrieved_evidence", []),
+        "retrieved_evidence": _ordered_evidence,
         "retrieval_plan": result_state.get("retrieval_plan"),
         "retrieval_coverage": result_state.get("retrieval_coverage"),
         "source_diagnostics": result_state.get("source_diagnostics"),
