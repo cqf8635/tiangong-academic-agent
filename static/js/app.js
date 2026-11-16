@@ -1578,11 +1578,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let evidenceTagsHtml = '';
     if (data.retrieved_evidence && data.retrieved_evidence.length > 0) {
-      evidenceTagsHtml = '<div class="evidence-badges">';
-      data.retrieved_evidence.forEach((ev) => {
-        evidenceTagsHtml += `<span class="evidence-badge" data-doc="${escapeHtml(ev.doc_name)}">📌 ${formatMathInText(ev.doc_name)} (${escapeHtml(ev.location_label)})</span>`;
-      });
-      evidenceTagsHtml += '</div>';
+      evidenceTagsHtml = `<div class="evidence-badges"><span class="evidence-badge" data-doc="evidence-panel">📌 在右侧「证据与页码」查看本轮 ${data.retrieved_evidence.length} 条依据</span></div>`;
     }
 
     // 渲染证据整理归纳备忘录 (去噪/分类/机制提炼)
