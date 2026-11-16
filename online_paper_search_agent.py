@@ -881,8 +881,19 @@ class OnlinePaperSearchAgent:
         resources = []
         source_error = None
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            data = None
+            for attempt in range(2):
+                try:
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        data = json.loads(resp.read().decode("utf-8"))
+                    break
+                except urllib.error.HTTPError as http_exc:
+                    if getattr(http_exc, "code", None) in (502, 503, 504) and attempt == 0:
+                        time.sleep(1.0)
+                        continue
+                    raise
+            if data is None:
+                data = {}
             for it in data.get("results", []):
                 title = it.get("title") or ""
                 if not title:
@@ -961,8 +972,19 @@ class OnlinePaperSearchAgent:
         resources = []
         source_error = None
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            data = None
+            for attempt in range(2):
+                try:
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        data = json.loads(resp.read().decode("utf-8"))
+                    break
+                except urllib.error.HTTPError as http_exc:
+                    if getattr(http_exc, "code", None) in (502, 503, 504) and attempt == 0:
+                        time.sleep(1.0)
+                        continue
+                    raise
+            if data is None:
+                data = {}
             for it in data.get("data", []):
                 title = it.get("title") or ""
                 if not title:

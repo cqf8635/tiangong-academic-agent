@@ -416,3 +416,34 @@ def test_enrich_top_arxiv_html_includes_fused_academic_and_balanced_sections(mon
     parsed = fetch_arxiv_html_sections("2609.28589", max_chars=2400)
     assert "[2 Method]" in parsed["text"]
     assert "[3 Experiments]" in parsed["text"]
+
+
+def test_search_openalex_retries_once_on_transient_503(monkeypatch):
+    import urllib.error
+    import online_paper_search_agent as ops
+
+    monkeypatch.setattr(ops, "_OPENALEX_COOLDOWN_UNTIL", 0.0)
+    monkeypatch.setattr("time.sleep", lambda _s: None)
+    calls = {"n": 0}
+
+    def fake_urlopen(req, timeout=10):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise urllib.error.HTTPError(req.full_url, 503, "Service Unavailable", None, None)
+        return _Response(json.dumps({
+            "results": [{
+                "title": "Recovered OpenAlex Paper",
+                "publication_year": 2026,
+                "doi": "https://doi.org/10.1000/recovered",
+                "cited_by_count": 3,
+                "authorships": [],
+                "primary_location": {"source": {"display_name": "NeurIPS"}},
+            }]
+        }).encode("utf-8"))
+
+    monkeypatch.setattr(ops.urllib.request, "urlopen", fake_urlopen)
+    agent = ops.OnlinePaperSearchAgent.__new__(ops.OnlinePaperSearchAgent)
+    res = agent.search_openalex("OneTrans", max_results=3)
+    assert calls["n"] == 2
+    assert len(res) == 1
+    assert res[0].title == "Recovered OpenAlex Paper"
