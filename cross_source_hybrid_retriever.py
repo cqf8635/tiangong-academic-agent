@@ -675,9 +675,20 @@ class CrossSourceHybridRetriever:
                 ))
 
             # 2. OpenAlex
+            def _is_unreviewed_repo(rec: Dict[str, Any]) -> bool:
+                hay = " ".join(
+                    str(rec.get(k) or "") for k in ("doi", "url", "pdf_url")
+                ).casefold()
+                return any(
+                    marker in hay
+                    for marker in ("10.5281/zenodo", "zenodo.org", "10.6084/m9.figshare", "figshare.com", "10.17605/osf.io", "osf.io/")
+                )
+
             for op in bundle.get("openalex_papers", []):
                 op_level = op.get("evidence_level")
                 op_score = 0.91 if op_level == "abstract" else 0.68
+                if op_level == "abstract" and _is_unreviewed_repo(op):
+                    op_score = 0.72
                 cards.append(UnifiedEvidenceCard(
                     doc_name=op.get("title", ""),
                     doc_type="openalex",
@@ -703,6 +714,8 @@ class CrossSourceHybridRetriever:
                     continue
                 c_level = c.get("evidence_level")
                 c_score = 0.90 if c_level == "abstract" else 0.64
+                if c_level == "abstract" and _is_unreviewed_repo(c):
+                    c_score = 0.72
                 cards.append(UnifiedEvidenceCard(
                     doc_name=c_title,
                     doc_type="crossref",

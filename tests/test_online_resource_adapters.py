@@ -447,3 +447,55 @@ def test_search_openalex_retries_once_on_transient_503(monkeypatch):
     assert calls["n"] == 2
     assert len(res) == 1
     assert res[0].title == "Recovered OpenAlex Paper"
+
+
+def test_cross_source_retriever_downweights_unreviewed_zenodo_repositories():
+    from unittest.mock import Mock
+
+    from cross_source_hybrid_retriever import CrossSourceHybridRetriever
+
+    bundle = {
+        "arxiv_papers": [{"title": "arXiv Paper", "paper_id": "2611.12345"}],
+    }
+    expected_scores = {"arXiv Paper": 0.92}
+    repository_links = [
+        ("doi", "10.5281/zenodo.20099747"),
+        ("url", "https://ZENODO.ORG/records/20099747"),
+        ("doi", "https://doi.org/10.6084/m9.figshare.123456"),
+        ("pdf_url", "https://example.figshare.com/articles/123456"),
+        ("doi", "10.17605/OSF.IO/ABCDE"),
+        ("url", "https://osf.io/abcde/"),
+    ]
+    for source, abstract_score, metadata_score in (
+        ("openalex", 0.91, 0.68), ("crossref", 0.90, 0.64),
+    ):
+        records = [
+            {
+                "title": f"{source} Journal Paper",
+                "doi": "https://doi.org/10.1103/PhysRevLett.136.010101",
+                "url": "https://doi.org/10.1103/PhysRevLett.136.010101",
+                "summary": "Replication data: https://doi.org/10.5281/zenodo.20099747",
+                "evidence_level": "abstract",
+            },
+            {
+                "title": f"{source} Metadata Only",
+                "doi": "10.5281/zenodo.20099747",
+                "evidence_level": "bibliographic_metadata",
+            },
+        ]
+        expected_scores[records[0]["title"]] = abstract_score
+        expected_scores[records[1]["title"]] = metadata_score
+        for index, (field, link) in enumerate(repository_links):
+            title = f"{source} Repository Paper {index}"
+            records.append({
+                "title": title, field: link,
+                "summary": "Self-archived abstract.", "evidence_level": "abstract",
+            })
+            expected_scores[title] = 0.72
+        bundle[f"{source}_papers"] = records
+
+    paper_agent = Mock()
+    paper_agent.search_multisource.return_value = bundle
+    retriever = CrossSourceHybridRetriever(paper_agent=paper_agent)
+    cards = retriever._fetch_online_evidence("quantum")
+    assert {card.doc_name: card.score for card in cards} == expected_scores
