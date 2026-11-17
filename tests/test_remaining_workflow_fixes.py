@@ -264,3 +264,67 @@ def test_multidisciplinary_author_and_reviewer_keep_raw_task_and_full_data(monke
     assert len(calls) == 2 and reviewed["final_answer"] == answer
     assert reviewed["review_verdict"]["verdict"] == "pass"
     assert reviewed["retrieved_evidence"] == evidence
+
+
+def test_translate_full_paper_resumes_only_failed_chunks(tmp_path, monkeypatch):
+    import types
+    import backend_api
+
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setattr(backend_api, "PAPER_TRANSLATION_CACHE_DIR", tmp_path)
+    monkeypatch.setattr(backend_api, "_extract_paper_pdf_text", lambda _req: "Chunk1\n\nChunk2\n\nChunk3")
+    monkeypatch.setattr(backend_api, "_split_translation_chunks", lambda _text: ["Chunk1", "Chunk2", "Chunk3"])
+
+    cache_file = tmp_path / "2611.99999v1.json"
+    cache_file.write_text(json.dumps({
+        "version": 4,
+        "title_zh": "Test Paper",
+        "thesis_zh": "核心解读",
+        "abstract_zh": "中文摘要",
+        "full_text_zh": "第一卷译文\n\n> ⚠️ 【第 2 卷网络请求超时，已安全呈现原文】\n\nChunk2\n\n第三卷译文",
+        "chunks_zh": ["第一卷译文", "> ⚠️ 【第 2 卷网络请求超时，已安全呈现原文】\n\nChunk2", "第三卷译文"],
+        "source_chunks": 3,
+    }, ensure_ascii=False), encoding="utf-8")
+
+    called_prompts = []
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            called_prompts.append(kwargs["messages"][0]["content"])
+            return types.SimpleNamespace(
+                choices=[types.SimpleNamespace(message=types.SimpleNamespace(content=json.dumps({"translation": "第二卷补译完成"})))]
+            )
+
+    class FakeOpenAI:
+        def __init__(self, **_kwargs):
+            self.chat = types.SimpleNamespace(completions=FakeCompletions())
+
+    monkeypatch.setattr("openai.OpenAI", FakeOpenAI)
+    req = backend_api.RadarTranslateRequest(paper_id="2611.99999v1", title="Test Paper")
+    res = backend_api._translate_full_paper(req)
+    assert len(called_prompts) == 1
+    assert "第 2/3 卷" in called_prompts[0]
+    assert "第一卷译文" in res["full_text_zh"]
+    assert "第二卷补译完成" in res["full_text_zh"]
+    assert "第三卷译文" in res["full_text_zh"]
+    assert "网络请求超时" not in res["full_text_zh"]
+
+    # Verify TRANSLATION_LLM_MODEL overrides default model cleanly
+    monkeypatch.setenv("TRANSLATION_LLM_MODEL", "cheap-trans-model")
+    called_models = []
+
+    class TrackModelCompletions:
+        def create(self, **kwargs):
+            called_models.append(kwargs["model"])
+            return types.SimpleNamespace(
+                choices=[types.SimpleNamespace(message=types.SimpleNamespace(content=json.dumps({"translation": "ok"})))]
+            )
+
+    class TrackOpenAI:
+        def __init__(self, **_kwargs):
+            self.chat = types.SimpleNamespace(completions=TrackModelCompletions())
+
+    monkeypatch.setattr("openai.OpenAI", TrackOpenAI)
+    cache_file.unlink()
+    backend_api._translate_full_paper(backend_api.RadarTranslateRequest(paper_id="2611.99999v1", title="Test Paper"))
+    assert called_models and all(m == "cheap-trans-model" for m in called_models)

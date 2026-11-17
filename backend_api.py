@@ -1089,47 +1089,71 @@ def _split_translation_chunks(text: str, max_chars: int = 3800) -> List[str]:
 
 def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     from openai import OpenAI
-    from config_utils import get_default_llm_model
+    from config_utils import get_translation_llm_client_kwargs, get_translation_llm_model
 
     translation_cache_path = PAPER_TRANSLATION_CACHE_DIR / f"{_safe_translation_stem(req)}.json"
+    cached_data: Dict[str, Any] = {}
     if translation_cache_path.exists() and translation_cache_path.stat().st_size > 0:
         try:
             cached = json.loads(translation_cache_path.read_text(encoding="utf-8"))
             if cached.get("version") == 4 and cached.get("full_text_zh"):
-                return cached
+                has_failures = "网络请求超时，已安全呈现原文" in cached["full_text_zh"]
+                if not has_failures:
+                    return cached
+                cached_data = cached
         except (OSError, json.JSONDecodeError):
             pass
 
-    api_key = os.getenv("OPENAI_API_KEY")
-    base_url = os.getenv("OPENAI_BASE_URL")
-    if not api_key:
+    client_kwargs = get_translation_llm_client_kwargs()
+    if not client_kwargs.get("api_key"):
         raise ValueError("未配置 API Key")
     source_text = _extract_paper_pdf_text(req)
     if not source_text:
         raise ValueError("无法提取论文正文，请检查 PDF 链接是否可访问")
 
-    client = OpenAI(api_key=api_key, base_url=base_url)
-    model = get_default_llm_model()
-    summary_prompt = f"""请为下面这篇学术论文提供中文阅读预览。将英文摘要准确翻译成中文，并根据给出的核心论断整理1~2句中文核心解读。
+    client = OpenAI(**client_kwargs)
+    model = get_translation_llm_model()
+    if cached_data.get("abstract_zh") and cached_data.get("thesis_zh"):
+        summary_data = {
+            "abstract_zh": cached_data["abstract_zh"],
+            "thesis_zh": cached_data["thesis_zh"],
+        }
+    else:
+        summary_prompt = f"""请为下面这篇学术论文提供中文阅读预览。将英文摘要准确翻译成中文，并根据给出的核心论断整理1~2句中文核心解读。
 不得补充原文没有的信息，保留专业术语、缩写和数学符号。严格输出 JSON：
 {{"abstract_zh": "中文摘要翻译", "thesis_zh": "中文核心解读"}}
 
 论文标题：{req.title}
 核心论断：{req.text or ""}
 英文摘要：{req.abstract or ""}"""
-    summary_response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": summary_prompt}],
-        response_format={"type": "json_object"},
-        temperature=0.2,
-        timeout=120,
-    )
-    try:
-        summary_data = json.loads(summary_response.choices[0].message.content or "{}")
-    except json.JSONDecodeError:
-        summary_data = {}
+        summary_response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": summary_prompt}],
+            response_format={"type": "json_object"},
+            temperature=0.2,
+            timeout=120,
+        )
+        try:
+            summary_data = json.loads(summary_response.choices[0].message.content or "{}")
+        except json.JSONDecodeError:
+            summary_data = {}
     chunks = _split_translation_chunks(source_text)
     translated_chunks: List[str] = [""] * len(chunks)
+    cached_chunks = cached_data.get("chunks_zh")
+    if isinstance(cached_chunks, list) and len(cached_chunks) == len(chunks):
+        for i, val in enumerate(cached_chunks):
+            if isinstance(val, str) and val.strip() and "网络请求超时，已安全呈现原文" not in val:
+                translated_chunks[i] = val
+    elif cached_data.get("full_text_zh") and int(cached_data.get("source_chunks") or 0) == len(chunks):
+        # Legacy cache fallback: preserve prefix before the first failed chunk marker.
+        m_fail = re.search(r"> ⚠️ 【第 (\d+) 卷网络请求超时，已安全呈现原文】", cached_data["full_text_zh"])
+        if m_fail:
+            first_failed_idx = int(m_fail.group(1))
+            prefix_zh = cached_data["full_text_zh"][:m_fail.start()].strip()
+            if first_failed_idx > 1 and prefix_zh:
+                translated_chunks[0] = prefix_zh
+                for i in range(1, min(first_failed_idx - 1, len(chunks))):
+                    translated_chunks[i] = "__MERGED_IN_PREFIX__"
 
     def _translate_single_chunk(task_info):
         idx, chunk_content = task_info
@@ -1169,20 +1193,23 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
                 time.sleep(sleep_sec)
         return idx, f"> ⚠️ 【第 {idx} 卷网络请求超时，已安全呈现原文】\n\n{chunk_content}"
 
-    # 🚀 并发翻译多个适度分段 (并发 3 线程)，大幅缩减总等待时长，杜绝单次请求超时
+    # 🚀 并发翻译多个适度分段 (仅翻译尚未成功的分段，实现断点续译)
     from concurrent.futures import ThreadPoolExecutor
-    tasks = [(i, c) for i, c in enumerate(chunks, start=1)]
-    with ThreadPoolExecutor(max_workers=min(len(chunks), 3)) as pool:
-        for idx, trans_text in pool.map(_translate_single_chunk, tasks):
-            translated_chunks[idx - 1] = trans_text
+    tasks = [(i, c) for i, c in enumerate(chunks, start=1) if not translated_chunks[i - 1]]
+    if tasks:
+        with ThreadPoolExecutor(max_workers=min(len(tasks), 3)) as pool:
+            for idx, trans_text in pool.map(_translate_single_chunk, tasks):
+                translated_chunks[idx - 1] = trans_text
 
-    full_text_zh = "\n\n".join(translated_chunks).strip()
+    final_chunks = [c for c in translated_chunks if c != "__MERGED_IN_PREFIX__"]
+    full_text_zh = "\n\n".join(final_chunks).strip()
     result = {
         "version": 4,
         "title_zh": req.title,
         "thesis_zh": summary_data.get("thesis_zh", "").strip(),
         "abstract_zh": summary_data.get("abstract_zh", "").strip(),
         "full_text_zh": full_text_zh,
+        "chunks_zh": translated_chunks,
         "source_chunks": len(chunks),
     }
     translation_cache_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
@@ -1191,12 +1218,12 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
 def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
     from openai import OpenAI
-    from config_utils import get_default_llm_model
+    from config_utils import get_translation_llm_client_kwargs, get_translation_llm_model
 
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+    client_kwargs = get_translation_llm_client_kwargs()
+    if not client_kwargs.get("api_key"):
         raise ValueError("未配置 API Key")
-    client = OpenAI(api_key=api_key, base_url=os.getenv("OPENAI_BASE_URL"))
+    client = OpenAI(**client_kwargs)
     prompt = f"""你是一位严谨资深的学术学者与翻译专家。请针对以下论文生成中文 AI 摘要与精译。
 请准确翻译标题和英文摘要，并用1~2句概括核心方法、解决的问题与创新贡献。不得臆造信息，保留专业术语、缩写、公式和变量。
 请严格按 JSON 输出：
@@ -1205,7 +1232,7 @@ def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
 论文英文标题：{req.title}
 论文英文摘要：{(req.abstract or req.text or "").strip()}"""
     response = client.chat.completions.create(
-        model=get_default_llm_model(),
+        model=get_translation_llm_model(),
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
         temperature=0.3,

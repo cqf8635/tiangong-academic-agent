@@ -55,6 +55,18 @@ def get_default_llm_model(default: str = "gpt-5.6-terra") -> str:
     return os.getenv("DEFAULT_LLM_MODEL") or os.getenv("OPENAI_MODEL", default)
 
 
+def get_translation_llm_model() -> str:
+    """解析论文翻译专用模型（可选配低倍率/高性价比模型，未配置时回退默认模型）"""
+    return os.getenv("TRANSLATION_LLM_MODEL", "").strip() or get_default_llm_model()
+
+
+def get_translation_llm_client_kwargs() -> dict:
+    """解析论文翻译专用 OpenAI 客户端配置（未单独配置时复用主接口凭证）"""
+    api_key = os.getenv("TRANSLATION_API_KEY", "").strip() or os.getenv("OPENAI_API_KEY")
+    base_url = os.getenv("TRANSLATION_BASE_URL", "").strip() or os.getenv("OPENAI_BASE_URL")
+    return {"api_key": api_key, "base_url": base_url}
+
+
 def get_llm_timeout(default: float = 100.0) -> float:
     """统一解析全局大模型请求超时时间 (秒)"""
     val = os.getenv("LLM_TIMEOUT")
