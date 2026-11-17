@@ -944,8 +944,10 @@ async def radar_search(req: RadarSearchRequest):
             # 自动沉淀为本地快照
             radar_sync_engine.save_snapshot(req.major or "CS", sub_key, res)
 
-        # 🌟 若在线检索无返回或超时受限，自动由本地持久化快照平滑接管 (零报错、零空白、零延时)
-        if not (res and res.get("papers")):
+        # An empty announcement batch or an exhausted page is a valid response;
+        # replacing it with an old first-page snapshot would fabricate updates.
+        updates_handled = res and res.get("update_status") in ("live", "no_announcements", "stale_snapshot")
+        if not (res and res.get("papers")) and not updates_handled:
             cached_snapshot = radar_sync_engine.read_snapshot(req.major or "CS", sub_key)
             if cached_snapshot:
                 cached_snapshot["is_cached_snapshot"] = True

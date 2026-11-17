@@ -10,6 +10,8 @@ Integrates:
 from __future__ import annotations
 
 import json
+import copy
+import inspect
 import base64
 import os
 import re
@@ -24,8 +26,11 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from functools import wraps
+from contextlib import contextmanager
+from concurrent.futures import Future, ThreadPoolExecutor, wait
 from pydantic import BaseModel, Field
 
 from dotenv import load_dotenv
@@ -54,6 +59,160 @@ _ARXIV_CACHE: "OrderedDict[tuple[str, int], tuple[float, List['ArxivPaper']]]" =
 _ARXIV_CACHE_LOCK = threading.Lock()
 _S2_COOLDOWN_UNTIL = 0.0
 _S2_LOCK = threading.Lock()
+ACADEMIC_SEARCH_BUDGET = max(0.1, float(os.getenv("ACADEMIC_SEARCH_BUDGET", "18")))
+ACADEMIC_SEARCH_CACHE_TTL = max(0.0, float(os.getenv("ACADEMIC_SEARCH_CACHE_TTL", "300")))
+ACADEMIC_EMPTY_CACHE_TTL = 30.0
+ACADEMIC_SEARCH_CACHE_MAX = 256
+_SEARCH_CONTEXT = threading.local()
+_SEARCH_STATE_LOCK = threading.Lock()
+_SEARCH_EXECUTOR = ThreadPoolExecutor(max_workers=8, thread_name_prefix="academic-search")
+_SEARCH_WORK_SLOTS = threading.BoundedSemaphore(32)
+
+
+@contextmanager
+def _search_budget(deadline):
+    previous = getattr(_SEARCH_CONTEXT, "deadline", None)
+    _SEARCH_CONTEXT.deadline = min(previous, deadline) if previous is not None else deadline
+    try:
+        yield
+    finally:
+        _SEARCH_CONTEXT.deadline = previous
+
+
+def _search_timeout(seconds):
+    deadline = getattr(_SEARCH_CONTEXT, "deadline", None)
+    if deadline is None:
+        return seconds
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise TimeoutError("学术网络检索时间预算已耗尽")
+    return min(seconds, remaining)
+
+
+def _search_pause(seconds):
+    if _search_timeout(seconds) < seconds:
+        raise TimeoutError("剩余检索预算不足以等待后重试")
+    time.sleep(seconds)
+
+
+@contextmanager
+def _search_lock(lock):
+    deadline = getattr(_SEARCH_CONTEXT, "deadline", None)
+    acquired = lock.acquire(timeout=_search_timeout(ACADEMIC_SEARCH_BUDGET)) if deadline is not None else lock.acquire()
+    if not acquired:
+        raise TimeoutError("检索排队超过本轮时间预算")
+    try:
+        yield
+    finally:
+        lock.release()
+
+
+def _retry_after_seconds(headers, default):
+    value = headers.get("Retry-After") if headers else None
+    if value:
+        try:
+            return max(1.0, float(value))
+        except (TypeError, ValueError):
+            try:
+                return max(1.0, parsedate_to_datetime(value).timestamp() - time.time())
+            except (TypeError, ValueError, OverflowError):
+                pass
+    return default
+
+
+def _search_state(agent):
+    with _SEARCH_STATE_LOCK:
+        state = agent.__dict__.get("_academic_search_state")
+        if state is None:
+            state = {"lock": threading.Lock(), "cache": OrderedDict(), "inflight": {},
+                     "cooldowns": {}, "source_locks": {}}
+            agent._academic_search_state = state
+        return state
+
+
+def _cool_down_source(agent, source, seconds, reason):
+    state = _search_state(agent)
+    with state["lock"]:
+        until, _ = state["cooldowns"].get(source, (0.0, ""))
+        new_until = time.monotonic() + seconds
+        if new_until > until:
+            state["cooldowns"][source] = (new_until, reason)
+
+
+def _source_http_failure(agent, source, exc):
+    if exc.code in (403, 429, 503):
+        seconds = _retry_after_seconds(exc.headers, 180.0 if exc.code == 429 else 60.0)
+        if source == "github" and exc.headers and exc.headers.get("X-RateLimit-Remaining") == "0":
+            try:
+                seconds = max(seconds, float(exc.headers.get("X-RateLimit-Reset", "0")) - time.time())
+            except ValueError:
+                pass
+        _cool_down_source(agent, source, seconds, f"HTTP {exc.code}")
+
+
+def _cached_academic_search(source):
+    """Cache successes, share identical in-flight calls, and cool failed providers."""
+    def decorate(method):
+        signature = inspect.signature(method)
+
+        @wraps(method)
+        def wrapped(self, *args, **kwargs):
+            bound = signature.bind(self, *args, **kwargs)
+            bound.apply_defaults()
+            if "time_constraint" in bound.arguments:
+                bound.arguments["time_constraint"] = resolve_retrieval_time_constraint(bound.arguments["time_constraint"])
+            arguments = {k: v for k, v in bound.arguments.items() if k != "self"}
+            key = (source, json.dumps(arguments, sort_keys=True, ensure_ascii=False, default=str))
+            state = _search_state(self)
+            with state["lock"]:
+                cached = state["cache"].get(key)
+                if cached and time.monotonic() < cached[0]:
+                    state["cache"].move_to_end(key)
+                    result = copy.deepcopy(cached[1])
+                    result.cache_hit = True
+                    return result
+                state["cache"].pop(key, None)
+                until, reason = state["cooldowns"].get(source, (0.0, ""))
+                if time.monotonic() < until:
+                    return SearchResults(source_error=f"cooldown: {reason}")
+                future = state["inflight"].get(key)
+                owner = future is None
+                if owner:
+                    future = Future()
+                    state["inflight"][key] = future
+                source_lock = state["source_locks"].setdefault(source, threading.Lock())
+            if not owner:
+                return copy.deepcopy(future.result(timeout=_search_timeout(ACADEMIC_SEARCH_BUDGET)))
+            try:
+                with _search_lock(source_lock):
+                    _search_timeout(ACADEMIC_SEARCH_BUDGET)
+                    # A different query may have restricted the source while we queued.
+                    with state["lock"]:
+                        until, reason = state["cooldowns"].get(source, (0.0, ""))
+                    if time.monotonic() < until:
+                        result = SearchResults(source_error=f"cooldown: {reason}")
+                    else:
+                        records = method(*bound.args, **bound.kwargs)
+                        result = SearchResults(records, getattr(records, "source_error", None))
+                if result.source_error:
+                    _cool_down_source(self, source, 30.0, result.source_error)
+                else:
+                    ttl = ACADEMIC_SEARCH_CACHE_TTL if result else ACADEMIC_EMPTY_CACHE_TTL
+                    with state["lock"]:
+                        state["cache"][key] = (time.monotonic() + ttl, copy.deepcopy(result))
+                        while len(state["cache"]) > ACADEMIC_SEARCH_CACHE_MAX:
+                            state["cache"].popitem(last=False)
+                future.set_result(copy.deepcopy(result))
+                return result
+            except BaseException as exc:
+                future.set_exception(exc)
+                raise
+            finally:
+                with state["lock"]:
+                    state["inflight"].pop(key, None)
+
+        return wrapped
+    return decorate
 
 
 def _s2_headers() -> Dict[str, str]:
@@ -86,6 +245,148 @@ def _arxiv_retry_after_seconds(headers) -> float:
             except (TypeError, ValueError, OverflowError):
                 pass
     return max(3.2, ARXIV_RATE_LIMIT_COOLDOWN)
+
+
+_UPDATES_ATOM = "{http://www.w3.org/2005/Atom}"
+_UPDATES_ARXIV = "{http://arxiv.org/schemas/atom}"
+_UPDATES_DC = "{http://purl.org/dc/elements/1.1/}"
+
+
+def _arxiv_feed_categories(major=None, sub_categories=None):
+    from academic_taxonomy import ACADEMIC_TAXONOMY, get_subcategory_meta
+
+    expansions = {"hep": ["hep-ex", "hep-lat", "hep-ph", "hep-th"],
+                  "nucl": ["nucl-ex", "nucl-th"]}
+    archives = {g["arxiv_prefix"] for m in ACADEMIC_TAXONOMY.values() for g in m["groups"].values()}
+    if sub_categories:
+        categories = [c.strip().rstrip("*") for c in sub_categories if c.strip()]
+        if any(c not in archives and not get_subcategory_meta(c) for c in categories):
+            raise ValueError("不支持的 arXiv 订阅分类")
+    else:
+        if major and major != "ALL" and major not in ACADEMIC_TAXONOMY:
+            raise ValueError("不支持的 arXiv 学科")
+        majors = [ACADEMIC_TAXONOMY[major]] if major and major != "ALL" else ACADEMIC_TAXONOMY.values()
+        categories = [g["arxiv_prefix"] for m in majors for g in m["groups"].values()]
+    return tuple(sorted({expanded for c in categories for expanded in expansions.get(c, [c])}))
+
+
+def _parse_arxiv_update_feed(xml_bytes):
+    root = ET.fromstring(xml_bytes)
+    updated_at = root.findtext(f"{_UPDATES_ATOM}updated")
+    if root.tag != f"{_UPDATES_ATOM}feed" or not updated_at:
+        raise ValueError("arXiv 更新订阅未返回有效 Atom 批次")
+    papers = {}
+    for entry in root.findall(f"{_UPDATES_ATOM}entry"):
+        entry_id = (entry.findtext(f"{_UPDATES_ATOM}id") or "").strip()
+        paper_id = entry_id.removeprefix("oai:arXiv.org:")
+        if "/abs/" in paper_id:
+            paper_id = paper_id.split("/abs/", 1)[1]
+        if not re.fullmatch(r"(?:\d{4}\.\d{4,5}|[A-Za-z][A-Za-z.-]*/\d{7})(?:v\d+)?", paper_id):
+            raise ValueError("arXiv 更新订阅包含无效论文编号")
+        title = " ".join((entry.findtext(f"{_UPDATES_ATOM}title") or "").split())
+        if not title:
+            raise ValueError("arXiv 更新订阅包含无标题论文")
+        summary = entry.findtext(f"{_UPDATES_ATOM}summary") or ""
+        if summary.startswith("arXiv:") and "Abstract:" in summary:
+            summary = summary.split("Abstract:", 1)[1]
+        authors = [a.findtext(f"{_UPDATES_ATOM}name") or "" for a in entry.findall(f"{_UPDATES_ATOM}author")]
+        if not authors:
+            creators = [c.text or "" for c in entry.findall(f"{_UPDATES_DC}creator")]
+            authors = [name.strip() for c in creators for name in c.split(",") if name.strip()]
+        categories = [c.get("term") for c in entry.findall(f"{_UPDATES_ATOM}category") if c.get("term")]
+        announced_at = entry.findtext(f"{_UPDATES_ATOM}published") or updated_at
+        primary = entry.find(f"{_UPDATES_ARXIV}primary_category")
+        paper = {
+            "paper_id": paper_id, "title": title, "authors": authors,
+            "year": int(announced_at[:4]), "published_at": announced_at,
+            "announced_at": announced_at, "date_kind": "announcement",
+            "announce_type": entry.findtext(f"{_UPDATES_ARXIV}announce_type") or "",
+            "summary": " ".join(summary.split()),
+            "pdf_url": f"https://arxiv.org/pdf/{paper_id}", "source": "arxiv",
+            "primary_category": primary.get("term") if primary is not None else (categories[0] if categories else None),
+            "categories": categories,
+        }
+        base_id = re.sub(r"v\d+$", "", paper_id)
+        previous = papers.get(base_id)
+        version = int((re.search(r"v(\d+)$", paper_id) or [None, "0"])[1])
+        previous_version = int((re.search(r"v(\d+)$", previous["paper_id"]) or [None, "0"])[1]) if previous else -1
+        if version > previous_version:
+            papers[base_id] = paper
+    return {
+        "papers": sorted(papers.values(), key=lambda p: (p["announced_at"], p["paper_id"]), reverse=True),
+        "feed_updated_at": updated_at,
+    }
+
+
+class ArxivUpdateFeedClient:
+    """Serialize subscription fetches; share a whole batch across pages and sizes."""
+
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._cache = OrderedDict()
+        self._last_completed_at = 0.0
+        self._cooldown_until = 0.0
+        self.cache_ttl = max(60.0, float(os.getenv("ARXIV_UPDATES_CACHE_TTL", "300")))
+        self.timeout = float(os.getenv("ARXIV_UPDATES_TIMEOUT", "12"))
+        self.min_interval = 3.2
+
+    def cooldown_remaining(self):
+        return max(0.0, self._cooldown_until - time.monotonic())
+
+    def fetch(self, categories):
+        key = tuple(sorted(set(categories)))
+        if not key:
+            raise ValueError("缺少 arXiv 订阅分类")
+        with self._lock:
+            cached = self._cache.get(key)
+            if cached and time.monotonic() - cached[0] < self.cache_ttl:
+                self._cache.move_to_end(key)
+                return copy.deepcopy(cached[1])
+            if self.cooldown_remaining():
+                raise TimeoutError("arXiv 更新订阅暂时不可用，等待冷却")
+            wait_for = self.min_interval - (time.monotonic() - self._last_completed_at)
+            if wait_for > 0:
+                time.sleep(wait_for)
+            headers = {"User-Agent": os.getenv("ARXIV_USER_AGENT", "TianGongAcademicRadar/2.0"),
+                       "Accept": "application/atom+xml"}
+            if cached and cached[2]:
+                headers["If-None-Match"] = cached[2]
+            req = urllib.request.Request("https://rss.arxiv.org/atom/" + "+".join(key), headers=headers)
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as response:
+                    body = response.read(20 * 1024 * 1024 + 1)
+                    if len(body) > 20 * 1024 * 1024:
+                        raise ValueError("arXiv 更新订阅超出大小限制")
+                    data = _parse_arxiv_update_feed(body)
+                    etag = response.headers.get("ETag")
+                data["fetched_at"] = datetime.now(timezone.utc).isoformat()
+            except urllib.error.HTTPError as exc:
+                if exc.code == 304 and cached:
+                    data, etag = copy.deepcopy(cached[1]), cached[2]
+                    data["fetched_at"] = datetime.now(timezone.utc).isoformat()
+                else:
+                    cooldown = 900.0 if exc.code in (403, 429) else 60.0
+                    retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                    if retry_after:
+                        try:
+                            cooldown = max(cooldown, float(retry_after))
+                        except ValueError:
+                            try:
+                                cooldown = max(cooldown, parsedate_to_datetime(retry_after).timestamp() - time.time())
+                            except (TypeError, ValueError, OverflowError):
+                                pass
+                    self._cooldown_until = time.monotonic() + cooldown
+                    raise
+            except Exception:
+                self._cooldown_until = time.monotonic() + 60.0
+                raise
+            finally:
+                self._last_completed_at = time.monotonic()
+            self._cache[key] = (time.monotonic(), data, etag)
+            self._cache.move_to_end(key)
+            while len(self._cache) > 64:
+                self._cache.popitem(last=False)
+            return copy.deepcopy(data)
 
 
 class ArxivScheduler:
@@ -158,7 +459,7 @@ class ArxivScheduler:
                 "curl",
                 "-s",
                 "--http2",
-                "--max-time", str(max(5, int(timeout))),
+                "--max-time", str(max(0.001, timeout)),
                 "-H", f"User-Agent: {ua}",
                 "-H", f"Accept: {accept_hdr}",
                 "-w", "\n__HTTP_STATUS__:%{http_code}",
@@ -168,7 +469,7 @@ class ArxivScheduler:
                 cmd[:1] + ["--dump-header", "-"] + cmd[1:],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=timeout + 2,
+                timeout=_search_timeout(timeout + 2),
             )
             # curl emits headers before the response body. HTTPS proxies may add
             # CONNECT headers, so consume all leading HTTP header blocks.
@@ -218,7 +519,7 @@ class ArxivScheduler:
         if is_background and self.is_user_active(30.0):
             raise ConnectionAbortedError("前台用户正在活跃检索，后台同步线程主动礼让避让网络通道")
 
-        with self._lock:
+        with _search_lock(self._lock):
             # 进入锁内二次检查冷却
             in_cd, remain = self.is_in_cooldown()
             if in_cd:
@@ -229,9 +530,10 @@ class ArxivScheduler:
             min_interval = float(globals().get("ARXIV_MIN_INTERVAL", 3.2))
             wait_for = min_interval - (now - self._last_completed_at)
             if wait_for > 0:
-                time.sleep(wait_for)
+                _search_pause(wait_for)
 
             try:
+                timeout = _search_timeout(timeout)
                 # Prefer curl HTTP/2 when available; protocol choice does not bypass limits.
                 data = self._fetch_http2_fast(req, timeout=timeout)
                 if data is None:
@@ -255,6 +557,7 @@ class ArxivScheduler:
 
 
 _ARXIV_SCHEDULER = ArxivScheduler()
+_ARXIV_UPDATES = ArxivUpdateFeedClient()
 _ARXIV_RATE_LOCK = _ARXIV_SCHEDULER._lock
 _ARXIV_LAST_REQUEST_AT = 0.0
 _ARXIV_429_COOLDOWN_UNTIL = 0.0
@@ -292,6 +595,7 @@ class SearchResults(list):
     def __init__(self, items=(), source_error=None):
         super().__init__(items)
         self.source_error = source_error
+        self.cache_hit = False
 
 
 class AcademicResource(BaseModel):
@@ -497,6 +801,7 @@ class OnlinePaperSearchAgent:
             return dedup_ascii
         return query.strip()
 
+    @_cached_academic_search("arxiv")
     def search_arxiv(
         self,
         query: str,
@@ -612,15 +917,49 @@ class OnlinePaperSearchAgent:
                 break
             except (TimeoutError, urllib.error.URLError, socket.timeout, ConnectionError) as e:
                 last_error = e
-                if attempt >= ARXIV_MAX_RETRIES:
+                if attempt >= ARXIV_MAX_RETRIES or _ARXIV_SCHEDULER.is_in_cooldown()[0]:
                     break
-                time.sleep(1.0 + random.uniform(0, 0.5))
+                try:
+                    _search_pause(1.0 + random.uniform(0, 0.5))
+                except TimeoutError:
+                    break
             except Exception as e:
                 last_error = e
                 break
 
         print(f"ℹ️ [ArxivSearch] arXiv 响应超时或受限 ({last_error})，自动由 CrossRef/OpenAlex 全球学术库平滑接管证据链。")
-        return []
+        return SearchResults(source_error=type(last_error).__name__)
+
+    def _radar_latest_updates(self, major, sub_categories, start, max_results):
+        """Read a daily announcement batch without using the historical query API."""
+        from academic_taxonomy import build_arxiv_query_expression, get_subcategory_meta
+        from collections import Counter
+
+        batch = _ARXIV_UPDATES.fetch(_arxiv_feed_categories(major, sub_categories))
+        all_papers = batch["papers"]
+        start = max(0, start)
+        page_size = max(1, min(max_results, 60))
+        papers = all_papers[start:start + page_size]
+        counts = Counter(cat for paper in papers for cat in set(paper.get("categories", [])))
+        distribution = []
+        for code, count in counts.most_common():
+            meta = get_subcategory_meta(code)
+            distribution.append({"code": code, "name_zh": meta["name_zh"] if meta else code, "count": count})
+        return {
+            "query_expression": build_arxiv_query_expression(major=major, sub_categories=sub_categories),
+            "papers": papers,
+            "total_fetched": len(papers),
+            "total_results": len(all_papers),
+            "total_results_scope": "announcement_batch",
+            "sub_distribution": distribution,
+            "source": "arxiv_rss",
+            "update_status": "live" if all_papers else "no_announcements",
+            "is_cached_snapshot": False,
+            "feed_updated_at": batch["feed_updated_at"],
+            "fetched_at": batch["fetched_at"],
+            "snapshot_synced_at": batch["fetched_at"],
+            "feed_limit_reached": len(all_papers) >= 2000,
+        }
 
     def search_radar(
         self,
@@ -642,6 +981,15 @@ class OnlinePaperSearchAgent:
         if not is_background:
             self.mark_user_active()
 
+        # Latest browsing uses the official daily feed on a separate host. Search
+        # terms and relevance sorting continue through the existing search path.
+        latest_browse = not (query or "").strip() and sort_by == "submittedDate"
+        if latest_browse:
+            try:
+                return self._radar_latest_updates(major, sub_categories, start, max_results)
+            except Exception as exc:
+                print(f"⚠️ [RadarUpdates]: 更新订阅暂不可用 ({exc})，尝试原查询接口。")
+
         # 1. 检查内存 LRU 缓存 (命中直接 0 毫秒秒出，彻底免疫 429 与网络超时)
         cache_key = (
             (query or "").strip().lower(),
@@ -655,7 +1003,8 @@ class OnlinePaperSearchAgent:
         with _RADAR_SEARCH_CACHE_LOCK:
             if cache_key in _RADAR_SEARCH_CACHE:
                 cached_time, cached_res = _RADAR_SEARCH_CACHE[cache_key]
-                if time.monotonic() - cached_time < _RADAR_SEARCH_CACHE_TTL:
+                ttl = min(_RADAR_SEARCH_CACHE_TTL, 60.0) if latest_browse else _RADAR_SEARCH_CACHE_TTL
+                if time.monotonic() - cached_time < ttl and not (latest_browse and cached_res.get("is_cached_snapshot")):
                     return copy.deepcopy(cached_res)
 
         arxiv_query = build_arxiv_query_expression(
@@ -719,6 +1068,24 @@ class OnlinePaperSearchAgent:
                         snap_data = json.load(sf)
                         if snap_data and snap_data.get("papers"):
                             snap_data["is_cached_snapshot"] = True
+                            if latest_browse:
+                                snapshot_papers = snap_data["papers"]
+                                if sub_categories:
+                                    selected = [c.rstrip("*") for c in sub_categories]
+                                    snapshot_papers = [p for p in snapshot_papers if any(
+                                        cat == sub or cat.startswith(sub + ".")
+                                        for cat in p.get("categories", []) for sub in selected
+                                    )]
+                                snap_data["papers"] = snapshot_papers[max(0, start):max(0, start) + max(1, min(max_results, 60))]
+                                snap_data["total_fetched"] = len(snap_data["papers"])
+                                snap_data["total_results"] = len(snapshot_papers)
+                                snap_data["total_results_scope"] = "snapshot"
+                                snap_data["update_status"] = "stale_snapshot"
+                                snap_data["query_expression"] = arxiv_query
+                                snap_data["snapshot_synced_at"] = snap_data.get("snapshot_synced_at") or datetime.fromtimestamp(snapshot_file.stat().st_mtime, timezone.utc).isoformat()
+                                # A failed refresh must not poison the 15-minute
+                                # successful-search cache with a stale snapshot.
+                                return snap_data
                             # 写入内存缓存，避免重复磁盘I/O与等待
                             with _RADAR_SEARCH_CACHE_LOCK:
                                 _RADAR_SEARCH_CACHE[cache_key] = (time.monotonic(), copy.deepcopy(snap_data))
@@ -751,6 +1118,15 @@ class OnlinePaperSearchAgent:
             "papers": [p.model_dump() for p in papers],
             "sub_distribution": sub_distribution,
         }
+        if latest_browse:
+            final_result.update({
+                "source": "arxiv_api",
+                "update_status": ("live" if papers else "no_announcements") if api_succeeded else "unavailable",
+                "is_cached_snapshot": False,
+            })
+            if api_succeeded:
+                final_result["fetched_at"] = datetime.now(timezone.utc).isoformat()
+                final_result["snapshot_synced_at"] = final_result["fetched_at"]
 
         # Cache successful empty queries too; failed requests are not zero matches.
         if api_succeeded:
@@ -762,6 +1138,7 @@ class OnlinePaperSearchAgent:
 
         return final_result
 
+    @_cached_academic_search("crossref")
     def search_crossref(
         self,
         query: str,
@@ -790,7 +1167,7 @@ class OnlinePaperSearchAgent:
         resources = []
         source_error = None
         try:
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=_search_timeout(12)) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             items = data.get("message", {}).get("items", [])
             for it in items:
@@ -826,11 +1203,16 @@ class OnlinePaperSearchAgent:
                     url=f"https://doi.org/{doi}" if doi else "",
                     doi=doi
                 ))
+        except urllib.error.HTTPError as e:
+            source_error = f"HTTP {e.code}"
+            _source_http_failure(self, "crossref", e)
+            print(f"⚠️ [CrossRefSearch Note]: {source_error}")
         except Exception as e:
             source_error = type(e).__name__
             print(f"⚠️ [CrossRefSearch Note]: {e}")
         return SearchResults(resources, source_error)
 
+    @_cached_academic_search("openalex")
     def search_openalex(
         self,
         query: str,
@@ -884,12 +1266,12 @@ class OnlinePaperSearchAgent:
             data = None
             for attempt in range(2):
                 try:
-                    with urllib.request.urlopen(req, timeout=10) as resp:
+                    with urllib.request.urlopen(req, timeout=_search_timeout(10)) as resp:
                         data = json.loads(resp.read().decode("utf-8"))
                     break
                 except urllib.error.HTTPError as http_exc:
                     if getattr(http_exc, "code", None) in (502, 503, 504) and attempt == 0:
-                        time.sleep(1.0)
+                        _search_pause(1.0)
                         continue
                     raise
             if data is None:
@@ -947,8 +1329,9 @@ class OnlinePaperSearchAgent:
                 ))
         except urllib.error.HTTPError as he:
             source_error = f"HTTP {he.code}"
+            _source_http_failure(self, "openalex", he)
             if he.code == 429:
-                _OPENALEX_COOLDOWN_UNTIL = time.time() + 180.0  # 自动进入 3 分钟熔断冷却，由 CrossRef 与 arXiv 全权兜底
+                _OPENALEX_COOLDOWN_UNTIL = time.time() + _retry_after_seconds(he.headers, 180.0)
             else:
                 print(f"⚠️ [OpenAlexSearch Note]: {he}")
         except Exception as e:
@@ -956,6 +1339,7 @@ class OnlinePaperSearchAgent:
             print(f"⚠️ [OpenAlexSearch Error]: {e}")
         return SearchResults(resources, source_error)
 
+    @_cached_academic_search("semanticscholar")
     def search_semanticscholar(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 Semantic Scholar API 检索文献极速摘要与学术引用影响力 (防噪高信噪比)"""
         if _s2_in_cooldown():
@@ -975,12 +1359,12 @@ class OnlinePaperSearchAgent:
             data = None
             for attempt in range(2):
                 try:
-                    with urllib.request.urlopen(req, timeout=10) as resp:
+                    with urllib.request.urlopen(req, timeout=_search_timeout(10)) as resp:
                         data = json.loads(resp.read().decode("utf-8"))
                     break
                 except urllib.error.HTTPError as http_exc:
                     if getattr(http_exc, "code", None) in (502, 503, 504) and attempt == 0:
-                        time.sleep(1.0)
+                        _search_pause(1.0)
                         continue
                     raise
             if data is None:
@@ -1017,9 +1401,11 @@ class OnlinePaperSearchAgent:
                 ))
         except urllib.error.HTTPError as he:
             source_error = "RateLimited" if he.code == 429 else type(he).__name__
+            _source_http_failure(self, "semanticscholar", he)
             if he.code == 429:
-                _s2_trigger_cooldown(60.0)
-                print("ℹ️ [SemanticScholar Note]: 公共接口触发限流 (429)，已进入 60s 冷却并由 OpenAlex/CrossRef 接管。")
+                seconds = _retry_after_seconds(he.headers, 180.0)
+                _s2_trigger_cooldown(seconds)
+                print(f"ℹ️ [SemanticScholar Note]: 公共接口限流 (429)，暂停请求 {seconds:.0f}s；其他来源独立检索。")
             else:
                 print(f"⚠️ [SemanticScholar Note]: {he}")
         except Exception as e:
@@ -1338,6 +1724,7 @@ class OnlinePaperSearchAgent:
             print(f"⚠️ [DOAJSearch Note]: {e}")
         return resources
 
+    @_cached_academic_search("dblp")
     def search_dblp(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 DBLP 检索计算机科学、电子信息与 AI 顶会期刊录用 (免登录)"""
         clean_q = re.sub(r"[\"'`]", "", query).strip()
@@ -1351,13 +1738,16 @@ class OnlinePaperSearchAgent:
         resources = []
         source_error = None
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with urllib.request.urlopen(req, timeout=_search_timeout(10)) as resp:
                 status = getattr(resp, "status", 200)
                 content_type = str(resp.headers.get("Content-Type", "")).casefold()
                 raw_text = resp.read().decode("utf-8", errors="replace").strip()
             if status != 200 or ("json" not in content_type and not raw_text.startswith("{")):
                 source_error = f"Http{status}NonJson"
-                print(f"ℹ️ [DBLPSearch Note]: 接口返回非 JSON 响应 (HTTP {status})，已跳过由 OpenAlex/CrossRef 接管。")
+                challenge = any(marker in raw_text.lower() for marker in ("not a bot", "captcha", "challenge"))
+                seconds = 900.0 if challenge else 60.0
+                _cool_down_source(self, "dblp", seconds, "bot_challenge" if challenge else source_error)
+                print(f"ℹ️ [DBLPSearch Note]: HTTP {status} 未返回论文 JSON，暂停请求 {seconds:.0f}s；其他来源独立检索。")
                 return SearchResults(resources, source_error)
             if not raw_text:
                 return SearchResults(resources, "EmptyResponse")
@@ -1394,11 +1784,16 @@ class OnlinePaperSearchAgent:
                     doi=doi,
                     venue=venue
                 ))
+        except urllib.error.HTTPError as e:
+            source_error = f"HTTP {e.code}"
+            _source_http_failure(self, "dblp", e)
+            print(f"⚠️ [DBLPSearch Note]: {source_error}")
         except Exception as e:
             source_error = type(e).__name__
             print(f"⚠️ [DBLPSearch Note]: {e}")
         return SearchResults(resources, source_error)
 
+    @_cached_academic_search("github")
     def search_github(self, query: str, max_results: int = 3) -> List[AcademicResource]:
         """调用 GitHub API 检索开源代码仓库、论文官方实现与 Star 趋势"""
         if re.search(r"[\u4e00-\u9fff]", query):
@@ -1422,10 +1817,11 @@ class OnlinePaperSearchAgent:
             }
         )
         try:
-            with urllib.request.urlopen(req, timeout=8) as resp:
+            with urllib.request.urlopen(req, timeout=_search_timeout(8)) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             resources = []
             detail_limit = max(0, min(int(os.getenv("GITHUB_DETAIL_FETCH_LIMIT", "1")), max_results, 4))
+            detail_deadline = time.monotonic() + max(0.0, float(os.getenv("GITHUB_DETAIL_BUDGET", "3")))
             for index, repo in enumerate(data.get("items", [])):
                 full_name = repo.get("full_name", "")
                 desc = repo.get("description") or "无描述"
@@ -1437,36 +1833,37 @@ class OnlinePaperSearchAgent:
                 version_ref = str(repo.get("default_branch") or "")
                 version_ref_type = "branch" if version_ref else None
                 evidence_level = "repository_metadata"
-                if index < detail_limit and full_name:
-                    api_headers = {
-                        "User-Agent": "ResearchScholar/1.0",
-                        "Accept": "application/vnd.github+json",
-                    }
-                    try:
-                        readme_req = urllib.request.Request(
-                            f"https://api.github.com/repos/{full_name}/readme", headers=api_headers
-                        )
-                        with urllib.request.urlopen(readme_req, timeout=4) as readme_resp:
-                            readme_data = json.loads(readme_resp.read().decode("utf-8"))
-                        encoded = readme_data.get("content", "")
-                        if encoded:
-                            readme_text = base64.b64decode(encoded).decode("utf-8", errors="replace")[:5000]
-                            evidence_level = "repository_metadata_and_readme"
-                    except Exception:
-                        pass
-                    try:
-                        commit_req = urllib.request.Request(
-                            f"https://api.github.com/repos/{full_name}/commits?per_page=1", headers=api_headers
-                        )
-                        with urllib.request.urlopen(commit_req, timeout=4) as commit_resp:
-                            commits = json.loads(commit_resp.read().decode("utf-8"))
-                        if commits:
-                            sha = str(commits[0].get("sha") or "")
-                            if sha:
-                                version_ref = sha
-                                version_ref_type = "commit"
-                    except Exception:
-                        pass
+                if index < detail_limit and full_name and time.monotonic() < detail_deadline:
+                    with _search_budget(detail_deadline):
+                        api_headers = {
+                            "User-Agent": "ResearchScholar/1.0",
+                            "Accept": "application/vnd.github+json",
+                        }
+                        try:
+                            readme_req = urllib.request.Request(
+                                f"https://api.github.com/repos/{full_name}/readme", headers=api_headers
+                            )
+                            with urllib.request.urlopen(readme_req, timeout=_search_timeout(4)) as readme_resp:
+                                readme_data = json.loads(readme_resp.read().decode("utf-8"))
+                            encoded = readme_data.get("content", "")
+                            if encoded:
+                                readme_text = base64.b64decode(encoded).decode("utf-8", errors="replace")[:5000]
+                                evidence_level = "repository_metadata_and_readme"
+                        except Exception:
+                            pass
+                        try:
+                            commit_req = urllib.request.Request(
+                                f"https://api.github.com/repos/{full_name}/commits?per_page=1", headers=api_headers
+                            )
+                            with urllib.request.urlopen(commit_req, timeout=_search_timeout(4)) as commit_resp:
+                                commits = json.loads(commit_resp.read().decode("utf-8"))
+                            if commits:
+                                sha = str(commits[0].get("sha") or "")
+                                if sha:
+                                    version_ref = sha
+                                    version_ref_type = "commit"
+                        except Exception:
+                            pass
                 content_scope = (
                     f"repository metadata and README inspected; latest/default ref={version_ref or 'unknown'}; source files not inspected or executed"
                     if readme_text else
@@ -1490,9 +1887,23 @@ class OnlinePaperSearchAgent:
                     version_ref_type=version_ref_type,
                 ))
             return resources
+        except urllib.error.HTTPError as e:
+            _source_http_failure(self, "github", e)
+            print(f"⚠️ [GitHubSearch Note]: HTTP {e.code}")
+            return SearchResults(source_error=f"HTTP {e.code}")
         except Exception as e:
-            print(f"⚠️ [GitHubSearch Note]: {e}")
+            print(f"⚠️ [GitHubSearch Note]: {type(e).__name__}: {e}")
             return SearchResults(source_error=type(e).__name__)
+
+    @_cached_academic_search("web")
+    def _search_web(self, query, max_results, time_constraint=None):
+        from online_resource_adapters import search_web
+        return search_web(query, max_results, time_constraint)
+
+    @_cached_academic_search("datasets")
+    def _search_datasets(self, query, max_results, time_constraint=None):
+        from online_resource_adapters import search_datasets
+        return search_datasets(query, max_results)
 
     def search_multisource(
         self,
@@ -1503,119 +1914,94 @@ class OnlinePaperSearchAgent:
         time_constraint: Optional[Dict[str, Any]] = None,
         english_query: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """跨 arXiv 预印本 + OpenAlex 权威引用 + CrossRef 期刊 + GitHub 开源实现的一体化多源学术并发探针"""
-        from concurrent.futures import ThreadPoolExecutor
+        """Collect independent sources within one shared network-retrieval budget."""
         time_constraint = resolve_retrieval_time_constraint(time_constraint)
-
-        # 1. 优先使用已翻译的英文学术词；若无或包含中文，通过 LLM 高精度提炼标准学术短语
         academic_target = (english_query or "").strip()
         if not academic_target or re.search(r"[\u4e00-\u9fff]", academic_target):
             academic_target = self.extract_academic_keywords(query)
             if re.search(r"[\u4e00-\u9fff]", academic_target):
                 academic_target = ""
-
-        # 全球学术引擎优先使用精准规范的英文学术短语，回退保护采用原始 query
         effective_query = academic_target or query.strip()
-        tc_log = f" (时间约束: {time_constraint})" if time_constraint else ""
-
-        # 时间条件只负责筛选，不改变首轮取数；有无时间范围时各来源保持同一上限。
         limit_per_source = 10
-        print(f"🔍 [MultiSourceSearch] 正在全域学术并发检索 (单源上限: {limit_per_source}): 规范学术短语=\"{academic_target or '回退原始query'}\" | 原始输入=\"{query.strip()}\"{tc_log} ...")
+        started = time.monotonic()
+        deadline = started + ACADEMIC_SEARCH_BUDGET
+        inherited = getattr(_SEARCH_CONTEXT, "deadline", None)
+        if inherited is not None:
+            deadline = min(deadline, inherited)
+        print(f'🔍 [MultiSourceSearch] 多源网络检索 (单源上限: {limit_per_source}, 总等待预算: {max(0, deadline-started):.1f}s): "{effective_query}"')
 
-        arxiv_papers = []
-        openalex_papers = []
-        crossref_papers = []
-        semanticscholar_papers = []
-        dblp_papers = []
-        github_repos = []
-        web_results = []
-        datasets = []
-        source_errors = {}
-
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            fut_arxiv = executor.submit(self.search_arxiv, academic_target, limit_per_source, time_constraint) if academic_target else None
-            fut_openalex = executor.submit(self.search_openalex, effective_query, limit_per_source, time_constraint)
-            fut_crossref = executor.submit(self.search_crossref, effective_query, limit_per_source, time_constraint)
-            fut_s2 = executor.submit(self.search_semanticscholar, effective_query, min(limit_per_source, 6))
-            fut_dblp = executor.submit(self.search_dblp, effective_query, min(limit_per_source, 5))
-            github_query = f"{query.strip()} {academic_target}".strip()
-            fut_github = executor.submit(self.search_github, github_query, limit_per_source) if include_github else None
-            if include_web or include_datasets:
-                from online_resource_adapters import search_datasets, search_web
-                web_query = effective_query or query
-                fut_web = executor.submit(search_web, web_query, limit_per_source, time_constraint) if include_web else None
-                fut_datasets = executor.submit(search_datasets, web_query, limit_per_source) if include_datasets else None
-            else:
-                fut_web = fut_datasets = None
-
-            if fut_arxiv:
-                try:
-                    arxiv_papers = fut_arxiv.result(timeout=22)
-                except Exception as e:
-                    source_errors["arxiv"] = type(e).__name__
-                    print(f"⚠️ [ArXiv Thread Note]: {e or type(e).__name__}")
-
-            try:
-                openalex_papers = fut_openalex.result(timeout=15)
-            except Exception as e:
-                source_errors["openalex"] = type(e).__name__
-                print(f"⚠️ [OpenAlex Thread Note]: {e or type(e).__name__}")
-
-            try:
-                crossref_papers = fut_crossref.result(timeout=15)
-            except Exception as e:
-                source_errors["crossref"] = type(e).__name__
-                print(f"⚠️ [CrossRef Thread Note]: {e or type(e).__name__}")
-
-            try:
-                semanticscholar_papers = fut_s2.result(timeout=15)
-            except Exception as e:
-                source_errors["semanticscholar"] = type(e).__name__
-                print(f"⚠️ [SemanticScholar Thread Note]: {e or type(e).__name__}")
-
-            try:
-                dblp_papers = fut_dblp.result(timeout=15)
-            except Exception as e:
-                source_errors["dblp"] = type(e).__name__
-                print(f"⚠️ [DBLP Thread Note]: {e or type(e).__name__}")
-
-            if fut_github:
-                try:
-                    github_repos = fut_github.result(timeout=15)
-                except Exception as e:
-                    source_errors["github"] = type(e).__name__
-                    print(f"⚠️ [GitHub Thread Note]: {e or type(e).__name__}")
-
-            for source_name, future in (("web", fut_web), ("datasets", fut_datasets)):
-                if future:
-                    try:
-                        results = future.result(timeout=15)
-                        if source_name == "web":
-                            web_results = results
-                        else:
-                            datasets = results
-                    except Exception as e:
-                        source_errors[source_name] = type(e).__name__
-                        print(f"⚠️ [{source_name} Thread Note]: {e or type(e).__name__}")
-
-        for source, records in (("arxiv", arxiv_papers), ("openalex", openalex_papers),
-                ("crossref", crossref_papers), ("semanticscholar", semanticscholar_papers),
-                ("dblp", dblp_papers), ("github", github_repos), ("web", web_results), ("datasets", datasets)):
-            if getattr(records, "source_error", None):
-                source_errors[source] = records.source_error
-
-        return {
-            "arxiv_papers": [p.model_dump() for p in arxiv_papers],
-            "openalex_papers": [p.model_dump() for p in openalex_papers],
-            "crossref_papers": [p.model_dump() for p in crossref_papers],
-            "semanticscholar_papers": [p.model_dump() for p in semanticscholar_papers],
-            "dblp_papers": [p.model_dump() for p in dblp_papers],
-            "github_repos": [r.model_dump() for r in github_repos],
-            "web_results": web_results,
-            "datasets": datasets,
-            "source_errors": source_errors,
-            "total_found": len(arxiv_papers) + len(openalex_papers) + len(crossref_papers) + len(semanticscholar_papers) + len(dblp_papers) + len(github_repos) + len(web_results) + len(datasets)
+        # Submit the healthy primary indexes first when concurrent requests queue.
+        jobs = {
+            "openalex": (self.search_openalex, (effective_query, limit_per_source, time_constraint)),
+            "crossref": (self.search_crossref, (effective_query, limit_per_source, time_constraint)),
+            "semanticscholar": (self.search_semanticscholar, (effective_query, min(limit_per_source, 6))),
         }
+        if academic_target:
+            jobs["arxiv"] = (self.search_arxiv, (academic_target, limit_per_source, time_constraint))
+        jobs["dblp"] = (self.search_dblp, (effective_query, min(limit_per_source, 5)))
+        if include_github:
+            # The English query has already been prepared; do not translate it again.
+            jobs["github"] = (self.search_github, (effective_query, limit_per_source))
+        if include_web:
+            jobs["web"] = (self._search_web, (effective_query, limit_per_source, time_constraint))
+        if include_datasets:
+            jobs["datasets"] = (self._search_datasets, (effective_query, limit_per_source, time_constraint))
+
+        def invoke(method, args):
+            with _search_budget(deadline):
+                _search_timeout(ACADEMIC_SEARCH_BUDGET)
+                return method(*args)
+
+        futures = {}
+        records_by_source = {}
+        source_errors = {}
+        cache_hits = []
+        for source, (method, args) in jobs.items():
+            if not _SEARCH_WORK_SLOTS.acquire(blocking=False):
+                source_errors[source] = "busy"
+                continue
+            try:
+                future = _SEARCH_EXECUTOR.submit(invoke, method, args)
+            except BaseException:
+                _SEARCH_WORK_SLOTS.release()
+                raise
+            future.add_done_callback(lambda _future: _SEARCH_WORK_SLOTS.release())
+            futures[source] = future
+        if futures:
+            wait(futures.values(), timeout=max(0.0, deadline - time.monotonic()))
+        # Do not enter a per-call executor context: its exit waits for unfinished I/O.
+        # Running I/O cannot be forcibly cancelled; it stays in the bounded pool,
+        # uses the same deadline where supported, and cannot mutate this response.
+        for source, future in futures.items():
+            if not future.done():
+                future.cancel()
+                source_errors[source] = "TimeoutError"
+                print(f"⚠️ [{source} Thread Note]: TimeoutError: 本轮网络检索预算已耗尽，保留其他来源结果。")
+                continue
+            try:
+                records = future.result()
+                records_by_source[source] = records
+                if getattr(records, "source_error", None):
+                    source_errors[source] = records.source_error
+                if getattr(records, "cache_hit", False):
+                    cache_hits.append(source)
+            except Exception as exc:
+                source_errors[source] = type(exc).__name__
+                print(f"⚠️ [{source} Thread Note]: {type(exc).__name__}: {exc}")
+
+        paper_sources = {"arxiv": "arxiv_papers", "openalex": "openalex_papers", "crossref": "crossref_papers",
+                         "semanticscholar": "semanticscholar_papers", "dblp": "dblp_papers", "github": "github_repos"}
+        result = {key: [p.model_dump() for p in records_by_source.get(source, [])]
+                  for source, key in paper_sources.items()}
+        result.update({"web_results": records_by_source.get("web", []),
+                       "datasets": records_by_source.get("datasets", []),
+                       "source_errors": source_errors, "source_cache_hits": cache_hits,
+                       "search_elapsed_seconds": round(time.monotonic() - started, 3),
+                       "search_budget_seconds": ACADEMIC_SEARCH_BUDGET,
+                       "total_found": sum(len(records) for records in records_by_source.values())})
+        counts = {source: len(records) for source, records in records_by_source.items()}
+        print(f"📊 [MultiSourceSearch] 实际返回={counts}；来源异常={source_errors}；缓存命中={cache_hits}")
+        return result
 
     def _parse_atom_feed(self, xml_bytes: bytes) -> List[ArxivPaper]:
         from academic_taxonomy import get_subcategory_meta
