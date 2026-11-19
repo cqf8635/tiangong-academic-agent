@@ -569,3 +569,30 @@ def test_renumber_citations_and_evidence_produces_contiguous_order():
     assert "**[1]** [Paper 3](https://arxiv.org/pdf/2601.00003) (2026)" in final
     assert "**[2]** [Paper 5](https://arxiv.org/pdf/2601.00005) (2026)" in final
     assert "[3]" not in final
+
+
+def test_renumber_citations_repairs_drifted_framework_indices_and_preserves_math():
+    from retrieval_planner import renumber_citations_and_evidence
+
+    evidence = [
+        {"title": "Space-Filling Curves for Quantum Computing", "summary": "Hilbert and Morton curves.", "url": "https://example.com/1"},
+        {"title": "Design and Simulation of Quantum Error Correction Codes", "summary": "Proposes Hybrid QECC and Hybrid Code in Qiskit.", "url": "https://example.com/2"},
+        {"title": "From Nanotechnology to Topological Quantum Computers", "summary": "Majorana fermions.", "url": "https://example.com/3"},
+        {"title": "The Coherence-Decoherence Boundary: A Dual Domain Framework for Quantum Foundations", "summary": "Dual-Domain Framework with -0 and +1.", "url": "https://example.com/4"},
+    ]
+    raw = (
+        "1. **Hybrid QECC** [2] 在去极化噪声下表现优异；概率位于 $[0, 1]$ 区间。\n"
+        "2. **Dual Domain Framework** [1, 3] 提出了相干-退相干边界。\n"
+        "3. 后续小标题：**Hybrid QECC** 基准测试 [3] 与 **Dual Domain Framework** [4]。"
+    )
+    renum_text, ordered_ev = renumber_citations_and_evidence(raw, evidence)
+    # Hybrid QECC -> [1], Dual Domain Framework -> [2] consistently everywhere; $[0, 1]$ untouched
+    assert "Hybrid QECC** [1]" in renum_text
+    assert "Hybrid QECC** 基准测试 [1]" in renum_text
+    assert "Dual Domain Framework** [2]" in renum_text
+    assert "$[0, 1]$" in renum_text
+    assert "[3]" not in renum_text
+    assert [e["title"] for e in ordered_ev[:2]] == [
+        "Design and Simulation of Quantum Error Correction Codes",
+        "The Coherence-Decoherence Boundary: A Dual Domain Framework for Quantum Foundations",
+    ]

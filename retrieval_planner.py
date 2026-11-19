@@ -135,15 +135,168 @@ def filter_irrelevant_candidates(candidates, evidence):
             if str(c.get("title") or "").strip().casefold() not in rejected_titles]
 
 
+def _extract_distinctive_terms(title: str) -> List[str]:
+    """Extract distinctive proper nouns, acronyms, and multi-word framework names from a paper title."""
+    t = str(title or "").strip()
+    if not t:
+        return []
+    candidates: List[str] = []
+    # Multi-word capitalized phrases (2-4 words, e.g. "Dual Domain Framework", "Planck Core Framework")
+    for m in re.finditer(r"\b([A-Z][A-Za-z0-9\-]*(?:[\s\-]+[A-Z][A-Za-z0-9\-]*){1,3})\b", t):
+        phrase = re.sub(r"\s+", " ", m.group(1)).strip()
+        if len(phrase) >= 6:
+            candidates.append(phrase)
+    # Distinctive acronyms / CamelCase tokens (e.g. StochAXtic, HyperGraphRAG, QGEM)
+    for m in re.finditer(r"\b([A-Z][A-Za-z0-9]*[A-Z][A-Za-z0-9]*)\b", t):
+        tok = m.group(1)
+        if len(tok) >= 4:
+            candidates.append(tok)
+    return candidates
+
+
+def _norm_anchor_key(text: str) -> str:
+    return re.sub(r"[\s\-–—]+", " ", str(text or "").casefold()).strip()
+
+
+def _repair_drifted_citations(text: str, ev_list: List[Dict[str, Any]]) -> str:
+    """Repair drifted [n] citations when a unique framework/paper name is bound to a mismatched index."""
+    if not text or not ev_list:
+        return text
+
+    ev_blobs: List[str] = []
+    title_terms_by_idx: Dict[int, List[str]] = {}
+    for idx, ev in enumerate(ev_list, 1):
+        title = str(ev.get("title") or ev.get("doc_name") or "").strip()
+        blob = _norm_anchor_key(
+            f"{title} {ev.get('summary') or ''} {ev.get('text') or ''}"
+        )
+        ev_blobs.append(blob)
+        terms = _extract_distinctive_terms(title)
+        title_terms_by_idx[idx] = terms
+
+    # Also harvest distinctive terms explicitly paired with [n] in empirical table / bold headings
+    # when that term actually appears in ev_list[n-1]
+    for m in re.finditer(r"(?:\*\*|\"|（|\()([A-Z][A-Za-z0-9\-\s]{3,40}?)(?:\*\*|\"|）|\))\s*\[(\d+)\]", text):
+        term = re.sub(r"\s+", " ", m.group(1)).strip()
+        idx = int(m.group(2))
+        if 1 <= idx <= len(ev_list) and len(term) >= 4:
+            if _norm_anchor_key(term) in ev_blobs[idx - 1]:
+                title_terms_by_idx.setdefault(idx, []).append(term)
+
+    # Keep only terms that uniquely identify a single evidence item across the entire pool
+    anchor_map: Dict[str, int] = {}
+    term_hits: Dict[str, set[int]] = {}
+    for idx, terms in title_terms_by_idx.items():
+        for term in terms:
+            norm = _norm_anchor_key(term)
+            if len(norm) < 4:
+                continue
+            for j, blob in enumerate(ev_blobs, 1):
+                if norm in blob:
+                    term_hits.setdefault(norm, set()).add(j)
+    for norm, hit_indices in term_hits.items():
+        if len(hit_indices) == 1:
+            anchor_map[norm] = next(iter(hit_indices))
+
+    if not anchor_map:
+        return text
+
+    # Sort anchors longest-first so specific phrases match before shorter sub-phrases
+    sorted_anchors = sorted(anchor_map.items(), key=lambda kv: len(kv[0]), reverse=True)
+
+    def _repair_line(line: str) -> str:
+        if "[" not in line or re.match(r"^\s*-\s*\*\*\[\d+\]\*\*", line):
+            return line
+
+        def _replace_bracket(m: re.Match[str]) -> str:
+            raw_nums = [int(x.strip()) for x in m.group(1).split(",") if x.strip().isdigit()]
+            if not raw_nums or any(n < 1 or n > len(ev_list) for n in raw_nums):
+                return m.group(0)
+            # Local span before this citation bracket (stop at previous citation, pipe, quote, or clause break)
+            prefix = line[:m.start()]
+            span_start = max(
+                prefix.rfind("]"),
+                prefix.rfind("|"),
+                prefix.rfind("。"),
+                prefix.rfind("；"),
+                prefix.rfind("\""),
+                0,
+            )
+            local_ctx = _norm_anchor_key(prefix[span_start:])
+            if not local_ctx:
+                return m.group(0)
+
+            matched_anchors: List[tuple[str, int]] = []
+            for norm_term, true_idx in sorted_anchors:
+                if norm_term in local_ctx and true_idx not in [x[1] for x in matched_anchors]:
+                    matched_anchors.append((norm_term, true_idx))
+            if not matched_anchors:
+                return m.group(0)
+
+            updated = list(raw_nums)
+            local_terms = [t for t, _ in matched_anchors]
+            # Extract extra non-trivial tokens (>3 chars) from local_ctx to avoid dropping legitimate co-citations
+            extra_tokens = [
+                tok for tok in re.findall(r"[a-z0-9]{4,}|[\u4e00-\u9fff]{2,}", local_ctx)
+                if tok not in {"framework", "model", "method", "based", "using", "with", "from"}
+            ]
+            for norm_term, true_idx in matched_anchors:
+                if true_idx in updated:
+                    continue
+                replaced = False
+                for pos, cur_idx in enumerate(list(updated)):
+                    cur_blob = ev_blobs[cur_idx - 1]
+                    if not any(lt in cur_blob for lt in local_terms):
+                        # Replace if this cited item also has no extra token overlap, or if we haven't placed true_idx yet
+                        if not any(et in cur_blob for et in extra_tokens) or not replaced:
+                            updated[pos] = true_idx
+                            replaced = True
+                            if len(matched_anchors) > 1:
+                                break
+
+            # Deduplicate while preserving order
+            deduped: List[int] = []
+            for n in updated:
+                if n not in deduped:
+                    deduped.append(n)
+            return "[" + ", ".join(str(n) for n in deduped) + "]"
+
+        return re.sub(r"\[(\d+(?:\s*,\s*\d+)*)\](?!\()", _replace_bracket, line)
+
+    return "\n".join(_repair_line(line) for line in text.splitlines())
+
+
 def renumber_citations_and_evidence(
     answer: str,
     evidence: List[Dict[str, Any]] | None = None,
 ) -> tuple[str, List[Dict[str, Any]]]:
-    """Renumber cited [n] markers to contiguous 1..K order and reorder evidence to match."""
+    """Repair drifted citations, renumber [n] markers to contiguous 1..K order, and reorder evidence."""
     text = str(answer or "")
     ev_list = [item for item in (evidence or []) if isinstance(item, dict)]
     if not text or not ev_list:
         return text, list(evidence or [])
+
+    # Protect math blocks so intervals like [0, 1] inside LaTeX are never treated as citations
+    math_placeholders: List[str] = []
+
+    def _stash_math(m: re.Match[str]) -> str:
+        tok = f"@@CITE_MATH_{len(math_placeholders)}@@"
+        math_placeholders.append(m.group(0))
+        return tok
+
+    text = re.sub(r"\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|(?<!\\)\$[^\$\n]+?(?<!\\)\$", _stash_math, text)
+
+    text = _repair_drifted_citations(text, ev_list)
+
+    # Expand comma-separated citation brackets like [7, 9] -> [7], [9] outside math
+    def _expand_multi_cites(line: str) -> str:
+        return re.sub(
+            r"\[(\d+(?:\s*,\s*\d+)+)\](?!\()",
+            lambda m: ", ".join(f"[{x.strip()}]" for x in m.group(1).split(",") if x.strip()),
+            line,
+        )
+
+    text = "\n".join(_expand_multi_cites(line) for line in text.splitlines())
 
     cited_order: List[int] = []
     seen = set()
@@ -154,6 +307,8 @@ def renumber_citations_and_evidence(
             cited_order.append(idx)
 
     if not cited_order:
+        for i, orig_math in enumerate(math_placeholders):
+            text = text.replace(f"@@CITE_MATH_{i}@@", orig_math)
         return text, list(evidence or [])
 
     mapping = {old_idx: new_idx for new_idx, old_idx in enumerate(cited_order, 1)}
@@ -162,6 +317,8 @@ def renumber_citations_and_evidence(
         lambda m: f"[{mapping[int(m.group(1))]}]" if int(m.group(1)) in mapping else m.group(0),
         text,
     )
+    for i, orig_math in enumerate(math_placeholders):
+        renumbered_text = renumbered_text.replace(f"@@CITE_MATH_{i}@@", orig_math)
     reordered_evidence = [ev_list[i - 1] for i in cited_order] + [
         ev_list[i - 1] for i in range(1, len(ev_list) + 1) if i not in seen
     ]
