@@ -519,34 +519,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!mdText) return '';
     let res = String(mdText);
 
-    if (window.katex) {
-      // 1. 转换标准 LaTeX 行内定界符 \( ... \)
-      res = res.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
-        try {
-          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
-        } catch (_) { return match; }
-      });
+    // 统一将 \( ... \) 转为标准行内 $ ... $，交由 Markmap 内置 KaTeX 引擎安全渲染，避免二次正则误伤 HTML
+    res = res.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => `$${formula.trim()}$`);
 
-      // 2. 转换标准行内公式 $ ... $
-      res = res.replace(/(?<!\\)\$([^\$\n]+)\$/g, (match, formula) => {
-        try {
-          return window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
-        } catch (_) { return match; }
-      });
-
-      // 3. 转换导图节点中以括号包裹的显式 LaTeX 表达式 (如 (\sqrt{d_k})、(\mathbf{M}\in\mathbb{R}^{T\times T}))
-      res = res.replace(/（([^）\n]*?\\[a-zA-Z]+[^）\n]*?)）/g, (match, formula) => {
-        try {
-          return `（${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })}）`;
-        } catch (_) { return match; }
-      });
-
-      res = res.replace(/\(([^)\n]*?\\[a-zA-Z]+[^)\n]*?)\)/g, (match, formula) => {
-        try {
-          return `(${window.katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false })})`;
-        } catch (_) { return match; }
-      });
-    }
+    // 将导图节点中未带 $ 定界符、但以括号包裹的显式 LaTeX 表达式规范化为 $ ... $
+    res = res.replace(/（([^）\n$]*?\\[a-zA-Z]+[^）\n$]*?)）/g, (match, formula) => `（$${formula.trim()}$）`);
+    res = res.replace(/\(([^)\n$<>]*?\\[a-zA-Z]+[^)\n$<>]*?)\)/g, (match, formula) => `($${formula.trim()}$)`);
 
     return res;
   }
