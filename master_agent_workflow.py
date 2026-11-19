@@ -352,7 +352,7 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
     print(f"👉 [MasterRouter] 识别结果: 领域=[{decision.domain}] | 意图=[{decision.intent}] | 派发=[{decision.target_agent}]")
     print(f"🔍 [MasterRouter] 正向检索词: \"{search_query}\"")
 
-    evidence_chunks = []
+    evidence_chunks = list(state.get("retrieved_evidence") or [])
     shared_resources = state.get("shared_resources") or []
     selected_ids = set(retrieval_plan.selected_shared_item_ids or [])
     shared_pool = state.get("shared_pool") or []
@@ -539,7 +539,7 @@ def intent_routing_node(state: MasterAgentState) -> Dict[str, Any]:
 
         # 分支 C: 多篇横向筛选/比较/全量问答场景，装配全集文献资产
         if not evidence_chunks and candidates and is_multi_paper_query:
-            evidence_chunks = []
+            evidence_chunks = list(state.get("retrieved_evidence") or [])
             for i, c in enumerate(candidates, 1):
                 evidence_chunks.append({
                     "doc_name": c.get("title", f"候选文献 {i}"),

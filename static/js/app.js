@@ -1189,11 +1189,58 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. 图片附件与截图粘贴控制器
   // =========================================================================
   let currentAttachedImageBase64 = null;
+  let currentAttachedDocName = null;
   const btnAttachImg = document.getElementById('btn-attach-img');
   const chatImageInput = document.getElementById('chat-image-input');
   const chatImgPreviewContainer = document.getElementById('chat-image-preview-container');
   const chatImgPreview = document.getElementById('chat-image-preview');
   const btnRemovePreviewImg = document.getElementById('btn-remove-preview-img');
+  const btnAttachDoc = document.getElementById('btn-attach-doc');
+  const chatDocInput = document.getElementById('chat-doc-input');
+  const chatDocPreviewContainer = document.getElementById('chat-doc-preview-container');
+  const chatDocPreviewName = document.getElementById('chat-doc-preview-name');
+  const chatDocPreviewHint = document.getElementById('chat-doc-preview-hint');
+  const btnRemovePreviewDoc = document.getElementById('btn-remove-preview-doc');
+
+  function setAttachedDoc(filename, hintText = '') {
+    currentAttachedDocName = filename || null;
+    if (filename) {
+      if (chatDocPreviewName) chatDocPreviewName.textContent = `📄 ${filename}`;
+      if (chatDocPreviewHint && hintText) chatDocPreviewHint.textContent = hintText;
+      if (chatDocPreviewContainer) chatDocPreviewContainer.style.display = 'flex';
+    } else {
+      if (chatDocPreviewName) chatDocPreviewName.textContent = '📄 文档已就绪';
+      if (chatDocPreviewHint) chatDocPreviewHint.textContent = '已附带文档（发送后直接解析探讨）';
+      if (chatDocPreviewContainer) chatDocPreviewContainer.style.display = 'none';
+      if (chatDocInput) chatDocInput.value = '';
+    }
+  }
+
+  if (btnAttachDoc && chatDocInput) {
+    btnAttachDoc.addEventListener('click', () => chatDocInput.click());
+    chatDocInput.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('file', file);
+      if (chatDocPreviewName) chatDocPreviewName.textContent = `⏳ 正在解析 ${file.name}...`;
+      if (chatDocPreviewHint) chatDocPreviewHint.textContent = '正在提取文档正文并建立检索索引...';
+      if (chatDocPreviewContainer) chatDocPreviewContainer.style.display = 'flex';
+      try {
+        const resp = await fetch('/api/documents/upload', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.detail || '上传解析失败');
+        setAttachedDoc(data.filename, `已解析 ${data.chunks_count || 0} 个段落（发送后直接围绕该文档作答）`);
+        if (typeof loadDocumentList === 'function') loadDocumentList();
+      } catch (err) {
+        setAttachedDoc(null);
+        alert(`文档解析失败: ${err.message}`);
+      }
+    });
+  }
+  if (btnRemovePreviewDoc) {
+    btnRemovePreviewDoc.addEventListener('click', () => setAttachedDoc(null));
+  }
 
   function setAttachedImage(base64Url) {
     currentAttachedImageBase64 = base64Url;
@@ -1257,22 +1304,25 @@ document.addEventListener('DOMContentLoaded', () => {
   async function handleSendMessage(text = null, isVoice = false) {
     const rawQuery = (text || userInput.value).trim();
     const attachedImg = currentAttachedImageBase64;
+    const attachedDoc = currentAttachedDocName;
 
-    // 既没有文字也没有图片时，不发送
-    if (!rawQuery && !attachedImg) return;
+    // 既没有文字也没有图片/文档时，不发送
+    if (!rawQuery && !attachedImg && !attachedDoc) return;
 
-    const query = rawQuery;
+    const query = rawQuery || (attachedDoc ? `请解析并总结文档《${attachedDoc}》的核心内容。` : '');
 
     const welcomeCard = chatFeed.querySelector('.welcome-scroll-card, .empty-hint');
     if (welcomeCard) welcomeCard.remove();
 
     const currentTurnNum = sessionTurnsMindmaps.length + 1;
-    appendMessage('user', query, currentTurnNum, attachedImg);
+    const displayMsg = attachedDoc && !query.includes(attachedDoc) ? `${query}\n[附带文档: ${attachedDoc}]` : query;
+    appendMessage('user', displayMsg, currentTurnNum, attachedImg);
 
     // 清空输入与预览
     userInput.value = '';
     userInput.style.height = 'auto';
     setAttachedImage(null);
+    setAttachedDoc(null);
 
     setAssistantState('THINKING');
     highlightGraphStep('ROUTING');
@@ -1318,6 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ 
           query: query, 
           image_data: attachedImg || null,
+          attached_doc: attachedDoc || null,
           session_id: currentSessionId, 
           voice: getCurrentVoice() 
         }),
@@ -3107,7 +3158,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="mermaid-diagram-card">
             <div class="figure-card-header">
               <span class="fig-title">FIGURE · 机制与方法架构示意</span>
-              <button class="btn-fig-export" onclick="exportAcademicDiagram(this)" title="导出高清矢量图 (SVG)">🖼️ 导出矢量图</button>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button class="btn-fig-zoom" onclick="zoomAcademicDiagram(this)" title="放大查看架构图">🔍 放大查看</button>
+                <button class="btn-fig-export" onclick="exportAcademicDiagram(this)" title="导出高清矢量图 (SVG)">🖼️ 导出矢量图</button>
+              </div>
             </div>
             <div class="mermaid-flowchart mermaid" data-raw-code="${escapeHtml(rawCode)}">${escapeHtml(rawCode)}</div>
           </div>
@@ -3124,6 +3178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="chart-box-header">
               <span class="chart-tag">📊 学术数据可视化图表</span>
               <div class="chart-actions">
+                <button class="btn-chart-action" onclick="zoomAcademicChart('${chartId}')" title="放大查看图表">🔍 放大</button>
                 <button class="btn-chart-action" onclick="exportAcademicChart('${chartId}')" title="导出图表为高清 PNG">🖼️ 导出图片</button>
                 <button class="btn-chart-action" onclick="toggleAcademicChartData('${chartId}')" title="查看/隐藏原始配置数据">📋 原始数据</button>
               </div>
@@ -3393,6 +3448,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!panel) return;
     const isHidden = panel.style.display === 'none';
     panel.style.display = isHidden ? 'block' : 'none';
+  };
+
+  window.zoomAcademicDiagram = function(btnOrEl) {
+    const card = btnOrEl.closest('.mermaid-diagram-card');
+    if (!card) return;
+    const svg = card.querySelector('svg');
+    if (!svg) return;
+    try {
+      const clone = svg.cloneNode(true);
+      if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      const vb = svg.viewBox && svg.viewBox.baseVal;
+      const w = (vb && vb.width) || svg.getBoundingClientRect().width || 800;
+      const h = (vb && vb.height) || svg.getBoundingClientRect().height || 500;
+      clone.setAttribute('width', Math.max(900, Math.round(w * 1.6)));
+      clone.setAttribute('height', Math.max(560, Math.round(h * 1.6)));
+      const svgData = new XMLSerializer().serializeToString(clone);
+      const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+      if (typeof window.openImageModal === 'function') {
+        window.openImageModal(dataUrl, 'FIGURE · 机制与方法架构图（放大查看）');
+      }
+    } catch (e) {
+      console.warn('Zoom diagram failed:', e);
+    }
+  };
+
+  window.zoomAcademicChart = function(chartId) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return;
+    try {
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
+      if (typeof window.openImageModal === 'function') {
+        window.openImageModal(dataUrl, '学术数据可视化图表（放大查看）');
+      }
+    } catch (e) {
+      console.warn('Zoom chart failed:', e);
+    }
   };
 
   window.exportAcademicDiagram = function(btn) {

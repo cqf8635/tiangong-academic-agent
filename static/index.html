@@ -218,12 +218,27 @@
             <span class="preview-img-hint">已附带截图 (可直接配合文字提问)</span>
           </div>
 
+          <!-- 待发送文档预览卡片 -->
+          <div id="chat-doc-preview-container" class="chat-image-preview-container" style="display: none;">
+            <div style="display:flex;align-items:center;gap:8px;padding:4px 10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;">
+              <span id="chat-doc-preview-name" style="font-size:0.78rem;font-weight:700;color:#1e293b;">📄 文档已就绪</span>
+              <button type="button" id="btn-remove-preview-doc" class="btn-remove-preview-img" title="移除此文档" style="position:static;">✕</button>
+            </div>
+            <span id="chat-doc-preview-hint" class="preview-img-hint">已附带文档（发送后直接解析探讨）</span>
+          </div>
+
           <form class="chat-input-form" id="chat-form">
             <!-- 附件图片按钮 -->
             <button type="button" id="btn-attach-img" class="btn-attach-img" title="上传或粘贴图片/公式截图 (支持 Ctrl+V 直接粘贴)">
               <span class="attach-icon">📷</span>
             </button>
             <input type="file" id="chat-image-input" accept="image/*" style="display: none;" />
+
+            <!-- 附件文档按钮 (Word / PDF / PPT / TXT / MD 等) -->
+            <button type="button" id="btn-attach-doc" class="btn-attach-img" title="上传文档随提问直接解析 (支持 PDF / Word / PPT / TXT / MD 等)">
+              <span class="attach-icon">📎</span>
+            </button>
+            <input type="file" id="chat-doc-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.markdown,.epub,.tex,.csv" style="display: none;" />
 
             <!-- 语音录制麦克风按钮 -->
             <button type="button" id="btn-mic" class="btn-mic" title="长按或点击开启语音输入">

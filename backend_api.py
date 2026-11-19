@@ -180,6 +180,7 @@ async def delete_session(session_id: str):
 class ChatRequest(BaseModel):
     query: str
     image_data: Optional[str] = None  # Base64 附带截图或图片 (可为空)
+    attached_doc: Optional[str] = None  # 输入框随提问附带的文档文件名 (PDF/Word/PPT/TXT/MD 等)
     session_id: Optional[str] = None
     context_hint: Optional[str] = None
     voice: Optional[str] = None
@@ -210,9 +211,33 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
     matched_topic = SessionManager.match_best_historical_topic(session_id, query=req.query)
     history_summary = SessionManager.get_scoped_thematic_context(session_id, query=req.query)
 
-    # 保存用户发送的消息到指定领域频道 (包含附带截图)
-    user_msg = ChatMessage(sender="user", content=req.query, image_url=req.image_data)
+    # 保存用户发送的消息到指定领域频道 (包含附带截图/文档)
+    user_display_query = f"{req.query}\n[附带解析文档: {req.attached_doc}]" if req.attached_doc and req.attached_doc not in req.query else req.query
+    user_msg = ChatMessage(sender="user", content=user_display_query, image_url=req.image_data)
     SessionManager.add_message(session_id, user_msg)
+
+    attached_evidence: List[Dict[str, Any]] = []
+    if req.attached_doc:
+        active_doc = req.attached_doc
+        SessionManager.set_active_doc(session_id, active_doc)
+        doc_path = UPLOAD_DIR / req.attached_doc
+        if doc_path.exists() and doc_path.is_file():
+            try:
+                from document_rag_engine import UniversalDocumentParser
+                parsed_chunks = UniversalDocumentParser.parse_file(doc_path)
+                for chunk in parsed_chunks[:10]:
+                    attached_evidence.append({
+                        "doc_name": chunk.doc_name,
+                        "doc_type": chunk.doc_type,
+                        "location_label": f"{chunk.page_or_slide} · {chunk.section}".strip(" ·"),
+                        "text": chunk.text,
+                        "summary": chunk.text[:300],
+                        "score": 0.99,
+                        "evidence_level": "local_snippet",
+                        "is_local_indexed": True,
+                    })
+            except Exception as parse_exc:
+                print(f"⚠️ [AttachedDoc Parse Note]: {parse_exc}")
 
     recent_candidates = SessionManager.get_recent_candidates(session_id)
     initial_state: MasterAgentState = {
@@ -234,7 +259,7 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
         "review_notice": None,
         "user_image": req.image_data,
         "intent_decision": None,
-        "retrieved_evidence": [],
+        "retrieved_evidence": attached_evidence,
         "final_answer": "",
         "target_agent": "",
         "tts_audio_file": None,
