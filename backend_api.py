@@ -220,59 +220,82 @@ def _execute_chat_workflow_locked(req: ChatRequest) -> Dict[str, Any]:
     if req.attached_doc:
         active_doc = req.attached_doc
         SessionManager.set_active_doc(session_id, active_doc)
-        seen_texts = set()
-        rag_hits = []
-        # 1. 优先按用户提问在该文档内部做语义精排检索（覆盖长文档中后段内容）
-        try:
-            rag_hits = rag_engine.search(
-                query=req.query,
-                top_k=6,
-                candidate_k=20,
-                doc_filter=req.attached_doc,
-            )
-            for hit in rag_hits or []:
-                txt = (hit.get("text") or "").strip()
-                key = txt[:120]
-                if txt and key not in seen_texts:
-                    seen_texts.add(key)
-                    attached_evidence.append({
-                        "doc_name": hit.get("doc_name") or req.attached_doc,
-                        "doc_type": hit.get("doc_type") or Path(req.attached_doc).suffix.lstrip("."),
-                        "location_label": hit.get("location_label") or "",
-                        "text": txt,
-                        "summary": hit.get("summary") or txt[:300],
-                        "score": max(0.92, float(hit.get("score") or 0.92)),
-                        "evidence_level": "local_snippet",
-                        "is_local_indexed": True,
-                    })
-        except Exception as search_exc:
-            print(f"⚠️ [AttachedDoc Search Note]: {search_exc}")
-
-        # 2. 补充文档开篇结构片段（确保总览/摘要不遗漏，且兜底尚未入库完的场景）
+        MAX_ATTACHED_DOC_CHARS = 120000
         doc_path = UPLOAD_DIR / req.attached_doc
+        parsed_chunks = []
         if doc_path.exists() and doc_path.is_file():
             try:
                 from document_rag_engine import UniversalDocumentParser
                 parsed_chunks = UniversalDocumentParser.parse_file(doc_path)
-                for chunk in parsed_chunks[:6]:
-                    if len(attached_evidence) >= 10:
-                        break
-                    txt = (chunk.text or "").strip()
+            except Exception as parse_exc:
+                print(f"⚠️ [AttachedDoc Parse Note]: {parse_exc}")
+
+        total_parsed_chars = sum(len((c.text or "").strip()) for c in parsed_chunks)
+        if parsed_chunks and total_parsed_chars <= MAX_ATTACHED_DOC_CHARS:
+            # 常规文档（<= 12万字）：全量送入上下文，确保 AI 完整阅读全文无遗漏
+            for chunk in parsed_chunks:
+                txt = (chunk.text or "").strip()
+                if not txt:
+                    continue
+                attached_evidence.append({
+                    "doc_name": chunk.doc_name,
+                    "doc_type": chunk.doc_type,
+                    "location_label": f"{chunk.page_or_slide} · {chunk.section}".strip(" ·"),
+                    "text": txt,
+                    "summary": txt[:300],
+                    "score": 0.99,
+                    "evidence_level": "local_full_doc",
+                    "is_local_indexed": True,
+                })
+        else:
+            # 超长巨著（> 12万字）：先按用户提问做全库语义精排召回，再补足开篇与结构片段直至预算上限
+            seen_texts = set()
+            acc_chars = 0
+            try:
+                rag_hits = rag_engine.search(
+                    query=req.query,
+                    top_k=15,
+                    candidate_k=40,
+                    doc_filter=req.attached_doc,
+                )
+                for hit in rag_hits or []:
+                    txt = (hit.get("text") or "").strip()
                     key = txt[:120]
-                    if txt and key not in seen_texts:
+                    if txt and key not in seen_texts and acc_chars + len(txt) <= MAX_ATTACHED_DOC_CHARS:
                         seen_texts.add(key)
+                        acc_chars += len(txt)
                         attached_evidence.append({
-                            "doc_name": chunk.doc_name,
-                            "doc_type": chunk.doc_type,
-                            "location_label": f"{chunk.page_or_slide} · {chunk.section}".strip(" ·"),
+                            "doc_name": hit.get("doc_name") or req.attached_doc,
+                            "doc_type": hit.get("doc_type") or Path(req.attached_doc).suffix.lstrip("."),
+                            "location_label": hit.get("location_label") or "",
                             "text": txt,
-                            "summary": txt[:300],
-                            "score": 0.99 if not rag_hits else 0.90,
+                            "summary": hit.get("summary") or txt[:300],
+                            "score": max(0.92, float(hit.get("score") or 0.92)),
                             "evidence_level": "local_snippet",
                             "is_local_indexed": True,
                         })
-            except Exception as parse_exc:
-                print(f"⚠️ [AttachedDoc Parse Note]: {parse_exc}")
+            except Exception as search_exc:
+                print(f"⚠️ [AttachedDoc Search Note]: {search_exc}")
+
+            for chunk in parsed_chunks:
+                txt = (chunk.text or "").strip()
+                key = txt[:120]
+                if not txt or key in seen_texts:
+                    continue
+                if acc_chars + len(txt) > MAX_ATTACHED_DOC_CHARS:
+                    break
+                seen_texts.add(key)
+                acc_chars += len(txt)
+                attached_evidence.append({
+                    "doc_name": chunk.doc_name,
+                    "doc_type": chunk.doc_type,
+                    "location_label": f"{chunk.page_or_slide} · {chunk.section}".strip(" ·"),
+                    "text": txt,
+                    "summary": txt[:300],
+                    "score": 0.90,
+                    "evidence_level": "local_snippet",
+                    "is_local_indexed": True,
+                })
 
     recent_candidates = SessionManager.get_recent_candidates(session_id)
     initial_state: MasterAgentState = {

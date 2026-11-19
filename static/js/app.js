@@ -2357,6 +2357,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let _modalZoomScale = 1.0;
+  let _modalSvgBaseWidth = 1000;
+
+  function applyModalZoom() {
+    const imgEl = document.getElementById('modal-img');
+    const svgBox = document.getElementById('modal-svg-container');
+    const zoomLabel = document.getElementById('modal-zoom-label');
+    if (zoomLabel) zoomLabel.textContent = `${Math.round(_modalZoomScale * 100)}%`;
+    if (svgBox && svgBox.style.display !== 'none') {
+      const svg = svgBox.querySelector('svg');
+      if (svg) {
+        svg.style.width = `${Math.round(_modalSvgBaseWidth * _modalZoomScale)}px`;
+        svg.style.height = 'auto';
+      }
+    } else if (imgEl && imgEl.style.display !== 'none') {
+      imgEl.style.transform = `scale(${_modalZoomScale})`;
+      imgEl.style.transformOrigin = 'center center';
+    }
+  }
+
   function ensureImageModal() {
     let modal = document.getElementById('image-preview-modal');
     if (!modal) {
@@ -2368,7 +2388,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="modal-content">
           <div class="modal-header">
             <span id="modal-img-title" class="modal-title"></span>
-            <button class="modal-close" onclick="closeImageModal()">✕</button>
+            <div class="modal-zoom-controls">
+              <button type="button" class="modal-zoom-btn" id="btn-modal-zoom-out" title="缩小">➖ 缩小</button>
+              <span id="modal-zoom-label" style="font-size:12px;font-weight:700;color:#475569;min-width:44px;text-align:center;">100%</span>
+              <button type="button" class="modal-zoom-btn" id="btn-modal-zoom-in" title="放大">➕ 放大</button>
+              <button type="button" class="modal-zoom-btn" id="btn-modal-zoom-reset" title="重置适配窗口">适配</button>
+              <button type="button" class="modal-close" onclick="closeImageModal()">✕</button>
+            </div>
           </div>
           <div class="modal-body">
             <img id="modal-img" src="" alt="原图大图" />
@@ -2377,6 +2403,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
       document.body.appendChild(modal);
+      document.getElementById('btn-modal-zoom-in').addEventListener('click', () => {
+        _modalZoomScale = Math.min(3.5, _modalZoomScale + 0.25);
+        applyModalZoom();
+      });
+      document.getElementById('btn-modal-zoom-out').addEventListener('click', () => {
+        _modalZoomScale = Math.max(0.4, _modalZoomScale - 0.25);
+        applyModalZoom();
+      });
+      document.getElementById('btn-modal-zoom-reset').addEventListener('click', () => {
+        _modalZoomScale = 1.0;
+        applyModalZoom();
+      });
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
           closeImageModal();
@@ -2391,15 +2429,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const imgEl = document.getElementById('modal-img');
     const svgBox = document.getElementById('modal-svg-container');
     document.getElementById('modal-img-title').textContent = title || '原图与页面快照预览';
+    _modalZoomScale = 1.0;
     if (svgBox) {
       svgBox.innerHTML = '';
       svgBox.style.display = 'none';
     }
     if (imgEl) {
       imgEl.style.display = 'block';
+      imgEl.style.transform = '';
       imgEl.src = src;
     }
     modal.classList.add('active');
+    applyModalZoom();
   };
 
   window.openSvgModal = function(svgEl, title) {
@@ -2411,16 +2452,21 @@ document.addEventListener('DOMContentLoaded', () => {
       imgEl.style.display = 'none';
       imgEl.src = '';
     }
+    modal.classList.add('active');
     if (svgBox && svgEl) {
       const clone = svgEl.cloneNode(true);
       clone.removeAttribute('width');
-      clone.style.maxWidth = '88vw';
-      clone.style.height = 'auto';
+      clone.removeAttribute('height');
+      clone.style.maxWidth = 'none';
+      const boxW = svgBox.clientWidth || Math.round(window.innerWidth * 0.86);
+      const rectW = svgEl.getBoundingClientRect().width || 600;
+      _modalSvgBaseWidth = Math.max(boxW * 0.94, Math.round(rectW * 1.8), 1100);
+      _modalZoomScale = 1.0;
       svgBox.innerHTML = '';
       svgBox.appendChild(clone);
       svgBox.style.display = 'flex';
+      applyModalZoom();
     }
-    modal.classList.add('active');
   };
 
   window.closeImageModal = function() {
