@@ -1849,7 +1849,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const textNodes = [];
       let n;
       while ((n = walker.nextNode())) {
-        if (!n.parentElement.closest('a, code, pre') && /\[\d+\]/.test(n.nodeValue)) {
+        if (!n.parentElement.closest('a, code, pre, .mermaid-diagram-card, .mermaid-flowchart, .academic-chart-box, .code-box') && /\[\d+\]/.test(n.nodeValue)) {
           textNodes.push(n);
         }
       }
@@ -3163,7 +3163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="btn-fig-export" onclick="exportAcademicDiagram(this)" title="导出高清矢量图 (SVG)">🖼️ 导出矢量图</button>
               </div>
             </div>
-            <div class="mermaid-flowchart mermaid" data-raw-code="${escapeHtml(rawCode)}">${escapeHtml(rawCode)}</div>
+            <div class="mermaid-flowchart mermaid" data-raw-code="${escapeHtml(rawCode)}"><pre class="mermaid-raw-fallback">${escapeHtml(rawCode)}</pre></div>
           </div>
         `);
         return id;
@@ -3505,13 +3505,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  let _mermaidLoadRetryBound = false;
   async function renderMermaidBlocks(container) {
     if (!container) return;
     if (!window.mermaid) {
+      if (!_mermaidLoadRetryBound) {
+        _mermaidLoadRetryBound = true;
+        window.addEventListener('load', () => {
+          if (window.mermaid) renderMermaidBlocks(document);
+        });
+      }
       let waited = 0;
-      while (!window.mermaid && waited < 3000) {
-        await new Promise(r => setTimeout(r, 100));
-        waited += 100;
+      while (!window.mermaid && waited < 12000) {
+        await new Promise(r => setTimeout(r, 150));
+        waited += 150;
       }
     }
     if (!window.mermaid) return;
@@ -3552,15 +3559,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       for (const node of nodes) {
         node.setAttribute('data-processed', 'true');
+        const originalRawCode = (node.getAttribute('data-raw-code') || node.textContent || '').trim();
         try {
           const id = 'mermaid-' + Math.random().toString(36).substring(2, 9);
-          let rawCode = node.getAttribute('data-raw-code') || node.textContent;
+          let rawCode = originalRawCode;
           // 若未包含显式指令，注入高层间距配置，确保连线标签有充裕纵向呼吸空间 (rankSpacing 85px)
           if (!rawCode.includes('%%{init') && !rawCode.startsWith('---')) {
             rawCode = `%%{init: {'flowchart': {'rankSpacing': 85, 'nodeSpacing': 50, 'curve': 'basis'}}}%%\n` + rawCode;
           }
-          const { svg } = await window.mermaid.render(id, rawCode);
-          node.innerHTML = svg;
+          let svgResult;
+          try {
+            svgResult = await window.mermaid.render(id, rawCode);
+          } catch (firstErr) {
+            // 回退一次：去掉注入的 %%{init:...}%% 指令直接渲染原始 Mermaid 文本
+            const fallbackId = 'mermaid-' + Math.random().toString(36).substring(2, 9);
+            svgResult = await window.mermaid.render(fallbackId, originalRawCode);
+          }
+          node.innerHTML = svgResult.svg;
 
           // 🌟 核心修复：SVG 依靠 DOM 顺序决定视觉层叠优先级 (后渲染覆盖先渲染)
           // Mermaid 默认先渲染 .edgeLabels，后渲染 .nodes，导致当连线紧凑时 Node 的白色方块遮挡连线文字下半部分！
@@ -3574,6 +3589,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } catch (err) {
           console.warn('Mermaid single node render error:', err);
+          node.innerHTML = `<pre class="mermaid-raw-fallback">${escapeHtml(originalRawCode)}</pre>`;
         }
       }
     } catch (error) {
