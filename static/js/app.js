@@ -3176,6 +3176,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. 转义非公式部分的 HTML 字符（允许安全的 <br> 换行标签还原）
     src = escapeHtml(src);
     src = src.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
+    // 将 arXiv 标题/摘要中常见的裸 LaTeX 文本排版宏转换为可读 HTML
+    src = src.replace(/\\texttt\{([^{}]+)\}/g, '<code class="inline-code">$1</code>');
+    src = src.replace(/\\(?:emph|textit)\{([^{}]+)\}/g, '<em>$1</em>');
+    src = src.replace(/\\textbf\{([^{}]+)\}/g, '<strong>$1</strong>');
+    src = src.replace(/\\(?:textrm|text)\{([^{}]+)\}/g, '$1');
     // 将换行转换为 <br/>
     src = src.replace(/\n/g, '<br/>');
 
@@ -3203,6 +3208,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatInlineText(text) {
     if (!text) return '';
     let res = escapeHtml(text);
+    // 允许表格与正文中的 <br> / <br/> 安全换行
+    res = res.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
     // 加粗 **text** 或 __text__ (使用单词边界，避免误匹配标识符)
     res = res.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     res = res.replace(/\b__(.+?)__\b/g, '<strong>$1</strong>');
