@@ -2404,17 +2404,51 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       document.body.appendChild(modal);
       document.getElementById('btn-modal-zoom-in').addEventListener('click', () => {
-        _modalZoomScale = Math.min(3.5, _modalZoomScale + 0.25);
+        _modalZoomScale = Math.min(6.0, Math.round((_modalZoomScale + 0.35) * 100) / 100);
         applyModalZoom();
       });
       document.getElementById('btn-modal-zoom-out').addEventListener('click', () => {
-        _modalZoomScale = Math.max(0.4, _modalZoomScale - 0.25);
+        _modalZoomScale = Math.max(0.3, Math.round((_modalZoomScale - 0.35) * 100) / 100);
         applyModalZoom();
       });
       document.getElementById('btn-modal-zoom-reset').addEventListener('click', () => {
-        _modalZoomScale = 1.0;
+        const svgBox = document.getElementById('modal-svg-container');
+        if (svgBox && svgBox.style.display !== 'none' && _modalSvgBaseWidth > 0) {
+          const fitScale = Math.min(1.0, ((svgBox.clientWidth || window.innerWidth * 0.86) * 0.94) / _modalSvgBaseWidth);
+          _modalZoomScale = Math.max(0.35, Math.round(fitScale * 100) / 100);
+        } else {
+          _modalZoomScale = 1.0;
+        }
         applyModalZoom();
       });
+
+      const svgBoxEl = document.getElementById('modal-svg-container');
+      if (svgBoxEl) {
+        let isDragging = false;
+        let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+        svgBoxEl.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          startScrollLeft = svgBoxEl.scrollLeft;
+          startScrollTop = svgBoxEl.scrollTop;
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          svgBoxEl.scrollLeft = startScrollLeft - (e.clientX - startX);
+          svgBoxEl.scrollTop = startScrollTop - (e.clientY - startY);
+        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        svgBoxEl.addEventListener('wheel', (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            const delta = e.deltaY < 0 ? 0.25 : -0.25;
+            _modalZoomScale = Math.max(0.3, Math.min(6.0, Math.round((_modalZoomScale + delta) * 100) / 100));
+            applyModalZoom();
+          }
+        }, { passive: false });
+      }
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
           closeImageModal();
@@ -2447,7 +2481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = ensureImageModal();
     const imgEl = document.getElementById('modal-img');
     const svgBox = document.getElementById('modal-svg-container');
-    document.getElementById('modal-img-title').textContent = title || '架构图放大预览';
+    document.getElementById('modal-img-title').textContent = (title || '架构图放大预览') + '（可拖拽平移 · Ctrl+滚轮缩放）';
     if (imgEl) {
       imgEl.style.display = 'none';
       imgEl.src = '';
@@ -2458,13 +2492,17 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.removeAttribute('width');
       clone.removeAttribute('height');
       clone.style.maxWidth = 'none';
+      const vb = svgEl.viewBox && svgEl.viewBox.baseVal;
+      const naturalW = (vb && vb.width) ? vb.width : (svgEl.getBoundingClientRect().width || 1000);
       const boxW = svgBox.clientWidth || Math.round(window.innerWidth * 0.86);
-      const rectW = svgEl.getBoundingClientRect().width || 600;
-      _modalSvgBaseWidth = Math.max(boxW * 0.94, Math.round(rectW * 1.8), 1100);
+      // 以真实自然分辨率（至少 1600px）作为 100% 基准，确保文字清晰可读，可继续放大至 600%
+      _modalSvgBaseWidth = Math.max(Math.round(naturalW * 1.15), Math.round(boxW * 0.94), 1600);
       _modalZoomScale = 1.0;
       svgBox.innerHTML = '';
       svgBox.appendChild(clone);
-      svgBox.style.display = 'flex';
+      svgBox.style.display = 'block';
+      svgBox.scrollLeft = 0;
+      svgBox.scrollTop = 0;
       applyModalZoom();
     }
   };
