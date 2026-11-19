@@ -634,7 +634,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentMindmapScope === 'book') {
       if (turnSelectWrap) turnSelectWrap.style.display = 'none';
       const docName = currentActiveDocumentName || '大语言模型 (赵鑫 李军毅 周昆 唐天一 文继荣) (Z-Library).pdf';
-      const cleanDocName = docName.replace(/\.[^/.]+$/, '');
+      const cleanDocName = docName
+        .replace(/\.[^/.]+$/, '')
+        .replace(/\\(?:texttt|emph|textit|textbf|textrm|text)\{([^{}]+)\}/g, '$1')
+        .replace(/<\/?tt>/gi, '');
       if (titleEl) titleEl.textContent = `《${cleanDocName}》全景知识树`;
       if (badgeEl) badgeEl.textContent = '📚 全书宏观结构';
 
@@ -2319,20 +2322,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
-
-    if (window.renderMathInElement && evidencePanelList) {
-      try {
-        window.renderMathInElement(evidencePanelList, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '\\[', right: '\\]', display: true},
-            {left: '$', right: '$', display: false},
-            {left: '\\(', right: '\\)', display: false}
-          ],
-          throwOnError: false
-        });
-      } catch (_) {}
-    }
   }
 
   let _modalZoomScale = 1.0;
@@ -3092,7 +3081,7 @@ document.addEventListener('DOMContentLoaded', () => {
     math = math.replace(/\\\\([a-zA-Z{}()\[\]])/g, '\\$1');
     if (window.katex) {
       try {
-        return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false });
+        return window.katex.renderToString(math, { displayMode, throwOnError: false, trust: false, output: 'html' });
       } catch (_) { /* Fall through to symbol map */ }
     }
     const symbols = {
@@ -3176,7 +3165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. 转义非公式部分的 HTML 字符（允许安全的 <br> 换行标签还原）
     src = escapeHtml(src);
     src = src.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
-    // 将 arXiv 标题/摘要中常见的裸 LaTeX 文本排版宏转换为可读 HTML
+    // 将 arXiv/CrossRef 标题与摘要中常见的裸 LaTeX 文本排版宏和 <tt> 标签转换为可读 HTML
+    src = src.replace(/&lt;tt&gt;([\s\S]*?)&lt;\/tt&gt;/gi, '<code class="inline-code">$1</code>');
     src = src.replace(/\\texttt\{([^{}]+)\}/g, '<code class="inline-code">$1</code>');
     src = src.replace(/\\(?:emph|textit)\{([^{}]+)\}/g, '<em>$1</em>');
     src = src.replace(/\\textbf\{([^{}]+)\}/g, '<strong>$1</strong>');
@@ -3208,8 +3198,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function formatInlineText(text) {
     if (!text) return '';
     let res = escapeHtml(text);
-    // 允许表格与正文中的 <br> / <br/> 安全换行
+    // 允许表格与正文中的 <br> / <br/> 安全换行，并将 <tt> / \texttt 等转为行内代码
     res = res.replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
+    res = res.replace(/&lt;tt&gt;([\s\S]*?)&lt;\/tt&gt;/gi, '<code class="inline-code">$1</code>');
+    res = res.replace(/\\texttt\{([^{}]+)\}/g, '<code class="inline-code">$1</code>');
+    res = res.replace(/\\(?:emph|textit)\{([^{}]+)\}/g, '<em>$1</em>');
+    res = res.replace(/\\textbf\{([^{}]+)\}/g, '<strong>$1</strong>');
     // 加粗 **text** 或 __text__ (使用单词边界，避免误匹配标识符)
     res = res.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     res = res.replace(/\b__(.+?)__\b/g, '<strong>$1</strong>');
@@ -3370,6 +3364,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 仅在代码块与数学公式已被安全隔离提取后，再将非公式文本中字面量换行符转换（排除了反斜杠后跟英文字母的 LaTeX 指令）
     src = src.replace(/\\n(?![a-zA-Z])/g, '\n');
+
+    // 合并跨行折断的 Markdown 链接 [title\n...](url)，避免参考文献标题含换行时链接失效
+    src = src.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, linkText, linkUrl) => `[${linkText.replace(/\s*\n\s*/g, ' ')}](${linkUrl})`);
 
     // 4. 解析表格与行级 Markdown
     const lines = src.split('\n');
