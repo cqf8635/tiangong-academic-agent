@@ -2347,7 +2347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  window.openImageModal = function(src, title) {
+  function ensureImageModal() {
     let modal = document.getElementById('image-preview-modal');
     if (!modal) {
       modal = document.createElement('div');
@@ -2362,13 +2362,54 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="modal-body">
             <img id="modal-img" src="" alt="原图大图" />
+            <div id="modal-svg-container" class="modal-svg-container mermaid-flowchart"></div>
           </div>
         </div>
       `;
       document.body.appendChild(modal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeImageModal();
+        }
+      });
     }
+    return modal;
+  }
+
+  window.openImageModal = function(src, title) {
+    const modal = ensureImageModal();
+    const imgEl = document.getElementById('modal-img');
+    const svgBox = document.getElementById('modal-svg-container');
     document.getElementById('modal-img-title').textContent = title || '原图与页面快照预览';
-    document.getElementById('modal-img').src = src;
+    if (svgBox) {
+      svgBox.innerHTML = '';
+      svgBox.style.display = 'none';
+    }
+    if (imgEl) {
+      imgEl.style.display = 'block';
+      imgEl.src = src;
+    }
+    modal.classList.add('active');
+  };
+
+  window.openSvgModal = function(svgEl, title) {
+    const modal = ensureImageModal();
+    const imgEl = document.getElementById('modal-img');
+    const svgBox = document.getElementById('modal-svg-container');
+    document.getElementById('modal-img-title').textContent = title || '架构图放大预览';
+    if (imgEl) {
+      imgEl.style.display = 'none';
+      imgEl.src = '';
+    }
+    if (svgBox && svgEl) {
+      const clone = svgEl.cloneNode(true);
+      clone.removeAttribute('width');
+      clone.style.maxWidth = '88vw';
+      clone.style.height = 'auto';
+      svgBox.innerHTML = '';
+      svgBox.appendChild(clone);
+      svgBox.style.display = 'flex';
+    }
     modal.classList.add('active');
   };
 
@@ -3454,19 +3495,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = btnOrEl.closest('.mermaid-diagram-card');
     if (!card) return;
     const svg = card.querySelector('svg');
-    if (!svg) return;
+    if (!svg) {
+      alert('流程图尚未渲染完成或当前为源码回退状态，无法放大矢量图。');
+      return;
+    }
     try {
-      const clone = svg.cloneNode(true);
-      if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      const vb = svg.viewBox && svg.viewBox.baseVal;
-      const w = (vb && vb.width) || svg.getBoundingClientRect().width || 800;
-      const h = (vb && vb.height) || svg.getBoundingClientRect().height || 500;
-      clone.setAttribute('width', Math.max(900, Math.round(w * 1.6)));
-      clone.setAttribute('height', Math.max(560, Math.round(h * 1.6)));
-      const svgData = new XMLSerializer().serializeToString(clone);
-      const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
-      if (typeof window.openImageModal === 'function') {
-        window.openImageModal(dataUrl, 'FIGURE · 机制与方法架构图（放大查看）');
+      if (typeof window.openSvgModal === 'function') {
+        window.openSvgModal(svg, 'FIGURE · 机制与方法架构图（放大查看）');
       }
     } catch (e) {
       console.warn('Zoom diagram failed:', e);

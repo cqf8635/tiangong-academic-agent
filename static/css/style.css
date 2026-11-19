@@ -1294,9 +1294,112 @@ body.mist-mountain-theme {
   cursor: zoom-in;
 }
 
+#image-preview-modal.image-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+#image-preview-modal.image-modal.active {
+  display: flex;
+}
+
+#image-preview-modal .modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#image-preview-modal .modal-content {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  max-width: 94vw;
+  max-height: 92vh;
+  min-width: min(520px, 92vw);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#image-preview-modal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+#image-preview-modal .modal-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #0f172a;
+}
+
+#image-preview-modal .modal-close {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#image-preview-modal .modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+#image-preview-modal .modal-body {
+  padding: 20px;
+  overflow: auto;
+  max-height: calc(92vh - 56px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #ffffff;
+}
+
 #image-preview-modal img {
+  max-width: 88vw;
+  max-height: calc(88vh - 80px);
+  object-fit: contain;
   background: #ffffff;
   border-radius: 8px;
+}
+
+#image-preview-modal .modal-svg-container {
+  width: 100%;
+  padding: 0;
+  overflow: auto;
+  background: #ffffff;
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#image-preview-modal .modal-svg-container svg {
+  width: max-content;
+  min-width: min(880px, 85vw);
+  max-width: 88vw;
+  height: auto;
 }
 
 .mermaid-flowchart {
