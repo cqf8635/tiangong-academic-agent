@@ -1202,6 +1202,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatDocPreviewHint = document.getElementById('chat-doc-preview-hint');
   const btnRemovePreviewDoc = document.getElementById('btn-remove-preview-doc');
 
+  let isUploadingAttachedDoc = false;
+
   function setAttachedDoc(filename, hintText = '') {
     currentAttachedDocName = filename || null;
     if (filename) {
@@ -1223,6 +1225,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!file) return;
       const formData = new FormData();
       formData.append('file', file);
+      isUploadingAttachedDoc = true;
+      currentAttachedDocName = null;
       if (chatDocPreviewName) chatDocPreviewName.textContent = `⏳ 正在解析 ${file.name}...`;
       if (chatDocPreviewHint) chatDocPreviewHint.textContent = '正在提取文档正文并建立检索索引...';
       if (chatDocPreviewContainer) chatDocPreviewContainer.style.display = 'flex';
@@ -1235,6 +1239,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         setAttachedDoc(null);
         alert(`文档解析失败: ${err.message}`);
+      } finally {
+        isUploadingAttachedDoc = false;
       }
     });
   }
@@ -1302,6 +1308,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. 发送消息与拓扑网络实时联动
   // =========================================================================
   async function handleSendMessage(text = null, isVoice = false) {
+    if (isUploadingAttachedDoc) {
+      alert('文档仍在解析并建立检索索引中，请稍候 1~2 秒再发送。');
+      return;
+    }
     const rawQuery = (text || userInput.value).trim();
     const attachedImg = currentAttachedImageBase64;
     const attachedDoc = currentAttachedDocName;
