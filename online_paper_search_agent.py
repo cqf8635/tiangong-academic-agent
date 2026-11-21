@@ -1103,7 +1103,10 @@ class OnlinePaperSearchAgent:
         latest_browse = not (query or "").strip() and sort_by == "submittedDate"
         if latest_browse:
             try:
-                return self._radar_latest_updates(major, sub_categories, start, max_results)
+                rss_res = self._radar_latest_updates(major, sub_categories, start, max_results)
+                if rss_res and rss_res.get("papers"):
+                    return rss_res
+                print("ℹ️ [RadarUpdates]: 当日 arXiv RSS 无新公告（如周末休刊），自动回退至近期论文查询/OpenAlex。")
             except Exception as exc:
                 print(f"⚠️ [RadarUpdates]: 更新订阅暂不可用 ({exc})，尝试原查询接口。")
 
