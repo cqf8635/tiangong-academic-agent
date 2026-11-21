@@ -596,7 +596,7 @@ class RetrievalPlannerAgent:
                     response_format={"type": "json_object"},
                     temperature=0,
                     max_tokens=get_llm_max_tokens(8192),
-                    timeout=min(get_llm_timeout(60), 60),
+                    timeout=get_llm_timeout(120.0),
                 )
                 choice = response.choices[0]
                 content = (choice.message.content or "").strip()
