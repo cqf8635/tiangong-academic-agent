@@ -1219,8 +1219,8 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
             timeout=120,
         )
         try:
-            summary_data = json.loads(summary_response.choices[0].message.content or "{}")
-        except json.JSONDecodeError:
+            summary_data = _parse_llm_json_object(summary_response.choices[0].message.content or "")
+        except Exception:
             summary_data = {}
     chunks = _split_translation_chunks(source_text)
     translated_chunks: List[str] = [""] * len(chunks)
@@ -1301,9 +1301,37 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
     return result
 
 
+def _parse_llm_json_object(raw_text: str) -> Dict[str, Any]:
+    """Extract a JSON object from LLM output, tolerating ```json fences and surrounding prose."""
+    text = str(raw_text or "").strip()
+    if not text:
+        return {}
+    fence = re.search(r"```(?:json)?\s*([\s\S]*?)```", text, re.I)
+    if fence:
+        text = fence.group(1).strip()
+    try:
+        parsed = json.loads(text)
+        if isinstance(parsed, dict):
+            return parsed
+    except json.JSONDecodeError:
+        pass
+    start = text.find("{")
+    if start != -1:
+        decoder = json.JSONDecoder()
+        candidate = text[start:]
+        for attempt_text in (candidate, re.sub(r",\s*([}\]])", r"\1", candidate)):
+            try:
+                parsed, _ = decoder.raw_decode(attempt_text)
+                if isinstance(parsed, dict):
+                    return parsed
+            except json.JSONDecodeError:
+                continue
+    raise ValueError(f"模型未返回有效 JSON（前 120 字：{text[:120]}）")
+
+
 def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
     from openai import OpenAI
-    from config_utils import get_translation_llm_client_kwargs, get_translation_llm_model
+    from config_utils import get_llm_timeout, get_translation_llm_client_kwargs, get_translation_llm_model
 
     client_kwargs = get_translation_llm_client_kwargs()
     if not client_kwargs.get("api_key"):
@@ -1321,9 +1349,9 @@ def _translate_summary(req: RadarTranslateRequest) -> Dict[str, Any]:
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
         temperature=0.3,
-        timeout=25,
+        timeout=get_llm_timeout(60.0),
     )
-    return json.loads(response.choices[0].message.content or "{}")
+    return _parse_llm_json_object(response.choices[0].message.content or "")
 
 
 @app.post("/api/radar/translate")
@@ -1378,9 +1406,9 @@ def run_server():
     import uvicorn
     print("\n" + "=" * 70)
     print("🚀 【科研学习与会议协同多智能体系统】启动成功！")
-    print("🌐 访问网址: http://localhost:8008")
+    print("🌐 访问网址: http://localhost:8888")
     print("=" * 70 + "\n")
-    uvicorn.run(app, host="0.0.0.0", port=8008, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8888, log_level="info")
 
 
 if __name__ == "__main__":
