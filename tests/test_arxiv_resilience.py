@@ -420,6 +420,7 @@ def test_failed_refresh_returns_paged_stale_snapshot_without_poisoning_cache(tmp
     monkeypatch.setattr(mod._ARXIV_UPDATES, "fetch", unavailable)
     monkeypatch.setattr(mod._ARXIV_SCHEDULER, "execute", unavailable)
     agent = mod.OnlinePaperSearchAgent.__new__(mod.OnlinePaperSearchAgent)
+    monkeypatch.setattr(agent, "_radar_openalex_fallback", lambda **kw: None)
     result = agent.search_radar(major="CS", start=1, max_results=1)
     assert result["papers"] == [old[1]]
     assert result["total_results"] == 3

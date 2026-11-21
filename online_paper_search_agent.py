@@ -327,7 +327,7 @@ class ArxivUpdateFeedClient:
         self._last_completed_at = 0.0
         self._cooldown_until = 0.0
         self.cache_ttl = max(60.0, float(os.getenv("ARXIV_UPDATES_CACHE_TTL", "300")))
-        self.timeout = float(os.getenv("ARXIV_UPDATES_TIMEOUT", "12"))
+        self.timeout = float(os.getenv("ARXIV_UPDATES_TIMEOUT", "25"))
         self.min_interval = 3.2
 
     def cooldown_remaining(self):
@@ -930,6 +930,123 @@ class OnlinePaperSearchAgent:
         print(f"ℹ️ [ArxivSearch] arXiv 响应超时或受限 ({last_error})，自动由 CrossRef/OpenAlex 全球学术库平滑接管证据链。")
         return SearchResults(source_error=type(last_error).__name__)
 
+    def _radar_openalex_fallback(
+        self,
+        query: Optional[str],
+        major: Optional[str],
+        sub_categories: Optional[List[str]],
+        sort_by: str,
+        start: int,
+        max_results: int,
+        arxiv_query: str = "",
+    ) -> Optional[Dict[str, Any]]:
+        """Fallback to OpenAlex arXiv-indexed works when arXiv RSS/API times out or is rate-limited."""
+        if time.time() < _OPENALEX_COOLDOWN_UNTIL:
+            return None
+        try:
+            from academic_taxonomy import ACADEMIC_TAXONOMY, get_subcategory_meta
+            from collections import Counter
+
+            mailto = os.getenv("OPENALEX_MAILTO", "").strip() or "yunshan_scholar@research-institute.org"
+            page_size = max(1, min(int(max_results or 15), 50))
+            page_num = (max(0, int(start or 0)) // page_size) + 1
+
+            search_text = (query or "").strip()
+            if not search_text and sub_categories:
+                names = []
+                for code in sub_categories[:3]:
+                    meta = get_subcategory_meta(code.rstrip("*"))
+                    if meta and meta.get("name_en"):
+                        names.append(meta["name_en"])
+                search_text = " ".join(names).strip()
+            if not search_text and major and major in ACADEMIC_TAXONOMY:
+                search_text = ACADEMIC_TAXONOMY[major].get("name_en") or ""
+
+            params: Dict[str, Any] = {
+                "filter": "primary_location.source.id:S4306400194,has_abstract:true",
+                "per-page": page_size,
+                "page": page_num,
+                "mailto": mailto,
+            }
+            if search_text:
+                params["search"] = search_text
+            if sort_by == "submittedDate" or not (query or "").strip():
+                params["sort"] = "publication_date:desc"
+
+            url = f"https://api.openalex.org/works?{urllib.parse.urlencode(params)}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": f"YunshanScholar/2.0 (mailto:{mailto})"},
+            )
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+
+            results = data.get("results") or []
+            if not results:
+                return None
+
+            fallback_cat = (sub_categories[0].rstrip("*") if sub_categories else (major or "cs"))
+            papers_out: List[Dict[str, Any]] = []
+            for w in results:
+                title = (w.get("title") or "").strip()
+                if not title:
+                    continue
+                inv = w.get("abstract_inverted_index") or {}
+                abstract = ""
+                if isinstance(inv, dict) and inv:
+                    pos_map = {}
+                    for word, positions in inv.items():
+                        for pos in positions:
+                            pos_map[pos] = word
+                    abstract = " ".join(pos_map[k] for k in sorted(pos_map.keys()))
+                authors = [
+                    (a.get("author") or {}).get("display_name", "")
+                    for a in (w.get("authorships") or [])[:8]
+                    if (a.get("author") or {}).get("display_name")
+                ]
+                pub_date = w.get("publication_date") or (f"{w.get('publication_year')}-01-01" if w.get("publication_year") else "")
+                loc = w.get("primary_location") or {}
+                landing = loc.get("landing_page_url") or w.get("doi") or w.get("id") or ""
+                pdf_url = loc.get("pdf_url") or landing
+                arxiv_m = re.search(r"(\d{4}\.\d{4,5}(?:v\d+)?)", f"{landing} {pdf_url} {w.get('doi') or ''}")
+                paper_id = arxiv_m.group(1) if arxiv_m else str(w.get("id") or "").rstrip("/").split("/")[-1]
+                if arxiv_m and not str(pdf_url).startswith("https://arxiv.org/pdf/"):
+                    pdf_url = f"https://arxiv.org/pdf/{arxiv_m.group(1)}.pdf"
+                papers_out.append({
+                    "paper_id": paper_id,
+                    "title": title,
+                    "authors": authors,
+                    "summary": abstract,
+                    "published": pub_date,
+                    "pdf_url": pdf_url,
+                    "primary_category": fallback_cat,
+                    "categories": [fallback_cat],
+                })
+
+            if not papers_out:
+                return None
+
+            meta_total = int((data.get("meta") or {}).get("count") or len(papers_out))
+            cat_meta = get_subcategory_meta(fallback_cat)
+            return {
+                "query_expression": arxiv_query or search_text,
+                "papers": papers_out,
+                "total_fetched": len(papers_out),
+                "total_results": meta_total,
+                "total_results_scope": "openalex_arxiv_fallback",
+                "sub_distribution": [{
+                    "code": fallback_cat,
+                    "name_zh": cat_meta["name_zh"] if cat_meta else fallback_cat,
+                    "count": len(papers_out),
+                }],
+                "source": "openalex_fallback",
+                "update_status": "live",
+                "is_cached_snapshot": False,
+            }
+        except Exception as exc:
+            print(f"⚠️ [RadarOpenAlexFallback]: {exc}")
+            return None
+
     def _radar_latest_updates(self, major, sub_categories, start, max_results):
         """Read a daily announcement batch without using the historical query API."""
         from academic_taxonomy import build_arxiv_query_expression, get_subcategory_meta
@@ -1054,7 +1171,24 @@ class OnlinePaperSearchAgent:
         except Exception as e:
             print(f"⚠️ [SearchRadar Note]: arXiv 请求受阻或避让 ({e})，平滑切换至本地经卷快照。")
 
-        # 2. 若网络波动、超时或频次受限导致获取为空，自动无缝触发本地快照容灾
+        # 2. 若 arXiv RSS/API 均超时或受限，先尝试 OpenAlex (arXiv 源 + Polite Pool) 实时拉取最新论文
+        if not papers and not api_succeeded:
+            oa_fallback = self._radar_openalex_fallback(
+                query=query,
+                major=major,
+                sub_categories=sub_categories,
+                sort_by=sort_by,
+                start=start,
+                max_results=max_results,
+                arxiv_query=arxiv_query,
+            )
+            if oa_fallback and oa_fallback.get("papers"):
+                if not latest_browse:
+                    with _RADAR_SEARCH_CACHE_LOCK:
+                        _RADAR_SEARCH_CACHE[cache_key] = (time.monotonic(), copy.deepcopy(oa_fallback))
+                return oa_fallback
+
+        # 3. 若在线源均不可用，自动无缝触发本地快照容灾
         if not papers and not api_succeeded:
             try:
                 from radar_sync_engine import RADAR_CACHE_DIR
