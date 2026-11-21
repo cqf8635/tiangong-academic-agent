@@ -1158,10 +1158,11 @@ class OnlinePaperSearchAgent:
         date_bounds = retrieval_date_bounds(time_constraint)
         if date_bounds:
             params["filter"] = f"from-pub-date:{date_bounds[0]},until-pub-date:{date_bounds[1]}"
+        mailto = os.getenv("OPENALEX_MAILTO", "").strip() or "yunshan_scholar@research-institute.org"
         url = f"https://api.crossref.org/works?{urllib.parse.urlencode(params)}"
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": "ResearchScholar/1.0 (mailto:scholar@researchscholar.local)"}
+            headers={"User-Agent": f"YunshanScholar/2.0 (mailto:{mailto})"}
         )
 
         resources = []
@@ -1239,10 +1240,11 @@ class OnlinePaperSearchAgent:
             clean_q = re.sub(r"[^\w\s-]", " ", query).strip()
             search_term = clean_q or query.strip()
 
+        mailto = os.getenv("OPENALEX_MAILTO", "").strip() or "yunshan_scholar@research-institute.org"
         params = {
             "search": search_term,
             "per-page": max_results,
-            "mailto": "yunshan_scholar@research-institute.org"
+            "mailto": mailto,
         }
         date_bounds = retrieval_date_bounds(time_constraint)
         if date_bounds and (time_constraint.get("start_date") or time_constraint.get("end_date")):
@@ -1257,7 +1259,7 @@ class OnlinePaperSearchAgent:
         url = f"https://api.openalex.org/works?{urllib.parse.urlencode(params)}"
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": "YunshanScholar/2.0 (mailto:yunshan_scholar@research-institute.org)"}
+            headers={"User-Agent": f"YunshanScholar/2.0 (mailto:{mailto})"}
         )
 
         resources = []
@@ -1463,8 +1465,9 @@ class OnlinePaperSearchAgent:
                 doi = f"10.48550/arXiv.{paper_ref[6:]}"
             if not doi:
                 return []
-            lookup_url = f"https://api.openalex.org/works?filter=doi:{urllib.parse.quote(doi)}&per-page=1"
-            lookup_req = urllib.request.Request(lookup_url, headers={"User-Agent": "ResearchScholar/1.0 (mailto:research@example.org)"})
+            mailto = os.getenv("OPENALEX_MAILTO", "").strip() or "yunshan_scholar@research-institute.org"
+            lookup_url = f"https://api.openalex.org/works?filter=doi:{urllib.parse.quote(doi)}&per-page=1&mailto={urllib.parse.quote(mailto)}"
+            lookup_req = urllib.request.Request(lookup_url, headers={"User-Agent": f"YunshanScholar/2.0 (mailto:{mailto})"})
             with urllib.request.urlopen(lookup_req, timeout=6) as resp:
                 wdata = json.loads(resp.read().decode("utf-8"))
             works = wdata.get("results") or []
@@ -1475,9 +1478,9 @@ class OnlinePaperSearchAgent:
                 return []
             cites_url = (
                 f"https://api.openalex.org/works?filter=cites:{work_id}"
-                f"&sort=cited_by_count:desc&per-page={max_per_seed}"
+                f"&sort=cited_by_count:desc&per-page={max_per_seed}&mailto={urllib.parse.quote(mailto)}"
             )
-            cites_req = urllib.request.Request(cites_url, headers={"User-Agent": "ResearchScholar/1.0 (mailto:research@example.org)"})
+            cites_req = urllib.request.Request(cites_url, headers={"User-Agent": f"YunshanScholar/2.0 (mailto:{mailto})"})
             with urllib.request.urlopen(cites_req, timeout=6) as resp:
                 cdata = json.loads(resp.read().decode("utf-8"))
             out: List[AcademicResource] = []
