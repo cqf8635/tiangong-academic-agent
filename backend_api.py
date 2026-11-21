@@ -1302,26 +1302,34 @@ def _translate_full_paper(req: RadarTranslateRequest) -> Dict[str, Any]:
 
 
 def _parse_llm_json_object(raw_text: str) -> Dict[str, Any]:
-    """Extract a JSON object from LLM output, tolerating ```json fences and surrounding prose."""
+    """Extract a JSON object from LLM output, tolerating ```json fences and unescaped LaTeX backslashes."""
     text = str(raw_text or "").strip()
     if not text:
         return {}
     fence = re.search(r"```(?:json)?\s*([\s\S]*?)```", text, re.I)
     if fence:
         text = fence.group(1).strip()
-    try:
-        parsed = json.loads(text)
-        if isinstance(parsed, dict):
-            return parsed
-    except json.JSONDecodeError:
-        pass
+
+    def _fix_latex_escapes(s: str) -> str:
+        # Double single backslashes not forming valid JSON escapes (e.g. \varepsilon, \sqrt, \Omega)
+        return re.sub(r'(?<!\\)\\(?!["\\/bfnrtu])', r'\\\\', s)
+
+    candidates = [text, _fix_latex_escapes(text)]
     start = text.find("{")
     if start != -1:
-        decoder = json.JSONDecoder()
-        candidate = text[start:]
-        for attempt_text in (candidate, re.sub(r",\s*([}\]])", r"\1", candidate)):
+        sub = text[start:]
+        sub_fixed = _fix_latex_escapes(sub)
+        candidates.extend([
+            sub,
+            sub_fixed,
+            re.sub(r",\s*([}\]])", r"\1", sub_fixed),
+        ])
+
+    decoder = json.JSONDecoder()
+    for cand in candidates:
+        for strict in (True, False):
             try:
-                parsed, _ = decoder.raw_decode(attempt_text)
+                parsed, _ = decoder.raw_decode(cand) if strict else (json.loads(cand, strict=False), 0)
                 if isinstance(parsed, dict):
                     return parsed
             except json.JSONDecodeError:
