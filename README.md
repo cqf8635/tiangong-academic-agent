@@ -1,44 +1,54 @@
 <div align="center">
 
-# 🏛️ TianGong Academic Agent (天工科研学术智能体)
+# 🏛️ TianGong Academic Agent (云山问学 · 天工科研学术智能体)
 
-**An Autonomous, Dialectical Multi-Agent System for Deep Academic Discovery, Local Privacy-Preserving RAG, and Paper Reproduction.**
+**An Autonomous, Dialectical Multi-Agent System for Deep Academic Discovery, Resilient Multi-Source Retrieval, Local Privacy-Preserving RAG, and Paper Reproduction.**
 
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 [![Framework](https://img.shields.io/badge/Framework-FastAPI%20%7C%20LangGraph-orange)](https://github.com/langchain-ai/langgraph)
 [![Protocol](https://img.shields.io/badge/Protocol-Model%20Context%20Protocol%20(MCP)-purple)](https://modelcontextprotocol.io/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/cqf8635/tiangong-academic-agent)
 
-[**English**](./README.md) | [**简体中文**](./README.md#中文说明)
+[**English**](./README.md) | [**简体中文**](./README.md#中文说明) | [**🎬 Demo Video / 演示视频**](./docs/demo/tiangong_demo.mp4)
 
 </div>
 
 ---
 
+## 🎬 Demo Video / 系统实机演示
+
+Click the preview below to view or download the full 2m31s walkthrough (`1280×632` H.264 MP4, compressed from the original 106MB screen recording for fast loading):
+
+[![TianGong Academic Agent Demo](./docs/demo/tiangong_demo_poster.jpg)](./docs/demo/tiangong_demo.mp4)
+
+> 🔗 Direct video file: [docs/demo/tiangong_demo.mp4](./docs/demo/tiangong_demo.mp4) (or raw stream: [Watch / Download MP4](https://github.com/cqf8635/tiangong-academic-agent/raw/main/docs/demo/tiangong_demo.mp4))
+
+---
+
 ## 🌟 Overview / 系统概览
 
-**TianGong Academic Agent** is a production-grade, state-machine-driven multi-agent framework tailored for researchers, scientists, and graduate students. Unlike typical chat-wrapper interfaces, TianGong solves real-world academic research bottlenecks:
+**TianGong Academic Agent (云山问学)** is a production-grade, state-machine-driven multi-agent research workbench tailored for researchers, scientists, and graduate students. Rather than a thin LLM chat wrapper, it focuses on **reusable engineering patterns** for real-world academic research bottlenecks:
 
-- 🧭 **Academic Radar (8 Disciplines & 150+ Subcategories)**: Instant daily preprint tracking across Physics, CS, Math, Bio, Finance, and Economics.
-- 🔒 **100% Local Privacy-Preserved Models**: Embedding (`BGE-M3`), Reranking (`BGE-Reranker`), and Speech Transcription (`Whisper-Large-v3`) run entirely **on your local machine**, ensuring unreleased manuscripts, proprietary PDFs, and research discussions never leave your hardware.
-- 🔁 **Deterministic State-Machine Subject Memory**: Completely decouples LLM soft reasoning from hard state transitions ($S_t \rightarrow S_{t+1}$), permanently eliminating **Topic Drift** during multi-turn research inquiries.
-- ⚔️ **Triad Dialectical Triplet**: Integrates a built-in *Peer-Reviewer* agent performing adversarial cross-examination before synthesizing conclusions, eradicating hallucinations.
-- ⚡ **HTTP/2 Resilient arXiv Engine**: Uses an atomic, mutex-scheduled HTTP/2 transport layer (~0.87s latency), solving the dreaded arXiv rate-limit (Tarpit) socket timeouts.
-- 🔬 **Code-Literature Companion Probe**: Concurrently queries **arXiv + CrossRef + OpenAlex + GitHub API**, delivering papers alongside their official implementation repositories, citation counts, and conference venues.
-- 📐 **Heading-Aware AST Parsing & LaTeX Math Isolation**: Safeguards mathematical derivations, formulas, and proofs against Markdown rendering corruption.
+- 🧭 **TianGong Academic Radar (8 Disciplines & 150+ Subcategories)**: Daily preprint tracking across Physics, CS, Math, Bio, Finance, and Economics with a **4-tier resilient fallback chain**: `arXiv Daily RSS → arXiv API → OpenAlex arXiv-indexed Works (Polite Pool) → Local Snapshot`, automatically handling weekend announcement pauses and rate limits.
+- 🔒 **100% Local Privacy-Preserving Neural Models**: Embedding (`BGE-M3`), Cross-Encoder Reranking (`BGE-Reranker-v2-m3`), and Speech-to-Text (`Whisper-Large-v3`) run entirely **on your local GPU/CPU**, ensuring unpublished manuscripts, proprietary PDFs, and lab recordings stay on your machine.
+- 🔁 **Stateful Subject Memory & Task Alignment**: Explicit `MasterAgentState` (`topic_state`, `subject_entity`, `subject_evolution_log`, `shared_pool`) paired with pre-retrieval `task_alignment` verification prevents topic drift and erroneous external searches across multi-turn research sessions.
+- ⚔️ **Dialectical Review & Gap-Retrieval Loop**: Separates *Retrieval Planner* → *Domain Author* → *Zero-Token Evidence Synthesis* → *Dialectical Peer-Reviewer* → *Targeted Gap Retrieval* → *Append-Only Evidence Refinement* to eliminate hallucinations without degrading previously verified prose.
+- 🌐 **Multi-Source Heterogeneous Discovery & Citation Snowballing**: Concurrently probes **arXiv + OpenAlex + CrossRef + Semantic Scholar + DBLP + GitHub + Web** under a unified time budget, with per-source cooldown circuit breakers, **Citation Snowballing** along seed citation graphs, non-peer-reviewed repository downweighting (Zenodo / Figshare / OSF), and **BGE-M3 + BGE-Reranker + MMR** two-stage ranking.
+- 🛡️ **Deterministic Guardrails & Zero-Cost Citation Consistency**: Post-processing automatically repairs drifted `[n]` framework citations, expands multi-citation brackets, renumbers citations to contiguous `1..K` order, and syncs right-panel evidence cards—plus safe fenced-JSON / LaTeX backslash parsing, Mermaid 600% pan-zoom, Markmap multi-scope mindmaps, and Obsidian Vault/Canvas export.
+- 📄 **Full-Format Direct Upload & Resumable Paper Translation**: Upload PDF / Word / PPT / EPUB / LaTeX / Markdown / TXT directly in the chat bar (full-document context routing up to 120k chars, semantic RAG fallback for book-length files), auto-sync high-relevance online papers into local ChromaDB with TTL/cap pruning, and translate full papers chunk-by-chunk with persistent resumable caching (`chunks_zh`) on a dedicated fast model (`TRANSLATION_LLM_MODEL`).
 
 ---
 
 ## 💾 Local Models & Privacy / 本地模型体系与科研数据安全
 
-TianGong adopts an **on-premise hybrid neural architecture**: only reasoning calls are routed to the user's chosen LLM, while all document embeddings, vector rerankings, and speech transcriptions run strictly on your local GPU/CPU:
+TianGong adopts an **on-premise hybrid neural architecture**: reasoning and translation calls route to your configured OpenAI-compatible LLM endpoints, while all document embeddings, semantic reranking, and voice transcription run strictly locally:
 
 | Function | Model | Default Local Path | Key Characteristics |
 | :--- | :--- | :--- | :--- |
-| **Dense/Sparse Embedding** | `BAAI/bge-m3` | `./models/embedding` | 1024-dim multi-granularity vector representation; 100% local, 0 external API cost |
-| **Cross-Encoder Reranker** | `BAAI/bge-reranker-v2-m3` | `./models/reranker` | Deep semantic relevance scoring; equipped with auto-fallback to cosine metric |
-| **Speech-to-Text (ASR)** | `whisper-large-v3` | `./models/whisper-large-v3` | High-fidelity offline voice transcription; lab meeting recordings stay strictly confidential |
+| **Dense Embedding** | `BAAI/bge-m3` | `./models/embedding` | 1024-dim semantic vector representation; 100% local, 0 API cost |
+| **Cross-Encoder Reranker** | `BAAI/bge-reranker-v2-m3` | `./models/reranker` | Fine-grained semantic relevance scoring with cosine fallback |
+| **Speech-to-Text (ASR)** | `whisper-large-v3` | `./models/whisper-large-v3` | Offline CUDA voice transcription for queries and lab meeting logs |
 
 ---
 
@@ -47,29 +57,33 @@ TianGong adopts an **on-premise hybrid neural architecture**: only reasoning cal
 ```mermaid
 flowchart TD
     subgraph Input["1. Multi-Modal Academic Input"]
-        Q["User Query / Paper PDF / Voice / Image"] --> Router["Intent Recognition Gateway (intent_recognition_agent.py)"]
+        Q["Query / Chat Doc Upload (PDF·Word·PPT·MD) / Image / Voice"] --> Router["Intent Recognition & Task Alignment (intent_recognition_agent.py)"]
     end
 
-    subgraph StateMachine["2. Deterministic Subject Memory"]
-        Router -->|"Extract Action: INIT | INHERIT | APPEND | REPLACE"| FSM["State Machine Engine (subject_memory.py)\nGuarantees topic topology & zero context drift"]
+    subgraph StateMachine["2. Stateful Subject Memory & Planning"]
+        Router -->|"INIT | INHERIT | APPEND | REPLACE"| FSM["Topic State Machine & SharedPool (session_manager.py)"]
+        FSM --> Planner["Multi-View Retrieval Planner (retrieval_planner.py)"]
     end
 
-    subgraph Retrieval["3. Heterogeneous Discovery Pipeline"]
-        FSM -->|"Dispatched"| R1["TianGong Radar (HTTP/2 Fast Engine)"]
-        FSM -->|"Dispatched"| R2["Multi-Source Probe (arXiv + OpenAlex + CrossRef + GitHub)"]
-        FSM -->|"Dispatched"| R3["Heading-Aware AST RAG (Local BGE-M3 + BM25 Hybrid)"]
+    subgraph Retrieval["3. Resilient Multi-Source Retrieval & Ranking"]
+        Planner --> R1["TianGong Radar (arXiv RSS → API → OpenAlex → Snapshot)"]
+        Planner --> R2["Multi-Source Probe (arXiv · OpenAlex · CrossRef · S2 · DBLP · GitHub · Citation Snowball)"]
+        Planner --> R3["Local Document RAG (Heading-Aware AST · BGE-M3 · BGE-Reranker · MMR · TTL Pruning)"]
     end
 
-    subgraph Dialectical["4. Triad Dialectical Inquiry Triplet"]
-        R1 & R2 & R3 --> Syn["Evidence Synthesis Node\n(Compiles atomic facts into Evidence Slate)"]
-        Syn --> Reviewer["Dialectical Inquiry Node\n(Adversarial Peer Reviewer attacking logical gaps)"]
-        Reviewer --> Reflector["Reflective Revision Node\n(Calibrates evidence and eliminates hallucinations)"]
+    subgraph Dialectical["4. Author–Reviewer Dialectical Loop"]
+        R1 & R2 & R3 --> Author["Domain Tutor / Search Brief / Doc RAG Author"]
+        Author --> Syn["Zero-Token Evidence Synthesis"]
+        Syn --> Reviewer["Dialectical Inquiry Node (Evidence-Grounded Peer Review)"]
+        Reviewer -->|"Gap Found"| Gap["Targeted Gap Retrieval & Append-Only Refinement"]
+        Reviewer -->|"Pass"| Post["Deterministic Citation Drift Repair & 1..K Renumbering"]
+        Gap --> Post
     end
 
-    subgraph Output["5. Academic Output Layer"]
-        Reflector --> Out1["LaTeX Math-Preserved Web View"]
-        Reflector --> Out2["Automated Paper Ingestion (Local Vector Store)"]
-        Reflector --> Out3["TTS Voice Synthesis & MCP Protocol Feed"]
+    subgraph Output["5. Interactive Research Workbench"]
+        Post --> Out1["KaTeX Math · Mermaid 600% Zoom · Inline [n] Evidence Jump"]
+        Post --> Out2["Markmap Mindmaps · Resumable Full-Paper Translation"]
+        Post --> Out3["Local KB Auto-Sync · Obsidian Vault/Canvas · MCP Server"]
     end
 ```
 
@@ -80,32 +94,25 @@ flowchart TD
 ### 1. Clone & Environment Setup / 克隆并配置环境
 
 ```bash
-# Clone the repository
 git clone https://github.com/cqf8635/tiangong-academic-agent.git
 cd tiangong-academic-agent
 
-# Create virtual environment (Python 3.11 or 3.12 recommended)
 conda create -n tiangong python=3.12 -y
 conda activate tiangong
 
-# Install complete dependencies
 pip install -r requirements.txt
 ```
 
 ### 2. Download Local Models / 下载本地私有化模型 (推荐)
 
-Use the built-in downloader script to automatically fetch the local embedding and reranker models into `./models/`:
-
 ```bash
-# Download both BGE-M3 embedding and reranker snapshots
+# Download local BGE-M3 embedding and BGE-Reranker weights into ./models/
 python download_vector_models.py all
 ```
 
-> **Note on Whisper**: If using local voice input, download `whisper-large-v3` weights to `./models/whisper-large-v3` or point `WHISPER_MODEL_PATH` in `.env` to your existing model directory.
+> **Note on Whisper**: If using local voice input, download `whisper-large-v3` weights to `./models/whisper-large-v3` or point `WHISPER_MODEL_PATH` in `.env` to your existing directory.
 
 ### 3. Configure Environment Variables / 配置环境变量
-
-Copy the template and fill in your LLM API credentials (compatible with OpenAI standard protocol):
 
 ```bash
 cp .env.example .env
@@ -113,12 +120,22 @@ cp .env.example .env
 
 Edit `.env`:
 ```ini
-# 1. LLM API (supports any OpenAI-compatible endpoint)
+# 1. Primary LLM API (supports any OpenAI-compatible endpoint)
 OPENAI_API_KEY=your_actual_api_key_here
-OPENAI_MODEL=your_preferred_model_name  # e.g., gemini-3.8-flash, gpt-6.1-sol, ...
-OPENAI_BASE_URL=your_api_base_url_here  # e.g., https://api.openai.com/v1
+OPENAI_MODEL=your_preferred_model_name
+OPENAI_BASE_URL=your_api_base_url_here
+# Optional: fast fallback model for planner/retries
+# OPENAI_FALLBACK_MODEL=your_fast_model
+# LLM_TIMEOUT=180.0
 
-# 2. Local Models (relative or absolute paths)
+# 2. Optional: Dedicated fast model for Radar abstract/full-paper translation
+# TRANSLATION_LLM_MODEL=gemini-3.8-flash
+
+# 3. Optional: Academic API Polite Pool & API Keys
+# OPENALEX_MAILTO=your_email@example.com
+# SEMANTICSCHOLAR_API_KEY=
+
+# 4. Local Models
 PAPER_EMBEDDING_MODEL=./models/embedding
 PAPER_RERANKER_MODEL=./models/reranker
 PAPER_USE_RERANKER=1
@@ -130,48 +147,37 @@ WHISPER_MODEL_PATH=./models/whisper-large-v3
 ```bash
 python run.py
 ```
-Open your browser and navigate to: **`http://127.0.0.1:8008`** (or **`http://localhost:8008`**)
+
+Open your browser and visit **`http://127.0.0.1:8888`** (or **`http://localhost:8888`**).
 
 ---
 
 <a name="中文说明"></a>
-## 🇨🇳 中文核心功能特性
+## 🇨🇳 中文核心特性与工程设计亮点
 
-### 1. 100% 私有化本地神经模型体系 (零数据泄露)
-- **学术资料零上传**：学术论文 PDF、未发表的阶段性草稿、内部研讨语音的向量切片与特征提取**全部在本地 GPU/CPU 上运行**；
-- **BGE-M3 (Dense + Sparse 混合多粒度检索)**：兼顾长文本语义泛化与特定专业术语、定理符号的精准定位；
-- **Whisper-Large-v3 离线语音识别**：会议录音与语音提问完全在本地离线转录，杜绝录音数据流向外部商业云平台。
+### 1. 多智能体状态机与辩证审校闭环 (`master_agent_workflow.py`)
+- **任务对齐与主体记忆**：在触发外部检索前先对照用户原话做 `task_alignment` 核验，结合 `topic_state`、`subject_entity` 与 `SharedPool` 资产复用池，杜绝多轮对话跑偏与重复冗余检索；
+- **生成与审校解耦**：构建 `检索规划 → 专家主研 → 纯代码证据归纳（0 Token）→ 辩证质询审校（Peer Reviewer）→ 缺口定向补查 → 增量追加` 闭环，避免多轮重写导致已核验内容退化。
 
-### 2. 确定性学术主体记忆状态机 (`subject_memory.py`)
-- **告别传统对话 RAG 的上下文漂移（Topic Drift）**；
-- 大模型仅负责提炼语义动作（`INIT` 首轮确立 / `INHERIT` 隐式继承 / `APPEND` 多主题对比 / `REPLACE` 显式重置）；
-- 底层由 Python 状态机严格维护数学状态跃迁 $S_t \rightarrow S_{t+1}$ 与 `evolution_path`，多轮研讨无需冗余历史 Token 堆叠即可实现零偏离聚焦。
+### 2. 真实网络下的高可用多源检索与天工雷达 (`online_paper_search_agent.py`, `cross_source_hybrid_retriever.py`)
+- **7+ 异构源并发 + 分级熔断**：并发检索 arXiv、OpenAlex、CrossRef、Semantic Scholar、DBLP、GitHub 与 Web，受统一时间预算约束；对 DBLP `202`、S2/arXiv `429`、瞬态 `502/503/504` 自动冷却或退避重试；
+- **天工雷达四级容灾**：`arXiv 每日 RSS → arXiv 查询 API → OpenAlex arXiv 源（Polite Pool）→ 本地磁盘快照`，周末休刊或代理限流时自动无缝切换；
+- **引文滚雪球 + 两级精排 + 降权去噪**：结合 `CitationSnowball` 沿引文图扩展相关工作、非同行评审自存档仓储降权（Zenodo/Figshare/OSF）、以及本地 `BGE-M3 + BGE-Reranker + MMR` 相关性与多样性联合排序。
 
-### 3. 模拟顶刊审稿人的“三元辩证对抗环” (`master_agent_workflow.py`)
-- 摒弃业界线性“检索即生成”的单向脆弱性；
-- 构建了 `证据归纳专员` $\rightarrow$ `辩证质询专员 (Peer Reviewer)` $\rightarrow$ `主研反思重构专员` 的自省闭环；
-- 在学术论点输出前主动寻找逻辑跳跃、过度外推与证据孤岛，把**同行评议挑刺作为原生抗幻觉防线**。
+### 3. 全格式文档直传解析与本地知识库治理 (`document_rag_engine.py`, `backend_api.py`)
+- **对话框直接上传解析**：支持 PDF / Word / PPT / EPUB / LaTeX / Markdown / TXT 随提问上传，12 万字以内全文上下文直通无遗漏，超长巨著自动切换语义精排；
+- **在线论文自动沉淀与生命周期管理**：高相关检索文献自动沉淀入本地 ChromaDB（`online_synced_paper`），配套引用优先、TTL 过期淘汰、上限裁剪与侧边栏一键清理；
+- **分块断点续译**：天工雷达“精译”与“翻译全文”支持独立快速翻译模型（`TRANSLATION_LLM_MODEL`）与分块缓存（`chunks_zh`），单块超时仅补跑失败块。
 
-### 4. 物理单并发与 HTTP/2 极速调度器 (`ArxivScheduler`)
-- 针对 arXiv 官方严格的反爬限流与 Tarpit 慢速惩罚防火墙；
-- 采用 Socket 互斥锁 + I/O 完成闭环校验 + **系统级 HTTP/2 传输通道（实测延迟仅 ~0.87s）**；
-- 具备后台同步任务感知前台交互的**主动让行退避（Yielding）机制**与双层熔断保护。
-
-### 5. 预印本-同行评议-开源代码一体化“伴生探针”
-- 并发探查 **arXiv**（最新预印本）、**CrossRef / OpenAlex**（权威录用、被引量）、**Europe PMC / INSPIRE-HEP**（生物医药/物理顶刊）、**GitHub API**（官方开源实现、Stars 趋势）；
-- 彻底解决科研人员“读懂了顶会论文，却找不到官方或高质量开源代码复现”的断层痛点。
-
-### 6. 格式与排版严密防护
-- **Heading-Aware 语法 AST 切片**：依据章节目录树（`#`, `##`, `###`）保护公式块与表格为“不可分割原子块”，保留章节面包屑；
-- **双阶段 LaTeX 隔离状态机**：利用 `@MATHBLOCK_` 哈希隔离符，彻底解决 Markdown 渲染器将公式下划线 `_` 误伤为斜体导致排版破碎的问题。
+### 4. 确定性工程兜底与学术工作台体验 (`retrieval_planner.py`, `static/js/app.js`)
+- **零成本引用漂移纠偏与连续重排**：后处理自动隔离数学公式（防止 `$[0, 1]$` 误伤），依据唯一框架/论文锚点纠正长文漂移编号、展开 `[7, 9]` 合并括号并按首次出现顺序重排为连续 `1..K`，同步联动正文 `[n]` 点击跳转至右侧证据原图快照；
+- **排版与可视化增强**：内置 KaTeX 数学渲染、arXiv 裸排版宏清洗（`\texttt` / `\emph` / `<tt>`）、Mermaid 矢量架构图 **600% 拖拽缩放与 SVG 导出**、Markmap 多视角知识导图（本轮/全书/全景）、以及 Obsidian 双链与 Canvas 导出。
 
 ---
 
 ## 🔌 MCP (Model Context Protocol) 集成
 
-本项目通过 [`mcp_server.py`](mcp_server.py) 原生支持 Anthropic 推出的 **Model Context Protocol (MCP)**。
-
-可在 Claude Desktop、Cursor 等工具的 `claude_desktop_config.json` 中轻松挂载本系统为外部学术大脑：
+本项目通过 [`mcp_server.py`](mcp_server.py) 原生支持 **Model Context Protocol (MCP)**，可在 Claude Desktop、Cursor 等客户端挂载为外部学术大脑：
 
 ```json
 {
@@ -188,10 +194,10 @@ Open your browser and navigate to: **`http://127.0.0.1:8008`** (or **`http://loc
 
 ## 🧪 Testing & Verification / 自动化测试
 
-运行全套韧性与抗网络波动单元测试：
+项目包含 20+ 个单元测试套件，覆盖检索韧性、任务对齐、引用纠偏重排、共享池、雷达调度与工作流契约：
 
 ```bash
-PYTHONPATH=. pytest tests/test_arxiv_resilience.py
+PYTHONPATH=. pytest -q tests/test_arxiv_resilience.py tests/test_retrieval_planner.py tests/test_radar_sync_scheduler.py
 ```
 
 ---
