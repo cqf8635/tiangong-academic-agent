@@ -54,38 +54,7 @@ TianGong adopts an **on-premise hybrid neural architecture**: reasoning and tran
 
 ## 🏗️ System Architecture / 核心架构
 
-```mermaid
-flowchart TD
-    subgraph Input["1. Multi-Modal Academic Input"]
-        Q["Query / Chat Doc Upload (PDF·Word·PPT·MD) / Image / Voice"] --> Router["Intent Recognition & Task Alignment (intent_recognition_agent.py)"]
-    end
-
-    subgraph StateMachine["2. Stateful Subject Memory & Planning"]
-        Router -->|"INIT | INHERIT | APPEND | REPLACE"| FSM["Topic State Machine & SharedPool (session_manager.py)"]
-        FSM --> Planner["Multi-View Retrieval Planner (retrieval_planner.py)"]
-    end
-
-    subgraph Retrieval["3. Resilient Multi-Source Retrieval & Ranking"]
-        Planner --> R1["TianGong Radar (arXiv RSS → API → OpenAlex → Snapshot)"]
-        Planner --> R2["Multi-Source Probe (arXiv · OpenAlex · CrossRef · S2 · DBLP · GitHub · Citation Snowball)"]
-        Planner --> R3["Local Document RAG (Heading-Aware AST · BGE-M3 · BGE-Reranker · MMR · TTL Pruning)"]
-    end
-
-    subgraph Dialectical["4. Author–Reviewer Dialectical Loop"]
-        R1 & R2 & R3 --> Author["Domain Tutor / Search Brief / Doc RAG Author"]
-        Author --> Syn["Zero-Token Evidence Synthesis"]
-        Syn --> Reviewer["Dialectical Inquiry Node (Evidence-Grounded Peer Review)"]
-        Reviewer -->|"Gap Found"| Gap["Targeted Gap Retrieval & Append-Only Refinement"]
-        Reviewer -->|"Pass"| Post["Deterministic Citation Drift Repair & 1..K Renumbering"]
-        Gap --> Post
-    end
-
-    subgraph Output["5. Interactive Research Workbench"]
-        Post --> Out1["KaTeX Math · Mermaid 600% Zoom · Inline [n] Evidence Jump"]
-        Post --> Out2["Markmap Mindmaps · Resumable Full-Paper Translation"]
-        Post --> Out3["Local KB Auto-Sync · Obsidian Vault/Canvas · MCP Server"]
-    end
-```
+![TianGong Academic Agent System Architecture](./docs/architecture/0815_真实系统架构总览.svg)
 
 ---
 
