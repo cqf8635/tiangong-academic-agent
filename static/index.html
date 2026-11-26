@@ -68,29 +68,42 @@
             <option value="zh-CN-YunyangNeural">🎓 云扬 · 沉稳专业</option>
           </select>
         </div>
-        <button id="btn-toggle-avatar" class="btn btn-ethereal" title="展开/收起科研搭档座席">
-          <span class="icon">🤝</span> 搭档座席
-        </button>
-        <button id="btn-toggle-left" class="btn btn-ethereal" title="展开/收起左侧经卷与会话书阁">
-          <span class="icon">🎋</span> 兰台书阁
-        </button>
-        <button id="btn-toggle-graph" class="btn btn-ethereal" title="展开/收起多智能体流转网络">
-          <span class="icon">🕸️</span> 云水流径
-        </button>
-        <button id="btn-toggle-right" class="btn btn-ethereal" title="展开/收起右侧考据与待办案头">
-          <span class="icon">📑</span> 案头考据
-        </button>
         <button id="btn-header-record" class="btn btn-ethereal" title="开启/停止全自动会议录音与转写">
           <span class="icon" id="header-record-icon">🎙️</span> <span id="header-record-text">开启会议录制</span>
         </button>
-        <button id="btn-quick-summary" class="btn btn-ethereal" title="提炼当前会议与讲座纪要">
-          <span class="icon">📜</span> 录流水为纪要
-        </button>
-        <button id="btn-export-obsidian" class="btn btn-ethereal" title="将当前学术研讨与思维导图一键导出至本地 Obsidian 知识库 (生成双链 Markdown 与 Canvas 白板)">
-          <span class="icon">💎</span> 导出至 Obsidian
-        </button>
-        <button id="btn-open-settings" class="btn btn-ethereal btn-settings-gear" title="系统设置 (.env) 与本地模型一键下载" aria-label="系统设置">
-          <span class="icon">⚙️</span>
+
+        <!-- 视图与工具下拉菜单 (释放顶栏空间，防止溢出) -->
+        <div class="header-dropdown-wrap" id="header-tools-dropdown">
+          <button type="button" id="btn-header-tools-menu" class="btn btn-ethereal" title="切换工作区面板、会议纪要与导出工具">
+            <span class="icon">🧰</span> 视图与工具 <span style="font-size:0.65rem;opacity:0.75;">▾</span>
+          </button>
+          <div class="header-dropdown-menu" id="header-tools-menu">
+            <div class="header-dropdown-group-label">工作区面板</div>
+            <button id="btn-toggle-avatar" class="header-dropdown-item" title="展开/收起科研搭档座席">
+              <span class="icon">🤝</span> 搭档座席
+            </button>
+            <button id="btn-toggle-left" class="header-dropdown-item" title="展开/收起左侧经卷与会话书阁">
+              <span class="icon">🎋</span> 兰台书阁
+            </button>
+            <button id="btn-toggle-graph" class="header-dropdown-item" title="展开/收起多智能体流转网络">
+              <span class="icon">🕸️</span> 云水流径
+            </button>
+            <button id="btn-toggle-right" class="header-dropdown-item" title="展开/收起右侧考据与待办案头">
+              <span class="icon">📑</span> 案头考据
+            </button>
+            <div class="header-dropdown-divider"></div>
+            <div class="header-dropdown-group-label">会议与导出</div>
+            <button id="btn-quick-summary" class="header-dropdown-item" title="提炼当前会议与讲座纪要">
+              <span class="icon">📜</span> 录流水为纪要
+            </button>
+            <button id="btn-export-obsidian" class="header-dropdown-item" title="将当前学术研讨与思维导图一键导出至本地 Obsidian 知识库 (生成双链 Markdown 与 Canvas 白板)">
+              <span class="icon">💎</span> 导出至 Obsidian
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-open-settings" class="btn btn-ethereal" title="系统设置 (.env) 与本地模型一键下载" aria-label="系统设置">
+          <span class="icon">⚙️</span> 系统设置
         </button>
       </div>
     </header>

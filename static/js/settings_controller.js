@@ -186,7 +186,27 @@
     }
   }
 
+  const btnToolsMenu = document.getElementById('btn-header-tools-menu');
+  const toolsMenu = document.getElementById('header-tools-menu');
+  if (btnToolsMenu && toolsMenu) {
+    btnToolsMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toolsMenu.classList.toggle('open');
+    });
+    toolsMenu.querySelectorAll('.header-dropdown-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        toolsMenu.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!toolsMenu.contains(e.target) && e.target !== btnToolsMenu) {
+        toolsMenu.classList.remove('open');
+      }
+    });
+  }
+
   btnOpen.addEventListener('click', () => {
+    if (toolsMenu) toolsMenu.classList.remove('open');
     modal.style.display = 'flex';
     loadSettings();
   });
