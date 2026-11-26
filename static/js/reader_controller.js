@@ -129,15 +129,168 @@
     tabDialogue.addEventListener('click', () => {
       tabReader.classList.remove('active');
       layoutReader.style.display = 'none';
+      hideSelectionPopover();
     });
   }
   if (tabRadar) {
     tabRadar.addEventListener('click', () => {
       tabReader.classList.remove('active');
       layoutReader.style.display = 'none';
+      hideSelectionPopover();
     });
   }
   tabReader.addEventListener('click', () => openReaderWorkspace());
+
+  // 划词按需翻译浮动条（用户选中段落后自主决定是否翻译、复制或发给伴读）
+  let selPopoverEl = null;
+  let selPopoverText = '';
+  let selPopoverLastTranslation = '';
+  let selPopoverTargetLang = 'zh';
+
+  function ensureSelectionPopover() {
+    if (selPopoverEl) return selPopoverEl;
+    const pop = document.createElement('div');
+    pop.id = 'reader-sel-popover';
+    pop.className = 'reader-sel-popover';
+    pop.innerHTML = `
+      <div class="reader-sel-popover-bar">
+        <button type="button" class="reader-sel-btn primary" data-act="translate">🌐 翻译选中</button>
+        <button type="button" class="reader-sel-btn" data-act="copy">📋 复制</button>
+        <button type="button" class="reader-sel-btn" data-act="ask">💬 问伴读</button>
+        <button type="button" class="reader-sel-btn close-btn" data-act="close" title="关闭">✕</button>
+      </div>
+      <div class="reader-sel-trans-box">
+        <div class="reader-sel-trans-body"></div>
+        <div class="reader-sel-trans-foot">
+          <span class="reader-sel-trans-meta"></span>
+          <div style="display:flex;gap:5px;">
+            <button type="button" class="reader-sel-btn" data-act="toggle-lang">🔄 译为英文</button>
+            <button type="button" class="reader-sel-btn" data-act="copy-trans">📋 复制译文</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(pop);
+    selPopoverEl = pop;
+
+    const transBox = pop.querySelector('.reader-sel-trans-box');
+    const transBody = pop.querySelector('.reader-sel-trans-body');
+    const transMeta = pop.querySelector('.reader-sel-trans-meta');
+    const toggleLangBtn = pop.querySelector('[data-act="toggle-lang"]');
+
+    async function doTranslate(targetLang) {
+      if (!selPopoverText) return;
+      selPopoverTargetLang = targetLang;
+      selPopoverLastTranslation = '';
+      transBox.style.display = 'flex';
+      transBody.innerHTML = '<span style="color:#64748b;">⏳ 正在精准翻译选中段落...</span>';
+      transMeta.textContent = '';
+      if (toggleLangBtn) {
+        toggleLangBtn.textContent = targetLang === 'zh' ? '🔄 译为英文' : '🔄 译为中文';
+      }
+      clampPopoverToViewport();
+      try {
+        const resp = await fetch('/api/reader/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: selPopoverText,
+            filename: state.filename || null,
+            target_lang: targetLang,
+          }),
+        });
+        const res = await resp.json();
+        if (!resp.ok || res.status !== 'success') {
+          throw new Error(res.detail || `HTTP ${resp.status}`);
+        }
+        const translated = (res.data && res.data.translation) || '';
+        selPopoverLastTranslation = translated;
+        transBody.innerHTML = renderBasicMarkdown(translated);
+        transMeta.textContent = res.data && res.data.model ? `模型: ${res.data.model}` : '';
+        clampPopoverToViewport();
+      } catch (err) {
+        transBody.innerHTML = `<span style="color:#b91c1c;">❌ 翻译失败: ${escapeHtml(err.message)}</span>`;
+      }
+    }
+
+    pop.addEventListener('mousedown', (e) => e.stopPropagation());
+    pop.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-act]');
+      if (!btn) return;
+      const act = btn.getAttribute('data-act');
+      if (act === 'close') {
+        hideSelectionPopover();
+      } else if (act === 'translate') {
+        // 若原文主要是中文则默认译为英文，否则默认译为中文
+        const zhChars = (selPopoverText.match(/[\u4e00-\u9fff]/g) || []).length;
+        const autoLang = zhChars / Math.max(1, selPopoverText.length) > 0.35 ? 'en' : 'zh';
+        await doTranslate(autoLang);
+      } else if (act === 'toggle-lang') {
+        await doTranslate(selPopoverTargetLang === 'zh' ? 'en' : 'zh');
+      } else if (act === 'copy') {
+        try {
+          await navigator.clipboard.writeText(selPopoverText);
+          const orig = btn.textContent;
+          btn.textContent = '✅ 已复制';
+          setTimeout(() => { btn.textContent = orig; }, 1200);
+        } catch (_) {}
+      } else if (act === 'copy-trans') {
+        if (!selPopoverLastTranslation) return;
+        try {
+          await navigator.clipboard.writeText(selPopoverLastTranslation);
+          const orig = btn.textContent;
+          btn.textContent = '✅ 已复制';
+          setTimeout(() => { btn.textContent = orig; }, 1200);
+        } catch (_) {}
+      } else if (act === 'ask') {
+        state.selectedText = selPopoverText;
+        updateContextPreview();
+        hideSelectionPopover();
+        if (aiInputEl) aiInputEl.focus();
+      }
+    });
+
+    document.addEventListener('mousedown', (e) => {
+      if (selPopoverEl && selPopoverEl.style.display !== 'none' && !selPopoverEl.contains(e.target)) {
+        hideSelectionPopover();
+      }
+    });
+
+    return pop;
+  }
+
+  function clampPopoverToViewport() {
+    if (!selPopoverEl || selPopoverEl.style.display === 'none') return;
+    const rect = selPopoverEl.getBoundingClientRect();
+    let left = parseFloat(selPopoverEl.style.left) || 16;
+    let top = parseFloat(selPopoverEl.style.top) || 16;
+    if (left + rect.width > window.innerWidth - 14) {
+      left = Math.max(14, window.innerWidth - rect.width - 14);
+    }
+    if (top + rect.height > window.innerHeight - 14) {
+      top = Math.max(14, window.innerHeight - rect.height - 14);
+    }
+    selPopoverEl.style.left = `${Math.round(left)}px`;
+    selPopoverEl.style.top = `${Math.round(top)}px`;
+  }
+
+  function showSelectionPopover(text, clientX, clientY) {
+    const clean = (text || '').trim();
+    if (clean.length < 2) return;
+    const pop = ensureSelectionPopover();
+    selPopoverText = clean;
+    selPopoverLastTranslation = '';
+    const transBox = pop.querySelector('.reader-sel-trans-box');
+    if (transBox) transBox.style.display = 'none';
+    pop.style.left = `${Math.max(14, Math.min(window.innerWidth - 260, (clientX || 200) - 40))}px`;
+    pop.style.top = `${Math.max(14, (clientY || 160) + 12)}px`;
+    pop.style.display = 'flex';
+    clampPopoverToViewport();
+  }
+
+  function hideSelectionPopover() {
+    if (selPopoverEl) selPopoverEl.style.display = 'none';
+  }
 
   function updateContextPreview() {
     if (!ctxBoxEl) return;
@@ -463,15 +616,16 @@
       { signal: sig, passive: true }
     );
 
-    // 直接在连续页面上拖选文字复制，并同步到右侧伴读助手
+    // 直接在连续页面上拖选文字复制，弹出按需翻译浮动条并同步到右侧伴读助手
     container.addEventListener(
       'mouseup',
-      () => {
+      (e) => {
         if (state.cropMode) return;
         const sel = (window.getSelection ? window.getSelection().toString() : '').trim();
         if (sel.length >= 2) {
           state.selectedText = sel;
           updateContextPreview();
+          showSelectionPopover(sel, e.clientX, e.clientY);
         }
       },
       { signal: sig }
@@ -616,14 +770,15 @@
         if (aiInputEl) aiInputEl.focus();
       });
     });
-    // 支持直接鼠标划词选中文本
+    // 支持直接鼠标划词选中文本（弹出按需翻译浮动条）
     const stage = document.getElementById('reader-sections-stage');
     if (stage) {
-      stage.addEventListener('mouseup', () => {
+      stage.addEventListener('mouseup', (e) => {
         const sel = (window.getSelection ? window.getSelection().toString() : '').trim();
-        if (sel.length >= 4) {
+        if (sel.length >= 2) {
           state.selectedText = sel;
           updateContextPreview();
+          showSelectionPopover(sel, e.clientX, e.clientY);
         }
       });
     }
@@ -733,11 +888,12 @@
     });
   }
   if (textDrawerBodyEl) {
-    textDrawerBodyEl.addEventListener('mouseup', () => {
+    textDrawerBodyEl.addEventListener('mouseup', (e) => {
       const sel = (window.getSelection ? window.getSelection().toString() : '').trim();
-      if (sel.length >= 4) {
+      if (sel.length >= 2) {
         state.selectedText = sel;
         updateContextPreview();
+        showSelectionPopover(sel, e.clientX, e.clientY);
       }
     });
   }

@@ -1168,6 +1168,87 @@ async def reader_multimodal_ask(req: ReaderAskRequest):
         raise HTTPException(status_code=500, detail=f"伴读解答失败: {exc}")
 
 
+class ReaderTranslateRequest(BaseModel):
+    text: str
+    filename: Optional[str] = None
+    target_lang: str = "zh"  # zh | en
+
+
+def _run_reader_translate(req: ReaderTranslateRequest) -> Dict[str, Any]:
+    from openai import OpenAI
+    from config_utils import (
+        get_default_llm_model,
+        get_llm_timeout,
+        get_translation_llm_client_kwargs,
+        get_translation_llm_model,
+    )
+
+    raw_text = (req.text or "").strip()
+    if not raw_text:
+        raise ValueError("请先选中需要翻译的段落")
+    raw_text = raw_text[:6000]
+
+    use_trans = bool(os.getenv("TRANSLATION_LLM_MODEL", "").strip())
+    if use_trans:
+        client_kwargs = get_translation_llm_client_kwargs()
+        model_name = get_translation_llm_model()
+    else:
+        api_key = os.getenv("OPENAI_API_KEY", "").strip()
+        base_url = os.getenv("OPENAI_BASE_URL", "").strip()
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        model_name = get_default_llm_model()
+
+    if not client_kwargs.get("api_key"):
+        raise ValueError("未配置 OPENAI_API_KEY，请在右上角 ⚙️ 系统设置中填写")
+
+    target = (req.target_lang or "zh").lower()
+    if target == "en":
+        sys_prompt = (
+            "You are a precise academic translator. Translate the user's selected paragraph into fluent, idiomatic academic English. "
+            "Preserve all mathematical symbols, LaTeX formulas, and citations accurately. Output ONLY the translation without extra commentary."
+        )
+    else:
+        sys_prompt = (
+            "你是专业严谨的学术文献翻译助手。请将用户划选的段落精准、流畅地翻译为中文学术表达：\n"
+            "1. 保留专业术语（关键术语可在首次出现时括号附英文原词）、数学符号与 LaTeX 公式；\n"
+            "2. 自动修复 PDF 复制导致的异常断行，保持自然段落结构；\n"
+            "3. 仅输出译文正文，不要加任何开场白或额外解释。"
+        )
+
+    user_content = f"文档：《{req.filename}》\n\n{raw_text}" if req.filename else raw_text
+    client = OpenAI(**client_kwargs)
+    resp = client.chat.completions.create(
+        model=model_name,
+        messages=[
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_content},
+        ],
+        temperature=0.15,
+        timeout=get_llm_timeout(60.0),
+    )
+    translation = (resp.choices[0].message.content or "").strip()
+    return {
+        "translation": translation,
+        "model": model_name,
+        "target_lang": target,
+    }
+
+
+@app.post("/api/reader/translate")
+async def reader_translate_selection(req: ReaderTranslateRequest):
+    """经卷精读划词按需翻译（不打扰右侧伴读对话历史，默认优先使用快速翻译模型）"""
+    try:
+        loop = asyncio.get_running_loop()
+        data = await loop.run_in_executor(None, _run_reader_translate, req)
+        return {"status": "success", "data": data}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"划词翻译失败: {exc}")
+
+
 @app.delete("/api/documents/synced")
 async def clear_synced_documents(doc_name: Optional[str] = None):
     """删除单篇或一键清空所有自动沉淀的在线论文记忆（不影响用户上传的物理文档）"""
