@@ -40,6 +40,9 @@
   const btnAiSend = document.getElementById('btn-reader-ai-send');
   const btnAiClear = document.getElementById('btn-reader-ai-clear');
   const modeSelectEl = document.getElementById('reader-model-mode');
+  const btnAttachImg = document.getElementById('btn-reader-attach-img');
+  const imgFileInput = document.getElementById('reader-img-input');
+  const btnReaderMic = document.getElementById('btn-reader-mic');
 
   const state = {
     docs: [],
@@ -492,6 +495,91 @@
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendReaderQuestion();
+      }
+    });
+    // 支持 Ctrl+V 直接粘贴剪贴板截图
+    aiInputEl.addEventListener('paste', (e) => {
+      const items = (e.clipboardData && e.clipboardData.items) || [];
+      for (const item of items) {
+        if (item.type && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (!file) continue;
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            state.cropImageData = evt.target.result;
+            updateContextPreview();
+            if (ctxLabelEl) ctxLabelEl.textContent = '🖼️ 已粘贴剪贴板截图（多模态原图直传）';
+          };
+          reader.readAsDataURL(file);
+          e.preventDefault();
+          break;
+        }
+      }
+    });
+  }
+  if (btnAttachImg && imgFileInput) {
+    btnAttachImg.addEventListener('click', () => imgFileInput.click());
+    imgFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        state.cropImageData = evt.target.result;
+        updateContextPreview();
+        if (ctxLabelEl) ctxLabelEl.textContent = `🖼️ 已附带图片: ${file.name}`;
+      };
+      reader.readAsDataURL(file);
+      imgFileInput.value = '';
+    });
+  }
+  if (btnReaderMic) {
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    btnReaderMic.addEventListener('click', async () => {
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          audioChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder.ondataavailable = (ev) => {
+            if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
+          };
+          mediaRecorder.onstop = async () => {
+            stream.getTracks().forEach((t) => t.stop());
+            btnReaderMic.textContent = '⏳ 转写中...';
+            btnReaderMic.disabled = true;
+            try {
+              const blob = new Blob(audioChunks, { type: 'audio/webm' });
+              const fd = new FormData();
+              fd.append('file', blob, 'reader_voice.webm');
+              const resp = await fetch('/api/voice/transcribe', { method: 'POST', body: fd });
+              const data = await resp.json();
+              const text = (data.text || data.transcript || '').trim();
+              if (text && aiInputEl) {
+                aiInputEl.value = (aiInputEl.value ? aiInputEl.value + ' ' : '') + text;
+                aiInputEl.focus();
+              }
+            } catch (err) {
+              alert(`语音转写失败: ${err.message}`);
+            } finally {
+              btnReaderMic.textContent = '🎙️ 语音';
+              btnReaderMic.disabled = false;
+            }
+          };
+          mediaRecorder.start();
+          isRecording = true;
+          btnReaderMic.textContent = '⏹️ 停止录音';
+          btnReaderMic.style.color = '#b91c1c';
+        } catch (err) {
+          alert(`无法开启麦克风: ${err.message}`);
+        }
+      } else {
+        isRecording = false;
+        btnReaderMic.style.color = '';
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+        }
       }
     });
   }

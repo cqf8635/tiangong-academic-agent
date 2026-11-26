@@ -595,9 +595,13 @@
           <button type="button" class="reader-chip-btn reader-quick-prompt" data-prompt="请将选中内容精准翻译为流畅的中文学术表达，保留专业术语与公式。">🌐 精译</button>
         </div>
         <div class="reader-ai-input-area">
-          <textarea id="reader-ai-input" class="reader-ai-textarea" placeholder="针对选中段落或框选的公式/图表提问... (Enter 发送，Shift+Enter 换行)"></textarea>
+          <textarea id="reader-ai-input" class="reader-ai-textarea" placeholder="针对选中段落或框选的公式/图表提问，支持 Ctrl+V 粘贴截图... (Enter 发送，Shift+Enter 换行)"></textarea>
           <div class="reader-ai-actions">
-            <span style="font-size:0.7rem;color:#64748b;">支持多模态视觉识别 · 局部同书上下文增强</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button type="button" class="action-btn-mini" id="btn-reader-attach-img" title="上传图片/公式截图 (也支持 Ctrl+V 直接粘贴)">📷 图片</button>
+              <input type="file" id="reader-img-input" accept="image/*" style="display:none;" />
+              <button type="button" class="action-btn-mini" id="btn-reader-mic" title="点击开始/停止本地 Whisper 语音输入">🎙️ 语音</button>
+            </div>
             <button type="button" class="action-btn-mini" id="btn-reader-ai-send" style="background:#184c43;color:#fff;border-color:#184c43;padding:5px 14px;">发送提问 ▶</button>
           </div>
         </div>
