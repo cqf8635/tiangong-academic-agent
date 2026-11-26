@@ -25,6 +25,12 @@
   const btnZoomIn = document.getElementById('btn-reader-zoom-in');
   const zoomLabelEl = document.getElementById('reader-zoom-label');
   const btnCropToggle = document.getElementById('btn-reader-crop-toggle');
+  const btnTextToggle = document.getElementById('btn-reader-text-toggle');
+  const textDrawerEl = document.getElementById('reader-text-drawer');
+  const textDrawerTitleEl = document.getElementById('reader-text-drawer-title');
+  const textDrawerBodyEl = document.getElementById('reader-text-drawer-body');
+  const btnCopyPage = document.getElementById('btn-reader-copy-page');
+  const btnCloseTextDrawer = document.getElementById('btn-reader-close-text');
   const viewportEl = document.getElementById('reader-viewport');
   const activeDocTitleEl = document.getElementById('reader-active-doc-title');
 
@@ -261,6 +267,9 @@
     state.page = p;
     if (pageInput) pageInput.value = String(p);
     if (zoomLabelEl) zoomLabelEl.textContent = `${Math.round(state.zoom * 100)}%`;
+    if (textDrawerEl && textDrawerEl.style.display !== 'none') {
+      loadCurrentPdfPageText();
+    }
 
     const imgUrl = `/api/reader/pdf_page?filename=${encodeURIComponent(state.filename)}&page=${p}&scale=2.2`;
     viewportEl.innerHTML = `
@@ -442,6 +451,61 @@
     } finally {
       if (btnAiSend) btnAiSend.disabled = false;
     }
+  }
+
+  async function loadCurrentPdfPageText() {
+    if (!state.filename || state.mode !== 'pdf' || !textDrawerBodyEl) return;
+    if (textDrawerTitleEl) textDrawerTitleEl.textContent = `📄 第 ${state.page} 页可复制文本（可直接划选复制或提问）`;
+    textDrawerBodyEl.textContent = '⏳ 正在提取本页文本层...';
+    try {
+      const resp = await fetch(`/api/reader/pdf_page_text?filename=${encodeURIComponent(state.filename)}&page=${state.page}`);
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.detail || `HTTP ${resp.status}`);
+      const txt = (data.text || '').trim();
+      textDrawerBodyEl.textContent = txt || '（本页为纯扫描图片或无内嵌文本层，请使用上方「✂️ 框选区域问 AI」直接多模态识别）';
+    } catch (err) {
+      textDrawerBodyEl.textContent = `提取失败: ${err.message}`;
+    }
+  }
+
+  if (btnTextToggle && textDrawerEl) {
+    btnTextToggle.addEventListener('click', () => {
+      if (state.mode !== 'pdf') {
+        alert('当前文档已直接以可复制文本形式展示，直接鼠标划选即可复制。');
+        return;
+      }
+      const isHidden = textDrawerEl.style.display === 'none';
+      textDrawerEl.style.display = isHidden ? 'flex' : 'none';
+      btnTextToggle.classList.toggle('active', isHidden);
+      if (isHidden) loadCurrentPdfPageText();
+    });
+  }
+  if (btnCloseTextDrawer && textDrawerEl) {
+    btnCloseTextDrawer.addEventListener('click', () => {
+      textDrawerEl.style.display = 'none';
+      if (btnTextToggle) btnTextToggle.classList.remove('active');
+    });
+  }
+  if (btnCopyPage && textDrawerBodyEl) {
+    btnCopyPage.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(textDrawerBodyEl.textContent || '');
+        const orig = btnCopyPage.textContent;
+        btnCopyPage.textContent = '✅ 已复制';
+        setTimeout(() => { btnCopyPage.textContent = orig; }, 1600);
+      } catch (err) {
+        alert(`复制失败: ${err.message}`);
+      }
+    });
+  }
+  if (textDrawerBodyEl) {
+    textDrawerBodyEl.addEventListener('mouseup', () => {
+      const sel = (window.getSelection ? window.getSelection().toString() : '').trim();
+      if (sel.length >= 4) {
+        state.selectedText = sel;
+        updateContextPreview();
+      }
+    });
   }
 
   // Toolbar & action bindings

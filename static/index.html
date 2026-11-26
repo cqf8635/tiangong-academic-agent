@@ -554,11 +554,22 @@
             <button type="button" class="action-btn-mini" id="btn-reader-zoom-out" title="缩小">➖</button>
             <span id="reader-zoom-label" style="font-size:0.76rem;font-weight:700;color:#334155;min-width:40px;text-align:center;">100%</span>
             <button type="button" class="action-btn-mini" id="btn-reader-zoom-in" title="放大">➕</button>
+            <button type="button" class="action-btn-mini" id="btn-reader-text-toggle" title="展开/收起当前页可复制纯文本">📄 本页文本</button>
             <button type="button" class="action-btn-mini reader-crop-btn" id="btn-reader-crop-toggle" title="开启后在 PDF 页面拖动画框，截取扫描件/公式/图表直接问多模态 AI">✂️ 框选区域问 AI</button>
           </div>
         </div>
         <div class="reader-viewport" id="reader-viewport">
           <div class="reader-empty-hint">📖 请在左侧选择或上传一篇论文/书籍。<br/>PDF 支持高 DPI 原貌展示与「✂️ 框选区域问 AI」（专治扫描件、复杂公式与图表）。</div>
+        </div>
+        <div class="reader-text-drawer" id="reader-text-drawer" style="display: none;">
+          <div class="reader-text-drawer-head">
+            <span id="reader-text-drawer-title">📄 本页可复制文本（可直接划选复制或提问）</span>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="reader-chip-btn" id="btn-reader-copy-page">📋 复制本页</button>
+              <button type="button" class="reader-chip-btn" id="btn-reader-close-text">✕</button>
+            </div>
+          </div>
+          <div class="reader-text-drawer-body" id="reader-text-drawer-body"></div>
         </div>
       </section>
 
