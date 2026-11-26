@@ -89,6 +89,9 @@
         <button id="btn-export-obsidian" class="btn btn-ethereal" title="将当前学术研讨与思维导图一键导出至本地 Obsidian 知识库 (生成双链 Markdown 与 Canvas 白板)">
           <span class="icon">💎</span> 导出至 Obsidian
         </button>
+        <button id="btn-open-settings" class="btn btn-ethereal" title="系统配置 (.env) 与本地模型一键下载">
+          <span class="icon">⚙️</span> 系统设置
+        </button>
       </div>
     </header>
 
@@ -674,8 +677,101 @@
     </div>
   </div>
 
+  <!-- 系统配置 (.env) 与本地模型一键下载弹窗 -->
+  <div class="settings-modal-backdrop" id="settings-modal" style="display: none;">
+    <div class="settings-modal-card">
+      <div class="settings-modal-header">
+        <div>
+          <h3 style="margin: 0; font-size: 1.02rem; color: var(--color-ink-deep);">⚙️ 系统配置（.env）与本地模型管理</h3>
+          <div id="settings-env-path" style="font-size: 0.74rem; color: var(--color-ink-muted); margin-top: 2px;">仅限本机访问 · API 与模型修改即时生效</div>
+        </div>
+        <button type="button" class="btn-close-orch" id="btn-close-settings" title="关闭设置">×</button>
+      </div>
+      <div class="settings-modal-body">
+        <div class="settings-section">
+          <div class="settings-section-title">🤖 大模型与翻译模型配置</div>
+          <div class="settings-grid">
+            <label class="settings-field">
+              <span>主接口地址 (OPENAI_BASE_URL)</span>
+              <input type="text" id="cfg-OPENAI_BASE_URL" placeholder="https://api.openai.com/v1" />
+            </label>
+            <label class="settings-field">
+              <span>主 API Key (OPENAI_API_KEY)</span>
+              <input type="password" id="cfg-OPENAI_API_KEY" placeholder="留空则保持当前密钥不变" autocomplete="off" />
+            </label>
+            <label class="settings-field">
+              <span>主研讨模型 (OPENAI_MODEL)</span>
+              <input type="text" id="cfg-OPENAI_MODEL" placeholder="如 gemini-4-neon" />
+            </label>
+            <label class="settings-field">
+              <span>备选回退模型 (OPENAI_FALLBACK_MODEL)</span>
+              <input type="text" id="cfg-OPENAI_FALLBACK_MODEL" placeholder="可选：规划/超时回退快模型" />
+            </label>
+            <label class="settings-field">
+              <span>专用翻译模型 (TRANSLATION_LLM_MODEL)</span>
+              <input type="text" id="cfg-TRANSLATION_LLM_MODEL" placeholder="如 gemini-3.8-flash（留空沿用主模型）" />
+            </label>
+            <label class="settings-field">
+              <span>大模型调用超时秒数 (LLM_TIMEOUT)</span>
+              <input type="text" id="cfg-LLM_TIMEOUT" placeholder="如 180.0" />
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">🌐 学术检索源与下载加速</div>
+          <div class="settings-grid">
+            <label class="settings-field">
+              <span>OpenAlex / CrossRef 友好池邮箱 (OPENALEX_MAILTO)</span>
+              <input type="text" id="cfg-OPENALEX_MAILTO" placeholder="填自己常用邮箱提升配额与稳定性" />
+            </label>
+            <label class="settings-field">
+              <span>Semantic Scholar Key (SEMANTICSCHOLAR_API_KEY)</span>
+              <input type="password" id="cfg-SEMANTICSCHOLAR_API_KEY" placeholder="可选，留空保持不变" autocomplete="off" />
+            </label>
+            <label class="settings-field settings-field-full">
+              <span>Hugging Face 下载镜像 (HF_ENDPOINT)</span>
+              <input type="text" id="cfg-HF_ENDPOINT" placeholder="国内加速可填 https://hf-mirror.com，直连留空" />
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span>💾 本地隐私模型路径与一键下载</span>
+            <button type="button" class="action-btn-mini" id="btn-download-all-models" style="background:#184c43;color:#fff;border-color:#184c43;">⬇️ 一键下载全部缺失模型</button>
+          </div>
+          <div class="settings-models-list" id="settings-models-list"></div>
+          <div class="settings-grid" style="margin-top: 10px;">
+            <label class="settings-field">
+              <span>BGE-M3 路径 (PAPER_EMBEDDING_MODEL)</span>
+              <input type="text" id="cfg-PAPER_EMBEDDING_MODEL" placeholder="./models/embedding" />
+            </label>
+            <label class="settings-field">
+              <span>BGE-Reranker 路径 (PAPER_RERANKER_MODEL)</span>
+              <input type="text" id="cfg-PAPER_RERANKER_MODEL" placeholder="./models/reranker" />
+            </label>
+            <label class="settings-field settings-field-full">
+              <span>Whisper-large-v3 路径 (WHISPER_MODEL_PATH)</span>
+              <input type="text" id="cfg-WHISPER_MODEL_PATH" placeholder="./models/whisper-large-v3" />
+            </label>
+          </div>
+          <pre id="settings-download-log" class="settings-download-log" style="display: none;"></pre>
+        </div>
+      </div>
+      <div class="settings-modal-footer">
+        <span id="settings-save-status" style="font-size: 0.8rem; color: var(--color-pine-jade);"></span>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="action-btn-mini" id="btn-cancel-settings">取消</button>
+          <button type="button" class="action-btn-mini" id="btn-save-settings" style="background:#184c43;color:#fff;border-color:#184c43;padding:6px 16px;">💾 保存配置到 .env</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="js/digital_avatar_engine.js?v=20261106_v1"></script>
   <script src="js/app.js?v=20261106_v1"></script>
   <script src="js/radar_controller.js?v=20261106_v1"></script>
+  <script src="js/settings_controller.js?v=20261126_v1"></script>
 </body>
 </html>

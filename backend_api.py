@@ -15,6 +15,9 @@ import logging
 import os
 import re
 import shutil
+import subprocess
+import sys
+import threading
 import time
 import urllib.request
 from pathlib import Path
@@ -23,7 +26,7 @@ from typing import Any, Dict, List, Optional
 logger = logging.getLogger("uvicorn.error")
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -114,6 +117,283 @@ async def get_system_config():
         "model_name": get_default_llm_model(),
         "llm_timeout": get_llm_timeout(100.0),
     }
+
+
+# ==========================================
+# 1.1 系统 .env 可视化配置与本地模型一键下载 (仅限本机访问)
+# ==========================================
+_SETTINGS_ALLOWED_KEYS = {
+    "OPENAI_BASE_URL",
+    "OPENAI_API_KEY",
+    "OPENAI_MODEL",
+    "OPENAI_FALLBACK_MODEL",
+    "TRANSLATION_LLM_MODEL",
+    "TRANSLATION_BASE_URL",
+    "TRANSLATION_API_KEY",
+    "LLM_TIMEOUT",
+    "OPENALEX_MAILTO",
+    "SEMANTICSCHOLAR_API_KEY",
+    "HF_ENDPOINT",
+    "PAPER_EMBEDDING_MODEL",
+    "PAPER_RERANKER_MODEL",
+    "PAPER_USE_RERANKER",
+    "WHISPER_MODEL_PATH",
+}
+_SETTINGS_SECRET_KEYS = {"OPENAI_API_KEY", "TRANSLATION_API_KEY", "SEMANTICSCHOLAR_API_KEY"}
+_SETTINGS_RESTART_KEYS = {"PAPER_EMBEDDING_MODEL", "PAPER_RERANKER_MODEL", "PAPER_USE_RERANKER", "WHISPER_MODEL_PATH"}
+
+_MODEL_DOWNLOAD_LOCK = threading.Lock()
+_MODEL_DOWNLOAD_STATE: Dict[str, Any] = {
+    "running": False,
+    "target": "",
+    "status": "idle",
+    "returncode": None,
+    "logs": [],
+}
+
+
+def _require_localhost(request: Request) -> None:
+    host = (request.client.host if request.client else "") or ""
+    if host not in {"127.0.0.1", "::1", "localhost"}:
+        raise HTTPException(status_code=403, detail="系统配置与模型下载仅允许本机 (localhost) 访问")
+
+
+def _mask_secret(val: str) -> str:
+    s = (val or "").strip()
+    if not s:
+        return ""
+    if len(s) <= 8:
+        return "*" * len(s)
+    return f"{s[:4]}****{s[-4:]}"
+
+
+def _read_env_file_map(env_path: Path) -> Dict[str, str]:
+    data: Dict[str, str] = {}
+    if not env_path.exists():
+        return data
+    for raw_line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k = k.strip()
+        v = v.strip().strip('"').strip("'")
+        if k:
+            data[k] = v
+    return data
+
+
+def _write_env_file_updates(env_path: Path, updates: Dict[str, str]) -> None:
+    lines = env_path.read_text(encoding="utf-8", errors="ignore").splitlines() if env_path.exists() else []
+    remaining = dict(updates)
+    new_lines: List[str] = []
+    for raw_line in lines:
+        stripped = raw_line.strip()
+        matched_key = None
+        if stripped and "=" in stripped:
+            cand = stripped.lstrip("#").strip().split("=", 1)[0].strip()
+            if cand in remaining and (not stripped.startswith("#") or cand not in {l.strip().split("=", 1)[0].strip() for l in lines if l.strip() and not l.strip().startswith("#") and "=" in l}):
+                matched_key = cand
+        if matched_key is not None:
+            val = remaining.pop(matched_key)
+            new_lines.append(f"{matched_key}={val}")
+        else:
+            new_lines.append(raw_line)
+    for k, v in remaining.items():
+        new_lines.append(f"{k}={v}")
+    env_path.write_text("\n".join(new_lines).rstrip() + "\n", encoding="utf-8")
+
+
+def _check_local_models_status() -> Dict[str, Dict[str, Any]]:
+    from download_vector_models import resolve_model_root
+    model_root = resolve_model_root()
+    env_map = _read_env_file_map(ENV_PATH)
+
+    def _resolve_dir(env_key: str, default_sub: str) -> Path:
+        raw = (env_map.get(env_key) or os.getenv(env_key) or "").strip()
+        if raw:
+            p = Path(raw)
+            return p if p.is_absolute() else (BASE_DIR / p).resolve()
+        return (model_root / default_sub).resolve()
+
+    emb_dir = _resolve_dir("PAPER_EMBEDDING_MODEL", "embedding")
+    rerank_dir = _resolve_dir("PAPER_RERANKER_MODEL", "reranker")
+    whisper_dir = _resolve_dir("WHISPER_MODEL_PATH", "whisper")
+
+    def _dir_has_weights(p: Path) -> bool:
+        if not p.exists():
+            return False
+        if p.is_file():
+            return p.stat().st_size > 10 * 1024 * 1024
+        for ext in ("*.safetensors", "*.bin", "*.pt", "config.json"):
+            if any(p.glob(ext)):
+                return True
+        return False
+
+    whisper_ready = _dir_has_weights(whisper_dir) or (model_root / "whisper" / "large-v3.pt").exists() or (BASE_DIR / "models" / "whisper-large-v3").exists()
+    return {
+        "embedding": {
+            "label": "BGE-M3 向量嵌入模型",
+            "repo": "BAAI/bge-m3",
+            "path": str(emb_dir),
+            "ready": _dir_has_weights(emb_dir),
+        },
+        "reranker": {
+            "label": "BGE-Reranker 神经重排模型",
+            "repo": "BAAI/bge-reranker-v2-m3",
+            "path": str(rerank_dir),
+            "ready": _dir_has_weights(rerank_dir),
+        },
+        "whisper": {
+            "label": "Whisper-large-v3 离线语音模型",
+            "repo": "openai/whisper-large-v3 (large-v3.pt)",
+            "path": str(whisper_dir),
+            "ready": whisper_ready,
+        },
+    }
+
+
+class UpdateEnvSettingsRequest(BaseModel):
+    values: Dict[str, str]
+
+
+class DownloadModelRequest(BaseModel):
+    target: str = "all"  # embedding | reranker | whisper | all
+    hf_endpoint: Optional[str] = None
+
+
+@app.get("/api/settings/env")
+async def get_env_settings(request: Request):
+    _require_localhost(request)
+    env_map = _read_env_file_map(ENV_PATH)
+    values: Dict[str, Any] = {}
+    secrets_configured: Dict[str, str] = {}
+    for key in sorted(_SETTINGS_ALLOWED_KEYS):
+        val = env_map.get(key)
+        if val is None:
+            val = os.getenv(key, "")
+        if key in _SETTINGS_SECRET_KEYS:
+            values[key] = ""
+            secrets_configured[key] = _mask_secret(val)
+        else:
+            values[key] = val
+    return {
+        "env_path": str(ENV_PATH),
+        "values": values,
+        "secrets_configured": secrets_configured,
+        "models_status": _check_local_models_status(),
+    }
+
+
+@app.post("/api/settings/env")
+async def update_env_settings(req: UpdateEnvSettingsRequest, request: Request):
+    _require_localhost(request)
+    current_map = _read_env_file_map(ENV_PATH)
+    to_write: Dict[str, str] = {}
+    restart_required = False
+
+    for k, raw_v in (req.values or {}).items():
+        if k not in _SETTINGS_ALLOWED_KEYS:
+            continue
+        v = str(raw_v or "").strip()
+        if k in _SETTINGS_SECRET_KEYS and not v:
+            # 留空表示保留原密钥，不覆盖清空
+            continue
+        old_val = current_map.get(k, os.getenv(k, ""))
+        to_write[k] = v
+        os.environ[k] = v
+        if k in _SETTINGS_RESTART_KEYS and v != old_val:
+            restart_required = True
+
+    if to_write:
+        _write_env_file_updates(ENV_PATH, to_write)
+
+    return {
+        "status": "saved",
+        "updated_keys": list(to_write.keys()),
+        "restart_required": restart_required,
+        "model_name": get_default_llm_model(),
+        "models_status": _check_local_models_status(),
+    }
+
+
+@app.post("/api/settings/models/download")
+async def start_model_download(req: DownloadModelRequest, request: Request):
+    _require_localhost(request)
+    target = (req.target or "all").strip().lower()
+    if target not in {"embedding", "reranker", "whisper", "all"}:
+        raise HTTPException(status_code=400, detail=f"不支持的模型目标: {target}")
+
+    with _MODEL_DOWNLOAD_LOCK:
+        if _MODEL_DOWNLOAD_STATE["running"]:
+            raise HTTPException(status_code=409, detail=f"已有下载任务正在运行 ({_MODEL_DOWNLOAD_STATE['target']})，请等待完成")
+        _MODEL_DOWNLOAD_STATE.update({
+            "running": True,
+            "target": target,
+            "status": "running",
+            "returncode": None,
+            "logs": [f"🚀 启动模型下载任务: {target}"],
+        })
+
+    hf_endpoint = (req.hf_endpoint or os.getenv("HF_ENDPOINT") or "").strip()
+
+    def _run_download():
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        if hf_endpoint:
+            env["HF_ENDPOINT"] = hf_endpoint
+        cmd = [sys.executable, str(BASE_DIR / "download_vector_models.py"), target]
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                cwd=str(BASE_DIR),
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+            )
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                clean = line.rstrip()
+                if not clean:
+                    continue
+                with _MODEL_DOWNLOAD_LOCK:
+                    _MODEL_DOWNLOAD_STATE["logs"].append(clean)
+                    if len(_MODEL_DOWNLOAD_STATE["logs"]) > 200:
+                        _MODEL_DOWNLOAD_STATE["logs"] = _MODEL_DOWNLOAD_STATE["logs"][-200:]
+            rc = proc.wait()
+            with _MODEL_DOWNLOAD_LOCK:
+                _MODEL_DOWNLOAD_STATE["running"] = False
+                _MODEL_DOWNLOAD_STATE["returncode"] = rc
+                _MODEL_DOWNLOAD_STATE["status"] = "completed" if rc == 0 else "failed"
+                _MODEL_DOWNLOAD_STATE["logs"].append(
+                    "✅ 模型下载完成！（若为首次下载，建议重启后端服务加载新权重）" if rc == 0 else f"❌ 模型下载退出码: {rc}"
+                )
+        except Exception as exc:
+            with _MODEL_DOWNLOAD_LOCK:
+                _MODEL_DOWNLOAD_STATE["running"] = False
+                _MODEL_DOWNLOAD_STATE["returncode"] = -1
+                _MODEL_DOWNLOAD_STATE["status"] = "failed"
+                _MODEL_DOWNLOAD_STATE["logs"].append(f"❌ 下载异常: {exc}")
+
+    threading.Thread(target=_run_download, daemon=True).start()
+    return {"status": "started", "target": target}
+
+
+@app.get("/api/settings/models/download/status")
+async def get_model_download_status(request: Request):
+    _require_localhost(request)
+    with _MODEL_DOWNLOAD_LOCK:
+        snapshot = {
+            "running": _MODEL_DOWNLOAD_STATE["running"],
+            "target": _MODEL_DOWNLOAD_STATE["target"],
+            "status": _MODEL_DOWNLOAD_STATE["status"],
+            "returncode": _MODEL_DOWNLOAD_STATE["returncode"],
+            "logs": list(_MODEL_DOWNLOAD_STATE["logs"][-80:]),
+        }
+    snapshot["models_status"] = _check_local_models_status()
+    return snapshot
 
 
 @app.get("/api/sessions")
