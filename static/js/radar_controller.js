@@ -22,7 +22,7 @@ const RADAR_DISCIPLINES = [
 class TianGongRadarController {
   constructor() {
     this.taxonomy = null;
-    this.currentMajor = "CS";
+    this.currentMajor = "ALL";
     this.selectedSubCategories = [];
     this.currentPage = 1;
     this.pageSize = 25;
