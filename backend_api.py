@@ -912,6 +912,222 @@ async def list_synced_documents():
     return {"synced_papers": papers, "count": len(papers)}
 
 
+# ==========================================
+# 2.1 经卷精读：多模态原文阅读与划词/框选伴读接口
+# ==========================================
+def _resolve_upload_doc(filename: str) -> Path:
+    safe_name = Path(filename or "").name
+    if not safe_name:
+        raise HTTPException(status_code=400, detail="缺少文件名")
+    doc_path = (UPLOAD_DIR / safe_name).resolve()
+    if not str(doc_path).startswith(str(UPLOAD_DIR.resolve())) or not doc_path.exists() or not doc_path.is_file():
+        raise HTTPException(status_code=404, detail=f"未找到文档: {safe_name}")
+    return doc_path
+
+
+@app.get("/api/reader/meta")
+async def reader_doc_meta(filename: str):
+    """获取文档阅读元数据：PDF 返回页数与目录大纲，Word/PPT/EPUB/MD 返回章节结构"""
+    doc_path = _resolve_upload_doc(filename)
+    ext = doc_path.suffix.lower()
+    if ext == ".pdf":
+        import fitz
+        with fitz.open(str(doc_path)) as doc:
+            toc = [
+                {"level": int(item[0]), "title": str(item[1]).strip(), "page": int(item[2])}
+                for item in (doc.get_toc(simple=True) or [])
+                if len(item) >= 3 and str(item[1]).strip()
+            ][:120]
+            return {
+                "filename": doc_path.name,
+                "mode": "pdf",
+                "page_count": len(doc),
+                "toc": toc,
+                "size_bytes": doc_path.stat().st_size,
+            }
+    from document_rag_engine import UniversalDocumentParser
+    chunks = UniversalDocumentParser.parse_file(doc_path)
+    sections = [
+        {
+            "index": i + 1,
+            "location_label": f"{c.page_or_slide} · {c.section}".strip(" ·") or f"第 {i + 1} 节",
+            "text": (c.text or "").strip(),
+        }
+        for i, c in enumerate(chunks)
+        if (c.text or "").strip()
+    ]
+    return {
+        "filename": doc_path.name,
+        "mode": "sections",
+        "section_count": len(sections),
+        "sections": sections,
+        "size_bytes": doc_path.stat().st_size,
+    }
+
+
+@app.get("/api/reader/pdf_page")
+async def reader_pdf_page(filename: str, page: int = 1, scale: float = 2.2):
+    """按高 DPI 原貌渲染 PDF 单页为 PNG，完整保留扫描件、图表与复杂公式"""
+    doc_path = _resolve_upload_doc(filename)
+    if doc_path.suffix.lower() != ".pdf":
+        raise HTTPException(status_code=400, detail="仅 PDF 支持逐页图像渲染")
+    import fitz
+    clamped_scale = max(1.0, min(float(scale or 2.2), 3.5))
+    with fitz.open(str(doc_path)) as doc:
+        if page < 1 or page > len(doc):
+            raise HTTPException(status_code=400, detail=f"页码越界 (1~{len(doc)})")
+        pix = doc[page - 1].get_pixmap(matrix=fitz.Matrix(clamped_scale, clamped_scale), alpha=False)
+        img_bytes = pix.tobytes("png")
+    return Response(
+        content=img_bytes,
+        media_type="image/png",
+        headers={"Cache-Control": "private, max-age=3600"},
+    )
+
+
+@app.get("/api/reader/pdf_page_text")
+async def reader_pdf_page_text(filename: str, page: int = 1):
+    """提取 PDF 指定页的文本层（纯扫描件可能为空字符串）"""
+    doc_path = _resolve_upload_doc(filename)
+    if doc_path.suffix.lower() != ".pdf":
+        return {"page": page, "text": ""}
+    import fitz
+    with fitz.open(str(doc_path)) as doc:
+        if page < 1 or page > len(doc):
+            raise HTTPException(status_code=400, detail=f"页码越界 (1~{len(doc)})")
+        txt = (doc[page - 1].get_text("text") or "").strip()
+    return {"page": page, "text": txt}
+
+
+class ReaderAskRequest(BaseModel):
+    filename: str
+    page: Optional[int] = None
+    selected_text: Optional[str] = None
+    crop_image_data: Optional[str] = None
+    question: str = ""
+    model_mode: str = "fast"  # fast | primary
+    history: List[Dict[str, str]] = []
+
+
+def _run_reader_multimodal_ask(req: ReaderAskRequest) -> Dict[str, Any]:
+    from openai import OpenAI
+    from config_utils import (
+        get_default_llm_model,
+        get_llm_timeout,
+        get_translation_llm_client_kwargs,
+        get_translation_llm_model,
+    )
+
+    doc_path = _resolve_upload_doc(req.filename)
+    page_text = ""
+    if doc_path.suffix.lower() == ".pdf" and req.page:
+        try:
+            import fitz
+            with fitz.open(str(doc_path)) as doc:
+                if 1 <= req.page <= len(doc):
+                    page_text = (doc[req.page - 1].get_text("text") or "").strip()[:3500]
+        except Exception:
+            page_text = ""
+
+    # 局部同书检索：补充上下文符号/定义（毫秒级，不触发外网检索）
+    local_snippets: List[str] = []
+    search_seed = (req.question or req.selected_text or "").strip()
+    if search_seed:
+        try:
+            hits = rag_engine.search(query=search_seed[:400], top_k=3, candidate_k=10, doc_filter=doc_path.name)
+            for h in hits or []:
+                t = (h.get("text") or "").strip()
+                if t:
+                    loc = h.get("location_label") or ""
+                    local_snippets.append(f"[{loc}] {t[:600]}")
+        except Exception:
+            pass
+
+    use_fast = (req.model_mode or "fast").lower() == "fast" and bool(os.getenv("TRANSLATION_LLM_MODEL", "").strip())
+    if use_fast:
+        client_kwargs = get_translation_llm_client_kwargs()
+        model_name = get_translation_llm_model()
+    else:
+        api_key = os.getenv("OPENAI_API_KEY", "").strip()
+        base_url = os.getenv("OPENAI_BASE_URL", "").strip()
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        model_name = get_default_llm_model()
+
+    if not client_kwargs.get("api_key"):
+        raise ValueError("未配置 OPENAI_API_KEY，请在右上角 ⚙️ 系统设置中填写")
+
+    client = OpenAI(**client_kwargs)
+    system_prompt = (
+        "你是严谨、直觉敏锐的学术原文伴读助手。用户正在精读一篇论文或专著，可能会划选段落，或直接框选扫描件/模糊公式/图表截图提问。\n"
+        "要求：\n"
+        "1. 若附带了局部截图（含扫描件、模糊文字、数学公式或图表），请优先仔细辨识图片中的真实符号、坐标轴、数值与公式细节，绝不凭空臆造；若图片局部确实过于模糊无法确认某个符号，请如实指出。\n"
+        "2. 讲解兼顾直觉机制与严谨推导：先用清晰中文讲清核心物理/逻辑含义，再用标准 LaTeX（行内 $...$，独立公式 $$...$$）展开必要推导或解释变量。\n"
+        "3. 回答紧扣当前选中内容与同书上下文，精炼清晰、不堆砌空话。"
+    )
+
+    context_parts = [f"当前精读文档：《{doc_path.name}》" + (f"（第 {req.page} 页）" if req.page else "")]
+    if req.selected_text:
+        context_parts.append(f"【用户选中原文】：\n{req.selected_text.strip()[:4000]}")
+    if page_text:
+        context_parts.append(f"【本页文本层参考】：\n{page_text}")
+    if local_snippets:
+        context_parts.append("【同文档相关背景切片】：\n" + "\n\n".join(local_snippets))
+    user_q = (req.question or "").strip() or (
+        "请仔细识别图中内容（若是扫描件/公式/图表，请先还原关键文字与公式），并清晰解释其含义、推导逻辑与核心结论。"
+        if req.crop_image_data
+        else "请清晰解读这段原文的核心含义、关键术语/公式及其在上下文中的作用。"
+    )
+    context_parts.append(f"【用户提问】：{user_q}")
+    full_user_text = "\n\n".join(context_parts)
+
+    messages: List[Dict[str, Any]] = [{"role": "system", "content": system_prompt}]
+    for h in (req.history or [])[-6:]:
+        role = h.get("role")
+        content = (h.get("content") or "").strip()
+        if role in {"user", "assistant"} and content:
+            messages.append({"role": role, "content": content[:2500]})
+
+    if req.crop_image_data and str(req.crop_image_data).startswith("data:image/"):
+        messages.append({
+            "role": "user",
+            "content": [
+                {"type": "text", "text": full_user_text},
+                {"type": "image_url", "image_url": {"url": req.crop_image_data}},
+            ],
+        })
+    else:
+        messages.append({"role": "user", "content": full_user_text})
+
+    resp = client.chat.completions.create(
+        model=model_name,
+        messages=messages,
+        temperature=0.25,
+        timeout=get_llm_timeout(120.0),
+    )
+    answer = (resp.choices[0].message.content or "").strip()
+    return {
+        "answer": answer,
+        "model": model_name,
+        "page": req.page,
+        "has_image": bool(req.crop_image_data),
+    }
+
+
+@app.post("/api/reader/ask")
+async def reader_multimodal_ask(req: ReaderAskRequest):
+    """经卷精读多模态伴读问答（默认轻快单次多模态调用，不打断阅读心流）"""
+    try:
+        loop = asyncio.get_running_loop()
+        data = await loop.run_in_executor(None, _run_reader_multimodal_ask, req)
+        return {"status": "success", "data": data}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"伴读解答失败: {exc}")
+
+
 @app.delete("/api/documents/synced")
 async def clear_synced_documents(doc_name: Optional[str] = None):
     """删除单篇或一键清空所有自动沉淀的在线论文记忆（不影响用户上传的物理文档）"""

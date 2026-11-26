@@ -6,6 +6,7 @@
   <title>云山问学 · 多智能体科研研讨空间</title>
   <link rel="stylesheet" href="css/style.css?v=20261106_v1">
   <link rel="stylesheet" href="css/radar_yunshan.css?v=20261106_v1">
+  <link rel="stylesheet" href="css/reader.css?v=20261126_v1">
   <!-- KaTeX for Beautiful LaTeX Math Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -52,6 +53,9 @@
           <button class="nav-tab-btn" id="tab-nav-radar" title="多学科前沿速递、子学科水墨分布与高级检索">
             <span class="tab-icon">🔭</span> 云海星津 · 天工雷达
             <span class="radar-live-badge">SOTA 万象</span>
+          </button>
+          <button class="nav-tab-btn" id="tab-nav-reader" title="PDF/书籍高清原貌阅读、扫描件框选与多模态伴读">
+            <span class="tab-icon">📖</span> 经卷精读
           </button>
         </div>
       </nav>
@@ -516,6 +520,90 @@
       </section>
     </main>
 
+    <!-- 经卷精读：独立多模态原文阅读工作区 -->
+    <main class="reader-layout" id="reader-layout" style="display: none;">
+      <!-- 左侧：文档列表与目录大纲 -->
+      <aside class="reader-sidebar">
+        <div class="reader-panel-header">
+          <span class="reader-panel-title">📚 经卷书目</span>
+          <button type="button" class="action-btn-mini" id="btn-reader-upload" title="上传 PDF / Word / PPT / EPUB / MD">📤 上传</button>
+          <input type="file" id="reader-upload-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.markdown,.epub,.tex,.csv" style="display:none;" />
+        </div>
+        <div class="reader-doc-list" id="reader-doc-list"></div>
+        <div class="reader-toc-wrap">
+          <div class="reader-panel-header">
+            <span class="reader-panel-title">📑 目录与章节</span>
+          </div>
+          <div class="reader-toc-list" id="reader-toc-list"></div>
+        </div>
+      </aside>
+
+      <!-- 中间：高清原貌阅读画布（支持扫描件/图表/公式拉框截图） -->
+      <section class="reader-stage-panel">
+        <div class="reader-toolbar">
+          <div class="reader-toolbar-group" style="min-width:0;max-width:34%;">
+            <span id="reader-active-doc-title" style="font-size:0.78rem;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">未选择文档</span>
+          </div>
+          <div class="reader-toolbar-group">
+            <button type="button" class="action-btn-mini" id="btn-reader-prev">◀ 上一页</button>
+            <input type="number" id="reader-page-input" class="reader-page-input" value="1" min="1" />
+            <span id="reader-page-total" style="font-size:0.76rem;color:#64748b;">/ 1 页</span>
+            <button type="button" class="action-btn-mini" id="btn-reader-next">下一页 ▶</button>
+          </div>
+          <div class="reader-toolbar-group">
+            <button type="button" class="action-btn-mini" id="btn-reader-zoom-out" title="缩小">➖</button>
+            <span id="reader-zoom-label" style="font-size:0.76rem;font-weight:700;color:#334155;min-width:40px;text-align:center;">100%</span>
+            <button type="button" class="action-btn-mini" id="btn-reader-zoom-in" title="放大">➕</button>
+            <button type="button" class="action-btn-mini reader-crop-btn" id="btn-reader-crop-toggle" title="开启后在 PDF 页面拖动画框，截取扫描件/公式/图表直接问多模态 AI">✂️ 框选区域问 AI</button>
+          </div>
+        </div>
+        <div class="reader-viewport" id="reader-viewport">
+          <div class="reader-empty-hint">📖 请在左侧选择或上传一篇论文/书籍。<br/>PDF 支持高 DPI 原貌展示与「✂️ 框选区域问 AI」（专治扫描件、复杂公式与图表）。</div>
+        </div>
+      </section>
+
+      <!-- 右侧：多模态伴读 AI 助手 -->
+      <aside class="reader-ai-panel">
+        <div class="reader-panel-header">
+          <span class="reader-panel-title">✨ 多模态伴读助手</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <select id="reader-model-mode" style="font-size:0.72rem;border:1px solid #cbd5e1;border-radius:6px;padding:2px 6px;background:#fff;">
+              <option value="fast">⚡ 快速伴读</option>
+              <option value="primary">🧠 主模型深解</option>
+            </select>
+            <button type="button" class="action-btn-mini" id="btn-reader-ai-clear" title="清空当前伴读记录">清空</button>
+          </div>
+        </div>
+        <div class="reader-ai-context" id="reader-ai-context">
+          <div class="reader-ai-context-head">
+            <span id="reader-ai-context-label">已选中内容</span>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="reader-chip-btn" id="btn-reader-send-main" title="带入主研讨画卷触发完整多智能体深度考据">🚀 转入主研讨</button>
+              <button type="button" class="reader-chip-btn" id="btn-reader-clear-ctx">✕</button>
+            </div>
+          </div>
+          <img id="reader-crop-preview-img" class="reader-crop-preview-img" style="display:none;" alt="框选区域预览" />
+          <div id="reader-quote-preview" class="reader-quote-preview" style="display:none;"></div>
+        </div>
+        <div class="reader-ai-feed" id="reader-ai-feed">
+          <div class="reader-empty-hint">📖 在左侧选中段落，或点击「✂️ 框选区域问 AI」拉框截取模糊扫描件、公式或图表，即可直接提问。</div>
+        </div>
+        <div class="reader-quick-chips">
+          <button type="button" class="reader-chip-btn reader-quick-prompt" data-prompt="请仔细识别这段扫描/图片中的全部文字与符号（模糊处如实说明），并用清晰中文解释含义。">🔍 识别模糊内容</button>
+          <button type="button" class="reader-chip-btn reader-quick-prompt" data-prompt="请逐步推导这里的数学公式，解释每个变量的物理/数学含义及推导前提。">📐 推导公式</button>
+          <button type="button" class="reader-chip-btn reader-quick-prompt" data-prompt="请详细解读这张图表：坐标轴、曲线/对比基线、关键定量结论与局限性。">📊 解读图表</button>
+          <button type="button" class="reader-chip-btn reader-quick-prompt" data-prompt="请将选中内容精准翻译为流畅的中文学术表达，保留专业术语与公式。">🌐 精译</button>
+        </div>
+        <div class="reader-ai-input-area">
+          <textarea id="reader-ai-input" class="reader-ai-textarea" placeholder="针对选中段落或框选的公式/图表提问... (Enter 发送，Shift+Enter 换行)"></textarea>
+          <div class="reader-ai-actions">
+            <span style="font-size:0.7rem;color:#64748b;">支持多模态视觉识别 · 局部同书上下文增强</span>
+            <button type="button" class="action-btn-mini" id="btn-reader-ai-send" style="background:#184c43;color:#fff;border-color:#184c43;padding:5px 14px;">发送提问 ▶</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
     <!-- 隐藏的全局音频播放器 -->
     <audio id="global-tts-audio" style="display:none;"></audio>
   </div>
@@ -786,5 +874,6 @@
   <script src="js/app.js?v=20261106_v1"></script>
   <script src="js/radar_controller.js?v=20261106_v1"></script>
   <script src="js/settings_controller.js?v=20261126_v1"></script>
+  <script src="js/reader_controller.js?v=20261126_v1"></script>
 </body>
 </html>
