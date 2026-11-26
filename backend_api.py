@@ -938,10 +938,16 @@ async def reader_doc_meta(filename: str):
                 for item in (doc.get_toc(simple=True) or [])
                 if len(item) >= 3 and str(item[1]).strip()
             ][:120]
+            page_aspect = 1.414
+            if len(doc) > 0:
+                r0 = doc[0].rect
+                if r0.width > 0 and r0.height > 0:
+                    page_aspect = round(float(r0.height / r0.width), 4)
             return {
                 "filename": doc_path.name,
                 "mode": "pdf",
                 "page_count": len(doc),
+                "page_aspect": page_aspect,
                 "toc": toc,
                 "size_bytes": doc_path.stat().st_size,
             }
@@ -987,16 +993,50 @@ async def reader_pdf_page(filename: str, page: int = 1, scale: float = 2.2):
 
 @app.get("/api/reader/pdf_page_text")
 async def reader_pdf_page_text(filename: str, page: int = 1):
-    """提取 PDF 指定页的文本层（纯扫描件可能为空字符串）"""
+    """提取 PDF 指定页的文本层与逐行归一化坐标（供前端透明文本层直接划选复制）"""
     doc_path = _resolve_upload_doc(filename)
     if doc_path.suffix.lower() != ".pdf":
-        return {"page": page, "text": ""}
+        return {"page": page, "text": "", "lines": []}
     import fitz
+    lines_out = []
     with fitz.open(str(doc_path)) as doc:
         if page < 1 or page > len(doc):
             raise HTTPException(status_code=400, detail=f"页码越界 (1~{len(doc)})")
-        txt = (doc[page - 1].get_text("text") or "").strip()
-    return {"page": page, "text": txt}
+        page_obj = doc[page - 1]
+        txt = (page_obj.get_text("text") or "").strip()
+        pw = float(page_obj.rect.width or 1.0)
+        ph = float(page_obj.rect.height or 1.0)
+        text_dict = page_obj.get_text("dict") or {}
+        for blk in text_dict.get("blocks", []):
+            if blk.get("type") != 0:
+                continue
+            for ln in blk.get("lines", []):
+                # 过滤竖排/旋转边栏水印（如 arXiv 左侧 90° 竖排编号），避免超高包围盒遮挡正文划选
+                ldir = ln.get("dir")
+                if ldir and len(ldir) == 2:
+                    dx, dy = abs(float(ldir[0])), abs(float(ldir[1]))
+                    if dx < 0.7 or dy > 0.5:
+                        continue
+                spans = ln.get("spans", [])
+                line_text = "".join(str(sp.get("text", "")) for sp in spans)
+                if not line_text.strip():
+                    continue
+                bbox = ln.get("bbox")
+                if not bbox or len(bbox) != 4:
+                    continue
+                x0, y0, x1, y1 = [float(v) for v in bbox]
+                w = max(0.1, (x1 - x0) / pw * 100.0)
+                h = max(0.1, (y1 - y0) / ph * 100.0)
+                if h > 12.0:
+                    continue
+                lines_out.append({
+                    "t": line_text,
+                    "x": round(max(0.0, x0 / pw * 100.0), 4),
+                    "y": round(max(0.0, y0 / ph * 100.0), 4),
+                    "w": round(w, 4),
+                    "h": round(h, 4),
+                })
+    return {"page": page, "text": txt, "lines": lines_out}
 
 
 class ReaderAskRequest(BaseModel):

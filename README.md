@@ -37,6 +37,7 @@ Click the preview below to view or download the full 2m31s walkthrough (`1280×6
 - 🌐 **Multi-Source Heterogeneous Discovery & Citation Snowballing**: Concurrently probes **arXiv + OpenAlex + CrossRef + Semantic Scholar + DBLP + GitHub + Web** under a unified time budget, with per-source cooldown circuit breakers, **Citation Snowballing** along seed citation graphs, non-peer-reviewed repository downweighting (Zenodo / Figshare / OSF), and **BGE-M3 + BGE-Reranker + MMR** two-stage ranking.
 - 🛡️ **Deterministic Guardrails & Zero-Cost Citation Consistency**: Post-processing automatically repairs drifted `[n]` framework citations, expands multi-citation brackets, renumbers citations to contiguous `1..K` order, and syncs right-panel evidence cards—plus safe fenced-JSON / LaTeX backslash parsing, Mermaid 600% pan-zoom, Markmap multi-scope mindmaps, and Obsidian Vault/Canvas export.
 - 📄 **Full-Format Direct Upload & Resumable Paper Translation**: Upload PDF / Word / PPT / EPUB / LaTeX / Markdown / TXT directly in the chat bar (full-document context routing up to 120k chars, semantic RAG fallback for book-length files), auto-sync high-relevance online papers into local ChromaDB with TTL/cap pruning, and translate full papers chunk-by-chunk with persistent resumable caching (`chunks_zh`) on a dedicated fast model (`TRANSLATION_LLM_MODEL`).
+- 📖 **Multimodal Document Reader (`经卷精读`) & Visual Settings (`系统设置`)**: Dedicated three-pane reading workspace featuring continuous vertical PDF scrolling with `IntersectionObserver` lazy loading, high-DPI rendering + transparent selectable/copyable text layer (auto-filtering rotated arXiv margin watermarks), crosshair box-crop for blurry scans/equations/charts, `Ctrl+V` screenshot paste + image upload + local Whisper voice input, fast/primary companion model toggle, and a localhost-only visual `.env` settings modal with hot-reload and one-click local neural model download.
 
 ---
 
@@ -141,6 +142,11 @@ Open your browser and visit **`http://127.0.0.1:8888`** (or **`http://localhost:
 ### 4. 确定性工程兜底与学术工作台体验 (`retrieval_planner.py`, `static/js/app.js`)
 - **零成本引用漂移纠偏与连续重排**：后处理自动隔离数学公式（防止 `$[0, 1]$` 误伤），依据唯一框架/论文锚点纠正长文漂移编号、展开 `[7, 9]` 合并括号并按首次出现顺序重排为连续 `1..K`，同步联动正文 `[n]` 点击跳转至右侧证据原图快照；
 - **排版与可视化增强**：内置 KaTeX 数学渲染、arXiv 裸排版宏清洗（`\texttt` / `\emph` / `<tt>`）、Mermaid 矢量架构图 **600% 拖拽缩放与 SVG 导出**、Markmap 多视角知识导图（本轮/全书/全景）、以及 Obsidian 双链与 Canvas 导出。
+
+### 5. 经卷精读多模态阅读页与可视化系统设置 (`static/js/reader_controller.js`, `static/js/settings_controller.js`)
+- **连续滚动 + 透明可选文本层**：PDF 原文支持多页连续纵向滚动与 `IntersectionObserver` 懒加载（数百页专著亦可流畅翻阅），高清画布上方叠加逐行对齐的透明文本层（自动过滤 arXiv 左侧 90° 竖排边栏水印），支持直接划选复制与自动同步伴读上下文；
+- **多模态伴读助手**：支持鼠标拉框高清截取模糊扫描件/复杂公式/图表、`Ctrl+V` 剪贴板贴图、本地图片上传及离线 Whisper 语音提问；内置「快速伴读（`TRANSLATION_LLM_MODEL`）/ 深度主模型」一键切换、同书局部向量背景补全，以及一键转入主画卷深研；
+- **可视化系统设置（仅限本机访问）**：右上角 `⚙️ 系统设置` 支持浏览器内直接修改 API Key / Base URL / 模型与本地权重路径并实时热重载，支持一键触发 `BGE-M3` 与 `BGE-Reranker` 本地模型下载。
 
 ---
 

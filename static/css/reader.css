@@ -170,26 +170,86 @@
   align-items: flex-start;
 }
 
-.reader-pdf-stage {
-  position: relative;
-  display: inline-block;
-  background: #ffffff;
-  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.14);
-  border-radius: 6px;
-  line-height: 0;
-  user-select: none;
+.reader-pdf-scroll-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 36px;
+  width: 100%;
 }
 
+.reader-pdf-stage {
+  position: relative;
+  display: block;
+  background: #ffffff;
+  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.12);
+  border-radius: 6px;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.reader-pdf-page-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 6;
+  background: rgba(15, 23, 42, 0.52);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.72;
+}
+
+.reader-pdf-scroll-container.crop-mode .reader-pdf-stage,
 .reader-pdf-stage.crop-mode {
   cursor: crosshair;
+  user-select: none;
 }
 
 .reader-pdf-img {
   display: block;
+  width: 100%;
   height: auto;
   max-width: none;
   border-radius: 6px;
   pointer-events: none;
+  user-select: none;
+}
+
+.reader-pdf-text-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 4;
+  user-select: text;
+  cursor: text;
+}
+
+.reader-pdf-scroll-container.crop-mode .reader-pdf-text-layer,
+.reader-pdf-stage.crop-mode .reader-pdf-text-layer {
+  pointer-events: none;
+  user-select: none;
+}
+
+.reader-pdf-text-line {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  transform-origin: 0 0;
+  line-height: 1;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  user-select: text;
+}
+
+.reader-pdf-text-line::selection {
+  background: rgba(24, 76, 67, 0.28);
+  color: transparent;
 }
 
 .reader-crop-rect {
