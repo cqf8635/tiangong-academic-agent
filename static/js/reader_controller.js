@@ -25,6 +25,15 @@
   const btnZoomIn = document.getElementById('btn-reader-zoom-in');
   const zoomLabelEl = document.getElementById('reader-zoom-label');
   const btnCropToggle = document.getElementById('btn-reader-crop-toggle');
+  const btnToggleLeft = document.getElementById('btn-reader-toggle-left');
+  const btnToggleRight = document.getElementById('btn-reader-toggle-right');
+  const btnSearchToggle = document.getElementById('btn-reader-search-toggle');
+  const searchBarEl = document.getElementById('reader-search-bar');
+  const searchInputEl = document.getElementById('reader-search-input');
+  const btnSearchRun = document.getElementById('btn-reader-search-run');
+  const searchStatusEl = document.getElementById('reader-search-status');
+  const btnSearchClose = document.getElementById('btn-reader-search-close');
+  const searchResultsEl = document.getElementById('reader-search-results');
   const btnTextToggle = document.getElementById('btn-reader-text-toggle');
   const textDrawerEl = document.getElementById('reader-text-drawer');
   const textDrawerTitleEl = document.getElementById('reader-text-drawer-title');
@@ -42,6 +51,11 @@
   const btnSendToMain = document.getElementById('btn-reader-send-main');
 
   const aiFeedEl = document.getElementById('reader-ai-feed');
+  const stateChapterEl = document.getElementById('reader-state-chapter');
+  const btnStateDrawer = document.getElementById('btn-reader-state-drawer');
+  const stateDrawerEl = document.getElementById('reader-state-drawer');
+  const btnStateClose = document.getElementById('btn-reader-state-close');
+  const stateDrawerListEl = document.getElementById('reader-state-drawer-list');
   const aiInputEl = document.getElementById('reader-ai-input');
   const btnAiSend = document.getElementById('btn-reader-ai-send');
   const btnAiClear = document.getElementById('btn-reader-ai-clear');
@@ -62,6 +76,7 @@
     selectedText: '',
     cropImageData: '',
     history: [],
+    toc: [],
     loadedOnce: false,
     pageLinesMap: new Map(),
     pdfObserver: null,
@@ -77,36 +92,155 @@
   }
 
   function renderBasicMarkdown(md) {
-    let html = escapeHtml(md || '');
-    // Preserve display/inline math via KaTeX if available
-    const mathTokens = [];
+    let src = String(md || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const tokens = [];
+    const putToken = (html) => {
+      const id = `@@RTOK_${tokens.length}@@`;
+      tokens.push(html);
+      return id;
+    };
+
+    // 1. 先提取代码块与数学公式（在 escapeHtml 之前，避免 < > & 破坏 LaTeX）
+    src = src.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) =>
+      putToken(`<pre class="reader-code-block"><code>${escapeHtml(code.replace(/\n$/, ''))}</code></pre>`)
+    );
+
     if (window.katex) {
-      html = html.replace(/\$\$([\s\S]*?)\$\$/g, (m, f) => {
-        const id = `@@RMATH_${mathTokens.length}@@`;
+      src = src.replace(/\$\$([\s\S]*?)\$\$/g, (m, f) => {
         try {
-          mathTokens.push(`<div class="math-display-wrap">${window.katex.renderToString(f.trim(), { displayMode: true, throwOnError: false, output: 'html' })}</div>`);
+          return `\n${putToken(`<div class="reader-math-display">${window.katex.renderToString(f.trim(), { displayMode: true, throwOnError: false, output: 'html' })}</div>`)}\n`;
         } catch (_) {
-          mathTokens.push(m);
+          return putToken(`<pre class="reader-code-block">${escapeHtml(m)}</pre>`);
         }
-        return id;
       });
-      html = html.replace(/(?<!\\)\$([^\$\n]+?)(?<!\\)\$/g, (m, f) => {
-        const id = `@@RMATH_${mathTokens.length}@@`;
+      src = src.replace(/\\\[([\s\S]*?)\\\]/g, (m, f) => {
         try {
-          mathTokens.push(window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false, output: 'html' }));
+          return `\n${putToken(`<div class="reader-math-display">${window.katex.renderToString(f.trim(), { displayMode: true, throwOnError: false, output: 'html' })}</div>`)}\n`;
         } catch (_) {
-          mathTokens.push(m);
+          return putToken(`<pre class="reader-code-block">${escapeHtml(m)}</pre>`);
         }
-        return id;
+      });
+      src = src.replace(/(?<!\\)\$([^\$\n]+?)(?<!\\)\$/g, (m, f) => {
+        try {
+          return putToken(window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false, output: 'html' }));
+        } catch (_) {
+          return escapeHtml(m);
+        }
+      });
+      src = src.replace(/\\\((.+?)\\\)/g, (m, f) => {
+        try {
+          return putToken(window.katex.renderToString(f.trim(), { displayMode: false, throwOnError: false, output: 'html' }));
+        } catch (_) {
+          return escapeHtml(m);
+        }
       });
     }
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/`([^`\n]+)`/g, '<code class="inline-code">$1</code>');
-    html = html.replace(/^###\s+(.+)$/gm, '<div style="font-weight:800;color:#184c43;margin:8px 0 4px;">$1</div>');
-    html = html.replace(/^##\s+(.+)$/gm, '<div style="font-weight:900;color:#0f172a;margin:10px 0 4px;">$1</div>');
-    html = html.replace(/\n/g, '<br/>');
-    mathTokens.forEach((tok, i) => {
-      html = html.replace(`@@RMATH_${i}@@`, tok);
+
+    const formatInline = (text) => {
+      let s = escapeHtml(text);
+      s = s.replace(/`([^`\n]+)`/g, '<code class="inline-code">$1</code>');
+      s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+      s = s.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
+      return s;
+    };
+
+    const lines = src.split('\n');
+    const out = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const raw = lines[i];
+      const trimmed = raw.trim();
+
+      if (!trimmed) {
+        i += 1;
+        continue;
+      }
+      if (/^@@RTOK_\d+@@$/.test(trimmed)) {
+        out.push(trimmed);
+        i += 1;
+        continue;
+      }
+      if (/^[-*_]{3,}$/.test(trimmed)) {
+        out.push('<hr/>');
+        i += 1;
+        continue;
+      }
+      const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+      if (hMatch) {
+        const lvl = hMatch[1].length;
+        out.push(`<h${lvl}>${formatInline(hMatch[2])}</h${lvl}>`);
+        i += 1;
+        continue;
+      }
+      if (trimmed.startsWith('>')) {
+        const bqLines = [];
+        while (i < lines.length && lines[i].trim().startsWith('>')) {
+          bqLines.push(formatInline(lines[i].trim().replace(/^>\s?/, '')));
+          i += 1;
+        }
+        out.push(`<blockquote>${bqLines.join('<br/>')}</blockquote>`);
+        continue;
+      }
+      // Markdown 表格
+      if (trimmed.includes('|') && i + 1 < lines.length && /^\s*\|?[\s:-]+\|[\s|:-]*$/.test(lines[i + 1].trim())) {
+        const parseRow = (r) => r.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+        const headers = parseRow(trimmed);
+        i += 2;
+        const rows = [];
+        while (i < lines.length && lines[i].trim().includes('|')) {
+          rows.push(parseRow(lines[i]));
+          i += 1;
+        }
+        const thead = `<thead><tr>${headers.map((h) => `<th>${formatInline(h)}</th>`).join('')}</tr></thead>`;
+        const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${formatInline(c)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+        out.push(`<div class="reader-table-wrap"><table>${thead}${tbody}</table></div>`);
+        continue;
+      }
+      // 无序列表 (- / * / •)
+      if (/^\s*[-*•]\s+/.test(raw)) {
+        const items = [];
+        while (i < lines.length && /^\s*[-*•]\s+/.test(lines[i])) {
+          items.push(`<li>${formatInline(lines[i].replace(/^\s*[-*•]\s+/, ''))}</li>`);
+          i += 1;
+        }
+        out.push(`<ul>${items.join('')}</ul>`);
+        continue;
+      }
+      // 有序列表 (1. / 2.)
+      if (/^\s*\d+\.\s+/.test(raw)) {
+        const items = [];
+        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+          items.push(`<li>${formatInline(lines[i].replace(/^\s*\d+\.\s+/, ''))}</li>`);
+          i += 1;
+        }
+        out.push(`<ol>${items.join('')}</ol>`);
+        continue;
+      }
+
+      // 普通段落（合并连续非特殊行）
+      const paraLines = [];
+      while (
+        i < lines.length &&
+        lines[i].trim() &&
+        !/^@@RTOK_\d+@@$/.test(lines[i].trim()) &&
+        !/^[-*_]{3,}$/.test(lines[i].trim()) &&
+        !/^#{1,4}\s+/.test(lines[i].trim()) &&
+        !lines[i].trim().startsWith('>') &&
+        !/^\s*[-*•]\s+/.test(lines[i]) &&
+        !/^\s*\d+\.\s+/.test(lines[i])
+      ) {
+        paraLines.push(formatInline(lines[i].trim()));
+        i += 1;
+      }
+      if (paraLines.length) {
+        out.push(`<p>${paraLines.join('<br/>')}</p>`);
+      }
+    }
+
+    let html = `<div class="reader-md">${out.join('')}</div>`;
+    tokens.forEach((tok, idx) => {
+      html = html.replace(`@@RTOK_${idx}@@`, tok);
     });
     return html;
   }
@@ -329,6 +463,122 @@
     updateContextPreview();
   }
 
+  const READER_PREFS_KEY = 'tiangong_reader_progress_v1';
+
+  function loadReaderPrefs() {
+    try {
+      const raw = localStorage.getItem(READER_PREFS_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return {
+        lastDoc: parsed.lastDoc || null,
+        docs: parsed.docs && typeof parsed.docs === 'object' ? parsed.docs : {},
+      };
+    } catch (_) {
+      return { lastDoc: null, docs: {} };
+    }
+  }
+
+  function saveReaderPrefs(prefs) {
+    try {
+      localStorage.setItem(READER_PREFS_KEY, JSON.stringify(prefs));
+    } catch (_) {}
+  }
+
+  function saveCurrentDocProgress() {
+    if (!state.filename) return;
+    const prefs = loadReaderPrefs();
+    prefs.lastDoc = state.filename;
+    prefs.docs[state.filename] = {
+      page: state.page || 1,
+      zoom: state.zoom || 1.0,
+      updatedAt: Date.now(),
+    };
+    saveReaderPrefs(prefs);
+    if (docListEl) {
+      const item = Array.from(docListEl.querySelectorAll('.reader-doc-item')).find(
+        (el) => el.getAttribute('data-filename') === state.filename
+      );
+      if (item && state.mode === 'pdf') {
+        let badge = item.querySelector('.reader-doc-progress');
+        if (!badge) {
+          const metaEl = item.querySelector('.reader-doc-meta');
+          if (metaEl) {
+            badge = document.createElement('span');
+            badge.className = 'reader-doc-progress';
+            metaEl.appendChild(badge);
+          }
+        }
+        if (badge) badge.textContent = `读至 P.${state.page}`;
+      }
+    }
+  }
+
+  function applyPanelCollapse(hideLeft, hideRight, shouldRelayout = false) {
+    layoutReader.classList.toggle('hide-left', !!hideLeft);
+    layoutReader.classList.toggle('hide-right', !!hideRight);
+    if (btnToggleLeft) {
+      btnToggleLeft.classList.toggle('active', !!hideLeft);
+      btnToggleLeft.title = hideLeft ? '展开左侧书目与目录栏' : '收起左侧书目与目录栏';
+    }
+    if (btnToggleRight) {
+      btnToggleRight.classList.toggle('active', !!hideRight);
+      btnToggleRight.title = hideRight ? '展开右侧多模态伴读栏' : '收起右侧多模态伴读栏';
+    }
+    if (shouldRelayout && state.mode === 'pdf') {
+      requestAnimationFrame(() => applyPdfZoom());
+    }
+  }
+
+  // 面板宽度与折叠状态仅在本次会话生效，刷新/重启自动回到干净默认布局（阅读页码进度仍自动保留）
+  // 左右分隔条支持拖拽拉伸，双击分隔条可立即恢复默认宽度
+  function bindPanelResizer(handleId, side) {
+    const handle = document.getElementById(handleId);
+    if (!handle) return;
+    let dragging = false;
+    handle.addEventListener('dblclick', () => {
+      if (side === 'left') {
+        layoutReader.style.removeProperty('--reader-left-w');
+      } else {
+        layoutReader.style.removeProperty('--reader-right-w');
+      }
+      if (state.mode === 'pdf') {
+        requestAnimationFrame(() => applyPdfZoom());
+      }
+    });
+    handle.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      handle.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const rect = layoutReader.getBoundingClientRect();
+      if (side === 'left') {
+        const w = Math.round(Math.max(180, Math.min(420, e.clientX - rect.left)));
+        layoutReader.style.setProperty('--reader-left-w', `${w}px`);
+      } else {
+        const maxRight = Math.min(960, Math.round(rect.width * 0.72));
+        const w = Math.round(Math.max(300, Math.min(maxRight, rect.right - e.clientX)));
+        layoutReader.style.setProperty('--reader-right-w', `${w}px`);
+      }
+    });
+    window.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      handle.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      if (state.mode === 'pdf') {
+        requestAnimationFrame(() => applyPdfZoom());
+      }
+    });
+  }
+  bindPanelResizer('reader-resizer-left', 'left');
+  bindPanelResizer('reader-resizer-right', 'right');
+
   async function loadDocumentList(autoSelectFilename = null) {
     try {
       const resp = await fetch('/api/documents');
@@ -339,14 +589,20 @@
         docListEl.innerHTML = '<div style="font-size:0.75rem;color:#64748b;padding:8px;">暂无本地文档，点击上方“上传”导入 PDF / Word / PPT / EPUB。</div>';
         return;
       }
+      const prefs = loadReaderPrefs();
       docListEl.innerHTML = state.docs
         .map((d) => {
           const active = d.filename === state.filename ? 'active' : '';
           const mb = (d.size_bytes / (1024 * 1024)).toFixed(2);
+          const saved = prefs.docs && prefs.docs[d.filename];
+          const progHtml =
+            saved && saved.page > 1 && String(d.type || '').toLowerCase() === 'pdf'
+              ? `<span class="reader-doc-progress">读至 P.${saved.page}</span>`
+              : '';
           return `
             <button type="button" class="reader-doc-item ${active}" data-filename="${escapeHtml(d.filename)}">
               <span class="reader-doc-name">📄 ${escapeHtml(d.filename)}</span>
-              <span class="reader-doc-meta">${escapeHtml((d.type || '').toUpperCase())} · ${mb} MB</span>
+              <span class="reader-doc-meta">${escapeHtml((d.type || '').toUpperCase())} · ${mb} MB${progHtml}</span>
             </button>
           `;
         })
@@ -355,7 +611,8 @@
         btn.addEventListener('click', () => openDocument(btn.getAttribute('data-filename')));
       });
 
-      const target = autoSelectFilename || (!state.filename && state.docs[0] ? state.docs[0].filename : null);
+      const target =
+        autoSelectFilename || (!state.filename && state.docs[0] ? state.docs[0].filename : null);
       if (target) {
         await openDocument(target);
       }
@@ -366,11 +623,20 @@
 
   async function openDocument(filename) {
     if (!filename) return;
+    const prefs = loadReaderPrefs();
+    const savedDoc = prefs.docs && prefs.docs[filename];
+    const savedPage = savedDoc && savedDoc.page ? Math.max(1, parseInt(savedDoc.page, 10) || 1) : 1;
+    const savedZoom =
+      savedDoc && savedDoc.zoom ? Math.max(0.5, Math.min(2.5, parseFloat(savedDoc.zoom) || 1.0)) : 1.0;
+
     state.filename = filename;
-    state.page = 1;
-    state.zoom = 1.0;
-    state.history = [];
+    state.page = savedPage;
+    state.zoom = savedZoom;
+    renderDocChatHistory(filename);
     clearSelectedContext();
+    hideSelectionPopover();
+    if (searchResultsEl) searchResultsEl.innerHTML = '';
+    if (searchStatusEl) searchStatusEl.textContent = '';
     if (activeDocTitleEl) activeDocTitleEl.textContent = filename;
     if (docListEl) {
       docListEl.querySelectorAll('.reader-doc-item').forEach((el) => {
@@ -388,18 +654,28 @@
       if (meta.mode === 'pdf') {
         state.pageCount = meta.page_count || 1;
         state.pageAspect = meta.page_aspect || 1.414;
+        state.toc = Array.isArray(meta.toc) ? meta.toc : [];
+        const resumePage = Math.max(1, Math.min(state.pageCount, savedPage));
         if (pageTotalEl) pageTotalEl.textContent = `/ ${state.pageCount} 页`;
-        renderPdfToc(meta.toc || []);
+        renderPdfToc(state.toc);
         buildPdfContinuousView(state.pageCount);
+        if (resumePage > 1) {
+          requestAnimationFrame(() => scrollToPdfPage(resumePage, false));
+        }
+        saveCurrentDocProgress();
+        refreshReaderStateUI();
       } else {
         if (state.pdfObserver) {
           state.pdfObserver.disconnect();
           state.pdfObserver = null;
         }
         state.pageCount = 1;
+        state.toc = [];
         if (pageTotalEl) pageTotalEl.textContent = `共 ${meta.section_count || 0} 节`;
         if (pageInput) pageInput.value = '1';
         renderSectionsView(meta.sections || []);
+        saveCurrentDocProgress();
+        refreshReaderStateUI();
       }
     } catch (err) {
       if (viewportEl) viewportEl.innerHTML = `<div class="reader-empty-hint" style="color:#b91c1c;">❌ 打开文档失败：${escapeHtml(err.message)}</div>`;
@@ -512,6 +788,8 @@
       ensurePdfPageLoaded(stage, state.pageAbort ? state.pageAbort.signal : undefined);
       stage.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
     }
+    saveCurrentDocProgress();
+    refreshReaderStateUI();
     if (textDrawerEl && textDrawerEl.style.display !== 'none') {
       loadCurrentPdfPageText();
     }
@@ -607,6 +885,8 @@
             if (pageInput && document.activeElement !== pageInput) {
               pageInput.value = String(bestPage);
             }
+            saveCurrentDocProgress();
+            refreshReaderStateUI();
             if (textDrawerEl && textDrawerEl.style.display !== 'none') {
               loadCurrentPdfPageText();
             }
@@ -784,6 +1064,227 @@
     }
   }
 
+  const READER_CHAT_PREFIX = 'tiangong_reader_chat_v1::';
+  const READER_STATE_PREFIX = 'tiangong_reader_state_v1::';
+
+  function loadDocReaderState(filename) {
+    if (!filename) return { notes: [], lastAskedPage: null, lastAskedChapter: '' };
+    try {
+      const raw = localStorage.getItem(READER_STATE_PREFIX + filename);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return {
+        notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+        lastAskedPage: parsed.lastAskedPage || null,
+        lastAskedChapter: parsed.lastAskedChapter || '',
+      };
+    } catch (_) {
+      return { notes: [], lastAskedPage: null, lastAskedChapter: '' };
+    }
+  }
+
+  function saveDocReaderState(filename, docState) {
+    if (!filename) return;
+    try {
+      localStorage.setItem(
+        READER_STATE_PREFIX + filename,
+        JSON.stringify({
+          notes: (docState.notes || []).slice(-30),
+          lastAskedPage: docState.lastAskedPage || null,
+          lastAskedChapter: docState.lastAskedChapter || '',
+        })
+      );
+    } catch (_) {}
+  }
+
+  function computeChapterPath(pageNum) {
+    if (state.mode !== 'pdf' || !state.toc || !state.toc.length) return '';
+    const stack = [];
+    for (let i = 0; i < state.toc.length; i += 1) {
+      const item = state.toc[i];
+      if ((item.page || 1) > pageNum) break;
+      const lvl = item.level || 1;
+      while (stack.length && stack[stack.length - 1].level >= lvl) {
+        stack.pop();
+      }
+      stack.push({ level: lvl, title: item.title });
+    }
+    return stack.map((s) => s.title).join(' › ');
+  }
+
+  function refreshReaderStateUI() {
+    const chPath = computeChapterPath(state.page);
+    if (stateChapterEl) {
+      if (chPath) {
+        stateChapterEl.textContent = `📖 ${chPath}`;
+        stateChapterEl.title = `当前章节路径：${chPath}`;
+      } else if (state.filename) {
+        stateChapterEl.textContent = state.mode === 'pdf' ? `📖 第 ${state.page} 页` : `📖 ${state.filename}`;
+        stateChapterEl.title = state.filename;
+      } else {
+        stateChapterEl.textContent = '📖 未定位章节';
+      }
+    }
+    const docState = loadDocReaderState(state.filename);
+    if (btnStateDrawer) {
+      btnStateDrawer.textContent = `📌 本书状态 (${docState.notes.length})`;
+    }
+    if (stateDrawerListEl) {
+      if (!docState.notes.length) {
+        stateDrawerListEl.innerHTML =
+          '<div style="font-size:0.72rem;color:#64748b;padding:4px;">暂无已沉淀的符号/要点记忆。点击任意伴读回答底部的「📌 记入本书状态」即可跨章节自动注入上下文。</div>';
+      } else {
+        stateDrawerListEl.innerHTML = docState.notes
+          .map((n, idx) => {
+            const pBadge = n.page
+              ? `<button type="button" class="reader-chip-btn reader-state-jump" data-page="${n.page}" style="padding:1px 6px;font-size:0.67rem;flex-shrink:0;">P.${n.page}</button>`
+              : '';
+            return `
+              <div class="reader-state-note-item">
+                ${pBadge}
+                <div class="reader-state-note-text">${escapeHtml(n.text)}</div>
+                <button type="button" class="reader-chip-btn reader-state-del" data-idx="${idx}" title="移除此条状态记忆" style="padding:1px 5px;font-size:0.66rem;flex-shrink:0;">✕</button>
+              </div>
+            `;
+          })
+          .join('');
+        stateDrawerListEl.querySelectorAll('.reader-state-jump').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const p = parseInt(btn.getAttribute('data-page') || '0', 10);
+            if (p > 0 && state.mode === 'pdf') scrollToPdfPage(p, true);
+          });
+        });
+        stateDrawerListEl.querySelectorAll('.reader-state-del').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-idx') || '-1', 10);
+            if (idx < 0 || !state.filename) return;
+            const cur = loadDocReaderState(state.filename);
+            cur.notes.splice(idx, 1);
+            saveDocReaderState(state.filename, cur);
+            refreshReaderStateUI();
+          });
+        });
+      }
+    }
+  }
+
+  if (btnStateDrawer && stateDrawerEl) {
+    btnStateDrawer.addEventListener('click', () => {
+      const hidden = stateDrawerEl.style.display === 'none';
+      stateDrawerEl.style.display = hidden ? 'flex' : 'none';
+      btnStateDrawer.classList.toggle('active', hidden);
+      if (hidden) refreshReaderStateUI();
+    });
+  }
+  if (btnStateClose && stateDrawerEl) {
+    btnStateClose.addEventListener('click', () => {
+      stateDrawerEl.style.display = 'none';
+      if (btnStateDrawer) btnStateDrawer.classList.remove('active');
+    });
+  }
+
+  function loadDocChatHistory(filename) {
+    if (!filename) return [];
+    try {
+      const raw = localStorage.getItem(READER_CHAT_PREFIX + filename);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveDocChatHistory(filename, records) {
+    if (!filename) return;
+    try {
+      localStorage.setItem(READER_CHAT_PREFIX + filename, JSON.stringify((records || []).slice(-40)));
+    } catch (_) {}
+  }
+
+  function clearDocChatHistory(filename) {
+    if (!filename) return;
+    try {
+      localStorage.removeItem(READER_CHAT_PREFIX + filename);
+    } catch (_) {}
+  }
+
+  function renderAiFooterMeta(model, page, rawAnswerText = '') {
+    const parts = [];
+    if (page) {
+      parts.push(
+        `<button type="button" class="reader-chip-btn reader-msg-page-jump" data-page="${page}" style="padding:1px 7px;font-size:0.68rem;">📍 P.${page}</button>`
+      );
+    }
+    if (rawAnswerText) {
+      const excerpt = String(rawAnswerText)
+        .replace(/[#*`>\n]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 220);
+      parts.push(
+        `<button type="button" class="reader-chip-btn reader-msg-pin-state" data-page="${page || ''}" data-note="${escapeHtml(excerpt)}" style="padding:1px 7px;font-size:0.68rem;" title="将本条关键定义/结论记入本书状态记忆，跨章自动注入">📌 记入本书状态</button>`
+      );
+    }
+    if (model) {
+      parts.push(`<span style="font-size:0.7rem;color:#94a3b8;margin-left:auto;">模型: ${escapeHtml(model)}</span>`);
+    }
+    if (!parts.length) return '';
+    return `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:6px;border-top:1px dashed #e2e8f0;">${parts.join('')}</div>`;
+  }
+
+  function bindMsgPageJumps(containerEl) {
+    if (!containerEl) return;
+    containerEl.querySelectorAll('.reader-msg-page-jump').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = parseInt(btn.getAttribute('data-page') || '0', 10);
+        if (p > 0 && state.mode === 'pdf') scrollToPdfPage(p, true);
+      });
+    });
+    containerEl.querySelectorAll('.reader-msg-pin-state').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!state.filename) return;
+        const noteText = (btn.getAttribute('data-note') || '').trim();
+        const p = parseInt(btn.getAttribute('data-page') || '0', 10) || null;
+        if (!noteText) return;
+        const docState = loadDocReaderState(state.filename);
+        if (!docState.notes.some((n) => n.text === noteText)) {
+          docState.notes.push({ page: p, text: noteText, createdAt: Date.now() });
+          saveDocReaderState(state.filename, docState);
+          refreshReaderStateUI();
+        }
+        btn.textContent = '✅ 已记入本书状态';
+        btn.disabled = true;
+      });
+    });
+  }
+
+  function renderDocChatHistory(filename) {
+    const records = loadDocChatHistory(filename);
+    state.history = records.map((r) => ({
+      role: r.role,
+      content: r.content,
+      page: r.page || null,
+      model: r.model || '',
+    }));
+    if (!aiFeedEl) return;
+    if (!state.history.length) {
+      aiFeedEl.innerHTML =
+        '<div class="reader-empty-hint">📖 在左侧选中段落，或点击「✂️ 框选问AI」拉框截取模糊扫描件、公式或图表，即可直接提问。</div>';
+      return;
+    }
+    aiFeedEl.innerHTML = '';
+    state.history.forEach((rec) => {
+      const div = appendAiMessage(rec.role, rec.content, null);
+      if (div && rec.role === 'assistant') {
+        const metaHtml = renderAiFooterMeta(rec.model, rec.page, rec.content);
+        if (metaHtml) {
+          div.insertAdjacentHTML('beforeend', metaHtml);
+          bindMsgPageJumps(div);
+        }
+      }
+    });
+    aiFeedEl.scrollTop = aiFeedEl.scrollHeight;
+  }
+
   function appendAiMessage(role, htmlOrText, thumbUrl = null) {
     if (!aiFeedEl) return;
     const emptyHint = aiFeedEl.querySelector('.reader-empty-hint');
@@ -807,6 +1308,22 @@
 
     const usedImg = state.cropImageData;
     const usedText = state.selectedText;
+    const askedPage = state.mode === 'pdf' ? state.page : null;
+    const askedFile = state.filename;
+    const chapterPath = computeChapterPath(askedPage || 1);
+    const docState = loadDocReaderState(askedFile);
+    const topChapNow = chapterPath.split(' › ')[0] || '';
+    const topChapPrev = (docState.lastAskedChapter || '').split(' › ')[0] || '';
+    const isTopicSwitch =
+      Boolean(askedPage && docState.lastAskedPage && Math.abs(askedPage - docState.lastAskedPage) > 15) ||
+      Boolean(topChapNow && topChapPrev && topChapNow !== topChapPrev);
+    const topicMode = isTopicSwitch ? 'SWITCH' : 'INHERIT';
+
+    // 跨章节切换主题时，仅保留近页对话历史，防止 200 页前的旧问题串台干扰
+    const filteredHistory = isTopicSwitch && askedPage
+      ? state.history.filter((h) => !h.page || Math.abs(h.page - askedPage) <= 15).slice(-6)
+      : state.history.slice(-16);
+
     const displayUser = q || (usedImg ? '请识别并解读框选区域内容' : '请解读选中段落');
     appendAiMessage('user', displayUser, usedImg || null);
     if (aiInputEl && overrideQuestion === null) aiInputEl.value = '';
@@ -818,22 +1335,30 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          filename: state.filename,
-          page: state.mode === 'pdf' ? state.page : null,
+          filename: askedFile,
+          page: askedPage,
+          chapter_path: chapterPath || null,
+          topic_mode: topicMode,
+          pinned_notes: docState.notes.slice(-12),
           selected_text: usedText || null,
           crop_image_data: usedImg || null,
           question: q,
           model_mode: modeSelectEl ? modeSelectEl.value : 'fast',
-          history: state.history.slice(-6),
+          history: filteredHistory.map((h) => ({ role: h.role, content: h.content })),
         }),
       });
       const res = await resp.json();
       if (!resp.ok || res.status !== 'success') throw new Error(res.detail || `HTTP ${resp.status}`);
       const ans = (res.data && res.data.answer) || '';
-      const modelTag = res.data && res.data.model ? `\n\n<span style="font-size:0.7rem;color:#94a3b8;">模型: ${escapeHtml(res.data.model)}</span>` : '';
-      loadingDiv.innerHTML = renderBasicMarkdown(ans) + modelTag;
-      state.history.push({ role: 'user', content: displayUser });
-      state.history.push({ role: 'assistant', content: ans });
+      const modelName = (res.data && res.data.model) || '';
+      loadingDiv.innerHTML = renderBasicMarkdown(ans) + renderAiFooterMeta(modelName, askedPage, ans);
+      bindMsgPageJumps(loadingDiv);
+      state.history.push({ role: 'user', content: displayUser, page: askedPage, model: '' });
+      state.history.push({ role: 'assistant', content: ans, page: askedPage, model: modelName });
+      saveDocChatHistory(askedFile, state.history);
+      docState.lastAskedPage = askedPage;
+      docState.lastAskedChapter = chapterPath;
+      saveDocReaderState(askedFile, docState);
       aiFeedEl.scrollTop = aiFeedEl.scrollHeight;
     } catch (err) {
       loadingDiv.innerHTML = `<span style="color:#b91c1c;">❌ 伴读解答失败: ${escapeHtml(err.message)}</span>`;
@@ -908,23 +1433,148 @@
     btnZoomIn.addEventListener('click', () => {
       state.zoom = Math.min(2.5, Math.round((state.zoom + 0.2) * 100) / 100);
       applyPdfZoom();
+      saveCurrentDocProgress();
     });
   }
   if (btnZoomOut) {
     btnZoomOut.addEventListener('click', () => {
       state.zoom = Math.max(0.5, Math.round((state.zoom - 0.2) * 100) / 100);
       applyPdfZoom();
+      saveCurrentDocProgress();
     });
   }
   if (btnCropToggle) {
     btnCropToggle.addEventListener('click', () => {
       state.cropMode = !state.cropMode;
       btnCropToggle.classList.toggle('active', state.cropMode);
-      btnCropToggle.textContent = state.cropMode ? '✂️ 框选中（拖动画框）' : '✂️ 框选区域问 AI';
+      btnCropToggle.textContent = state.cropMode ? '✂️ 框选中（拖动画框）' : '✂️ 框选问AI';
       const container = document.getElementById('reader-pdf-scroll-container');
       if (container) container.classList.toggle('crop-mode', state.cropMode);
     });
   }
+  if (btnToggleLeft) {
+    btnToggleLeft.addEventListener('click', () => {
+      const hideLeft = !layoutReader.classList.contains('hide-left');
+      const hideRight = layoutReader.classList.contains('hide-right');
+      applyPanelCollapse(hideLeft, hideRight, true);
+    });
+  }
+  if (btnToggleRight) {
+    btnToggleRight.addEventListener('click', () => {
+      const hideLeft = layoutReader.classList.contains('hide-left');
+      const hideRight = !layoutReader.classList.contains('hide-right');
+      applyPanelCollapse(hideLeft, hideRight, true);
+    });
+  }
+
+  // 书内关键词极速检索（Ctrl+K 或工具栏 🔍 搜书）
+  function openSearchBar() {
+    if (!searchBarEl) return;
+    searchBarEl.style.display = 'flex';
+    if (btnSearchToggle) btnSearchToggle.classList.add('active');
+    if (searchInputEl) {
+      searchInputEl.focus();
+      searchInputEl.select();
+    }
+  }
+
+  function closeSearchBar() {
+    if (!searchBarEl) return;
+    searchBarEl.style.display = 'none';
+    if (btnSearchToggle) btnSearchToggle.classList.remove('active');
+  }
+
+  function highlightSnippet(snippet, query) {
+    const safe = escapeHtml(snippet || '');
+    const q = (query || '').trim();
+    if (!q) return safe;
+    const escapedQ = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return safe.replace(new RegExp(`(${escapedQ})`, 'gi'), '<mark class="reader-search-hl">$1</mark>');
+  }
+
+  async function runInDocSearch() {
+    if (!state.filename || !searchInputEl || !searchResultsEl) return;
+    const q = searchInputEl.value.trim();
+    if (!q) {
+      searchResultsEl.innerHTML = '';
+      if (searchStatusEl) searchStatusEl.textContent = '';
+      return;
+    }
+    if (searchStatusEl) searchStatusEl.textContent = '⏳ 检索中...';
+    try {
+      const resp = await fetch(
+        `/api/reader/search?filename=${encodeURIComponent(state.filename)}&q=${encodeURIComponent(q)}&limit=300`
+      );
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.detail || `HTTP ${resp.status}`);
+      const hits = data.results || [];
+      if (!hits.length) {
+        if (searchStatusEl) searchStatusEl.textContent = '未找到匹配内容';
+        searchResultsEl.innerHTML =
+          '<div style="font-size:0.74rem;color:#64748b;padding:4px 6px;">未在当前文档文本层中找到匹配项（若是纯扫描版 PDF 无文本层，可翻页后使用「✂️ 框选问AI」）。</div>';
+        return;
+      }
+      if (searchStatusEl) {
+        searchStatusEl.textContent = `命中 ${hits.length}${data.truncated ? '+' : ''} 处`;
+      }
+      searchResultsEl.innerHTML = hits
+        .map((h) => {
+          const locLabel = data.mode === 'pdf' ? `P.${h.page}` : escapeHtml(h.location_label || `节 ${h.section_index}`);
+          const dataAttr = data.mode === 'pdf' ? `data-page="${h.page}"` : `data-sec="${h.section_index}"`;
+          return `
+            <button type="button" class="reader-search-hit" ${dataAttr}>
+              <span class="reader-search-hit-page">${locLabel}</span>
+              <span class="reader-search-hit-snippet">${highlightSnippet(h.snippet, q)}</span>
+            </button>
+          `;
+        })
+        .join('');
+      searchResultsEl.querySelectorAll('.reader-search-hit').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const p = btn.getAttribute('data-page');
+          const sec = btn.getAttribute('data-sec');
+          if (p) {
+            scrollToPdfPage(parseInt(p, 10) || 1, true);
+          } else if (sec) {
+            const target = document.getElementById(`reader-sec-${sec}`);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    } catch (err) {
+      if (searchStatusEl) searchStatusEl.textContent = '检索失败';
+      searchResultsEl.innerHTML = `<div style="font-size:0.74rem;color:#b91c1c;padding:4px 6px;">${escapeHtml(err.message)}</div>`;
+    }
+  }
+
+  if (btnSearchToggle) {
+    btnSearchToggle.addEventListener('click', () => {
+      if (!searchBarEl) return;
+      if (searchBarEl.style.display === 'none') openSearchBar();
+      else closeSearchBar();
+    });
+  }
+  if (btnSearchClose) btnSearchClose.addEventListener('click', closeSearchBar);
+  if (btnSearchRun) btnSearchRun.addEventListener('click', runInDocSearch);
+  if (searchInputEl) {
+    searchInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        runInDocSearch();
+      } else if (e.key === 'Escape') {
+        closeSearchBar();
+      }
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (layoutReader.style.display === 'none') return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      openSearchBar();
+    } else if (e.key === 'Escape' && searchBarEl && searchBarEl.style.display !== 'none') {
+      closeSearchBar();
+    }
+  });
   if (btnClearCtx) btnClearCtx.addEventListener('click', clearSelectedContext);
   if (ctxImgEl) {
     ctxImgEl.addEventListener('click', () => {
@@ -1030,7 +1680,8 @@
   if (btnAiClear) {
     btnAiClear.addEventListener('click', () => {
       state.history = [];
-      if (aiFeedEl) aiFeedEl.innerHTML = '<div class="reader-empty-hint">📖 选中段落或点击工具栏「✂️ 框选区域问 AI」拉框截取公式/图表/扫描件，即可多模态解答疑惑。</div>';
+      clearDocChatHistory(state.filename);
+      if (aiFeedEl) aiFeedEl.innerHTML = '<div class="reader-empty-hint">📖 选中段落或点击工具栏「✂️ 框选问AI」拉框截取公式/图表/扫描件，即可多模态解答疑惑。</div>';
     });
   }
   document.querySelectorAll('.reader-quick-prompt').forEach((btn) => {
@@ -1043,7 +1694,7 @@
       const qInput = document.getElementById('query-input');
       if (qInput) {
         const prefix = state.filename ? `结合文档《${state.filename}》` + (state.mode === 'pdf' ? `第 ${state.page} 页` : '') : '';
-        const quote = state.selectedText ? `：\n"${state.selectedText.slice(0, 600)}"\n请做深度多源考据与严谨推导。` : '请结合前沿文献深度剖析该问题。';
+        const quote = state.selectedText ? `：\n"${state.selectedText.slice(0, 3000)}"\n请做深度多源考据与严谨推导。` : '请结合前沿文献深度剖析该问题。';
         qInput.value = prefix + quote;
         qInput.focus();
       }

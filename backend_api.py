@@ -937,7 +937,7 @@ async def reader_doc_meta(filename: str):
                 {"level": int(item[0]), "title": str(item[1]).strip(), "page": int(item[2])}
                 for item in (doc.get_toc(simple=True) or [])
                 if len(item) >= 3 and str(item[1]).strip()
-            ][:120]
+            ]
             page_aspect = 1.414
             if len(doc) > 0:
                 r0 = doc[0].rect
@@ -978,6 +978,10 @@ async def reader_pdf_page(filename: str, page: int = 1, scale: float = 2.2):
     if doc_path.suffix.lower() != ".pdf":
         raise HTTPException(status_code=400, detail="仅 PDF 支持逐页图像渲染")
     import fitz
+    try:
+        fitz.TOOLS.mupdf_display_errors(False)
+    except Exception:
+        pass
     clamped_scale = max(1.0, min(float(scale or 2.2), 3.5))
     with fitz.open(str(doc_path)) as doc:
         if page < 1 or page > len(doc):
@@ -998,6 +1002,10 @@ async def reader_pdf_page_text(filename: str, page: int = 1):
     if doc_path.suffix.lower() != ".pdf":
         return {"page": page, "text": "", "lines": []}
     import fitz
+    try:
+        fitz.TOOLS.mupdf_display_errors(False)
+    except Exception:
+        pass
     lines_out = []
     with fitz.open(str(doc_path)) as doc:
         if page < 1 or page > len(doc):
@@ -1042,6 +1050,9 @@ async def reader_pdf_page_text(filename: str, page: int = 1):
 class ReaderAskRequest(BaseModel):
     filename: str
     page: Optional[int] = None
+    chapter_path: Optional[str] = None
+    topic_mode: Optional[str] = None  # INHERIT | SWITCH
+    pinned_notes: List[Dict[str, Any]] = []
     selected_text: Optional[str] = None
     crop_image_data: Optional[str] = None
     question: str = ""
@@ -1107,7 +1118,23 @@ def _run_reader_multimodal_ask(req: ReaderAskRequest) -> Dict[str, Any]:
         "3. 回答紧扣当前选中内容与同书上下文，精炼清晰、不堆砌空话。"
     )
 
-    context_parts = [f"当前精读文档：《{doc_path.name}》" + (f"（第 {req.page} 页）" if req.page else "")]
+    header_line = f"当前精读文档：《{doc_path.name}》" + (f"（第 {req.page} 页）" if req.page else "")
+    if req.chapter_path:
+        header_line += f"\n当前所在章节：{req.chapter_path.strip()[:260]}"
+    if (req.topic_mode or "").upper() == "SWITCH":
+        header_line += "\n（提示：用户刚跨章节翻页至新主题，请优先聚焦当前章节与页面内容）"
+    context_parts = [header_line]
+    if req.pinned_notes:
+        note_lines = []
+        for n in req.pinned_notes[-12:]:
+            nt = str(n.get("text") or "").strip()
+            if not nt:
+                continue
+            np = n.get("page")
+            prefix = f"[P.{np}] " if np else ""
+            note_lines.append(f"- {prefix}{nt[:260]}")
+        if note_lines:
+            context_parts.append("【本书已沉淀的符号与核心状态记忆】：\n" + "\n".join(note_lines))
     if req.selected_text:
         context_parts.append(f"【用户选中原文】：\n{req.selected_text.strip()[:4000]}")
     if page_text:
@@ -1123,11 +1150,11 @@ def _run_reader_multimodal_ask(req: ReaderAskRequest) -> Dict[str, Any]:
     full_user_text = "\n\n".join(context_parts)
 
     messages: List[Dict[str, Any]] = [{"role": "system", "content": system_prompt}]
-    for h in (req.history or [])[-6:]:
+    for h in (req.history or [])[-16:]:
         role = h.get("role")
         content = (h.get("content") or "").strip()
         if role in {"user", "assistant"} and content:
-            messages.append({"role": role, "content": content[:2500]})
+            messages.append({"role": role, "content": content[:3000]})
 
     if req.crop_image_data and str(req.crop_image_data).startswith("data:image/"):
         messages.append({
@@ -1247,6 +1274,85 @@ async def reader_translate_selection(req: ReaderTranslateRequest):
         raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"划词翻译失败: {exc}")
+
+
+def _run_reader_in_doc_search(filename: str, q: str, limit: int = 300) -> Dict[str, Any]:
+    doc_path = _resolve_upload_doc(filename)
+    query = (q or "").strip()
+    if not query:
+        return {"mode": "pdf" if doc_path.suffix.lower() == ".pdf" else "sections", "query": "", "results": [], "truncated": False}
+
+    ql = query.lower()
+    cap = max(5, min(int(limit or 300), 500))
+    results: List[Dict[str, Any]] = []
+    truncated = False
+
+    def _make_snippet(text: str, idx: int, qlen: int) -> str:
+        start = max(0, idx - 48)
+        end = min(len(text), idx + qlen + 72)
+        snippet = text[start:end].replace("\n", " ").replace("\r", " ")
+        snippet = " ".join(snippet.split())
+        if start > 0:
+            snippet = "…" + snippet
+        if end < len(text):
+            snippet = snippet + "…"
+        return snippet
+
+    if doc_path.suffix.lower() == ".pdf":
+        import fitz
+        with fitz.open(str(doc_path)) as doc:
+            for i, page_obj in enumerate(doc, start=1):
+                txt = page_obj.get_text("text") or ""
+                if not txt:
+                    continue
+                low = txt.lower()
+                pos = low.find(ql)
+                if pos == -1:
+                    continue
+                cnt = low.count(ql)
+                results.append({
+                    "page": i,
+                    "matches": cnt,
+                    "snippet": _make_snippet(txt, pos, len(ql)),
+                })
+                if len(results) >= cap:
+                    truncated = True
+                    break
+        return {"mode": "pdf", "query": query, "results": results, "truncated": truncated}
+
+    from document_rag_engine import UniversalDocumentParser
+    chunks = UniversalDocumentParser.parse_file(doc_path)
+    for i, c in enumerate(chunks, start=1):
+        txt = (c.text or "").strip()
+        if not txt:
+            continue
+        low = txt.lower()
+        pos = low.find(ql)
+        if pos == -1:
+            continue
+        loc = f"{c.page_or_slide} · {c.section}".strip(" ·") or f"第 {i} 节"
+        results.append({
+            "section_index": i,
+            "location_label": loc,
+            "matches": low.count(ql),
+            "snippet": _make_snippet(txt, pos, len(ql)),
+        })
+        if len(results) >= cap:
+            truncated = True
+            break
+    return {"mode": "sections", "query": query, "results": results, "truncated": truncated}
+
+
+@app.get("/api/reader/search")
+async def reader_in_doc_search(filename: str, q: str = "", limit: int = 300):
+    """经卷精读书内关键词极速检索，返回命中页码/章节与上下文片段"""
+    try:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, _run_reader_in_doc_search, filename, q, limit)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"书内检索失败: {exc}")
 
 
 @app.delete("/api/documents/synced")

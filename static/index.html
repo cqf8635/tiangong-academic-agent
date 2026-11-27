@@ -6,7 +6,7 @@
   <title>云山问学 · 多智能体科研研讨空间</title>
   <link rel="stylesheet" href="css/style.css?v=20261126_v2">
   <link rel="stylesheet" href="css/radar_yunshan.css?v=20261126_v2">
-  <link rel="stylesheet" href="css/reader.css?v=20261127_v5">
+  <link rel="stylesheet" href="css/reader.css?v=20261127_v11">
   <!-- KaTeX for Beautiful LaTeX Math Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -538,10 +538,13 @@
         </div>
       </aside>
 
+      <div class="reader-resizer" id="reader-resizer-left" title="左右拖动调整目录栏宽度"></div>
+
       <!-- 中间：高清原貌阅读画布（支持扫描件/图表/公式拉框截图） -->
       <section class="reader-stage-panel">
         <div class="reader-toolbar">
-          <div class="reader-toolbar-group" style="min-width:0;max-width:34%;">
+          <div class="reader-toolbar-group" style="min-width:0;max-width:32%;">
+            <button type="button" class="action-btn-mini" id="btn-reader-toggle-left" title="展开/收起左侧书目与目录栏">◧</button>
             <span id="reader-active-doc-title" style="font-size:0.78rem;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">未选择文档</span>
           </div>
           <div class="reader-toolbar-group">
@@ -554,9 +557,20 @@
             <button type="button" class="action-btn-mini" id="btn-reader-zoom-out" title="缩小">➖</button>
             <span id="reader-zoom-label" style="font-size:0.76rem;font-weight:700;color:#334155;min-width:40px;text-align:center;">100%</span>
             <button type="button" class="action-btn-mini" id="btn-reader-zoom-in" title="放大">➕</button>
+            <button type="button" class="action-btn-mini" id="btn-reader-search-toggle" title="书内全文检索 (快捷键 Ctrl+K)">🔍 搜书</button>
             <button type="button" class="action-btn-mini" id="btn-reader-text-toggle" title="展开/收起当前页可复制纯文本">📄 本页文本</button>
-            <button type="button" class="action-btn-mini reader-crop-btn" id="btn-reader-crop-toggle" title="开启后在 PDF 页面拖动画框，截取扫描件/公式/图表直接问多模态 AI">✂️ 框选区域问 AI</button>
+            <button type="button" class="action-btn-mini reader-crop-btn" id="btn-reader-crop-toggle" title="开启后在 PDF 页面拖动画框，截取扫描件/公式/图表直接问多模态 AI">✂️ 框选问AI</button>
+            <button type="button" class="action-btn-mini" id="btn-reader-toggle-right" title="展开/收起右侧多模态伴读栏">◨</button>
           </div>
+        </div>
+        <div class="reader-search-bar" id="reader-search-bar" style="display: none;">
+          <div class="reader-search-input-row">
+            <input type="text" id="reader-search-input" class="reader-search-input" placeholder="输入书内关键词、定理名或公式术语，回车检索并点击直达页码 (Esc 关闭)..." />
+            <button type="button" class="action-btn-mini" id="btn-reader-search-run" style="background:#184c43;color:#fff;border-color:#184c43;">检索</button>
+            <span id="reader-search-status" class="reader-search-status"></span>
+            <button type="button" class="reader-chip-btn" id="btn-reader-search-close" title="关闭书内搜索">✕</button>
+          </div>
+          <div class="reader-search-results" id="reader-search-results"></div>
         </div>
         <div class="reader-viewport" id="reader-viewport">
           <div class="reader-empty-hint">📖 请在左侧选择或上传一篇论文/书籍。<br/>PDF 支持高 DPI 原貌展示与「✂️ 框选区域问 AI」（专治扫描件、复杂公式与图表）。</div>
@@ -573,6 +587,8 @@
         </div>
       </section>
 
+      <div class="reader-resizer" id="reader-resizer-right" title="左右拖动调整多模态伴读栏宽度"></div>
+
       <!-- 右侧：多模态伴读 AI 助手 -->
       <aside class="reader-ai-panel">
         <div class="reader-panel-header">
@@ -584,6 +600,17 @@
             </select>
             <button type="button" class="action-btn-mini" id="btn-reader-ai-clear" title="清空当前伴读记录">清空</button>
           </div>
+        </div>
+        <div class="reader-state-strip" id="reader-state-strip">
+          <span class="reader-state-chapter" id="reader-state-chapter" title="当前所在章节路径">📖 未定位章节</span>
+          <button type="button" class="reader-chip-btn" id="btn-reader-state-drawer" title="查看/管理本书沉淀的符号与核心要点记忆">📌 本书状态 (0)</button>
+        </div>
+        <div class="reader-state-drawer" id="reader-state-drawer" style="display:none;">
+          <div class="reader-state-drawer-head">
+            <span>📌 随书状态记忆（跨章自动注入伴读上下文）</span>
+            <button type="button" class="reader-chip-btn" id="btn-reader-state-close">✕</button>
+          </div>
+          <div class="reader-state-drawer-list" id="reader-state-drawer-list"></div>
         </div>
         <div class="reader-ai-context" id="reader-ai-context">
           <div class="reader-ai-context-head">
@@ -889,6 +916,6 @@
   <script src="js/app.js?v=20261126_v2"></script>
   <script src="js/radar_controller.js?v=20261126_v2"></script>
   <script src="js/settings_controller.js?v=20261126_v2"></script>
-  <script src="js/reader_controller.js?v=20261127_v5"></script>
+  <script src="js/reader_controller.js?v=20261127_v11"></script>
 </body>
 </html>

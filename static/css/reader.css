@@ -3,13 +3,65 @@
    ========================================================================== */
 
 .reader-layout {
+  --reader-left-w: 240px;
+  --reader-right-w: 420px;
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 390px;
-  gap: 12px;
+  grid-template-columns: var(--reader-left-w) 8px minmax(0, 1fr) 8px var(--reader-right-w);
+  gap: 0;
   padding: 10px 0 0 0;
   overflow: hidden;
+}
+
+.reader-resizer {
+  width: 8px;
+  cursor: col-resize;
+  position: relative;
+  user-select: none;
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.reader-resizer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 40px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transition: background 0.15s ease, height 0.15s ease;
+}
+
+.reader-resizer:hover::after,
+.reader-resizer.dragging::after {
+  background: #184c43;
+  height: 72px;
+}
+
+.reader-layout.hide-left {
+  grid-template-columns: minmax(0, 1fr) 8px var(--reader-right-w);
+}
+
+.reader-layout.hide-left .reader-sidebar,
+.reader-layout.hide-left #reader-resizer-left {
+  display: none;
+}
+
+.reader-layout.hide-right {
+  grid-template-columns: var(--reader-left-w) 8px minmax(0, 1fr);
+}
+
+.reader-layout.hide-right .reader-ai-panel,
+.reader-layout.hide-right #reader-resizer-right {
+  display: none;
+}
+
+.reader-layout.hide-left.hide-right {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .reader-sidebar,
@@ -555,6 +607,313 @@
   gap: 6px;
   font-size: 0.68rem;
   color: #64748b;
+}
+
+/* 阅读进度小徽章与书内检索面板 */
+.reader-doc-progress {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e6f4f1;
+  color: #184c43;
+  font-weight: 700;
+  font-size: 0.66rem;
+}
+
+.reader-search-bar {
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafc;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.reader-search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reader-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  background: #ffffff;
+  outline: none;
+}
+
+.reader-search-input:focus {
+  border-color: #184c43;
+}
+
+.reader-search-status {
+  font-size: 0.72rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.reader-search-results {
+  max-height: 190px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reader-search-hit {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 7px;
+  padding: 6px 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #334155;
+  transition: all 0.12s ease;
+}
+
+.reader-search-hit:hover {
+  border-color: #184c43;
+  background: #f0fdf9;
+}
+
+.reader-search-hit-page {
+  flex-shrink: 0;
+  background: #184c43;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 0.69rem;
+  font-weight: 700;
+}
+
+.reader-search-hit-snippet {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+mark.reader-search-hl {
+  background: #fef08a;
+  color: #0f172a;
+  padding: 0 2px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+/* 伴读 AI 学术 Markdown 精细排版 */
+.reader-md {
+  font-size: 0.84rem;
+  line-height: 1.72;
+  color: #1e293b;
+}
+
+.reader-md p {
+  margin: 0 0 8px 0;
+}
+
+.reader-md p:last-child {
+  margin-bottom: 0;
+}
+
+.reader-md h1,
+.reader-md h2,
+.reader-md h3,
+.reader-md h4 {
+  margin: 12px 0 6px 0;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+.reader-md h1,
+.reader-md h2 {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: #184c43;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.reader-md h3,
+.reader-md h4 {
+  font-size: 0.87rem;
+  font-weight: 800;
+  color: #134e4a;
+}
+
+.reader-md ul,
+.reader-md ol {
+  margin: 4px 0 10px 0;
+  padding-left: 20px;
+}
+
+.reader-md li {
+  margin: 3px 0;
+  line-height: 1.68;
+}
+
+.reader-md li::marker {
+  color: #184c43;
+  font-weight: 700;
+}
+
+.reader-md hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 12px 0;
+}
+
+.reader-md blockquote {
+  margin: 8px 0;
+  padding: 6px 10px;
+  border-left: 3px solid #184c43;
+  background: #f0fdf9;
+  color: #334155;
+  border-radius: 0 6px 6px 0;
+}
+
+.reader-md code.inline-code {
+  background: #f1f5f9;
+  color: #0f766e;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.reader-md pre.reader-code-block {
+  margin: 8px 0;
+  padding: 9px 11px;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.reader-md .reader-math-display {
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.reader-md .reader-table-wrap {
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
+.reader-md table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.reader-md th,
+.reader-md td {
+  border: 1px solid #cbd5e1;
+  padding: 5px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.reader-md th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.reader-md strong {
+  color: #0f172a;
+  font-weight: 750;
+}
+
+/* 轻量随书状态栏与记忆抽屉 */
+.reader-state-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 10px;
+  background: #f0fdf9;
+  border-bottom: 1px solid #ccebe4;
+  flex-shrink: 0;
+}
+
+.reader-state-chapter {
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: #184c43;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.reader-state-drawer {
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafc;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.reader-state-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #184c43;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.reader-state-drawer-list {
+  padding: 6px 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reader-state-note-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.73rem;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.reader-state-note-text {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .reader-text-drawer-head {
