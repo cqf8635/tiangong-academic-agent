@@ -68,7 +68,7 @@ class ChatMessage(BaseModel):
     retrieval_coverage: Optional[Dict[str, Any]] = None
     source_diagnostics: Optional[Dict[str, Any]] = None
     image_url: Optional[str] = None  # 用户附带的截图或图片 (URL 或 Base64)
-    timestamp: str = Field(default_factory=lambda: time.strftime("%H:%M:%S"))
+    timestamp: str = Field(default_factory=lambda: time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 class ConversationSession(BaseModel):

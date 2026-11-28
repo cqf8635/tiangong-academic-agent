@@ -1037,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (msg.sender === 'user') {
             userTurnCounter++;
             lastUserQuery = textContent;
-            appendMessage('user', textContent, userTurnCounter, msg.image_url || null);
+            appendMessage('user', textContent, userTurnCounter, msg.image_url || null, msg.timestamp || null);
           } else {
             agentTurnCounter++;
             let mindmapMd = msg.mindmap_markdown;
@@ -1065,7 +1065,8 @@ document.addEventListener('DOMContentLoaded', () => {
               topicTitle: lastUserQuery,
               agent_dialogue_history: msg.agent_dialogue_history || [],
               synthesized_evidence_slate: msg.synthesized_evidence_slate,
-              dialectical_notes: msg.dialectical_notes
+              dialectical_notes: msg.dialectical_notes,
+              timestamp: msg.timestamp || null
             }, agentTurnCounter);
 
             // 追踪当前会话中最新一轮智能体的检索证据，绝不残留早期轮次文献
@@ -1446,7 +1447,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function appendMessage(sender, text, turnIndex = null, imageUrl = null) {
+  function formatChatTimestamp(ts = null) {
+    if (ts && String(ts).trim()) return String(ts).trim();
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function appendMessage(sender, text, turnIndex = null, imageUrl = null, timestamp = null) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message-bubble ${sender}`;
     if (turnIndex) {
@@ -1480,9 +1488,10 @@ document.addEventListener('DOMContentLoaded', () => {
         userHtml = `<p>${rendered}</p>`;
       }
 
+      const tsStr = formatChatTimestamp(timestamp);
       msgDiv.innerHTML = `
         <div class="msg-identity" aria-hidden="true"><img src="img/user_avatar.jpg?v=2026_neutral_v1" alt="学者" class="msg-avatar-img"></div>
-        <div class="msg-card">${imgHtml}${userHtml}</div>
+        <div class="msg-card">${imgHtml}${userHtml}<div class="msg-timestamp" style="margin-top:4px;font-size:0.68rem;color:var(--color-ink-muted,#64748b);text-align:right;opacity:0.82;">🕒 ${escapeHtml(tsStr)}</div></div>
       `;
     }
     chatFeed.appendChild(msgDiv);
@@ -1725,12 +1734,14 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
+    const agentTsStr = formatChatTimestamp(data.timestamp || null);
     msgDiv.innerHTML = `
       <div class="msg-identity" aria-hidden="true"><img src="img/agent_avatar.jpg?v=2026" alt="羽若" class="msg-avatar-img"></div>
       <div class="msg-card">
-        <div class="message-meta-line" style="margin-bottom: 8px; font-size: 0.72rem; color: var(--color-ink-muted); display: flex; align-items: center; gap: 8px;">
+        <div class="message-meta-line" style="margin-bottom: 8px; font-size: 0.72rem; color: var(--color-ink-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span style="font-weight: 800; color: var(--color-pine-jade);">${agentName}</span>
           <span style="background: var(--color-pine-soft); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--color-silk-border); font-weight: 700;">${intentTag}</span>
+          <span class="msg-timestamp" style="margin-left: auto; font-size: 0.68rem; color: var(--color-ink-muted, #64748b); opacity: 0.85;">🕒 ${escapeHtml(agentTsStr)}</span>
         </div>
         <div class="markdown-body-text">${formattedText}</div>
         ${evidenceTagsHtml}

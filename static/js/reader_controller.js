@@ -1207,7 +1207,14 @@
     } catch (_) {}
   }
 
-  function renderAiFooterMeta(model, page, rawAnswerText = '') {
+  function formatReaderTime(ts = null) {
+    if (ts && String(ts).trim()) return String(ts).trim();
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function renderAiFooterMeta(model, page, rawAnswerText = '', timestamp = null) {
     const parts = [];
     if (page) {
       parts.push(
@@ -1224,8 +1231,11 @@
         `<button type="button" class="reader-chip-btn reader-msg-pin-state" data-page="${page || ''}" data-note="${escapeHtml(excerpt)}" style="padding:1px 7px;font-size:0.68rem;" title="将本条关键定义/结论记入本书状态记忆，跨章自动注入">📌 记入本书状态</button>`
       );
     }
-    if (model) {
-      parts.push(`<span style="font-size:0.7rem;color:#94a3b8;margin-left:auto;">模型: ${escapeHtml(model)}</span>`);
+    const rightMeta = [];
+    if (model) rightMeta.push(`模型: ${escapeHtml(model)}`);
+    if (timestamp) rightMeta.push(`🕒 ${escapeHtml(timestamp)}`);
+    if (rightMeta.length) {
+      parts.push(`<span style="font-size:0.68rem;color:#94a3b8;margin-left:auto;">${rightMeta.join(' · ')}</span>`);
     }
     if (!parts.length) return '';
     return `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:6px;border-top:1px dashed #e2e8f0;">${parts.join('')}</div>`;
@@ -1264,6 +1274,7 @@
       content: r.content,
       page: r.page || null,
       model: r.model || '',
+      timestamp: r.timestamp || '',
     }));
     if (!aiFeedEl) return;
     if (!state.history.length) {
@@ -1273,9 +1284,9 @@
     }
     aiFeedEl.innerHTML = '';
     state.history.forEach((rec) => {
-      const div = appendAiMessage(rec.role, rec.content, null);
+      const div = appendAiMessage(rec.role, rec.content, null, rec.role === 'user' ? rec.timestamp : null);
       if (div && rec.role === 'assistant') {
-        const metaHtml = renderAiFooterMeta(rec.model, rec.page, rec.content);
+        const metaHtml = renderAiFooterMeta(rec.model, rec.page, rec.content, rec.timestamp);
         if (metaHtml) {
           div.insertAdjacentHTML('beforeend', metaHtml);
           bindMsgPageJumps(div);
@@ -1285,14 +1296,21 @@
     aiFeedEl.scrollTop = aiFeedEl.scrollHeight;
   }
 
-  function appendAiMessage(role, htmlOrText, thumbUrl = null) {
+  function appendAiMessage(role, htmlOrText, thumbUrl = null, timestamp = null) {
     if (!aiFeedEl) return;
     const emptyHint = aiFeedEl.querySelector('.reader-empty-hint');
     if (emptyHint) emptyHint.remove();
     const div = document.createElement('div');
     div.className = `reader-msg ${role}`;
     const thumbHtml = thumbUrl ? `<img src="${thumbUrl}" class="reader-msg-thumb" onclick="if(window.openImageModal)openImageModal('${thumbUrl}','框选原文区域')" />` : '';
-    div.innerHTML = thumbHtml + (role === 'assistant' ? renderBasicMarkdown(htmlOrText) : escapeHtml(htmlOrText).replace(/\n/g, '<br/>'));
+    const userTsHtml =
+      role === 'user' && timestamp
+        ? `<div style="margin-top:4px;font-size:0.66rem;color:#64748b;text-align:right;opacity:0.85;">🕒 ${escapeHtml(timestamp)}</div>`
+        : '';
+    div.innerHTML =
+      thumbHtml +
+      (role === 'assistant' ? renderBasicMarkdown(htmlOrText) : escapeHtml(htmlOrText).replace(/\n/g, '<br/>')) +
+      userTsHtml;
     aiFeedEl.appendChild(div);
     aiFeedEl.scrollTop = aiFeedEl.scrollHeight;
     return div;
@@ -1325,7 +1343,8 @@
       : state.history.slice(-16);
 
     const displayUser = q || (usedImg ? '请识别并解读框选区域内容' : '请解读选中段落');
-    appendAiMessage('user', displayUser, usedImg || null);
+    const userTs = formatReaderTime();
+    appendAiMessage('user', displayUser, usedImg || null, userTs);
     if (aiInputEl && overrideQuestion === null) aiInputEl.value = '';
 
     const loadingDiv = appendAiMessage('assistant', '⏳ 多模态伴读助手正在识别与思考...');
@@ -1351,10 +1370,11 @@
       if (!resp.ok || res.status !== 'success') throw new Error(res.detail || `HTTP ${resp.status}`);
       const ans = (res.data && res.data.answer) || '';
       const modelName = (res.data && res.data.model) || '';
-      loadingDiv.innerHTML = renderBasicMarkdown(ans) + renderAiFooterMeta(modelName, askedPage, ans);
+      const ansTs = formatReaderTime();
+      loadingDiv.innerHTML = renderBasicMarkdown(ans) + renderAiFooterMeta(modelName, askedPage, ans, ansTs);
       bindMsgPageJumps(loadingDiv);
-      state.history.push({ role: 'user', content: displayUser, page: askedPage, model: '' });
-      state.history.push({ role: 'assistant', content: ans, page: askedPage, model: modelName });
+      state.history.push({ role: 'user', content: displayUser, page: askedPage, model: '', timestamp: userTs });
+      state.history.push({ role: 'assistant', content: ans, page: askedPage, model: modelName, timestamp: ansTs });
       saveDocChatHistory(askedFile, state.history);
       docState.lastAskedPage = askedPage;
       docState.lastAskedChapter = chapterPath;
