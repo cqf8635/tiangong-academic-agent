@@ -1029,15 +1029,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let userTurnCounter = 0;
         let agentTurnCounter = 0;
+        const sessionEpoch = session.updated_at || session.created_at || null;
+        let sessionDatePrefix = '';
+        if (sessionEpoch) {
+          const sd = new Date(sessionEpoch * 1000);
+          if (!isNaN(sd.getTime())) {
+            const p2 = (n) => String(n).padStart(2, '0');
+            sessionDatePrefix = `${sd.getFullYear()}-${p2(sd.getMonth() + 1)}-${p2(sd.getDate())}`;
+          }
+        }
 
         session.messages.forEach(msg => {
           if (!msg) return;
           const textContent = String(msg.content || '').trim();
           if (!textContent && !msg.image_url) return;
+          const msgTs = formatChatTimestamp(msg.timestamp || null, sessionDatePrefix);
           if (msg.sender === 'user') {
             userTurnCounter++;
             lastUserQuery = textContent;
-            appendMessage('user', textContent, userTurnCounter, msg.image_url || null, msg.timestamp || null);
+            appendMessage('user', textContent, userTurnCounter, msg.image_url || null, msgTs);
           } else {
             agentTurnCounter++;
             let mindmapMd = msg.mindmap_markdown;
@@ -1066,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', () => {
               agent_dialogue_history: msg.agent_dialogue_history || [],
               synthesized_evidence_slate: msg.synthesized_evidence_slate,
               dialectical_notes: msg.dialectical_notes,
-              timestamp: msg.timestamp || null
+              timestamp: msgTs
             }, agentTurnCounter);
 
             // 追踪当前会话中最新一轮智能体的检索证据，绝不残留早期轮次文献
@@ -1447,8 +1457,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function formatChatTimestamp(ts = null) {
-    if (ts && String(ts).trim()) return String(ts).trim();
+  function formatChatTimestamp(ts = null, fallbackDatePrefix = '') {
+    if (ts && String(ts).trim()) {
+      const s = String(ts).trim();
+      if (/^\d{2}:\d{2}:\d{2}$/.test(s) && fallbackDatePrefix) {
+        return `${fallbackDatePrefix} ${s}`;
+      }
+      return s;
+    }
     const d = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
@@ -1491,7 +1507,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const tsStr = formatChatTimestamp(timestamp);
       msgDiv.innerHTML = `
         <div class="msg-identity" aria-hidden="true"><img src="img/user_avatar.jpg?v=2026_neutral_v1" alt="学者" class="msg-avatar-img"></div>
-        <div class="msg-card">${imgHtml}${userHtml}<div class="msg-timestamp" style="margin-top:4px;font-size:0.68rem;color:var(--color-ink-muted,#64748b);text-align:right;opacity:0.82;">🕒 ${escapeHtml(tsStr)}</div></div>
+        <div class="msg-card">${imgHtml}${userHtml}<div class="msg-timestamp" style="margin-top:4px;font-size:0.68rem;color:rgba(255,255,255,0.82);text-align:right;">🕒 ${escapeHtml(tsStr)}</div></div>
       `;
     }
     chatFeed.appendChild(msgDiv);
