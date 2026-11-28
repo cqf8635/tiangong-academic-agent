@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import uuid
@@ -784,29 +785,105 @@ class UniversalDocumentRAGEngine:
         self.llm_client = OpenAI(api_key=api_key, base_url=base_url)
 
         self.device = "cuda" if (use_cuda_for_models and torch.cuda.is_available()) else "cpu"
-        print(f"🧠 [RAGEngine] 加载本地 BGE-M3 向量嵌入模型 (设备: {self.device})...")
-        model_kwargs = {"torch_dtype": torch.float16} if self.device == "cuda" else {}
-        self.embedding_model = SentenceTransformer(
-            embedding_model_path,
-            device=self.device,
-            model_kwargs=model_kwargs,
-        )
+        self._embedding_model_path = embedding_model_path
+        self._reranker_model_path = reranker_model_path
+        self._embedding_model = None
+        self._reranker = None
+        self._reranker_initialized = False
+        self._model_lock = threading.Lock()
 
-        use_reranker = os.getenv("PAPER_USE_RERANKER", "0") in ["1", "true", "True"]
-        if use_reranker:
+        # 默认按需懒加载 BGE-M3 与 BGE-Reranker，避免 16GB 内存环境下与其他软件共存时启动瞬间 OOM。
+        # 如在内存充裕机器上需要启动预热，可在 .env 设置 PAPER_LAZY_LOAD_MODELS=0。
+        lazy_load = os.getenv("PAPER_LAZY_LOAD_MODELS", "1").strip().lower() not in {"0", "false", "no"}
+        if not lazy_load:
+            _ = self.embedding_model
+            _ = self.reranker
+        else:
+            print(f"💤 [RAGEngine] BGE-M3 / BGE-Reranker 已启用按需懒加载 (目标设备: {self.device})，启动零模型内存占用")
+
+    def _build_low_mem_model_kwargs(self) -> Dict[str, Any]:
+        kwargs: Dict[str, Any] = {"low_cpu_mem_usage": True}
+        if self.device == "cuda":
+            kwargs["torch_dtype"] = torch.float16
+        return kwargs
+
+    @property
+    def embedding_model(self):
+        if self._embedding_model is not None:
+            return self._embedding_model
+        with self._model_lock:
+            if self._embedding_model is not None:
+                return self._embedding_model
+            import gc
+            gc.collect()
+            print(f"🧠 [RAGEngine] 按需加载本地 BGE-M3 向量嵌入模型 (设备: {self.device}, low_cpu_mem_usage=True)...")
+            model_kwargs = self._build_low_mem_model_kwargs()
             try:
-                print(f"⚖️  [RAGEngine] 加载本地 BGE-Reranker 重排模型 (设备: {self.device}, 半精度 FP16)...")
-                self.reranker = CrossEncoder(
-                    reranker_model_path,
+                self._embedding_model = SentenceTransformer(
+                    self._embedding_model_path,
                     device=self.device,
                     model_kwargs=model_kwargs,
                 )
+            except TypeError:
+                fallback_kwargs = {"torch_dtype": torch.float16} if self.device == "cuda" else {}
+                self._embedding_model = SentenceTransformer(
+                    self._embedding_model_path,
+                    device=self.device,
+                    model_kwargs=fallback_kwargs,
+                )
+            gc.collect()
+            if self.device == "cuda" and torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        return self._embedding_model
+
+    @embedding_model.setter
+    def embedding_model(self, value):
+        self._embedding_model = value
+
+    @property
+    def reranker(self):
+        if self._reranker_initialized:
+            return self._reranker
+        with self._model_lock:
+            if self._reranker_initialized:
+                return self._reranker
+            self._reranker_initialized = True
+            use_reranker = os.getenv("PAPER_USE_RERANKER", "0") in ["1", "true", "True"]
+            if not use_reranker:
+                print("🚀 [RAGEngine] 重排器已由环境配置精简跳过 (PAPER_USE_RERANKER=0)，采用 BGE-M3 全维余弦度量")
+                self._reranker = None
+                return None
+            import gc
+            gc.collect()
+            try:
+                print(f"⚖️  [RAGEngine] 按需加载本地 BGE-Reranker 重排模型 (设备: {self.device}, FP16 + low_cpu_mem_usage)...")
+                model_kwargs = self._build_low_mem_model_kwargs()
+                try:
+                    self._reranker = CrossEncoder(
+                        self._reranker_model_path,
+                        device=self.device,
+                        model_kwargs=model_kwargs,
+                    )
+                except TypeError:
+                    fallback_kwargs = {"torch_dtype": torch.float16} if self.device == "cuda" else {}
+                    self._reranker = CrossEncoder(
+                        self._reranker_model_path,
+                        device=self.device,
+                        model_kwargs=fallback_kwargs,
+                    )
             except Exception as e:
                 print(f"⚠️ [RAGEngine] 重排模型加载受阻 ({e})，切换为 BGE-M3 纯净向量余弦度量")
-                self.reranker = None
-        else:
-            print("🚀 [RAGEngine] 重排器已由环境配置精简跳过 (PAPER_USE_RERANKER=0)，采用 BGE-M3 全维余弦度量以获得极致速度与精准度")
-            self.reranker = None
+                self._reranker = None
+            finally:
+                gc.collect()
+                if self.device == "cuda" and torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+        return self._reranker
+
+    @reranker.setter
+    def reranker(self, value):
+        self._reranker = value
+        self._reranker_initialized = True
 
     def ingest_file(self, file_path: str | Path) -> int:
         """解析任意格式文件并存入本地向量知识库 (通过大模型自动注入开放式学科本体元数据)"""

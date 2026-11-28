@@ -75,22 +75,25 @@ master_app = build_master_workflow()
 
 @app.on_event("startup")
 async def on_app_startup():
-    """应用启动挂钩：自动拉起天工雷达后台静默轮询与断点续航同步引擎，并预热音频大模型"""
+    """应用启动挂钩：自动拉起天工雷达后台静默轮询与断点续航同步引擎（重型神经模型默认按需懒加载，避免 16G 内存启动峰值 OOM）"""
     radar_sync_engine.start_scheduler()
     voice_manager.event_loop = asyncio.get_running_loop()
 
-    # 预热本地 Whisper-large-v3，默认优先 CUDA；不可用或实际显存不足才回退 CPU。
-    def warmup_whisper():
-        try:
-            from voice_langgraph_agent import WhisperEngine
-            print("🚀 [Startup Warmup] 正在预加载本地 Whisper-large-v3 音频模型...")
-            backend = WhisperEngine.warmup()
-            print(f"✅ [Startup Warmup] 本地 Whisper-large-v3 音频模型预热完成 ({backend})，随时待命！")
-        except Exception as e:
-            print(f"⚠️ [Startup Warmup] Whisper 模型预热提示: {e}")
+    # 默认按需懒加载 Whisper-large-v3（首次点击麦克风或会议录音时才加载，节省 ~6GB 启动内存峰值）。
+    # 如需开机即预热，可在 .env 中显式设置 WHISPER_WARMUP_ON_START=1。
+    if os.getenv("WHISPER_WARMUP_ON_START", "0").strip().lower() in {"1", "true", "yes"}:
+        def warmup_whisper():
+            try:
+                from voice_langgraph_agent import WhisperEngine
+                print("🚀 [Startup Warmup] 正在预加载本地 Whisper-large-v3 音频模型...")
+                backend = WhisperEngine.warmup()
+                print(f"✅ [Startup Warmup] 本地 Whisper-large-v3 音频模型预热完成 ({backend})，随时待命！")
+            except Exception as e:
+                print(f"⚠️ [Startup Warmup] Whisper 模型预热提示: {e}")
 
-    import threading
-    threading.Thread(target=warmup_whisper, daemon=True).start()
+        threading.Thread(target=warmup_whisper, daemon=True).start()
+    else:
+        print("💤 [Startup] Whisper / BGE-M3 / BGE-Reranker 已启用按需懒加载，启动零大内存峰值（首次使用对应功能时自动加载）。")
 
 
 @app.on_event("shutdown")
